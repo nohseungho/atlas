@@ -33,6 +33,7 @@ export async function POST(request) {
     platform: body.platform || "blogger",
     url: body.url || "",
     bloggerBlogId: body.bloggerBlogId || "",
+    tokenRef: "",
     categoryFocus: body.categoryFocus || "",
     status: "ready",
     memo: body.memo || "",

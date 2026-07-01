@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 const inputClass =
   "rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-emerald-500";
@@ -21,6 +22,17 @@ const STATUS_COLORS = {
 };
 
 export default function BlogManagerPage() {
+  return (
+    <Suspense fallback={null}>
+      <BlogManagerContent />
+    </Suspense>
+  );
+}
+
+function BlogManagerContent() {
+  const searchParams = useSearchParams();
+  const blogAuth = searchParams.get("blogAuth");
+  const blogAuthMessage = searchParams.get("message");
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState(emptyForm);
@@ -83,6 +95,17 @@ export default function BlogManagerPage() {
             ← Dashboard
           </Link>
         </header>
+
+        {blogAuth === "success" && (
+          <p className="rounded-lg border border-emerald-700 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
+            ✓ Blogger 계정이 연결되었습니다.
+          </p>
+        )}
+        {blogAuth === "error" && (
+          <p className="rounded-lg border border-red-700 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+            ✗ Blogger 연결 실패: {blogAuthMessage || "알 수 없는 오류"}
+          </p>
+        )}
 
         <section className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
           <h2 className="text-lg font-semibold">새 블로그 등록</h2>
@@ -195,6 +218,18 @@ export default function BlogManagerPage() {
                     >
                       Paused로 변경
                     </button>
+                    {b.tokenRef ? (
+                      <span className="rounded-md bg-emerald-500/10 px-2 py-1 text-xs font-semibold text-emerald-300">
+                        Blogger 연결됨
+                      </span>
+                    ) : (
+                      <a
+                        href={`/api/auth/blogger/start?blogId=${b.id}`}
+                        className="rounded-md bg-blue-600 px-2 py-1 text-xs font-semibold text-white hover:bg-blue-500"
+                      >
+                        Blogger 연결하기
+                      </a>
+                    )}
                   </div>
                 </div>
               ))}

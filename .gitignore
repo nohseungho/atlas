@@ -32,6 +32,10 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.local.example
+
+# ATLAS: 암호화된 OAuth 토큰이라도 저장소에 남기지 않는다
+/data/atlas/tokens.json
 
 # vercel
 .vercel

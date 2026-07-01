@@ -10,7 +10,8 @@
       "status": "ready",
       "memo": "",
       "createdAt": "2026-07-01T00:00:00.000Z",
-      "updatedAt": "2026-07-01T00:00:00.000Z"
+      "updatedAt": "2026-07-01T00:00:00.000Z",
+      "tokenRef": ""
     },
     {
       "id": "blog_002",
@@ -22,7 +23,8 @@
       "status": "ready",
       "memo": "",
       "createdAt": "2026-07-01T00:00:00.000Z",
-      "updatedAt": "2026-07-01T00:00:00.000Z"
+      "updatedAt": "2026-07-01T00:00:00.000Z",
+      "tokenRef": ""
     },
     {
       "id": "blog_003",
@@ -34,7 +36,8 @@
       "status": "ready",
       "memo": "",
       "createdAt": "2026-07-01T00:00:00.000Z",
-      "updatedAt": "2026-07-01T00:00:00.000Z"
+      "updatedAt": "2026-07-01T00:00:00.000Z",
+      "tokenRef": ""
     }
   ]
 }
