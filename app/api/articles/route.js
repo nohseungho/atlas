@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { readJson, writeJson } from "@/lib/data-store";
+import {
+  createPublishJob,
+  updatePublishJobStatus,
+} from "@/lib/atlas/repositories/publishing-repository";
 
 const FILE = "articles.json";
 
@@ -54,22 +58,20 @@ export async function PATCH(request) {
   writeJson(FILE, data);
 
   if (body.status === "published") {
-    const publishingData = readJson("publishing.json");
-    const entry = {
+    // article : PublishJob = 1 : N. 매 발행 처리마다 새 job을 만든다(채널별로 여러 개 가능).
+    // 실제 Blogger API 호출은 아직 없으므로, Publisher의 수동 발행 완료를
+    // "성공한 job"으로 즉시 기록한다.
+    const job = createPublishJob({
       articleId: article.id,
-      blogId: body.blogId || article.blogId || "",
-      blogPlatform: body.blogPlatform || "blogger",
+      channelId: body.blogId || article.blogId || "",
+      provider: body.blogPlatform || "blogger",
+    });
+    updatePublishJobStatus(job.id, {
+      status: "succeeded",
       publishedUrl: body.publishedUrl || "",
-      publishedAt: now,
-      status: "published",
-    };
-    const existing = publishingData.items.find((item) => item.articleId === article.id);
-    if (existing) {
-      Object.assign(existing, entry);
-    } else {
-      publishingData.items.push(entry);
-    }
-    writeJson("publishing.json", publishingData);
+      incrementAttempt: true,
+      message: "Publisher 수동 발행 완료 처리",
+    });
 
     const keywordsData = readJson("keywords.json");
     const keyword = keywordsData.keywords.find((item) => item.id === article.keywordId);

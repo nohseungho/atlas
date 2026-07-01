@@ -1,5 +1,11 @@
-# NSEP v1.2
+# NSEP v1.3
 ## NOVA Safe Execution Protocol + Claude Code Optimization
+
+**v1.3 변경**: 작업 중 SAFE/CAUTION/WARNING 블록을 매번 출력하지 않는다.
+권한 승인은 Claude Code 자체 프롬프트가 처리한다. 파일 수정/테스트는 바로
+진행하고, 작업이 모두 끝난 뒤 한 번에 보고한다: 변경 파일 / 구현 내용 /
+테스트 결과 / git status. 위험 명령(3장)과 Commit 승인(6장)만 예외로
+사전 확인을 유지한다.
 
 모든 프로젝트 공통 개발 표준. (이 세션에서는 ATLAS에만 적용/유지)
 

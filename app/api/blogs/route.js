@@ -3,6 +3,10 @@ import { readJson, writeJson } from "@/lib/data-store";
 
 const FILE = "blogs.json";
 
+// 주의: OAuth 토큰/refresh token은 이 파일(blogs.json)에 절대 저장하지 않는다.
+// 토큰은 별도 Token Store(추후 설계, docs/blogger-auto-publish-design.md 참고)에
+// 분리해서 저장하고, blog record는 참조 필드만 가지는 구조로 간다.
+
 export async function GET() {
   const data = readJson(FILE);
   return NextResponse.json(data);
