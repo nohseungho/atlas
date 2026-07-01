@@ -1,0 +1,37 @@
+{
+  "items": [
+    {
+      "id": "blog_001",
+      "name": "ATLAS Money Blog 01",
+      "platform": "blogger",
+      "url": "",
+      "categoryFocus": "자동차 보험",
+      "status": "ready",
+      "memo": "",
+      "createdAt": "2026-07-01T00:00:00.000Z",
+      "updatedAt": "2026-07-01T00:00:00.000Z"
+    },
+    {
+      "id": "blog_002",
+      "name": "ATLAS Money Blog 02",
+      "platform": "blogger",
+      "url": "",
+      "categoryFocus": "정부지원금/생활비 절약",
+      "status": "ready",
+      "memo": "",
+      "createdAt": "2026-07-01T00:00:00.000Z",
+      "updatedAt": "2026-07-01T00:00:00.000Z"
+    },
+    {
+      "id": "blog_003",
+      "name": "ATLAS Money Blog 03",
+      "platform": "blogger",
+      "url": "",
+      "categoryFocus": "금융/세금",
+      "status": "ready",
+      "memo": "",
+      "createdAt": "2026-07-01T00:00:00.000Z",
+      "updatedAt": "2026-07-01T00:00:00.000Z"
+    }
+  ]
+}

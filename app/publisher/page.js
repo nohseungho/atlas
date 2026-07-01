@@ -17,7 +17,9 @@ const ADSENSE_CHECKLIST = [
 
 export default function PublisherPage() {
   const [articles, setArticles] = useState([]);
+  const [blogs, setBlogs] = useState([]);
   const [selectedId, setSelectedId] = useState("");
+  const [targetBlogId, setTargetBlogId] = useState("");
   const [publishedUrl, setPublishedUrl] = useState("");
   const [publishing, setPublishing] = useState(false);
   const [message, setMessage] = useState("");
@@ -28,13 +30,22 @@ export default function PublisherPage() {
     setArticles(data.articles || []);
   }
 
+  async function loadBlogs() {
+    const res = await fetch("/api/blogs", { cache: "no-store" });
+    const data = await res.json();
+    setBlogs(data.items || []);
+  }
+
   useEffect(() => {
     // Client-side fetch-on-mount against our own API route; intentional for this admin tool.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadArticles();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadBlogs();
   }, []);
 
   const writtenArticles = articles.filter((a) => a.status === "written");
+  const readyBlogs = blogs.filter((b) => b.status === "ready");
   const selected = articles.find((a) => a.id === selectedId);
 
   async function handlePublish() {
@@ -52,6 +63,7 @@ export default function PublisherPage() {
         id: selected.id,
         status: "published",
         publishedUrl,
+        blogId: targetBlogId,
         blogPlatform: "blogger",
       }),
     });
@@ -63,6 +75,7 @@ export default function PublisherPage() {
     setMessage("발행 완료로 처리했습니다.");
     setSelectedId("");
     setPublishedUrl("");
+    setTargetBlogId("");
     loadArticles();
   }
 
@@ -146,20 +159,34 @@ export default function PublisherPage() {
 
             <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
               <h2 className="text-lg font-semibold">발행 완료 처리</h2>
-              <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center">
-                <input
-                  value={publishedUrl}
-                  onChange={(e) => setPublishedUrl(e.target.value)}
-                  placeholder="발행된 Blogger 게시글 URL"
-                  className="flex-1 rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-emerald-500"
-                />
-                <button
-                  onClick={handlePublish}
-                  disabled={publishing}
-                  className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 disabled:opacity-50"
+              <div className="mt-3 flex flex-col gap-3">
+                <select
+                  value={targetBlogId}
+                  onChange={(e) => setTargetBlogId(e.target.value)}
+                  className="rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-emerald-500"
                 >
-                  {publishing ? "처리 중..." : "발행 완료"}
-                </button>
+                  <option value="">발행 대상 블로그 선택 (선택 사항)</option>
+                  {readyBlogs.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name} ({b.categoryFocus || "미지정"})
+                    </option>
+                  ))}
+                </select>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <input
+                    value={publishedUrl}
+                    onChange={(e) => setPublishedUrl(e.target.value)}
+                    placeholder="발행된 Blogger 게시글 URL"
+                    className="flex-1 rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-emerald-500"
+                  />
+                  <button
+                    onClick={handlePublish}
+                    disabled={publishing}
+                    className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 disabled:opacity-50"
+                  >
+                    {publishing ? "처리 중..." : "발행 완료"}
+                  </button>
+                </div>
               </div>
               {message && <p className="mt-2 text-sm text-zinc-400">{message}</p>}
             </div>

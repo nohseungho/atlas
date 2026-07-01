@@ -49,6 +49,7 @@ export async function PATCH(request) {
 
   if (body.status) article.status = body.status;
   if (typeof body.publishedUrl === "string") article.publishedUrl = body.publishedUrl;
+  if (typeof body.blogId === "string") article.blogId = body.blogId;
   article.updatedAt = now;
   writeJson(FILE, data);
 
@@ -56,6 +57,7 @@ export async function PATCH(request) {
     const publishingData = readJson("publishing.json");
     const entry = {
       articleId: article.id,
+      blogId: body.blogId || article.blogId || "",
       blogPlatform: body.blogPlatform || "blogger",
       publishedUrl: body.publishedUrl || "",
       publishedAt: now,
