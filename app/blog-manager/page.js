@@ -10,6 +10,7 @@ const emptyForm = {
   name: "",
   platform: "blogger",
   url: "",
+  bloggerBlogId: "",
   categoryFocus: "",
   memo: "",
 };
@@ -123,6 +124,15 @@ export default function BlogManagerPage() {
               />
             </Field>
 
+            <Field label="Blogger Blog ID (선택, 자동 발행 연동 준비용)">
+              <input
+                value={form.bloggerBlogId}
+                onChange={(e) => setForm({ ...form, bloggerBlogId: e.target.value })}
+                className={inputClass}
+                placeholder="예: 1234567890123456789"
+              />
+            </Field>
+
             <Field label="메모" className="sm:col-span-2 lg:col-span-2">
               <textarea
                 value={form.memo}
@@ -160,6 +170,7 @@ export default function BlogManagerPage() {
                     <p className="text-xs text-zinc-500">
                       {b.platform} · {b.categoryFocus || "미지정"}
                       {b.url ? ` · ${b.url}` : ""}
+                      {b.bloggerBlogId ? ` · Blogger ID: ${b.bloggerBlogId}` : " · Blogger ID 미등록"}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">

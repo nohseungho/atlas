@@ -186,6 +186,14 @@ export default function PublisherPage() {
                   >
                     {publishing ? "처리 중..." : "발행 완료"}
                   </button>
+                  <button
+                    type="button"
+                    disabled
+                    title="Blogger API 연동 준비 중 (설계 단계, 미구현)"
+                    className="cursor-not-allowed rounded-lg bg-zinc-800 px-4 py-2 text-sm font-semibold text-zinc-500"
+                  >
+                    자동 발행 (준비 중)
+                  </button>
                 </div>
               </div>
               {message && <p className="mt-2 text-sm text-zinc-400">{message}</p>}

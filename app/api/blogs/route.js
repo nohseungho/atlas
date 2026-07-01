@@ -28,6 +28,7 @@ export async function POST(request) {
     name: body.name,
     platform: body.platform || "blogger",
     url: body.url || "",
+    bloggerBlogId: body.bloggerBlogId || "",
     categoryFocus: body.categoryFocus || "",
     status: "ready",
     memo: body.memo || "",
@@ -57,6 +58,7 @@ export async function PATCH(request) {
 
   if (body.status) blog.status = body.status;
   if (typeof body.url === "string") blog.url = body.url;
+  if (typeof body.bloggerBlogId === "string") blog.bloggerBlogId = body.bloggerBlogId;
   if (typeof body.memo === "string") blog.memo = body.memo;
   blog.updatedAt = new Date().toISOString();
 
