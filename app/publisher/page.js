@@ -2,7 +2,18 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { buildBloggerHtml } from "@/lib/html-exporter";
+import { buildBloggerHtml, getBloggerChecklist } from "@/lib/html-exporter";
+
+const ADSENSE_CHECKLIST = [
+  "개인정보처리방침(Privacy Policy) 페이지 존재",
+  "독창적이고 가치 있는 콘텐츠 (복사/저품질 콘텐츠 없음)",
+  "최소 게시글 수 확보 (통상 20~30개 이상 권장)",
+  "사이트 내비게이션/메뉴 정상 작동",
+  "성인/폭력/저작권 침해 등 금지 콘텐츠 없음",
+  "미완성 페이지 없음 (사이트 디자인 완성도)",
+  "연락처(Contact) 페이지 존재",
+  "충분한 도메인 운영 기간 및 실사용 트래픽",
+];
 
 export default function PublisherPage() {
   const [articles, setArticles] = useState([]);
@@ -77,6 +88,19 @@ export default function PublisherPage() {
         </header>
 
         <section className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+          <h2 className="text-lg font-semibold">애드센스 승인 체크리스트</h2>
+          <p className="mt-1 text-xs text-zinc-500">사이트 단위로 운영자가 직접 점검하는 참고용 목록입니다.</p>
+          <ul className="mt-3 space-y-1.5 text-sm text-zinc-300">
+            {ADSENSE_CHECKLIST.map((item) => (
+              <li key={item} className="flex gap-2">
+                <span className="text-zinc-600">□</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
           <h2 className="text-lg font-semibold">작성 완료 글 ({writtenArticles.length})</h2>
           <div className="mt-4 space-y-2">
             {writtenArticles.map((a) => (
@@ -118,6 +142,8 @@ export default function PublisherPage() {
               tall
             />
 
+            <BloggerChecklist article={selected} />
+
             <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
               <h2 className="text-lg font-semibold">발행 완료 처리</h2>
               <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -140,6 +166,39 @@ export default function PublisherPage() {
           </section>
         )}
       </div>
+    </div>
+  );
+}
+
+function BloggerChecklist({ article }) {
+  const items = getBloggerChecklist(article);
+  const failedCount = items.filter((item) => !item.passed).length;
+
+  return (
+    <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-semibold text-zinc-300">Blogger 발행 체크리스트</h3>
+        <span
+          className={`rounded-full px-2 py-1 text-xs font-semibold ${
+            failedCount === 0 ? "bg-emerald-500/20 text-emerald-300" : "bg-amber-500/20 text-amber-300"
+          }`}
+        >
+          {failedCount === 0 ? "모두 통과" : `${failedCount}개 확인 필요`}
+        </span>
+      </div>
+      <ul className="mt-3 space-y-1.5 text-sm">
+        {items.map((item) => (
+          <li key={item.label} className="flex items-center justify-between">
+            <span className="flex items-center gap-2">
+              <span className={item.passed ? "text-emerald-400" : "text-red-400"}>
+                {item.passed ? "✓" : "✗"}
+              </span>
+              <span className="text-zinc-300">{item.label}</span>
+            </span>
+            <span className="text-xs text-zinc-500">{item.detail}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

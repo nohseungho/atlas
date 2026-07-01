@@ -1,4 +1,4 @@
-# NSEP v1.0
+# NSEP v1.2
 ## NOVA Safe Execution Protocol + Claude Code Optimization
 
 모든 프로젝트 공통 개발 표준. (이 세션에서는 ATLAS에만 적용/유지)
@@ -17,56 +17,74 @@
 
 ---
 
-## 1. Bash / PowerShell 실행 규칙
+## 1. 실행 규칙
 
-모든 명령 실행 전 아래 형식만 출력 (설명은 최대 5줄 이내).
+모든 Bash/PowerShell 실행 전 아래 형식만 출력한다. "지금 하는 일"을 가장 먼저
+보여준다 (Project/Path/Reason보다 우선). 사용자는 명령어가 아니라 '행동'을
+승인한다.
 
 ```
 🟢 SAFE
-프로젝트:
-경로:
-작업:
-영향 파일:
-추천: YES
+프로젝트: 현재 프로젝트
+지금 하는 일: (행동 설명)
+파일 변경: 있음 / 없음
+사용자 행동: YES 누르면 됨
 ```
 
 ```
 🟡 CAUTION
-프로젝트:
-경로:
-작업:
-위험 요소:
-추천: USER CHECK
+프로젝트: 현재 프로젝트
+지금 하는 일: (행동 설명)
+영향: (설정, 의존성 등)
+사용자 행동: 확인 후 YES
 ```
 
 ```
 🔴 WARNING
-프로젝트:
-경로:
-작업:
-위험 요소:
-추천: STOP (사용자 승인 전에는 실행하지 않는다)
+프로젝트: 현재 프로젝트
+지금 하는 일: (행동 설명)
+영향: (위험 내용)
+사용자 행동: STOP
 ```
 
-## 2. 프로젝트 격리
+- 🟢 SAFE: 승인 대기 없이 즉시 실행
+- 🟡 CAUTION: 사용자 확인 후 실행
+- 🔴 WARNING: 사용자 승인 전까지 절대 실행하지 않음
+
+## 2. SAFE 기준
+
+`npm run *`, localhost 테스트, `eslint`, `node`, `curl localhost`,
+개발 서버 시작/종료, 현재 프로젝트 내부 파일 생성/수정/테스트
+
+## 3. CAUTION 기준
+
+`package.json` 변경, `npm install`, 설정파일 변경, 의존성 변경
+
+## 4. WARNING 기준
+
+다른 프로젝트 접근, 삭제 작업, `git reset --hard`, `git clean`, `git rebase`,
+시스템 폴더 접근, 환경변수 변경, Global 설정 변경
+
+## 5. 프로젝트 격리
 
 현재 프로젝트(`D:\projects\atlas`) 외에는 절대 수정하지 않는다.
 다른 프로젝트 경로 포함 시 반드시 🔴 WARNING.
 
-## 3. 위험 명령 (항상 🔴 WARNING)
-
-`git reset --hard`, `git clean`, `git rebase`, `git branch -D`, `rm`, `rm -rf`,
-`del`, `Remove-Item`, `rmdir`, 환경변수 변경, Global npm, 시스템 폴더 접근
-
-## 4. Commit 규칙
+## 6. Commit 규칙
 
 커밋 전 반드시 출력: Modified/New/Deleted Files, `git status`, 추천 Commit Message
 → 사용자 승인 → Commit. 승인 없이 Commit 금지.
 
-## 5. SAFE 작업
+## 7. 파일 읽기 범위
 
-`npm run *`, `node`, `curl localhost`, `mkdir`, `eslint`, 빌드, 테스트,
-프로젝트 내부 파일 생성/수정
+작업마다 프로젝트 전체를 재분석하지 않는다. 현재 작업과 직접 관련된 파일만
+읽고 수정한다 (예: Publisher 작업 → `app/publisher/page.js`,
+`lib/html-exporter.js`, 관련 data 파일만).
+
+## 8. 응답 형식
+
+항상 한국어. 불필요한 설명, 반복 설명, 긴 보고 금지. 작업 완료 후에는 다음만
+보고한다: 완료 내용 / 변경 파일 / 실행 결과 / `git status` / 추천 Commit Message.
 
 ## 6. 개발 방식
 
