@@ -61,6 +61,15 @@ function BlogManagerContent() {
     loadBlogs();
   }
 
+  async function handleDisconnect(id) {
+    await fetch("/api/blogs", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, action: "disconnect" }),
+    });
+    loadBlogs();
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     if (!form.name.trim()) {
@@ -91,9 +100,14 @@ function BlogManagerContent() {
             <h1 className="text-2xl font-bold">Blog Manager</h1>
             <p className="mt-1 text-sm text-zinc-400">발행 대상 블로그를 등록하고 관리합니다.</p>
           </div>
-          <Link href="/" className="text-sm text-emerald-400 hover:underline">
-            ← Dashboard
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link href="/publisher" className="text-sm text-blue-400 hover:underline">
+              Publisher →
+            </Link>
+            <Link href="/" className="text-sm text-emerald-400 hover:underline">
+              ← Dashboard
+            </Link>
+          </div>
         </header>
 
         {blogAuth === "success" && (
@@ -219,9 +233,17 @@ function BlogManagerContent() {
                       Paused로 변경
                     </button>
                     {b.tokenRef ? (
-                      <span className="rounded-md bg-emerald-500/10 px-2 py-1 text-xs font-semibold text-emerald-300">
-                        Blogger 연결됨
-                      </span>
+                      <>
+                        <span className="rounded-md bg-emerald-500/10 px-2 py-1 text-xs font-semibold text-emerald-300">
+                          Blogger 연결됨
+                        </span>
+                        <button
+                          onClick={() => handleDisconnect(b.id)}
+                          className="rounded-md bg-red-900/40 px-2 py-1 text-xs font-semibold text-red-400 hover:bg-red-900/70"
+                        >
+                          연결 해제
+                        </button>
+                      </>
                     ) : (
                       <a
                         href={`/api/auth/blogger/start?blogId=${b.id}`}

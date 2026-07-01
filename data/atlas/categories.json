@@ -1,0 +1,85 @@
+{
+  "items": [
+    {
+      "id": "cat_money",
+      "slug": "money",
+      "label": "Money & Finance",
+      "description": "Personal finance, saving, investing, budgeting, credit cards, loans",
+      "targetMarket": "us",
+      "adSenseCategory": "Finance",
+      "exampleKeywords": ["how to save money fast", "best high yield savings account", "credit card rewards tips"]
+    },
+    {
+      "id": "cat_ai_tech",
+      "slug": "ai-tech",
+      "label": "AI & Technology",
+      "description": "AI tools, productivity apps, ChatGPT tips, tech news and reviews",
+      "targetMarket": "us",
+      "adSenseCategory": "Technology",
+      "exampleKeywords": ["best AI tools 2025", "ChatGPT prompts for work", "free AI image generators"]
+    },
+    {
+      "id": "cat_travel",
+      "slug": "travel",
+      "label": "Travel",
+      "description": "Budget travel, US destinations, flight deals, hotel tips, road trips",
+      "targetMarket": "us",
+      "adSenseCategory": "Travel",
+      "exampleKeywords": ["cheap flights to Europe", "best road trip routes USA", "budget travel tips 2025"]
+    },
+    {
+      "id": "cat_health",
+      "slug": "health",
+      "label": "Health & Wellness",
+      "description": "Health insurance, fitness, diet, mental health, supplements",
+      "targetMarket": "us",
+      "adSenseCategory": "Health",
+      "exampleKeywords": ["best health insurance for self employed", "how to lower blood pressure naturally", "cheap gym alternatives"]
+    },
+    {
+      "id": "cat_lifestyle",
+      "slug": "lifestyle",
+      "label": "Lifestyle",
+      "description": "Home improvement, relationships, productivity, self-improvement",
+      "targetMarket": "us",
+      "adSenseCategory": "Lifestyle",
+      "exampleKeywords": ["how to declutter your home", "morning routine for productivity", "best side hustles 2025"]
+    },
+    {
+      "id": "cat_cars",
+      "slug": "cars",
+      "label": "Cars & Auto",
+      "description": "Car insurance, EV reviews, maintenance tips, buying guides",
+      "targetMarket": "us",
+      "adSenseCategory": "Automotive",
+      "exampleKeywords": ["cheapest car insurance 2025", "best electric cars under 40k", "how to negotiate car price"]
+    },
+    {
+      "id": "cat_science",
+      "slug": "science",
+      "label": "Science",
+      "description": "Scientific discoveries, climate, biology, medicine, research",
+      "targetMarket": "us",
+      "adSenseCategory": "Science",
+      "exampleKeywords": ["new cancer treatment 2025", "climate change solutions", "how vaccines work"]
+    },
+    {
+      "id": "cat_space",
+      "slug": "space",
+      "label": "Space & Astronomy",
+      "description": "NASA missions, SpaceX, Mars exploration, telescope discoveries",
+      "targetMarket": "us",
+      "adSenseCategory": "Science",
+      "exampleKeywords": ["SpaceX Starship update", "NASA James Webb telescope discoveries", "how to see northern lights"]
+    },
+    {
+      "id": "cat_luxury",
+      "slug": "luxury",
+      "label": "Luxury & Premium",
+      "description": "Luxury travel, watches, cars, real estate, high-end lifestyle",
+      "targetMarket": "us",
+      "adSenseCategory": "Luxury",
+      "exampleKeywords": ["best luxury credit cards", "cheap business class flights", "luxury hotels worth the price"]
+    }
+  ]
+}

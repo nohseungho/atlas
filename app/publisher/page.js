@@ -22,7 +22,9 @@ export default function PublisherPage() {
   const [targetBlogId, setTargetBlogId] = useState("");
   const [publishedUrl, setPublishedUrl] = useState("");
   const [publishing, setPublishing] = useState(false);
+  const [autoPublishing, setAutoPublishing] = useState(false);
   const [message, setMessage] = useState("");
+  const [publishResult, setPublishResult] = useState(null);
 
   async function loadArticles() {
     const res = await fetch("/api/articles", { cache: "no-store" });
@@ -40,13 +42,47 @@ export default function PublisherPage() {
     // Client-side fetch-on-mount against our own API route; intentional for this admin tool.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadArticles();
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadBlogs();
   }, []);
 
-  const writtenArticles = articles.filter((a) => a.status === "written");
+  const displayArticles = articles.filter((a) => ["written", "published"].includes(a.status));
+  const writtenArticles = displayArticles.filter((a) => a.status === "written");
   const readyBlogs = blogs.filter((b) => b.status === "ready");
   const selected = articles.find((a) => a.id === selectedId);
+  const selectedBlogRecord = blogs.find((b) => b.id === targetBlogId);
+  const canAutoPublish = Boolean(selectedBlogRecord?.tokenRef);
+  const isAlreadyPublished = Boolean(selected && (selected.status === "published" || selected.publishedUrl));
+
+  async function handleAutoPublish() {
+    if (!selected || !targetBlogId || !canAutoPublish) return;
+    setAutoPublishing(true);
+    setMessage("");
+    try {
+      const res = await fetch("/api/publish", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ articleId: selected.id, blogId: targetBlogId }),
+      });
+      const data = await res.json();
+      if (data.status === "succeeded") {
+        setPublishResult({ publishedUrl: data.publishedUrl });
+        setSelectedId("");
+        setTargetBlogId("");
+        setMessage("");
+        loadArticles();
+      } else if (data.status === "duplicate") {
+        setMessage("이미 발행된 글입니다. 중복 발행이 차단되었습니다.");
+        loadArticles();
+      } else if (data.status === "auth_required") {
+        setMessage("Blogger 인증이 만료되었습니다. Blog Manager에서 재연결 후 시도해주세요.");
+      } else {
+        setMessage(`자동 발행 실패: ${data.error || "오류 발생"}`);
+      }
+    } catch {
+      setMessage("자동 발행 중 네트워크 오류가 발생했습니다.");
+    }
+    setAutoPublishing(false);
+  }
 
   async function handlePublish() {
     if (!selected) return;
@@ -128,7 +164,7 @@ export default function PublisherPage() {
                     type="radio"
                     name="article"
                     checked={selectedId === a.id}
-                    onChange={() => setSelectedId(a.id)}
+                    onChange={() => { setSelectedId(a.id); setPublishResult(null); }}
                   />
                   <div>
                     <p className="font-medium">{a.title}</p>
@@ -142,6 +178,83 @@ export default function PublisherPage() {
             )}
           </div>
         </section>
+
+        {displayArticles.length - writtenArticles.length > 0 && (
+          <section className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+            <h2 className="text-lg font-semibold text-zinc-400">
+              이미 발행됨 ({displayArticles.length - writtenArticles.length})
+            </h2>
+            <div className="mt-4 space-y-2">
+              {displayArticles
+                .filter((a) => a.status === "published" || a.publishedUrl)
+                .map((a) => (
+                  <div
+                    key={a.id}
+                    className="flex items-center justify-between rounded-lg border border-zinc-800 px-4 py-3 text-sm opacity-60"
+                  >
+                    <div>
+                      <p className="font-medium">{a.title}</p>
+                      <p className="text-xs text-zinc-500">{a.category}</p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="rounded-full bg-zinc-700 px-2 py-1 text-xs text-zinc-400">
+                        발행됨
+                      </span>
+                      {a.publishedUrl && (
+                        <a
+                          href={a.publishedUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="rounded-md bg-zinc-800 px-2 py-1 text-xs text-blue-400 hover:bg-zinc-700"
+                        >
+                          게시글 보기
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </section>
+        )}
+
+        {publishResult && (
+          <section className="rounded-xl border border-emerald-700 bg-emerald-500/10 p-6 space-y-4">
+            <div>
+              <h2 className="text-lg font-semibold text-emerald-300">자동 발행 성공!</h2>
+              <p className="mt-1 text-sm text-zinc-300">Blogger에 글이 정상 발행되었습니다.</p>
+            </div>
+            <a
+              href={publishResult.publishedUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block break-all text-sm text-blue-400 hover:underline"
+            >
+              {publishResult.publishedUrl}
+            </a>
+            <div className="flex flex-wrap gap-3">
+              <a
+                href={publishResult.publishedUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500"
+              >
+                게시글 보기
+              </a>
+              <Link
+                href="/blog-manager"
+                className="rounded-lg bg-zinc-700 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-600"
+              >
+                Blog Manager로 이동
+              </Link>
+              <Link
+                href="/"
+                className="rounded-lg bg-zinc-700 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-600"
+              >
+                Dashboard로 이동
+              </Link>
+            </div>
+          </section>
+        )}
 
         {selected && (
           <section className="space-y-4">
@@ -168,7 +281,7 @@ export default function PublisherPage() {
                   <option value="">발행 대상 블로그 선택 (선택 사항)</option>
                   {readyBlogs.map((b) => (
                     <option key={b.id} value={b.id}>
-                      {b.name} ({b.categoryFocus || "미지정"})
+                      {b.name} ({b.categoryFocus || "미지정"}){b.tokenRef ? " [연결됨]" : ""}
                     </option>
                   ))}
                 </select>
@@ -188,11 +301,22 @@ export default function PublisherPage() {
                   </button>
                   <button
                     type="button"
-                    disabled
-                    title="Blogger API 연동 준비 중 (설계 단계, 미구현)"
-                    className="cursor-not-allowed rounded-lg bg-zinc-800 px-4 py-2 text-sm font-semibold text-zinc-500"
+                    onClick={handleAutoPublish}
+                    disabled={autoPublishing || !canAutoPublish || isAlreadyPublished}
+                    title={
+                      isAlreadyPublished
+                        ? "이미 발행된 글입니다"
+                        : !canAutoPublish
+                        ? "Blogger 연결된 블로그를 선택해주세요"
+                        : "Blogger API로 자동 발행"
+                    }
+                    className={`rounded-lg px-4 py-2 text-sm font-semibold ${
+                      canAutoPublish && !autoPublishing && !isAlreadyPublished
+                        ? "bg-blue-600 text-white hover:bg-blue-500"
+                        : "cursor-not-allowed bg-zinc-800 text-zinc-500"
+                    }`}
                   >
-                    자동 발행 (준비 중)
+                    {autoPublishing ? "발행 중..." : "자동 발행"}
                   </button>
                 </div>
               </div>
