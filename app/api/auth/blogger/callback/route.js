@@ -61,6 +61,17 @@ export async function GET(request) {
     if (blog) {
       blog.tokenRef = tokenRecord.id;
       blog.updatedAt = new Date().toISOString();
+
+      // OAuth 직후 access_token으로 bloggerBlogId 자동 조회 후 저장
+      try {
+        const bloggerBlogId = await bloggerProvider.fetchFirstBlogId(tokens.accessToken);
+        blog.bloggerBlogId = bloggerBlogId;
+        console.log("[callback] bloggerBlogId 자동 저장:", bloggerBlogId);
+      } catch (fetchErr) {
+        // bloggerBlogId 조회 실패 시 OAuth 자체는 성공으로 처리
+        console.warn("[callback] bloggerBlogId 조회 실패 (무시):", fetchErr.message);
+      }
+
       writeJson("blogs.json", blogsData);
     }
 

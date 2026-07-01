@@ -61,6 +61,14 @@ export async function PATCH(request) {
     return NextResponse.json({ error: "blog not found" }, { status: 404 });
   }
 
+  if (body.action === "disconnect") {
+    blog.tokenRef = "";
+    blog.bloggerBlogId = "";
+    blog.updatedAt = new Date().toISOString();
+    writeJson(FILE, data);
+    return NextResponse.json(blog);
+  }
+
   if (body.status) blog.status = body.status;
   if (typeof body.url === "string") blog.url = body.url;
   if (typeof body.bloggerBlogId === "string") blog.bloggerBlogId = body.bloggerBlogId;
