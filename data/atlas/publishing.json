@@ -1,4 +1,246 @@
 {
-  "jobs": [],
-  "history": []
+  "jobs": [
+    {
+      "id": "job_001",
+      "articleId": "art_001",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "failed",
+      "attemptCount": 1,
+      "maxAttempts": 3,
+      "lastError": "The caller does not have permission",
+      "nextRetryAt": null,
+      "createdAt": "2026-07-01T11:24:43.541Z",
+      "updatedAt": "2026-07-01T11:24:44.641Z",
+      "publishedUrl": "",
+      "externalId": ""
+    },
+    {
+      "id": "job_002",
+      "articleId": "art_001",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "failed",
+      "attemptCount": 1,
+      "maxAttempts": 3,
+      "lastError": "The caller does not have permission",
+      "nextRetryAt": null,
+      "createdAt": "2026-07-01T11:36:07.154Z",
+      "updatedAt": "2026-07-01T11:36:08.243Z",
+      "publishedUrl": "",
+      "externalId": ""
+    },
+    {
+      "id": "job_003",
+      "articleId": "art_001",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "attemptCount": 1,
+      "maxAttempts": 3,
+      "lastError": null,
+      "nextRetryAt": null,
+      "createdAt": "2026-07-01T12:12:00.954Z",
+      "updatedAt": "2026-07-01T12:12:04.296Z",
+      "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/07/blog-post.html",
+      "externalId": "333830050229150074"
+    },
+    {
+      "id": "job_004",
+      "articleId": "art_001",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "attemptCount": 1,
+      "maxAttempts": 3,
+      "lastError": null,
+      "nextRetryAt": null,
+      "createdAt": "2026-07-01T12:28:16.356Z",
+      "updatedAt": "2026-07-01T12:28:18.350Z",
+      "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/07/blog-post_01.html",
+      "externalId": "185418014806696046"
+    },
+    {
+      "id": "job_005",
+      "articleId": "art_001",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "attemptCount": 1,
+      "maxAttempts": 3,
+      "lastError": null,
+      "nextRetryAt": null,
+      "createdAt": "2026-07-01T12:34:53.621Z",
+      "updatedAt": "2026-07-01T12:34:55.587Z",
+      "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/07/blog-post_181.html",
+      "externalId": "4176600878931851237"
+    }
+  ],
+  "history": [
+    {
+      "id": "hist_001",
+      "jobId": "job_001",
+      "articleId": "art_001",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "queued",
+      "message": "Job 생성",
+      "error": null,
+      "createdAt": "2026-07-01T11:24:43.542Z"
+    },
+    {
+      "id": "hist_002",
+      "jobId": "job_001",
+      "articleId": "art_001",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "running",
+      "message": "자동 발행 시작",
+      "error": null,
+      "createdAt": "2026-07-01T11:24:43.543Z"
+    },
+    {
+      "id": "hist_003",
+      "jobId": "job_001",
+      "articleId": "art_001",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "failed",
+      "message": "발행 실패: The caller does not have permission",
+      "error": "The caller does not have permission",
+      "createdAt": "2026-07-01T11:24:44.642Z"
+    },
+    {
+      "id": "hist_004",
+      "jobId": "job_002",
+      "articleId": "art_001",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "queued",
+      "message": "Job 생성",
+      "error": null,
+      "createdAt": "2026-07-01T11:36:07.155Z"
+    },
+    {
+      "id": "hist_005",
+      "jobId": "job_002",
+      "articleId": "art_001",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "running",
+      "message": "자동 발행 시작",
+      "error": null,
+      "createdAt": "2026-07-01T11:36:07.157Z"
+    },
+    {
+      "id": "hist_006",
+      "jobId": "job_002",
+      "articleId": "art_001",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "failed",
+      "message": "발행 실패: The caller does not have permission",
+      "error": "The caller does not have permission",
+      "createdAt": "2026-07-01T11:36:08.244Z"
+    },
+    {
+      "id": "hist_007",
+      "jobId": "job_003",
+      "articleId": "art_001",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "queued",
+      "message": "Job 생성",
+      "error": null,
+      "createdAt": "2026-07-01T12:12:00.956Z"
+    },
+    {
+      "id": "hist_008",
+      "jobId": "job_003",
+      "articleId": "art_001",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "running",
+      "message": "자동 발행 시작",
+      "error": null,
+      "createdAt": "2026-07-01T12:12:00.957Z"
+    },
+    {
+      "id": "hist_009",
+      "jobId": "job_003",
+      "articleId": "art_001",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "message": "Blogger 자동 발행 성공",
+      "error": null,
+      "createdAt": "2026-07-01T12:12:04.297Z"
+    },
+    {
+      "id": "hist_010",
+      "jobId": "job_004",
+      "articleId": "art_001",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "queued",
+      "message": "Job 생성",
+      "error": null,
+      "createdAt": "2026-07-01T12:28:16.358Z"
+    },
+    {
+      "id": "hist_011",
+      "jobId": "job_004",
+      "articleId": "art_001",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "running",
+      "message": "자동 발행 시작",
+      "error": null,
+      "createdAt": "2026-07-01T12:28:16.359Z"
+    },
+    {
+      "id": "hist_012",
+      "jobId": "job_004",
+      "articleId": "art_001",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "message": "Blogger 자동 발행 성공",
+      "error": null,
+      "createdAt": "2026-07-01T12:28:18.351Z"
+    },
+    {
+      "id": "hist_013",
+      "jobId": "job_005",
+      "articleId": "art_001",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "queued",
+      "message": "Job 생성",
+      "error": null,
+      "createdAt": "2026-07-01T12:34:53.622Z"
+    },
+    {
+      "id": "hist_014",
+      "jobId": "job_005",
+      "articleId": "art_001",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "running",
+      "message": "자동 발행 시작",
+      "error": null,
+      "createdAt": "2026-07-01T12:34:53.624Z"
+    },
+    {
+      "id": "hist_015",
+      "jobId": "job_005",
+      "articleId": "art_001",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "message": "Blogger 자동 발행 성공",
+      "error": null,
+      "createdAt": "2026-07-01T12:34:55.588Z"
+    }
+  ]
 }

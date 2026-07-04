@@ -114,6 +114,30 @@ export default function DashboardPage() {
           >
             Publisher
           </Link>
+          <Link
+            href="/atlas"
+            className="rounded-lg bg-zinc-800 px-4 py-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-700"
+          >
+            ATLAS Platform (Beta)
+          </Link>
+        </section>
+
+        <section className="flex flex-wrap gap-3 border-t border-zinc-800 pt-6 text-sm">
+          <Link href="/about" className="text-zinc-400 hover:text-zinc-100">
+            About
+          </Link>
+          <Link href="/privacy" className="text-zinc-400 hover:text-zinc-100">
+            Privacy Policy
+          </Link>
+          <Link href="/contact" className="text-zinc-400 hover:text-zinc-100">
+            Contact
+          </Link>
+          <Link
+            href="/affiliate-disclosure"
+            className="text-zinc-400 hover:text-zinc-100"
+          >
+            Affiliate Disclosure
+          </Link>
         </section>
       </div>
     </div>
