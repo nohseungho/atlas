@@ -9,6 +9,7 @@ import {
 import {
   createPublishJob,
   updatePublishJobStatus,
+  getJobsByArticleId,
 } from "@/lib/atlas/repositories/publishing-repository";
 import { buildBloggerHtml } from "@/lib/html-exporter";
 
@@ -44,6 +45,18 @@ export async function POST(request) {
   if (article.status === "published" || article.publishedUrl) {
     return NextResponse.json(
       { error: "이미 발행된 글입니다. 중복 발행이 차단되었습니다.", status: "duplicate" },
+      { status: 409 }
+    );
+  }
+
+  // 중복 발행 차단 (데이터 정합성 무관): article.status가 되돌아갔거나 publishedUrl이
+  // 지워졌어도, 같은 article x 같은 blog 조합으로 이미 성공한 job이 있으면 거부한다.
+  const alreadySucceededToThisBlog = getJobsByArticleId(articleId).some(
+    (job) => job.channelId === blogId && job.status === "succeeded"
+  );
+  if (alreadySucceededToThisBlog) {
+    return NextResponse.json(
+      { error: "이미 이 블로그에 발행된 글입니다. 중복 발행이 차단되었습니다.", status: "duplicate" },
       { status: 409 }
     );
   }

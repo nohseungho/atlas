@@ -122,6 +122,12 @@ export default function WriterPage() {
             <div className="mt-4 whitespace-pre-wrap rounded-lg bg-zinc-950 p-4 text-sm text-zinc-300">
               {result.bodyMarkdown}
             </div>
+            <Link
+              href="/publisher"
+              className="mt-4 inline-block rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500"
+            >
+              Publisher에서 발행하기 →
+            </Link>
           </section>
         )}
 

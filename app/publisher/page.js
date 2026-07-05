@@ -118,8 +118,9 @@ export default function PublisherPage() {
   async function copy(text) {
     try {
       await navigator.clipboard.writeText(text);
+      return true;
     } catch {
-      // clipboard API unavailable in this context; ignore silently
+      return false;
     }
   }
 
@@ -363,16 +364,35 @@ function BloggerChecklist({ article }) {
 }
 
 function CopyBlock({ label, value, onCopy, tall }) {
+  const [copyStatus, setCopyStatus] = useState("");
+
+  async function handleCopyClick() {
+    const success = await onCopy(value);
+    setCopyStatus(success ? "복사됨" : "복사 실패 (직접 선택해서 복사해주세요)");
+    setTimeout(() => setCopyStatus(""), 2000);
+  }
+
   return (
     <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-zinc-300">{label}</h3>
-        <button
-          onClick={() => onCopy(value)}
-          className="rounded-md bg-zinc-800 px-2 py-1 text-xs hover:bg-zinc-700"
-        >
-          복사
-        </button>
+        <div className="flex items-center gap-2">
+          {copyStatus && (
+            <span
+              className={`text-xs ${
+                copyStatus === "복사됨" ? "text-emerald-400" : "text-red-400"
+              }`}
+            >
+              {copyStatus}
+            </span>
+          )}
+          <button
+            onClick={handleCopyClick}
+            className="rounded-md bg-zinc-800 px-2 py-1 text-xs hover:bg-zinc-700"
+          >
+            복사
+          </button>
+        </div>
       </div>
       <textarea
         readOnly
