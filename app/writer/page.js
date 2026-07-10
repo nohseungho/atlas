@@ -135,12 +135,14 @@ export default function WriterPage() {
           <h2 className="text-lg font-semibold">작성 완료 글 ({writtenArticles.length})</h2>
           <ul className="mt-3 space-y-2 text-sm">
             {writtenArticles.map((a) => (
-              <li
-                key={a.id}
-                className="flex items-center justify-between border-b border-zinc-800 pb-2 last:border-0"
-              >
-                <span>{a.title}</span>
-                <span className="text-xs text-zinc-500">{a.category}</span>
+              <li key={a.id} className="border-b border-zinc-800 pb-2 last:border-0">
+                <Link
+                  href={`/writer/${a.id}`}
+                  className="flex items-center justify-between rounded-md px-2 py-1 hover:bg-zinc-800"
+                >
+                  <span>{a.title}</span>
+                  <span className="text-xs text-zinc-500">{a.category}</span>
+                </Link>
               </li>
             ))}
             {writtenArticles.length === 0 && (

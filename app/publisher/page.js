@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { buildBloggerHtml, getBloggerChecklist } from "@/lib/html-exporter";
 
@@ -16,6 +17,17 @@ const ADSENSE_CHECKLIST = [
 ];
 
 export default function PublisherPage() {
+  return (
+    <Suspense fallback={null}>
+      <PublisherContent />
+    </Suspense>
+  );
+}
+
+function PublisherContent() {
+  const searchParams = useSearchParams();
+  const preselectId = searchParams.get("id") || "";
+
   const [articles, setArticles] = useState([]);
   const [blogs, setBlogs] = useState([]);
   const [selectedId, setSelectedId] = useState("");
@@ -44,6 +56,13 @@ export default function PublisherPage() {
     loadArticles();
     loadBlogs();
   }, []);
+
+  useEffect(() => {
+    if (preselectId && articles.some((a) => a.id === preselectId)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSelectedId(preselectId);
+    }
+  }, [preselectId, articles]);
 
   const displayArticles = articles.filter((a) => ["written", "published"].includes(a.status));
   const writtenArticles = displayArticles.filter((a) => a.status === "written");

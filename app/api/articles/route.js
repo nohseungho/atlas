@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { readJson, writeJson } from "@/lib/data-store";
+import { markdownToHtml } from "@/lib/html-exporter";
 import {
   createPublishJob,
   updatePublishJobStatus,
@@ -54,6 +55,13 @@ export async function PATCH(request) {
   if (body.status) article.status = body.status;
   if (typeof body.publishedUrl === "string") article.publishedUrl = body.publishedUrl;
   if (typeof body.blogId === "string") article.blogId = body.blogId;
+  if (typeof body.title === "string") article.title = body.title;
+  if (typeof body.hookTitle === "string") article.hookTitle = body.hookTitle;
+  if (typeof body.koreanReview === "string") article.koreanReview = body.koreanReview;
+  if (typeof body.bodyMarkdown === "string") {
+    article.bodyMarkdown = body.bodyMarkdown;
+    article.bodyHtml = markdownToHtml(body.bodyMarkdown);
+  }
   article.updatedAt = now;
   writeJson(FILE, data);
 
