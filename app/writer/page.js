@@ -65,9 +65,17 @@ export default function WriterPage() {
               selected 키워드로 템플릿 글 초안을 생성합니다.
             </p>
           </div>
-          <Link href="/" className="text-sm text-emerald-400 hover:underline">
-            ← Dashboard
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/writer/new"
+              className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500"
+            >
+              새 MASTER 작성
+            </Link>
+            <Link href="/" className="text-sm text-emerald-400 hover:underline">
+              ← Dashboard
+            </Link>
+          </div>
         </header>
 
         <section className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">

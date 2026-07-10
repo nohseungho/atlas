@@ -7,6 +7,7 @@ import Link from "next/link";
 export default function ArticleEditorPage() {
   const { id } = useParams();
   const router = useRouter();
+  const isNew = id === "new";
 
   const [article, setArticle] = useState(null);
   const [notFound, setNotFound] = useState(false);
@@ -19,6 +20,7 @@ export default function ArticleEditorPage() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
+    if (isNew) return;
     // Client-side fetch-on-mount against our own API route; intentional for this admin tool.
     async function load() {
       const res = await fetch("/api/articles", { cache: "no-store" });
@@ -35,9 +37,29 @@ export default function ArticleEditorPage() {
       setKoreanReview(found.koreanReview || "");
     }
     load();
-  }, [id]);
+  }, [id, isNew]);
 
   async function saveArticle() {
+    if (isNew) {
+      const res = await fetch("/api/articles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: seoTitle,
+          hookTitle,
+          bodyMarkdown: englishMaster,
+          koreanReview,
+          status: "written",
+          category: "",
+          tags: [],
+          metaDescription: "",
+          faq: [],
+        }),
+      });
+      if (!res.ok) return { ok: false, id: null };
+      const created = await res.json();
+      return { ok: true, id: created.id };
+    }
     const res = await fetch("/api/articles", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -49,27 +71,32 @@ export default function ArticleEditorPage() {
         koreanReview,
       }),
     });
-    return res.ok;
+    return { ok: res.ok, id };
   }
 
   async function handleSave() {
     setSaving(true);
     setMessage("");
-    const ok = await saveArticle();
+    const result = await saveArticle();
     setSaving(false);
-    setMessage(ok ? "저장되었습니다." : "저장에 실패했습니다.");
+    if (!result.ok) {
+      setMessage("저장에 실패했습니다.");
+      return;
+    }
+    setMessage("저장되었습니다.");
+    if (isNew) router.replace(`/writer/${result.id}`);
   }
 
   async function handleSendToPublisher() {
     setSending(true);
     setMessage("");
-    const ok = await saveArticle();
+    const result = await saveArticle();
     setSending(false);
-    if (!ok) {
+    if (!result.ok) {
       setMessage("저장에 실패하여 Publisher로 이동하지 못했습니다.");
       return;
     }
-    router.push(`/publisher?id=${id}`);
+    router.push(`/publisher?id=${result.id}`);
   }
 
   if (notFound) {
@@ -85,7 +112,7 @@ export default function ArticleEditorPage() {
     );
   }
 
-  if (!article) {
+  if (!isNew && !article) {
     return (
       <div className="min-h-screen bg-zinc-950 px-6 py-10 text-zinc-100 sm:px-10">
         <div className="mx-auto max-w-4xl">
@@ -100,8 +127,8 @@ export default function ArticleEditorPage() {
       <div className="mx-auto max-w-4xl space-y-8">
         <header className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Editor</h1>
-            <p className="mt-1 text-sm text-zinc-400">{article.category}</p>
+            <h1 className="text-2xl font-bold">{isNew ? "새 MASTER 작성" : "Editor"}</h1>
+            <p className="mt-1 text-sm text-zinc-400">{article?.category}</p>
           </div>
           <Link href="/writer" className="text-sm text-emerald-400 hover:underline">
             ← 목록으로 돌아가기
