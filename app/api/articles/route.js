@@ -55,6 +55,7 @@ export async function PATCH(request) {
   if (body.status) article.status = body.status;
   if (typeof body.publishedUrl === "string") article.publishedUrl = body.publishedUrl;
   if (typeof body.blogId === "string") article.blogId = body.blogId;
+  if (Array.isArray(body.visualAssets)) article.visualAssets = body.visualAssets;
   if (typeof body.title === "string") article.title = body.title;
   if (typeof body.hookTitle === "string") article.hookTitle = body.hookTitle;
   if (typeof body.koreanReview === "string") article.koreanReview = body.koreanReview;

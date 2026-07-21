@@ -4,6 +4,7 @@
       "id": "art_001",
       "keywordId": "",
       "title": "자동차 보험 다이렉트 가입 방법과 절약 팁 총정리",
+      "language": "ko",
       "metaDescription": "자동차 보험 다이렉트 가입 방법과 보험료 절약 팁을 한눈에 정리했습니다. 비교 사이트 활용법부터 특약 선택 요령까지 알아보세요.",
       "category": "자동차 보험",
       "tags": [
@@ -40,9 +41,11 @@
       "id": "art_002",
       "keywordId": "",
       "keyword": "best travel insurance for international trips",
-      "title": "Best Travel Insurance for International Trips",
+      "title": "Travel Insurance for International Trips: What to Compare First",
       "hookTitle": "The One Step That Quietly Decides How Your Trip Ends",
       "slug": "best-travel-insurance-for-international-trips",
+      "language": "en",
+      "searchIntent": "commercial",
       "metaDescription": "A clear-eyed guide to international travel insurance: what to check first, how to compare coverage, and where travelers quietly overpay.",
       "category": "Travel Insurance",
       "tags": [
@@ -63,16 +66,130 @@
         "Disclaimer",
         "Final Thoughts"
       ],
+      "quickAnswer": "International travelers should compare trip cancellation and interruption protection, emergency medical coverage, medical evacuation coverage, exclusions, deductibles, and benefit limits. The right combination depends on prepaid trip costs, destination health-care access, existing insurance, and the policy wording.",
+      "comparisonCriteria": [
+        "Trip cancellation and interruption protection",
+        "Emergency medical benefit limits",
+        "Medical evacuation benefit limits",
+        "Exclusions and pre-existing condition rules",
+        "Deductibles, eligibility, and claim documentation"
+      ],
+      "keyTakeaways": [
+        "Trip insurance and travel medical insurance solve different financial risks.",
+        "Emergency medical and evacuation limits matter most when domestic health coverage does not travel with you.",
+        "Exclusions, pre-existing condition rules, and claim documentation can matter as much as headline benefit limits.",
+        "Compare the policy wording and provider terms before purchasing."
+      ],
+      "comparisonHeaders": [
+        "Coverage Type",
+        "What It Can Protect",
+        "Who May Consider It"
+      ],
+      "comparisonTable": [
+        {
+          "label": "Comprehensive Trip Insurance",
+          "optionA": "Eligible trip cancellation, interruption, delay, baggage, and selected medical expenses, subject to the policy terms.",
+          "optionB": "Travelers protecting significant prepaid and nonrefundable trip costs."
+        },
+        {
+          "label": "Travel Medical Insurance",
+          "optionA": "Eligible emergency medical treatment while traveling, subject to exclusions and benefit limits.",
+          "optionB": "Travelers whose domestic health plan offers limited or no international coverage."
+        },
+        {
+          "label": "Medical Evacuation Insurance",
+          "optionA": "Eligible emergency transportation to an appropriate medical facility, subject to the policy terms.",
+          "optionB": "Travelers visiting remote destinations or places with limited medical facilities."
+        }
+      ],
+      "sources": [
+        {
+          "title": "CDC Yellow Book — Travel Insurance, Travel Health Insurance, and Medical Evacuation Insurance",
+          "url": "https://www.cdc.gov/yellow-book/hcp/health-care-abroad/travel-insurance.html"
+        },
+        {
+          "title": "U.S. Department of State — Insurance Coverage Overseas",
+          "url": "https://travel.state.gov/en/international-travel/planning/guidance/insurance.html"
+        },
+        {
+          "title": "NAIC — Travel Insurance",
+          "url": "https://content.naic.org/insurance-topics/travel-insurance"
+        }
+      ],
+      "trust": {
+        "authorName": "ATLAS Travel Editorial Team",
+        "role": "Travel insurance research desk",
+        "methodology": "Coverage categories were reviewed against official consumer and travel-health sources. Policy limits, exclusions, eligibility, and provider terms should be confirmed before purchase.",
+        "reviewedAt": "2026-07-11T00:00:00.000Z"
+      },
+      "relatedArticles": [],
+      "heroImage": null,
+      "visualAssets": [
+        {
+          "key": "leadEditorial",
+          "localSrc": "/images/articles/travel-insurance/atlas-travel-insurance-featured.webp",
+          "publicUrl": "https://res.cloudinary.com/dmfbj4tu/image/upload/v1783957655/atlas/articles/best-travel-insurance-for-international-trips/leadEditorial.webp",
+          "placement": "afterByline",
+          "alt": "Passport, carry-on bag, and travel documents prepared for an international trip",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true
+        },
+        {
+          "key": "comparisonInfographic",
+          "localSrc": "/images/articles/travel-insurance/atlas-travel-insurance-comparison.webp",
+          "publicUrl": "https://res.cloudinary.com/dmfbj4tu/image/upload/v1783957656/atlas/articles/best-travel-insurance-for-international-trips/comparisonInfographic.webp",
+          "placement": "afterComparisonCriteria",
+          "alt": "Five travel insurance comparison factors: emergency medical, trip cancellation, baggage protection, deductible, and exclusions",
+          "width": 1600,
+          "height": 900,
+          "fit": "contain",
+          "required": true
+        },
+        {
+          "key": "beforeBuyInfographic",
+          "localSrc": "/images/articles/travel-insurance/atlas-travel-insurance-before-buy.webp",
+          "publicUrl": "https://res.cloudinary.com/dmfbj4tu/image/upload/v1783957657/atlas/articles/best-travel-insurance-for-international-trips/beforeBuyInfographic.webp",
+          "placement": "afterFaq",
+          "alt": "Four steps to review before buying travel insurance",
+          "width": 1600,
+          "height": 900,
+          "fit": "contain",
+          "required": true
+        }
+      ],
+      "affiliatePlan": {
+        "providerId": "visitorscoverage",
+        "providerName": "VisitorsCoverage",
+        "network": "impact",
+        "status": "pending",
+        "url": "",
+        "disclosure": "ATLAS may earn a commission if you purchase through links on this page. This does not affect our editorial analysis.",
+        "cta": {
+          "topLabel": "Compare Travel Insurance Options",
+          "decisionLabel": "Review Travel Insurance Options"
+        },
+        "productSlots": [
+          {
+            "id": "visitorscoverage-primary",
+            "title": "VisitorsCoverage Travel Insurance Marketplace",
+            "description": "Compare travel insurance and travel medical options from multiple insurance providers in one marketplace.",
+            "bestFor": "Travelers who want to compare coverage options before choosing a policy.",
+            "url": ""
+          }
+        ]
+      },
       "bodyMarkdown": "You booked the flight.\n\nYou packed the passport.\n\nYou reserved the hotel.\n\nAnd then...\n\nmost people stop right there.\n\nThere's one more line item. Not something you fold into a suitcase — something you arrange before you leave. And it's the one thing most travelers put off until the exact moment they need it.\n\n## Quick Answer\n\nSomewhere between booking the trip and boarding the plane, a quiet thought shows up. What if something happens out there. A hospital. A cancelled connection. A bag that never makes it home with you.\n\nThat thought isn't irrational. It's just unresolved.\n\nTravel insurance closes it. Not because it's exciting — because it's the difference between a bad moment staying small, and a bad moment turning into a financial one too. The fix takes less time than packing did.\n\n## Why It Matters\n\nNobody plans for the bad moment. That's what makes it the bad moment.\n\nA stomach bug that turns into an ER visit. A missed connection that unravels the whole itinerary. A suitcase that vanishes somewhere between two continents.\n\nThese aren't rare stories. Emergency medical claims, cancellations, and baggage issues show up every season, on every kind of trip, to people who were sure it wouldn't happen to them.\n\nThe question was never if something goes wrong abroad. It's who's already covered when it does.\n\n## Checklist\n\nBefore comparing anything, get the basics locked in. This part takes minutes.\n\n- Emergency medical treatment abroad\n- Emergency medical evacuation\n- Trip cancellation or interruption\n- Delayed or lost baggage\n- A 24/7 line you can actually reach from overseas\n- Pre-existing condition coverage, if it applies to you\n\nOnce these six are in place, the trip is covered. Everything after this is just fine-tuning.\n\n## How to Choose\n\nNow you compare — and this is where most people quietly overpay without realizing it.\n\nStart with where you're going. Medical costs swing hard by country: high in the US, lower across much of Southeast Asia. Coverage should match the place, not a generic average.\n\nFrom there, check these in order:\n\n- **Medical limits** — matched to your actual destination.\n- **Cancellation terms** — check which reasons really qualify.\n- **Deductibles** — read before comparing prices, not after.\n- **Claims history** — how claims actually got paid out, not how many stars a plan has.\n\nSkip this step, and two plans that look identical on price can be worlds apart the moment you actually need one.\n\n## Where to Compare\n\nThis is the part worth not skipping.\n\nPut your dates and destination into a comparison platform, and every plan lines up side by side — same trip, real numbers. That's when the gaps show up fast: one plan's deductible, another's evacuation limit, a third's cancellation window that's narrower than it looked.\n\nIt takes about as long as it took to read this section. Worth doing before you book anything else.\n\n## Overall Review\n\nA pattern shows up, trip after trip.\n\nEntry-level plans cover the essentials and nothing more. Mid-tier plans tend to balance cost and coverage the best. Premium plans add extras — rental car protection, adventure sports riders — genuinely useful for some travelers, dead weight for others.\n\nThere's no plan that wins for everyone. There's a plan that fits this trip, this destination, this traveler — and comparing is the only way to find it before you need it.\n\n## Disclaimer\n\nThis article is for general informational purposes and isn't personalized financial or medical advice. Coverage details, limits, and exclusions vary by provider and country of residence. Read the full policy wording before purchasing, and confirm the details directly with the insurer.\n\n## Final Thoughts\n\nYou packed the passport. You booked the flight. You reserved the hotel.\n\nOne line item left — and it's usually the one that decides how the story of this trip actually ends.\n\nIt won't take as long as picking the hotel did. A few minutes, plans side by side, and you'll know exactly what you're covered for — before you need it, not after. That's the whole ask. Compare now, while it's still just a few minutes.",
       "koreanReview": "## 핵심 답변\n\n항공권을 예약했습니다. 여권도 챙겼습니다. 호텔도 예약했습니다. 그런데... 많은 사람들이 딱 거기서 멈춥니다.\n\n여행을 예약하고 출국일 사이 어딘가에서, 조용히 스치는 생각이 있습니다. 혹시 그곳에서 문제가 생기면. 병원에 가야 하면. 환승편이 취소되면. 캐리어가 끝내 돌아오지 않으면.\n\n여행자보험은 이걸 정리해줍니다. 나쁜 순간이 작게 끝나느냐, 아니면 거기에 재정적 부담까지 더해지느냐를 가르는 차이입니다.\n\n## 왜 중요한가\n\n의료 응급 청구, 취소, 수하물 문제는 매 시즌, 모든 종류의 여행에서, \"나에겐 안 생길 줄 알았던\" 사람들에게 반복해서 일어납니다. 질문은 늘 \"해외에서 문제가 생기느냐\"가 아니었습니다. \"그 순간, 이미 누가 보장을 받고 있느냐\"였습니다.\n\n## 체크리스트\n\n비교하기 전에, 먼저 기본부터 채웁니다: 해외 응급 의료 치료, 응급 의료 후송, 여행 취소·중단 보상, 수하물 지연 또는 분실, 24시간 지원 라인, 기존 질환 보장(해당 시).\n\n## 선택 방법\n\n목적지의 의료비 수준에 맞춰 의료비 한도를 정하고, 취소 조건, 자기부담금, 청구 이력을 확인합니다.\n\n## 비교 방법\n\n여행 날짜와 목적지를 비교 플랫폼에 넣으면 견적이 나란히 정렬되어, 자기부담금이나 후송 한도 같은 차이가 바로 보입니다.\n\n## 종합 리뷰\n\n중간 등급 상품이 대체로 비용과 보장의 균형이 가장 좋습니다. 모두에게 이기는 상품은 없고, 이 여행·이 여행자에게 맞는 상품이 있을 뿐입니다.\n\n## 마무리\n\n무슨 일이 생길 거라서가 아니라, 혹시 생기더라도 이미 답을 알고 있는 쪽이 낫기 때문에 미리 비교해두는 것입니다.",
       "faq": [
         {
           "question": "Do I need travel insurance for a short international trip?",
-          "answer": "Yes. Length has nothing to do with it. Emergencies don't check your itinerary first."
+          "answer": "Trip length doesn't remove the underlying risk — emergencies, cancellations, and lost baggage aren't tied to how long the trip is. It's worth comparing coverage regardless of trip length."
         },
         {
           "question": "Does my credit card's travel insurance cover everything?",
-          "answer": "Rarely. It's often secondary, capped, or missing evacuation coverage entirely. Read the actual policy, not the card's marketing page."
+          "answer": "Coverage varies by card and is often secondary, capped, or missing evacuation benefits entirely. Check the actual policy details rather than the card's marketing page."
         },
         {
           "question": "What do most plans leave out?",
@@ -90,11 +207,211 @@
         "hasDisclaimer": true,
         "readyForBlogger": true
       },
-      "status": "written",
-      "publishedUrl": "",
-      "blogId": "",
+      "status": "published",
+      "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/07/best-travel-insurance-for-international.html",
+      "blogId": "blog_001",
       "createdAt": "2026-07-10T15:30:05.519Z",
-      "updatedAt": "2026-07-10T15:30:05.519Z"
+      "updatedAt": "2026-07-13T15:47:38.173Z",
+      "bodyHtml": "<p>You booked the flight.</p>\n<p>You packed the passport.</p>\n<p>You reserved the hotel.</p>\n<p>And then...</p>\n<p>most people stop right there.</p>\n<p>There's one more line item. Not something you fold into a suitcase — something you arrange before you leave. And it's the one thing most travelers put off until the exact moment they need it.</p>\n<h2>Quick Answer</h2>\n<p>Somewhere between booking the trip and boarding the plane, a quiet thought shows up. What if something happens out there. A hospital. A cancelled connection. A bag that never makes it home with you.</p>\n<p>That thought isn't irrational. It's just unresolved.</p>\n<p>Travel insurance closes it. Not because it's exciting — because it's the difference between a bad moment staying small, and a bad moment turning into a financial one too. The fix takes less time than packing did.</p>\n<h2>Why It Matters</h2>\n<p>Nobody plans for the bad moment. That's what makes it the bad moment.</p>\n<p>A stomach bug that turns into an ER visit. A missed connection that unravels the whole itinerary. A suitcase that vanishes somewhere between two continents.</p>\n<p>These aren't rare stories. Emergency medical claims, cancellations, and baggage issues show up every season, on every kind of trip, to people who were sure it wouldn't happen to them.</p>\n<p>The question was never if something goes wrong abroad. It's who's already covered when it does.</p>\n<h2>Checklist</h2>\n<p>Before comparing anything, get the basics locked in. This part takes minutes.</p>\n<ul>\n<li>Emergency medical treatment abroad</li>\n<li>Emergency medical evacuation</li>\n<li>Trip cancellation or interruption</li>\n<li>Delayed or lost baggage</li>\n<li>A 24/7 line you can actually reach from overseas</li>\n<li>Pre-existing condition coverage, if it applies to you</li>\n</ul>\n<p>Once these six are in place, the trip is covered. Everything after this is just fine-tuning.</p>\n<h2>How to Choose</h2>\n<p>Now you compare — and this is where most people quietly overpay without realizing it.</p>\n<p>Start with where you're going. Medical costs swing hard by country: high in the US, lower across much of Southeast Asia. Coverage should match the place, not a generic average.</p>\n<p>From there, check these in order:</p>\n<ul>\n<li><strong>Medical limits</strong> — matched to your actual destination.</li>\n<li><strong>Cancellation terms</strong> — check which reasons really qualify.</li>\n<li><strong>Deductibles</strong> — read before comparing prices, not after.</li>\n<li><strong>Claims history</strong> — how claims actually got paid out, not how many stars a plan has.</li>\n</ul>\n<p>Skip this step, and two plans that look identical on price can be worlds apart the moment you actually need one.</p>\n<h2>Where to Compare</h2>\n<p>This is the part worth not skipping.</p>\n<p>Put your dates and destination into a comparison platform, and every plan lines up side by side — same trip, real numbers. That's when the gaps show up fast: one plan's deductible, another's evacuation limit, a third's cancellation window that's narrower than it looked.</p>\n<p>It takes about as long as it took to read this section. Worth doing before you book anything else.</p>\n<h2>Overall Review</h2>\n<p>A pattern shows up, trip after trip.</p>\n<p>Entry-level plans cover the essentials and nothing more. Mid-tier plans tend to balance cost and coverage the best. Premium plans add extras — rental car protection, adventure sports riders — genuinely useful for some travelers, dead weight for others.</p>\n<p>There's no plan that wins for everyone. There's a plan that fits this trip, this destination, this traveler — and comparing is the only way to find it before you need it.</p>\n<h2>Disclaimer</h2>\n<p>This article is for general informational purposes and isn't personalized financial or medical advice. Coverage details, limits, and exclusions vary by provider and country of residence. Read the full policy wording before purchasing, and confirm the details directly with the insurer.</p>\n<h2>Final Thoughts</h2>\n<p>You packed the passport. You booked the flight. You reserved the hotel.</p>\n<p>One line item left — and it's usually the one that decides how the story of this trip actually ends.</p>\n<p>It won't take as long as picking the hotel did. A few minutes, plans side by side, and you'll know exactly what you're covered for — before you need it, not after. That's the whole ask. Compare now, while it's still just a few minutes.</p>"
+    },
+    {
+      "id": "art_003",
+      "keywordId": "",
+      "keyword": "travel medical insurance vs trip insurance",
+      "title": "Travel Medical Insurance vs. Trip Insurance: Which Coverage Fits an International Trip?",
+      "hookTitle": "Same Word on the Brochure, Two Very Different Kinds of Coverage",
+      "slug": "travel-medical-insurance-vs-trip-insurance",
+      "language": "en",
+      "searchIntent": "informational",
+      "excerpt": "Travel medical insurance and trip insurance protect different things — your health abroad versus the prepaid cost of the trip. Here's how to tell which coverage fits an international trip, and why many travelers want elements of both.",
+      "metaDescription": "Travel medical insurance vs. trip insurance: how the two differ, what each usually covers abroad, and how to tell which fits your international trip.",
+      "category": "Travel Insurance",
+      "tags": [
+        "travel medical insurance",
+        "trip insurance",
+        "international travel insurance",
+        "emergency medical coverage abroad",
+        "travel insurance comparison"
+      ],
+      "template": "guide",
+      "outline": [
+        "Quick Answer",
+        "Why the Terms Often Overlap",
+        "What Travel Medical Insurance Usually Focuses On",
+        "What Trip Insurance Usually Focuses On",
+        "The Core Differences",
+        "Side-by-Side Comparison",
+        "When Travel Medical Coverage May Be the Priority",
+        "When Trip Protection May Be the Priority",
+        "When Travelers May Want Both",
+        "A Four-Question Decision Check",
+        "Frequently Asked Questions",
+        "Final Takeaway",
+        "Sources"
+      ],
+      "quickAnswer": "Travel medical insurance and trip insurance solve different problems. Travel medical insurance generally focuses on eligible costs from an unexpected illness or injury that happens while you're abroad. Trip insurance — often sold as comprehensive travel insurance — generally focuses on the money you've already committed to the trip, covering eligible cancellations, interruptions, delays, and baggage problems for covered reasons. Many travelers end up wanting elements of both. What any specific plan actually covers depends on its policy wording, exclusions, and benefit limits, so read those before you buy.",
+      "comparisonCriteria": [
+        "Emergency medical treatment limits while abroad",
+        "Emergency medical evacuation limits, if included",
+        "Trip cancellation and interruption for covered reasons",
+        "Travel delay and baggage benefits",
+        "Exclusions, pre-existing condition rules, and deductibles"
+      ],
+      "keyTakeaways": [
+        "Travel medical insurance focuses on eligible medical costs abroad; trip insurance focuses on eligible prepaid, nonrefundable trip costs.",
+        "Emergency medical evacuation isn't automatically included — check whether it's covered and at what limit.",
+        "Some comprehensive plans blend both, so compare benefit limits and exclusions rather than the product name.",
+        "What any plan actually covers is defined by its policy wording, exclusions, deductibles, and benefit limits."
+      ],
+      "comparisonHeaders": [
+        "Coverage Type",
+        "What It Generally Focuses On",
+        "Who May Consider It"
+      ],
+      "comparisonTable": [
+        {
+          "label": "Travel Medical Insurance",
+          "optionA": "Eligible costs of treating an unexpected illness or injury that happens abroad, subject to deductibles and benefit limits.",
+          "optionB": "Travelers whose home health plan offers little or no coverage outside the country."
+        },
+        {
+          "label": "Trip / Comprehensive Travel Insurance",
+          "optionA": "Eligible prepaid, nonrefundable costs lost to a covered cancellation, interruption, delay, or baggage problem.",
+          "optionB": "Travelers protecting significant prepaid, nonrefundable trip costs."
+        },
+        {
+          "label": "Emergency Medical Evacuation",
+          "optionA": "Eligible emergency transport to an adequate medical facility, often as a separate benefit with its own limit.",
+          "optionB": "Travelers heading somewhere remote or with limited local medical facilities."
+        }
+      ],
+      "sources": [
+        {
+          "title": "U.S. Department of State — Travel Insurance",
+          "url": "https://travel.state.gov/en/international-travel/planning/guidance/insurance.html"
+        },
+        {
+          "title": "CDC Yellow Book — Travel Insurance, Travel Health Insurance, and Medical Evacuation Insurance",
+          "url": "https://www.cdc.gov/yellow-book/hcp/health-care-abroad/travel-insurance.html"
+        },
+        {
+          "title": "CDC Yellow Book — What To Do When Sick Abroad",
+          "url": "https://www.cdc.gov/yellow-book/hcp/health-care-abroad/what-to-do-when-sick-abroad.html"
+        }
+      ],
+      "trust": {
+        "authorName": "ATLAS Travel Editorial Team",
+        "role": "Travel insurance research desk",
+        "methodology": "Coverage categories were reviewed against official U.S. government and travel-health sources. This article is general information, not advice; policy limits, exclusions, eligibility, and provider terms should be confirmed before purchase.",
+        "reviewedAt": "2026-07-20T00:00:00.000Z"
+      },
+      "relatedArticles": [],
+      "heroImage": null,
+      "visualAssets": [
+        {
+          "key": "leadEditorial",
+          "localSrc": "/images/articles/travel-medical-vs-trip/atlas-medical-vs-trip-featured.webp",
+          "publicUrl": "https://res.cloudinary.com/dmfbj4tu/image/upload/v1784561914/atlas/articles/travel-medical-insurance-vs-trip-insurance/leadEditorial.webp",
+          "placement": "afterByline",
+          "alt": "Traveler comparing travel medical and trip insurance documents at an airport before an international departure",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true
+        },
+        {
+          "key": "clinicEditorial",
+          "localSrc": "/images/articles/travel-medical-vs-trip/atlas-medical-vs-trip-clinic.webp",
+          "publicUrl": "https://res.cloudinary.com/dmfbj4tu/image/upload/v1784561915/atlas/articles/travel-medical-insurance-vs-trip-insurance/clinicEditorial.webp",
+          "placement": "afterSection:What Travel Medical Insurance Usually Focuses On",
+          "alt": "International traveler reviewing medical documents with a healthcare professional at a clinic",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true
+        },
+        {
+          "key": "delayEditorial",
+          "localSrc": "/images/articles/travel-medical-vs-trip/atlas-medical-vs-trip-delay.webp",
+          "publicUrl": "https://res.cloudinary.com/dmfbj4tu/image/upload/v1784561916/atlas/articles/travel-medical-insurance-vs-trip-insurance/delayEditorial.webp",
+          "placement": "afterSection:What Trip Insurance Usually Focuses On",
+          "alt": "Traveler reviewing an itinerary during a flight delay at an international airport",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true
+        },
+        {
+          "key": "comparisonInfographic",
+          "localSrc": "/images/articles/travel-medical-vs-trip/atlas-medical-vs-trip-comparison.webp",
+          "publicUrl": "https://res.cloudinary.com/dmfbj4tu/image/upload/v1784561916/atlas/articles/travel-medical-insurance-vs-trip-insurance/comparisonInfographic.webp",
+          "placement": "afterSection:The Core Differences",
+          "alt": "Comparison of travel medical insurance and trip insurance coverage categories",
+          "width": 1600,
+          "height": 900,
+          "fit": "contain",
+          "required": true
+        },
+        {
+          "key": "checklistInfographic",
+          "localSrc": "/images/articles/travel-medical-vs-trip/atlas-medical-vs-trip-checklist.webp",
+          "publicUrl": "https://res.cloudinary.com/dmfbj4tu/image/upload/v1784561917/atlas/articles/travel-medical-insurance-vs-trip-insurance/checklistInfographic.webp",
+          "placement": "afterSection:A Four-Question Decision Check",
+          "alt": "Four questions to determine which type of travel insurance coverage fits a trip",
+          "width": 1600,
+          "height": 900,
+          "fit": "contain",
+          "required": true
+        }
+      ],
+      "affiliatePlan": {
+        "providerId": "",
+        "providerName": "",
+        "network": "",
+        "status": "pending",
+        "url": "",
+        "disclosure": "",
+        "cta": {
+          "topLabel": "",
+          "decisionLabel": ""
+        },
+        "productSlots": []
+      },
+      "bodyMarkdown": "## Quick Answer\n\nTwo names get used almost interchangeably at checkout, but they don't protect the same thing. Travel medical insurance is mostly about your body: the eligible cost of treatment if you get sick or hurt while you're away from home. Trip insurance is mostly about your money: the prepaid, nonrefundable dollars you'd lose if the trip itself falls apart.\n\nNeither one is automatically \"better.\" The right fit depends on what you'd actually be out of pocket for — an emergency room bill in a country where your home health plan doesn't follow you, or the four flights and three hotels you already paid for. Plenty of travelers decide they want some of each, and a single comprehensive plan often includes pieces of both.\n\nCoverage terms vary from company to company and plan to plan, so treat the sections below as a way to think through the decision, not a promise of what any single policy includes.\n\n## Why the Terms Often Overlap\n\nPart of the confusion is marketing. Many providers bundle several protections into one \"travel insurance\" product and give it a single price, so a plan labeled trip insurance may quietly include some emergency medical benefits, and a plan sold as travel medical may add a little trip-interruption coverage.\n\nPicture two plans side by side. One devotes most of its coverage to canceling or interrupting the trip and tucks in a modest medical benefit almost as an afterthought. The other pours its coverage into treatment and evacuation and barely mentions cancellation. Both can appear on the same comparison page under the same broad heading, and from the outside they look interchangeable. They are not.\n\nThat overlap is real, but it's usually a matter of emphasis. A comprehensive travel plan tends to lead with trip-cancellation dollars and treat medical care as a secondary benefit with a lower limit. A travel medical plan tends to do the opposite. When two plans use the same word on the brochure, the difference lives in the benefit limits and the exclusions, not the label.\n\nThis is why comparing by name alone rarely works. The only reliable way to know what you're buying is to read what each plan says it will pay for, and what it says it won't.\n\n## What Travel Medical Insurance Usually Focuses On\n\nTravel medical insurance generally centers on unexpected illness or injury that happens after you leave — a fever that turns into a hospital stay, a fall on a hiking trail, an allergic reaction far from home. The plan is built to help with eligible medical costs in those moments, subject to its deductible and benefit limits.\n\nA few points travelers often miss:\n\n- **Your home health plan may not travel with you.** Many U.S. plans offer little or no coverage outside the country, and hospitals abroad frequently ask for payment up front.\n- **Emergency medical evacuation is not a given.** Being transported to an adequate hospital, or back home, can be extraordinarily expensive, and it isn't automatically included in every plan. Some cover it as a separate benefit with its own limit, so check rather than assume.\n- **Pre-existing conditions have their own rules.** Whether a flare-up of an existing condition is eligible often depends on specific wording and timing in the policy.\n\nConsider a traveler who twists a knee two days into a trip and needs an X-ray, a specialist, and a few days of follow-up. At home, insurance and a familiar network would absorb most of that. Abroad, the same care might mean paying the clinic directly and sorting out reimbursement later. Travel medical coverage is built for exactly that gap — but only within the limits, deductibles, and exclusions printed in the policy.\n\nIt also helps to know how the plan expects you to get care. Some coordinate with local providers and can arrange direct payment for eligible treatment; others expect you to pay and claim reimbursement afterward. Knowing which applies before you travel saves a stressful surprise at the front desk of a clinic.\n\nThe through-line is simple: this coverage exists for the moment your health, not your itinerary, is what goes wrong.\n\n## What Trip Insurance Usually Focuses On\n\nTrip insurance — frequently sold as comprehensive travel insurance — generally centers on the trip as a financial commitment. If a covered reason forces you to cancel before departure or cut the trip short partway through, this is the coverage designed to reimburse eligible prepaid, nonrefundable costs.\n\nIt typically reaches beyond cancellation, too:\n\n- **Trip interruption** for eligible reasons that end a trip early.\n- **Travel delay** that leads to eligible extra costs, like an unplanned hotel night or meals during a long layover.\n- **Baggage** that's delayed, lost, or damaged, within stated limits.\n\nThe important phrase throughout is \"covered reason.\" Cancellation and interruption benefits usually pay only for specific listed events, not for a simple change of heart. A family that has to cancel a nonrefundable trip because of a covered illness may recover eligible costs; a family that simply decides not to go usually cannot, unless they bought an optional upgrade. Some plans sell a \"cancel for any reason\" add-on, but it comes with its own conditions, time windows, and often a partial payout, and it is not the default.\n\n## The Core Differences\n\nStrip away the marketing and the split is fairly clean. Travel medical insurance answers the question, \"What if something happens to me?\" Trip insurance answers, \"What if something happens to the trip?\"\n\nThey also tend to pay different parties. Medical coverage often coordinates with hospitals and evacuation providers while you're still abroad, sometimes arranging payment directly. Trip coverage usually works as reimbursement: you keep receipts and documentation, file a claim, and get eligible costs paid back after the fact. That difference in mechanics is worth noticing, because it changes what you're expected to do in the moment — hold on to boarding passes and hotel bills for a trip claim, gather medical records and itemized invoices for a medical one.\n\nAnd they're triggered by different events. A medical plan responds to an injury or illness. A trip plan responds to a cancellation, a delay, or a lost bag. Working out which risk you're most exposed to is the fastest way to see which coverage matters more for a given trip.\n\n## When Travel Medical Coverage May Be the Priority\n\nSome trips lean heavily toward medical risk. If your destination has high health-care costs, or limited facilities where an evacuation could become necessary, the medical side of the equation grows.\n\nIt can also matter more when your prepaid costs are low. A traveler using points for flights and staying with family has little trip money to protect — but a broken ankle abroad still generates a real bill. Longer trips, remote regions, and activities with a higher chance of injury all tend to push medical coverage up the priority list.\n\nNone of this is a rule about what you \"need.\" It's a way to notice where your biggest financial exposure actually sits on a particular trip.\n\n## When Trip Protection May Be the Priority\n\nOther trips are mostly about money at risk before you ever leave. A cruise booked a year out, a multi-country itinerary with nonrefundable tours, a peak-season package paid in full — these carry large prepaid costs that vanish if the trip is canceled or cut short for a covered reason.\n\nIf you'd lose a significant amount by canceling, trip protection tends to move up the list. The more of your trip that's prepaid and nonrefundable, and the further ahead you book, the more there is for this kind of coverage to protect. A weekend booked on refundable fares carries little of this risk; a honeymoon paid in full months in advance carries a great deal of it.\n\nTiming matters here as well. Some trip benefits, especially optional upgrades, are only available if you buy within a set window of your first trip payment. Waiting until the week of departure can quietly remove options that were on the table earlier, so it's worth checking a plan's rules soon after you start putting money down.\n\n## When Travelers May Want Both\n\nThe two aren't mutually exclusive, and for many international trips a single comprehensive plan already includes elements of each. The practical question isn't \"which one,\" but \"are both risks covered, at limits I'm comfortable with?\"\n\nA traveler with a fully prepaid, three-week international trip might reasonably want meaningful cancellation coverage and a solid emergency medical limit with evacuation. Rather than buying two separate policies by default, it's often simpler to look at one comprehensive plan and check whether each benefit — medical, evacuation, cancellation, interruption — is present at a level that matches the trip. Where a bundled plan comes up short on one side, a standalone plan focused on that risk can fill the gap.\n\nThe goal isn't to stack up as much coverage as possible. It's to match the coverage to the two kinds of loss a trip can actually produce: harm to you, and money you can't get back.\n\n## A Four-Question Decision Check\n\nA few plain questions tend to clear things up faster than comparing brand names:\n\n1. **How much prepaid, nonrefundable money would I lose if this trip were canceled?** A large number points toward trip protection.\n2. **Does my existing health coverage do anything abroad, and would it pay for an evacuation?** If the answer is \"little\" or \"I'm not sure,\" the medical side matters more.\n3. **Where am I going, for how long, and doing what?** Remote, long, or higher-risk trips raise the medical stakes.\n4. **For any plan I'm considering, what are the exclusions, deductibles, and benefit limits?** This is the question that decides what the coverage is actually worth.\n\nAnswering these won't pick a product for you, but it will tell you which risks to weigh most heavily — and what to verify in the policy wording before you pay.\n\n## Final Takeaway\n\nTravel medical insurance and trip insurance aren't rivals; they're answers to two different questions — what happens to you, and what happens to the money you put into the trip. Most international travelers care about both, just in different proportions depending on the destination, the length of the trip, and how much of it is prepaid.\n\nUse the names as a starting point, not a decision. Whatever a plan is called, the coverage that matters is spelled out in its policy or certificate, its exclusions, its deductibles, and its benefit limits. This article is general information, not medical, legal, or financial advice, and it can't tell you what any specific plan will pay. Read those details, ask the provider directly when something is unclear, and confirm the coverage fits the trip in front of you before you buy.",
+      "faq": [
+        {
+          "question": "Is travel medical insurance the same as trip insurance?",
+          "answer": "No. Travel medical insurance generally focuses on eligible medical costs from illness or injury abroad, while trip insurance generally focuses on eligible prepaid, nonrefundable trip costs. Some comprehensive plans include elements of both, but the emphasis and benefit limits differ."
+        },
+        {
+          "question": "Does trip insurance cover emergency medical care abroad?",
+          "answer": "Sometimes, but often as a secondary benefit with a lower limit than a dedicated travel medical plan. Check the medical and evacuation limits in the specific policy rather than assuming they're included."
+        },
+        {
+          "question": "Will my U.S. health insurance cover me overseas?",
+          "answer": "Many U.S. plans offer limited or no coverage outside the country, and providers abroad may require payment up front. Confirm your plan's international coverage before you rely on it, and don't assume it includes evacuation."
+        },
+        {
+          "question": "Is emergency medical evacuation always included?",
+          "answer": "Not necessarily. Some plans include it as a separate benefit with its own limit, and others don't. If you're traveling somewhere remote, look specifically for whether evacuation is covered and how much it pays."
+        },
+        {
+          "question": "Do I have to choose only one type of coverage?",
+          "answer": "No. Many international travelers want protection for both their health and their prepaid costs. A single comprehensive plan may cover both; where it falls short on one side, a standalone plan focused on that risk can fill the gap. Compare limits and exclusions before deciding."
+        }
+      ],
+      "qualityChecklist": {
+        "hasClearTitle": true,
+        "hasEnoughBody": true,
+        "hasFaq": true,
+        "hasDisclaimer": true,
+        "readyForBlogger": true
+      },
+      "status": "published",
+      "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/07/travel-medical-insurance-vs-trip-insurance.html",
+      "blogId": "blog_003",
+      "createdAt": "2026-07-20T00:00:00.000Z",
+      "updatedAt": "2026-07-20T16:08:43.650Z"
     }
   ]
 }

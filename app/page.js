@@ -56,6 +56,23 @@ export default function DashboardPage() {
           <StatCard label="발행 대기" value={pendingPublishing} />
         </section>
 
+        <section className="rounded-xl border border-emerald-800 bg-emerald-500/5 p-5">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h2 className="text-lg font-semibold text-emerald-300">블로그 운영센터</h2>
+              <p className="mt-1 text-sm text-zinc-400">
+                블로그 연결, 인증, 발행 상태를 관리합니다.
+              </p>
+            </div>
+            <Link
+              href="/blog-manager"
+              className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500"
+            >
+              Blog Operations Center 열기 →
+            </Link>
+          </div>
+        </section>
+
         <section className="grid gap-4 lg:grid-cols-2">
           <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
             <h2 className="text-lg font-semibold">오늘 할 일</h2>

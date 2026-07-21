@@ -74,6 +74,86 @@
       "updatedAt": "2026-07-01T12:34:55.587Z",
       "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/07/blog-post_181.html",
       "externalId": "4176600878931851237"
+    },
+    {
+      "id": "job_006",
+      "articleId": "art_002",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "auth_required",
+      "attemptCount": 1,
+      "maxAttempts": 3,
+      "lastError": "Token has been expired or revoked.",
+      "nextRetryAt": null,
+      "createdAt": "2026-07-10T15:57:48.186Z",
+      "updatedAt": "2026-07-10T15:57:49.462Z",
+      "publishedUrl": "",
+      "externalId": ""
+    },
+    {
+      "id": "job_007",
+      "articleId": "art_002",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "auth_required",
+      "attemptCount": 1,
+      "maxAttempts": 3,
+      "lastError": "Bad Request",
+      "nextRetryAt": null,
+      "createdAt": "2026-07-10T16:10:27.048Z",
+      "updatedAt": "2026-07-10T16:10:28.295Z",
+      "publishedUrl": "",
+      "externalId": ""
+    },
+    {
+      "id": "job_008",
+      "articleId": "art_002",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "auth_required",
+      "attemptCount": 1,
+      "maxAttempts": 3,
+      "lastError": "Bad Request",
+      "nextRetryAt": null,
+      "createdAt": "2026-07-10T16:12:01.886Z",
+      "updatedAt": "2026-07-10T16:12:03.110Z",
+      "publishedUrl": "",
+      "externalId": ""
+    },
+    {
+      "id": "job_009",
+      "articleId": "art_002",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "attemptCount": 1,
+      "maxAttempts": 3,
+      "lastError": null,
+      "nextRetryAt": null,
+      "createdAt": "2026-07-10T18:14:15.619Z",
+      "updatedAt": "2026-07-13T15:47:43.094Z",
+      "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/07/best-travel-insurance-for-international.html",
+      "externalId": "1265190252698434440",
+      "imageSync": {
+        "status": "success",
+        "message": "Cloudinary 이미지 반영 완료",
+        "syncedAt": "2026-07-13T15:47:43.094Z"
+      }
+    },
+    {
+      "id": "job_010",
+      "articleId": "art_003",
+      "channelId": "blog_003",
+      "provider": "blogger",
+      "status": "succeeded",
+      "attemptCount": 1,
+      "maxAttempts": 3,
+      "lastError": null,
+      "nextRetryAt": null,
+      "createdAt": "2026-07-20T16:08:43.652Z",
+      "updatedAt": "2026-07-20T16:08:43.654Z",
+      "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/07/travel-medical-insurance-vs-trip-insurance.html",
+      "externalId": ""
     }
   ],
   "history": [
@@ -241,6 +321,160 @@
       "message": "Blogger 자동 발행 성공",
       "error": null,
       "createdAt": "2026-07-01T12:34:55.588Z"
+    },
+    {
+      "id": "hist_016",
+      "jobId": "job_006",
+      "articleId": "art_002",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "queued",
+      "message": "Job 생성",
+      "error": null,
+      "createdAt": "2026-07-10T15:57:48.187Z"
+    },
+    {
+      "id": "hist_017",
+      "jobId": "job_006",
+      "articleId": "art_002",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "running",
+      "message": "자동 발행 시작",
+      "error": null,
+      "createdAt": "2026-07-10T15:57:48.189Z"
+    },
+    {
+      "id": "hist_018",
+      "jobId": "job_006",
+      "articleId": "art_002",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "auth_required",
+      "message": "인증 만료 또는 재연결 필요",
+      "error": "Token has been expired or revoked.",
+      "createdAt": "2026-07-10T15:57:49.463Z"
+    },
+    {
+      "id": "hist_019",
+      "jobId": "job_007",
+      "articleId": "art_002",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "queued",
+      "message": "Job 생성",
+      "error": null,
+      "createdAt": "2026-07-10T16:10:27.049Z"
+    },
+    {
+      "id": "hist_020",
+      "jobId": "job_007",
+      "articleId": "art_002",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "running",
+      "message": "자동 발행 시작",
+      "error": null,
+      "createdAt": "2026-07-10T16:10:27.051Z"
+    },
+    {
+      "id": "hist_021",
+      "jobId": "job_007",
+      "articleId": "art_002",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "auth_required",
+      "message": "인증 만료 또는 재연결 필요",
+      "error": "Bad Request",
+      "createdAt": "2026-07-10T16:10:28.296Z"
+    },
+    {
+      "id": "hist_022",
+      "jobId": "job_008",
+      "articleId": "art_002",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "queued",
+      "message": "Job 생성",
+      "error": null,
+      "createdAt": "2026-07-10T16:12:01.887Z"
+    },
+    {
+      "id": "hist_023",
+      "jobId": "job_008",
+      "articleId": "art_002",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "running",
+      "message": "자동 발행 시작",
+      "error": null,
+      "createdAt": "2026-07-10T16:12:01.889Z"
+    },
+    {
+      "id": "hist_024",
+      "jobId": "job_008",
+      "articleId": "art_002",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "auth_required",
+      "message": "인증 만료 또는 재연결 필요",
+      "error": "Bad Request",
+      "createdAt": "2026-07-10T16:12:03.111Z"
+    },
+    {
+      "id": "hist_025",
+      "jobId": "job_009",
+      "articleId": "art_002",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "queued",
+      "message": "Job 생성",
+      "error": null,
+      "createdAt": "2026-07-10T18:14:15.620Z"
+    },
+    {
+      "id": "hist_026",
+      "jobId": "job_009",
+      "articleId": "art_002",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "running",
+      "message": "자동 발행 시작",
+      "error": null,
+      "createdAt": "2026-07-10T18:14:15.622Z"
+    },
+    {
+      "id": "hist_027",
+      "jobId": "job_009",
+      "articleId": "art_002",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "message": "Blogger 자동 발행 성공",
+      "error": null,
+      "createdAt": "2026-07-10T18:14:17.920Z"
+    },
+    {
+      "id": "hist_028",
+      "jobId": "job_010",
+      "articleId": "art_003",
+      "channelId": "blog_003",
+      "provider": "blogger",
+      "status": "queued",
+      "message": "Job 생성",
+      "error": null,
+      "createdAt": "2026-07-20T16:08:43.653Z"
+    },
+    {
+      "id": "hist_029",
+      "jobId": "job_010",
+      "articleId": "art_003",
+      "channelId": "blog_003",
+      "provider": "blogger",
+      "status": "succeeded",
+      "message": "Publisher 수동 발행 완료 처리",
+      "error": null,
+      "createdAt": "2026-07-20T16:08:43.655Z"
     }
   ]
 }
