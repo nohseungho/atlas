@@ -67,6 +67,12 @@ export default function WriterPage() {
           </div>
           <div className="flex items-center gap-4">
             <Link
+              href="/writer/factory"
+              className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-500"
+            >
+              Article Factory
+            </Link>
+            <Link
               href="/writer/new"
               className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500"
             >
