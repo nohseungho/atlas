@@ -159,6 +159,54 @@
       "memo": "",
       "createdAt": "2026-07-01T00:00:00.000Z",
       "updatedAt": "2026-07-01T00:00:00.000Z"
+    },
+    {
+      "id": "kw_011",
+      "keyword": "what to do if you get sick while traveling abroad",
+      "category": "Travel Health",
+      "intent": "informational",
+      "searchVolumeLevel": 3,
+      "cpcLevel": 2,
+      "competitionLevel": 3,
+      "commercialLevel": 2,
+      "seasonality": 3,
+      "moneyScore": 37,
+      "status": "written",
+      "memo": "A2 sprint — affiliate approval content",
+      "createdAt": "2026-07-21T15:05:23.284Z",
+      "updatedAt": "2026-07-21T15:05:23.299Z"
+    },
+    {
+      "id": "kw_012",
+      "keyword": "travel health kit for international travel",
+      "category": "Trip Preparation",
+      "intent": "informational",
+      "searchVolumeLevel": 3,
+      "cpcLevel": 2,
+      "competitionLevel": 3,
+      "commercialLevel": 2,
+      "seasonality": 3,
+      "moneyScore": 37,
+      "status": "written",
+      "memo": "A2 sprint — affiliate approval content",
+      "createdAt": "2026-07-21T15:05:23.306Z",
+      "updatedAt": "2026-07-21T15:05:23.311Z"
+    },
+    {
+      "id": "kw_013",
+      "keyword": "food and water safety when traveling abroad",
+      "category": "Travel Health",
+      "intent": "informational",
+      "searchVolumeLevel": 3,
+      "cpcLevel": 2,
+      "competitionLevel": 3,
+      "commercialLevel": 2,
+      "seasonality": 3,
+      "moneyScore": 37,
+      "status": "written",
+      "memo": "A2 sprint — affiliate approval content",
+      "createdAt": "2026-07-21T15:05:23.317Z",
+      "updatedAt": "2026-07-21T15:05:23.322Z"
     }
   ]
 }

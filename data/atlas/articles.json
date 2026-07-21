@@ -412,6 +412,568 @@
       "blogId": "blog_003",
       "createdAt": "2026-07-20T00:00:00.000Z",
       "updatedAt": "2026-07-20T16:08:43.650Z"
+    },
+    {
+      "id": "art_004",
+      "keywordId": "kw_011",
+      "keyword": "what to do if you get sick while traveling abroad",
+      "title": "What to Do If You Get Sick While Traveling Abroad",
+      "hookTitle": "What to Do If You Get Sick While Traveling Abroad",
+      "slug": "what-to-do-if-you-get-sick-traveling-abroad",
+      "language": "en",
+      "searchIntent": "informational",
+      "excerpt": "How to find care, what to expect at the counter, and which paperwork matters when you fall ill in another country.",
+      "metaDescription": "A practical guide to getting medical care in another country: how to judge urgency, where to start looking for a clinic, what a U.S. embassy can help with, why you should expect to pay up front, and which records to collect before you fly home.",
+      "category": "Travel Health",
+      "tags": [
+        "travel health",
+        "getting sick abroad",
+        "medical care overseas"
+      ],
+      "template": "revenue-comparison",
+      "outline": [],
+      "quickAnswer": "Decide first whether the problem is urgent or can wait. For non-urgent illness, ask your hotel or a local pharmacy for a nearby clinic, and contact the nearest U.S. embassy or consulate if you cannot find care — they can help locate medical services and are reachable around the clock for emergencies. Expect to pay hospital and clinic bills yourself at the time of treatment in most countries, and keep every receipt and report before you leave.",
+      "comparisonCriteria": [
+        "How quickly care is needed",
+        "Where to start looking",
+        "What you will be asked to pay on the spot",
+        "Which records you will need later"
+      ],
+      "keyTakeaways": [
+        "In most destinations you are responsible for paying hospital and medical costs out of pocket at the time of care.",
+        "U.S. embassies and consulates can help you locate medical services and can notify family or your employer, but they do not pay your bills or treat you.",
+        "Travelers' diarrhea is the most common travel-related illness, and most mild cases are managed with fluids rather than antibiotics.",
+        "Collect itemized receipts and any written report before you leave the country — they are far harder to obtain afterward.",
+        "Tell any doctor you see after returning home exactly where you traveled and when."
+      ],
+      "comparisonHeaders": [
+        "Situation",
+        "Where to Start",
+        "What to Have Ready"
+      ],
+      "comparisonTable": [
+        [
+          "Sudden severe symptoms, injury, or anything you would call 911 for at home",
+          "Local emergency number, or ask hotel staff to call one for you",
+          "Passport or a copy, a payment method, and a note of any medicines you take"
+        ],
+        [
+          "Persistent stomach illness, fever, or an infection that is not improving",
+          "Hotel front desk, a pharmacy, or the nearest U.S. embassy or consulate for help locating a clinic",
+          "Prescription copies in original bottles, insurance card, and a written symptom timeline"
+        ],
+        [
+          "A prescription you ran out of or lost",
+          "A pharmacy first — many countries handle refills differently than the United States",
+          "The original bottle or a copy of the prescription showing the generic drug name"
+        ],
+        [
+          "Illness that starts after you are already home",
+          "Your regular doctor, and tell them where you traveled and when",
+          "Dates of travel, countries visited, and any treatment or medication received abroad"
+        ]
+      ],
+      "sources": [
+        {
+          "title": "CDC Travelers' Health — Getting Health Care During Travel",
+          "url": "https://wwwnc.cdc.gov/travel/page/getting-health-care-abroad"
+        },
+        {
+          "title": "CDC Travelers' Health — Travelers' Diarrhea",
+          "url": "https://wwwnc.cdc.gov/travel/page/travelers-diarrhea"
+        },
+        {
+          "title": "CDC Travelers' Health — Pack Smart",
+          "url": "https://wwwnc.cdc.gov/travel/page/pack-smart"
+        }
+      ],
+      "trust": {
+        "methodology": "This guide is built only from current U.S. Centers for Disease Control and Prevention Travelers' Health guidance, cited below. We did not use commercial insurance marketing material, and we do not name or recommend any specific insurer, clinic, or product. Where a rule depends on the country you are visiting, we say so instead of stating a single global answer. Medical practice, prices, and pharmacy rules change and vary by destination — treat this as orientation, not as medical advice, and confirm specifics for your destination before you travel.",
+        "reviewedAt": "2026-07-21"
+      },
+      "relatedArticles": [],
+      "heroImage": null,
+      "visualAssets": [
+        {
+          "key": "leadEditorial",
+          "placement": "afterByline",
+          "alt": "Traveler holding a passport and a small folder of documents at a clinic reception desk in another country",
+          "prompt": "Photorealistic editorial travel photography, 16:9, 1600x900. A traveler stands at a clinic reception counter in an unfamiliar country, holding a passport and a slim folder of printed documents. Neutral daylight through a window, calm and orderly atmosphere, no distress. Documents are angled so no text, numbers, or personal data are legible. No brand logos, no signage text, no watermark. Muted clinical blues and warm neutrals.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": ""
+        },
+        {
+          "key": "criteriaSupport",
+          "placement": "afterComparisonCriteria",
+          "alt": "Flat lay of travel health documents including prescription bottles and an insurance card with details not readable",
+          "prompt": "Photorealistic overhead flat lay, 16:9, 1600x900. On a plain light surface: two unlabeled prescription bottles, a folded printed document, a blank card, and a pen. Soft even daylight, shallow depth of field. All text is deliberately out of focus or absent so nothing is readable. No brand logos, no real medication names, no personal information, no watermark.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": ""
+        },
+        {
+          "key": "findingCare",
+          "placement": "afterSection:How to Find Care in an Unfamiliar Country",
+          "alt": "Traveler asking a hotel front desk employee for directions to a nearby medical clinic",
+          "prompt": "Photorealistic editorial photography, 16:9, 1600x900. A traveler speaks with a hotel front-desk employee who is pointing toward a paper map on the counter. Warm indoor lighting, helpful and calm interaction. Faces neutral, no exaggerated expressions. No readable signage, no brand logos, no watermark.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": ""
+        },
+        {
+          "key": "paymentCounter",
+          "placement": "afterSection:Expect to Pay Out of Pocket",
+          "alt": "Person paying at a clinic payment window with a card terminal and printed receipt on the counter",
+          "prompt": "Photorealistic editorial photography, 16:9, 1600x900. A payment counter in a medical clinic: a card terminal, a printed receipt, and a hand completing a transaction. Clean institutional interior, daylight. Receipt text is blurred and unreadable, card face is blank. No brand logos, no bank marks, no watermark.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": ""
+        },
+        {
+          "key": "recordsPacket",
+          "placement": "afterFaq",
+          "alt": "Folder of itemized medical receipts and a written report organized before a flight home",
+          "prompt": "Photorealistic overhead photography, 16:9, 1600x900. An open document folder on a table containing several printed pages and receipts, arranged neatly, with a boarding-pass-shaped card beside it. Soft daylight. All printed text is illegible by blur or omission. No logos, no airline branding, no personal data, no watermark.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": ""
+        }
+      ],
+      "affiliatePlan": {
+        "providerId": "",
+        "providerName": "",
+        "network": "",
+        "status": "pending",
+        "url": "",
+        "disclosure": "",
+        "cta": {
+          "topLabel": "",
+          "decisionLabel": ""
+        },
+        "productSlots": []
+      },
+      "bodyMarkdown": "Falling ill in another country is mostly a logistics problem layered on top of a medical one. You are dealing with an unfamiliar system, possibly a language barrier, and a payment process that works differently from the one you know. The medical part belongs to a clinician. This guide covers the rest: how to decide what to do first, where to start looking, and what to keep so the trip does not create a second problem after you get home.\n\n## Decide How Urgent It Is\n\nBefore searching for anything, sort the situation into one of three buckets.\n\nThe first is anything you would call an ambulance for at home — chest pain, difficulty breathing, a serious injury, sudden confusion, uncontrolled bleeding. Use the local emergency number, or ask hotel staff to call it for you. Staff at your accommodation are often the fastest route to a correctly dispatched ambulance, because they know the local number and can speak to the dispatcher in the local language. The number is not 911 in most of the world, and looking it up while panicking is a poor plan. Write it down on arrival.\n\nThe second bucket is illness that is clearly degrading the trip but is not an emergency: a fever that will not break, a stomach problem lasting more than a day or two, an infection that appears to be spreading, a wound that is not healing cleanly. This is the category where travelers most often wait too long, hoping it resolves before the return flight. It usually deserves a clinic visit, and it is usually cheaper and simpler to handle abroad than to let it escalate on a long flight home.\n\nThe third is minor and self-limiting — a mild upset stomach, a headache, a small cut, a blister. A pharmacy is often the right first stop.\n\nBeing honest about which bucket you are in saves the most time. If you genuinely cannot tell, treat it as the more serious category. The cost of an unnecessary clinic visit is money; the cost of a missed serious problem in an unfamiliar country is considerably higher.\n\n## How to Find Care in an Unfamiliar Country\n\nThere is no single global directory, so use whichever of these produces an answer fastest.\n\nAsk where you are staying. Hotels and guesthouses in areas that see visitors usually keep a list of clinics accustomed to treating travelers, often ones with English-speaking staff. This is the fastest route in most cities and costs nothing to try.\n\nAsk a pharmacy. In many countries, pharmacists are a first line of advice rather than only dispensers. They can suggest over-the-counter options and, more usefully, tell you when something needs a doctor. Pharmacies are also far more numerous than clinics and keep longer hours.\n\nContact the nearest U.S. embassy or consulate. CDC directs travelers to do exactly this — embassies and consulates can help travelers locate medical services, and they are available for emergencies 24 hours a day, seven days a week. This is the most reliable option when you are somewhere unfamiliar, when the language barrier is real, or when the other routes have not produced anything.\n\nCDC also points to the International Society of Travel Medicine directory and the International Association for Medical Assistance to Travelers network as ways to find providers.\n\nOne practical note: do this research before you need it. CDC's pre-trip packing guidance recommends carrying a listing of hospitals or clinics at your destination, along with U.S. embassy contact information. Ten minutes of preparation while healthy is worth substantially more than an hour of searching while unwell.\n\n## What a U.S. Embassy or Consulate Can Do\n\nIt helps to be precise about the boundaries here, because expectations tend to be wrong in both directions.\n\nThey can help you locate medical services. They can notify your friends, family, or employer of an emergency. They are reachable around the clock for emergencies.\n\nThey do not treat you, and they do not pay your medical bills. An embassy is a navigation and communication resource, not a payer or a provider. Knowing this in advance prevents a wasted call at a bad moment, and it also prevents the opposite error of not calling at all because you assumed they would be no help.\n\n## Expect to Pay Out of Pocket\n\nThis is the most common financial surprise, and it is worth stating plainly: travelers are usually responsible for paying hospital and other medical expenses out of pocket at most destinations.\n\nThat means payment is typically expected at the time of care rather than billed to an insurer afterward. A facility may ask for payment before beginning non-emergency treatment. Whether you can recover any of it later depends entirely on what coverage you arranged before leaving.\n\nCDC's guidance is to find out, before departure, whether your health insurance covers medical care abroad. It also notes that travelers may want additional insurance covering health care and emergency evacuation, particularly when traveling to remote areas, where the cost and complexity of moving a patient to adequate care is the real exposure.\n\nWe are not recommending any particular product or company, and we have no affiliate relationship with any insurer. The useful action is narrower: call whoever currently insures you and ask two specific questions — is care received outside the United States covered, and is emergency medical evacuation covered. Get those answers before you need them, and get them in writing if you can.\n\nPractically, this also means carrying a payment method that will work. A single card with a low limit, or one your bank may freeze on unexpected foreign activity, is a weak point. Tell your bank your travel dates and carry a backup.\n\n## Travelers' Diarrhea: The Most Common Case\n\nStatistically, this is what most travelers actually encounter. CDC identifies travelers' diarrhea as the most common travel-related illness, with the highest risk in Asia excluding Japan and South Korea, the Middle East, Africa, and Central and South America.\n\nFor most cases the management is unglamorous: fluids. CDC suggests oral rehydration solutions for serious cases and notes these are available through pharmacies in many developing countries — often more cheaply and readily than travelers expect. A pharmacy is a reasonable first stop for this specific problem.\n\nOn antibiotics, CDC's position is measured rather than routine: consider using them only for severe cases, and take them exactly as a doctor instructs. Self-prescribing a leftover course is a poor idea on two counts — the drug may not match the organism, and incomplete courses create their own problems.\n\nThe clearest signal to stop self-treating is severity and persistence. CDC specifically advises seeing a doctor and asking for stool tests if severe diarrhea develops soon after returning from a trip, because identifying the cause allows the correct treatment rather than a guess.\n\n## When Language Is the Main Barrier\n\nA language gap changes what you should prepare rather than what you should do.\n\nCarry a written list of your current medications using generic names, not brand names. Brand names are country-specific; generic names are close to universal in clinical settings. A handed-over piece of paper works when spoken explanation fails, and it removes the risk of a transcription error.\n\nWrite down your key facts before you go: allergies, chronic conditions, previous surgeries, and your blood type if you know it. A short written summary is far easier to communicate than an improvised conversation.\n\nWhen asking an embassy or a hotel for a clinic recommendation, ask specifically whether English-speaking staff are available. It is a normal request in places used to visitors, and it materially changes the quality of the visit.\n\nTranslation apps are useful for logistics — finding the building, understanding opening hours — but be cautious about relying on them for symptom detail or dosing instructions. Ask for anything important to be written down so it can be checked later.\n\n## What to Bring to the Appointment\n\nTurning up prepared meaningfully shortens the visit and reduces the chance of a medication conflict.\n\nBring identification — a passport or a copy. Bring a payment method, given that payment is usually expected at the time of care. Bring your prescriptions, preferably in their original bottles, as CDC recommends; brand names differ across countries, and the labeled bottle lets a clinician identify the actual drug. Bring immunization records and your health insurance card if you have them. Bring a written note of your symptoms with dates, which is far easier to hand across a language barrier than to explain.\n\nNote when the symptoms started, what you have already taken and at what dose, and whether anyone you traveled with has the same problem. That last detail is genuinely useful diagnostic information and is easy to forget to mention.\n\n## Documents to Collect Before You Leave the Country\n\nDo this while you are still in the country, because obtaining records remotely afterward ranges from difficult to impossible.\n\nCollect an itemized receipt rather than a total — an itemized bill is what any reimbursement process will ask for. Collect any written report, discharge summary, or test result you are given. Note the facility's full name and address. If you were prescribed medication, keep the packaging or the prescription itself.\n\nPhotograph everything as you receive it. Paper gets lost in transit, and a clear photo taken at the counter has resolved many claims that would otherwise have failed. Store the photos somewhere that survives losing the phone.\n\nIf a report is written in another language, ask whether an English copy is available. Some facilities that treat visitors produce one routinely, but usually only if asked at the time.\n\n## If Symptoms Start or Continue After You Get Home\n\nSome travel-related illness appears only after the trip ends, and the connection is easy to miss.\n\nTell your doctor where you traveled and when. This changes what they consider and what they test for — a symptom that looks routine takes on different meaning alongside recent travel to a particular region. As noted above, CDC advises seeing a doctor and requesting stool tests when severe diarrhea develops soon after returning.\n\nBring the records you collected abroad. Treatment already given, and medication already taken, both matter to whoever sees you next, and reconstructing them from memory weeks later is unreliable.",
+      "faq": [
+        {
+          "question": "Will my U.S. health insurance cover treatment in another country?",
+          "answer": "Do not assume it will. CDC advises travelers to find out before departure whether their health insurance covers medical care abroad. Coverage varies widely by plan, and some plans that do provide benefits still require you to pay first and file for reimbursement afterward. Call your insurer and ask specifically about care received outside the United States and about emergency medical evacuation, which is usually handled separately."
+        },
+        {
+          "question": "Can the U.S. embassy pay my hospital bill?",
+          "answer": "No. Embassies and consulates can help you locate medical services and can notify your friends, family, or employer of an emergency, and they are available for emergencies 24 hours a day, seven days a week. Paying for treatment remains your responsibility."
+        },
+        {
+          "question": "I have diarrhea on the third day of my trip. Do I need antibiotics?",
+          "answer": "Not usually. CDC describes travelers' diarrhea as the most common travel-related illness and advises considering antibiotics only for severe cases, taken exactly as a doctor instructs. Oral rehydration solutions, sold in pharmacies in many countries, are suggested for serious cases. If symptoms are severe, or if severe diarrhea develops soon after you return home, see a doctor and ask for stool tests rather than treating it yourself."
+        },
+        {
+          "question": "What should I carry so a foreign doctor can treat me safely?",
+          "answer": "CDC's packing guidance includes copies of your passport and travel documents, your healthcare provider's contact information, immunization records, prescription copies, health insurance cards, and a listing of hospitals or clinics at your destination. Carrying prescriptions in their original bottles helps a clinician identify what you are taking when brand names differ."
+        },
+        {
+          "question": "Should I go to a hospital or a pharmacy first?",
+          "answer": "It depends on urgency. Anything sudden and severe belongs at a hospital or emergency number. For minor complaints, pharmacies in many countries are staffed by pharmacists who can advise on over-the-counter options and tell you when a doctor is needed. This is general information, not medical advice — when you are unsure how serious something is, seek care."
+        }
+      ],
+      "qualityChecklist": [],
+      "koreanReview": "[art_00X · What to Do If You Get Sick While Traveling Abroad]\n\n■ 핵심 요약\n해외에서 아플 때의 \"행동 절차\" 글입니다. 의학적 치료법이 아니라 (1) 긴급도 판단 (2) 진료처 찾는 경로 (3) 미국 대사관의 역할 한계 (4) 현장 자비 부담 (5) 귀국 후 절차에 집중했습니다.\n\n■ 기존 글과의 차이\nart_002·art_003은 여행보험 \"상품 비교\" 글입니다. 이 글은 보험 상품을 비교하지 않고, 이미 아픈 상황의 대응 절차를 다룹니다. 검색 의도가 상업적 비교가 아니라 정보형 대응입니다. 보험은 \"출국 전 본인 보험사에 두 가지만 확인하라\"는 수준으로만 언급하고 특정 상품을 권하지 않습니다.\n\n■ 출처 사용\nCDC Travelers' Health 3개 페이지만 사용했으며, 모두 실제로 본문을 읽고 해당 문장을 뒷받침하는지 확인했습니다. travel.state.gov·DOT·TSA는 자동 접근이 403으로 차단되어 내용 확인이 불가능해 인용하지 않았습니다.\n\n■ 과장·위험 표현 점검\n- \"반드시 보험에 가입하라\" 식의 단정 없음\n- 치료 효과·보장 결과 단정 없음\n- 항생제는 CDC 표현 그대로 \"중증에만 고려\" 로 서술\n- 가짜 통계·가격·후기 없음\n- FAQ 마지막에 \"의학적 조언이 아님\" 명시\n\n■ 미국 독자가 오해할 수 있는 지점\n1. \"대사관이 병원비를 내주지 않는다\"는 점 — 본문과 FAQ에서 두 번 명시했습니다.\n2. \"미국 건강보험이 해외에서 당연히 적용된다\"는 오해 — CDC 표현대로 \"출국 전 확인하라\"로 처리했습니다.\n3. 국가별 약국 권한 차이 — \"많은 국가에서\" 로 한정했습니다.\n\n■ 추후 제휴 링크 연결 후보 위치\n- \"Expect to Pay Out of Pocket\" 섹션 끝 (여행자보험/의료후송)\n- FAQ 1번 답변 하단\n현재는 활성 제휴가 없어 affiliatePlan.status = pending 이며 CTA·Product Card는 렌더링되지 않습니다.\n\n■ 공개 전 확인 사항\n1. 이미지 5장 생성 및 Cloudinary 업로드 필요 (현재 publicUrl 비어 있음)\n2. CDC 페이지 내용이 바뀌지 않았는지 발행 직전 재확인\n3. reviewedAt 날짜를 실제 검수일로 갱신",
+      "status": "written",
+      "publishedUrl": "",
+      "blogId": "",
+      "createdAt": "2026-07-21T15:05:23.299Z",
+      "updatedAt": "2026-07-21T15:09:07.915Z",
+      "bodyHtml": "<p>Falling ill in another country is mostly a logistics problem layered on top of a medical one. You are dealing with an unfamiliar system, possibly a language barrier, and a payment process that works differently from the one you know. The medical part belongs to a clinician. This guide covers the rest: how to decide what to do first, where to start looking, and what to keep so the trip does not create a second problem after you get home.</p>\n<h2 id=\"atlas-h2-0\">Decide How Urgent It Is</h2>\n<p>Before searching for anything, sort the situation into one of three buckets.</p>\n<p>The first is anything you would call an ambulance for at home — chest pain, difficulty breathing, a serious injury, sudden confusion, uncontrolled bleeding. Use the local emergency number, or ask hotel staff to call it for you. Staff at your accommodation are often the fastest route to a correctly dispatched ambulance, because they know the local number and can speak to the dispatcher in the local language. The number is not 911 in most of the world, and looking it up while panicking is a poor plan. Write it down on arrival.</p>\n<p>The second bucket is illness that is clearly degrading the trip but is not an emergency: a fever that will not break, a stomach problem lasting more than a day or two, an infection that appears to be spreading, a wound that is not healing cleanly. This is the category where travelers most often wait too long, hoping it resolves before the return flight. It usually deserves a clinic visit, and it is usually cheaper and simpler to handle abroad than to let it escalate on a long flight home.</p>\n<p>The third is minor and self-limiting — a mild upset stomach, a headache, a small cut, a blister. A pharmacy is often the right first stop.</p>\n<p>Being honest about which bucket you are in saves the most time. If you genuinely cannot tell, treat it as the more serious category. The cost of an unnecessary clinic visit is money; the cost of a missed serious problem in an unfamiliar country is considerably higher.</p>\n<h2 id=\"atlas-h2-1\">How to Find Care in an Unfamiliar Country</h2>\n<p>There is no single global directory, so use whichever of these produces an answer fastest.</p>\n<p>Ask where you are staying. Hotels and guesthouses in areas that see visitors usually keep a list of clinics accustomed to treating travelers, often ones with English-speaking staff. This is the fastest route in most cities and costs nothing to try.</p>\n<p>Ask a pharmacy. In many countries, pharmacists are a first line of advice rather than only dispensers. They can suggest over-the-counter options and, more usefully, tell you when something needs a doctor. Pharmacies are also far more numerous than clinics and keep longer hours.</p>\n<p>Contact the nearest U.S. embassy or consulate. CDC directs travelers to do exactly this — embassies and consulates can help travelers locate medical services, and they are available for emergencies 24 hours a day, seven days a week. This is the most reliable option when you are somewhere unfamiliar, when the language barrier is real, or when the other routes have not produced anything.</p>\n<p>CDC also points to the International Society of Travel Medicine directory and the International Association for Medical Assistance to Travelers network as ways to find providers.</p>\n<p>One practical note: do this research before you need it. CDC's pre-trip packing guidance recommends carrying a listing of hospitals or clinics at your destination, along with U.S. embassy contact information. Ten minutes of preparation while healthy is worth substantially more than an hour of searching while unwell.</p>\n<h2 id=\"atlas-h2-2\">What a U.S. Embassy or Consulate Can Do</h2>\n<p>It helps to be precise about the boundaries here, because expectations tend to be wrong in both directions.</p>\n<p>They can help you locate medical services. They can notify your friends, family, or employer of an emergency. They are reachable around the clock for emergencies.</p>\n<p>They do not treat you, and they do not pay your medical bills. An embassy is a navigation and communication resource, not a payer or a provider. Knowing this in advance prevents a wasted call at a bad moment, and it also prevents the opposite error of not calling at all because you assumed they would be no help.</p>\n<h2 id=\"atlas-h2-3\">Expect to Pay Out of Pocket</h2>\n<p>This is the most common financial surprise, and it is worth stating plainly: travelers are usually responsible for paying hospital and other medical expenses out of pocket at most destinations.</p>\n<p>That means payment is typically expected at the time of care rather than billed to an insurer afterward. A facility may ask for payment before beginning non-emergency treatment. Whether you can recover any of it later depends entirely on what coverage you arranged before leaving.</p>\n<p>CDC's guidance is to find out, before departure, whether your health insurance covers medical care abroad. It also notes that travelers may want additional insurance covering health care and emergency evacuation, particularly when traveling to remote areas, where the cost and complexity of moving a patient to adequate care is the real exposure.</p>\n<p>We are not recommending any particular product or company, and we have no affiliate relationship with any insurer. The useful action is narrower: call whoever currently insures you and ask two specific questions — is care received outside the United States covered, and is emergency medical evacuation covered. Get those answers before you need them, and get them in writing if you can.</p>\n<p>Practically, this also means carrying a payment method that will work. A single card with a low limit, or one your bank may freeze on unexpected foreign activity, is a weak point. Tell your bank your travel dates and carry a backup.</p>\n<h2 id=\"atlas-h2-4\">Travelers' Diarrhea: The Most Common Case</h2>\n<p>Statistically, this is what most travelers actually encounter. CDC identifies travelers' diarrhea as the most common travel-related illness, with the highest risk in Asia excluding Japan and South Korea, the Middle East, Africa, and Central and South America.</p>\n<p>For most cases the management is unglamorous: fluids. CDC suggests oral rehydration solutions for serious cases and notes these are available through pharmacies in many developing countries — often more cheaply and readily than travelers expect. A pharmacy is a reasonable first stop for this specific problem.</p>\n<p>On antibiotics, CDC's position is measured rather than routine: consider using them only for severe cases, and take them exactly as a doctor instructs. Self-prescribing a leftover course is a poor idea on two counts — the drug may not match the organism, and incomplete courses create their own problems.</p>\n<p>The clearest signal to stop self-treating is severity and persistence. CDC specifically advises seeing a doctor and asking for stool tests if severe diarrhea develops soon after returning from a trip, because identifying the cause allows the correct treatment rather than a guess.</p>\n<h2 id=\"atlas-h2-5\">When Language Is the Main Barrier</h2>\n<p>A language gap changes what you should prepare rather than what you should do.</p>\n<p>Carry a written list of your current medications using generic names, not brand names. Brand names are country-specific; generic names are close to universal in clinical settings. A handed-over piece of paper works when spoken explanation fails, and it removes the risk of a transcription error.</p>\n<p>Write down your key facts before you go: allergies, chronic conditions, previous surgeries, and your blood type if you know it. A short written summary is far easier to communicate than an improvised conversation.</p>\n<p>When asking an embassy or a hotel for a clinic recommendation, ask specifically whether English-speaking staff are available. It is a normal request in places used to visitors, and it materially changes the quality of the visit.</p>\n<p>Translation apps are useful for logistics — finding the building, understanding opening hours — but be cautious about relying on them for symptom detail or dosing instructions. Ask for anything important to be written down so it can be checked later.</p>\n<h2 id=\"atlas-h2-6\">What to Bring to the Appointment</h2>\n<p>Turning up prepared meaningfully shortens the visit and reduces the chance of a medication conflict.</p>\n<p>Bring identification — a passport or a copy. Bring a payment method, given that payment is usually expected at the time of care. Bring your prescriptions, preferably in their original bottles, as CDC recommends; brand names differ across countries, and the labeled bottle lets a clinician identify the actual drug. Bring immunization records and your health insurance card if you have them. Bring a written note of your symptoms with dates, which is far easier to hand across a language barrier than to explain.</p>\n<p>Note when the symptoms started, what you have already taken and at what dose, and whether anyone you traveled with has the same problem. That last detail is genuinely useful diagnostic information and is easy to forget to mention.</p>\n<h2 id=\"atlas-h2-7\">Documents to Collect Before You Leave the Country</h2>\n<p>Do this while you are still in the country, because obtaining records remotely afterward ranges from difficult to impossible.</p>\n<p>Collect an itemized receipt rather than a total — an itemized bill is what any reimbursement process will ask for. Collect any written report, discharge summary, or test result you are given. Note the facility's full name and address. If you were prescribed medication, keep the packaging or the prescription itself.</p>\n<p>Photograph everything as you receive it. Paper gets lost in transit, and a clear photo taken at the counter has resolved many claims that would otherwise have failed. Store the photos somewhere that survives losing the phone.</p>\n<p>If a report is written in another language, ask whether an English copy is available. Some facilities that treat visitors produce one routinely, but usually only if asked at the time.</p>\n<h2 id=\"atlas-h2-8\">If Symptoms Start or Continue After You Get Home</h2>\n<p>Some travel-related illness appears only after the trip ends, and the connection is easy to miss.</p>\n<p>Tell your doctor where you traveled and when. This changes what they consider and what they test for — a symptom that looks routine takes on different meaning alongside recent travel to a particular region. As noted above, CDC advises seeing a doctor and requesting stool tests when severe diarrhea develops soon after returning.</p>\n<p>Bring the records you collected abroad. Treatment already given, and medication already taken, both matter to whoever sees you next, and reconstructing them from memory weeks later is unreliable.</p>"
+    },
+    {
+      "id": "art_005",
+      "keywordId": "kw_012",
+      "keyword": "travel health kit for international travel",
+      "title": "How to Build a Travel Health Kit for an International Trip",
+      "hookTitle": "How to Build a Travel Health Kit for an International Trip",
+      "slug": "travel-health-kit-international-trip",
+      "language": "en",
+      "searchIntent": "informational",
+      "excerpt": "Documents, medicines, and supplies worth carrying — and how to decide what your specific trip actually needs.",
+      "metaDescription": "What actually belongs in a travel health kit, based on CDC packing guidance: the documents most travelers forget, how to carry prescriptions so a foreign clinician can read them, and how to size the kit to the trip instead of buying everything.",
+      "category": "Trip Preparation",
+      "tags": [
+        "travel health kit",
+        "trip preparation",
+        "packing"
+      ],
+      "template": "revenue-comparison",
+      "outline": [],
+      "quickAnswer": "Build the kit in three parts: documents, medicines, and supplies. The documents matter most and are the part travelers most often skip — copies of your passport, prescription copies, immunization records, health insurance cards, and a listing of clinics and the U.S. embassy at your destination. Carry prescriptions in their original bottles. Size the medicine and supply list to where you are actually going rather than buying a pre-made kit and assuming it fits.",
+      "comparisonCriteria": [
+        "Whether the item is needed on every trip or only some",
+        "Whether it must be carried rather than bought at the destination",
+        "Whether a document version is needed as well as the physical item",
+        "Whether destination rules may restrict it"
+      ],
+      "keyTakeaways": [
+        "The document section of the kit is the part most often skipped and the hardest to reconstruct once you have left.",
+        "CDC advises carrying prescriptions preferably in their original bottles, which lets a foreign clinician identify the actual drug.",
+        "A pre-made kit is a starting point, not an answer — the right contents depend on where you are going and your own health needs.",
+        "Some items allowed at home are restricted at your destination, so check the rules for the country you are entering.",
+        "Carry a written list of your medications by generic name; it works across a language barrier better than speech."
+      ],
+      "comparisonHeaders": [
+        "Kit Section",
+        "What It Covers",
+        "Why It Is Hard to Replace Abroad"
+      ],
+      "comparisonTable": [
+        [
+          "Documents",
+          "Passport copies, prescription copies, immunization records, insurance cards, clinic and embassy contacts",
+          "Cannot be recreated at the destination, and is exactly what a clinic or pharmacy will ask for"
+        ],
+        [
+          "Prescription medicines",
+          "Your ongoing medications, in original bottles, with the generic name noted",
+          "Refills abroad depend on local rules, and brand names differ between countries"
+        ],
+        [
+          "Common over-the-counter medicines",
+          "Pain and fever relief, antihistamines, diarrhea medicine, motion sickness medicine, antacids",
+          "Usually available, but not at 2 a.m. in an unfamiliar city with a language barrier"
+        ],
+        [
+          "Supplies",
+          "First-aid kit, hand sanitizer with at least 60% alcohol, insect repellent, sunscreen, spare glasses or contacts",
+          "Quality and availability vary, and prescription eyewear cannot be replaced quickly"
+        ]
+      ],
+      "sources": [
+        {
+          "title": "CDC Travelers' Health — Pack Smart",
+          "url": "https://wwwnc.cdc.gov/travel/page/pack-smart"
+        },
+        {
+          "title": "CDC Travelers' Health — Getting Health Care During Travel",
+          "url": "https://wwwnc.cdc.gov/travel/page/getting-health-care-abroad"
+        }
+      ],
+      "trust": {
+        "methodology": "The contents of this kit come from current CDC Travelers' Health packing guidance, cited below, rather than from retail packing lists or product marketing. We do not link to or recommend any specific brand, kit, retailer, or medication, and we have no affiliate relationship with any seller. Where CDC does not address a question — such as carry-on versus checked baggage placement — we say so and point to the authority that does, instead of filling the gap with a guess. Destination rules on medications change and differ by country; verify them for your own destination before departure.",
+        "reviewedAt": "2026-07-21"
+      },
+      "relatedArticles": [],
+      "heroImage": null,
+      "visualAssets": [
+        {
+          "key": "leadEditorial",
+          "placement": "afterByline",
+          "alt": "Travel health kit contents laid out on a table beside an open suitcase before a trip",
+          "prompt": "Photorealistic editorial travel photography, 16:9, 1600x900. An organized flat arrangement beside a partly packed suitcase: a small zip pouch, plain bottles without labels, a folded printed document, and a compact first-aid pouch. Natural window light, calm neutral tones. No readable text, no brand logos, no medication names, no watermark.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": ""
+        },
+        {
+          "key": "criteriaSupport",
+          "placement": "afterComparisonCriteria",
+          "alt": "Three grouped piles representing documents, medicines and supplies for a travel health kit",
+          "prompt": "Photorealistic overhead photography, 16:9, 1600x900. Three clearly separated groups on a plain surface: a stack of folded papers, a group of unlabeled bottles and blister packs, and a group of supplies including a small pouch and a sanitizer bottle. Even soft lighting, clean composition. All labels blank or blurred, no brands, no watermark.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": ""
+        },
+        {
+          "key": "documentsSection",
+          "placement": "afterSection:Start With the Documents",
+          "alt": "Printed travel documents and photocopies arranged in a folder with details not readable",
+          "prompt": "Photorealistic overhead photography, 16:9, 1600x900. An open folder containing photocopied document pages and a blank card, arranged neatly on a desk with a pen. Soft daylight, shallow depth of field. All text illegible, no passport numbers, no personal data, no logos, no watermark.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": ""
+        },
+        {
+          "key": "medicineSection",
+          "placement": "afterSection:Prescriptions and Everyday Medicines",
+          "alt": "Prescription bottles in original packaging packed into a clear travel pouch",
+          "prompt": "Photorealistic close-up photography, 16:9, 1600x900. Several unlabeled prescription bottles being placed into a clear zip pouch on a table. Clean daylight, shallow depth of field. Bottle labels are blank or blurred so no drug names or patient details appear. No brand logos, no pharmacy marks, no watermark.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": ""
+        },
+        {
+          "key": "kitPacked",
+          "placement": "afterFaq",
+          "alt": "Compact finished travel health kit packed and ready beside a passport and boarding documents",
+          "prompt": "Photorealistic editorial photography, 16:9, 1600x900. A closed compact travel pouch resting beside a passport-shaped booklet and a folded document on a neutral surface. Warm natural light, minimal styling. Passport cover shows no emblem or country name, no readable text, no logos, no watermark.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": ""
+        }
+      ],
+      "affiliatePlan": {
+        "providerId": "",
+        "providerName": "",
+        "network": "",
+        "status": "pending",
+        "url": "",
+        "disclosure": "",
+        "cta": {
+          "topLabel": "",
+          "decisionLabel": ""
+        },
+        "productSlots": []
+      },
+      "bodyMarkdown": "Most travel health kits are assembled backwards. Someone buys a pre-made pouch of bandages and painkillers, adds nothing else, and leaves behind the part that actually matters when something goes wrong — the paperwork that lets a foreign clinic treat them properly.\n\nThis is a guide to building the kit in the order that reflects how it actually gets used.\n\n## Start With the Documents\n\nIf you only do one part of this, do this one. Medicines and supplies can usually be bought at your destination. Documents cannot be reconstructed once you have left.\n\nCDC's packing guidance for travelers lists a specific set: copies of your passport and travel documents, contact information for people in the United States, lodging details, your healthcare provider's contact information, immunization records, proof of yellow fever vaccination if your destination requires it, prescription copies, health insurance cards, a listing of hospitals or clinics at your destination, and U.S. embassy contact information.\n\nSeveral of these deserve emphasis because travelers skip them most often.\n\nThe listing of clinics at your destination is worth compiling before you go. Finding a suitable clinic is much harder while unwell, in an unfamiliar city, possibly in another language. Ten minutes of preparation replaces an hour of searching at the worst possible time.\n\nEmbassy contact information matters because U.S. embassies and consulates can help travelers locate medical services and are available for emergencies around the clock. That is only useful if you can reach them without first having to look them up.\n\nImmunization records matter more than most travelers assume. Where proof of yellow fever vaccination is required for entry, it is not optional, and a missing certificate is a border problem rather than a health problem.\n\nKeep both a paper copy and a copy on your phone. Phones are lost, stolen, and drained of battery precisely when things are already going badly. A sealed paper copy in a separate bag from the originals is the cheapest redundancy available.\n\n## Prescriptions and Everyday Medicines\n\nFor anything you take regularly, the guidance is specific: carry prescriptions preferably in their original bottles.\n\nThe reason is practical. Brand names differ between countries, so a pill in a weekly organizer may be genuinely unidentifiable to a foreign pharmacist. The labeled bottle answers the question immediately. Add a written list of your medications by generic name — it crosses a language barrier better than anything you can say.\n\nBring enough for the full trip plus a margin for delays. Refilling a prescription abroad depends on local rules that may be nothing like the ones at home, and a delayed flight should not become a medication gap. A week of margin on a two-week trip is not excessive.\n\nSplit the supply between two bags if you are checking one. A delayed bag is inconvenient; a delayed bag containing all of your medication is a different category of problem.\n\nFor everyday complaints, CDC's list includes antacids, antihistamines, cough suppressants, decongestants, diarrhea medicine, motion sickness medicine, and pain or fever relievers, alongside prescribed medications such as antibiotics or antimalarials where a clinician has prescribed them.\n\nThe honest case for carrying these is not that they are unavailable abroad. It is that finding an open pharmacy at an inconvenient hour, in an unfamiliar place, while feeling unwell and unable to read the packaging, is a far worse experience than opening a pouch in your room.\n\n## Supplies Worth the Space\n\nCDC's supply list covers a first-aid kit, glasses or contact lenses, hand sanitizer with at least 60% alcohol, masks, insect repellent, medical alert identification, sunscreen of SPF 15 or higher, and water purification tablets.\n\nNot all of these earn their space on every trip. Sunscreen and insect repellent decisions follow the destination and season rather than a general rule, and both are widely available in most places you would need them.\n\nTwo items are worth carrying almost regardless of trip type. Spare glasses or contacts, because prescription eyewear cannot be replaced quickly anywhere, and a lost pair can end a trip's usefulness immediately. And medical alert identification if you have a condition that would change emergency treatment, because it works when you cannot speak for yourself.\n\nHand sanitizer earns its place for a specific reason: CDC lists hand hygiene alongside food and drink selection as a core way to reduce the most common travel illness. The 60% alcohol threshold is the part people get wrong when buying on price.\n\nWater purification tablets belong in the kit when you have reason to think treated water may not be reliably available. That is a judgement about your specific destination, not a default for every trip.\n\n## Size the Kit to the Trip\n\nA single kit that works for both a business trip to a major city and two weeks in a remote area does not exist, and buying for the second scenario while doing the first mostly buys weight.\n\nThree questions size it reasonably.\n\nHow far will you be from a pharmacy? A city with 24-hour pharmacies justifies a much smaller kit than somewhere hours from the nearest town. Distance to resupply is the single biggest variable.\n\nHow long is the trip? Longer trips increase both the chance of needing something and the difficulty of getting a prescription refilled in time.\n\nWhat are your own health needs? Someone with a chronic condition, a serious allergy, or a regular medication is packing a different kit from someone with none, regardless of destination. If you carry emergency medication such as an epinephrine autoinjector or a rescue inhaler, that is the first item in the bag, not an afterthought.\n\nThe document section stays constant across all of these. The medicine and supply sections flex.\n\n## What Not to Bother Packing\n\nCounter-programming is useful here, because over-packing a health kit has its own costs — weight, customs questions, and expired items you stop checking.\n\nLarge volumes of anything you can buy at the destination rarely justify the space, with the exception of your own prescriptions. Basic painkillers and antacids are available almost everywhere.\n\nBulk first-aid supplies for injuries you are not plausibly going to have are a common overshoot. A city trip does not need trauma dressings.\n\nAnything you have never used before is a poor candidate. A trip is not the time to discover how a new medication affects you, and an unfamiliar product you cannot correctly dose is worse than not having it.\n\nExpired items are worse than nothing, because they occupy the space where a working version would be while creating the impression of preparedness.\n\n## Check What Your Destination Allows\n\nThis is the step that produces genuine problems, and it is easy to miss because the item is unremarkable at home.\n\nCDC advises checking U.S. embassy guidance for your destination and reviewing customs restrictions, noting plainly that some items may not be allowed in other countries. Medications that are ordinary in the United States are controlled or outright prohibited in some destinations, and this includes drugs travelers would never think to question — certain common cold remedies, some prescription stimulants, and various pain medications among them.\n\nCheck the entry rules for the country you are going to, well before you pack. Carrying prescriptions in original labeled bottles, with a copy of the prescription, is also what supports you if a medication is questioned at a border. A letter from your prescriber is worth having for anything unusual or injectable.\n\nFor what you can bring through airport screening in the first place, CDC points travelers to the Transportation Security Administration's guidance on permitted and prohibited items rather than setting its own rule. Screening requirements change, so check the current version before your flight instead of relying on what was true on a previous trip.\n\n## Assemble It Once, Reuse It\n\nBuild the kit once and keep it assembled between trips. It takes far less effort to check and top up an existing pouch than to rebuild from scratch under time pressure the night before a flight.\n\nTwo maintenance habits keep it useful. Check expiry dates before each trip, since medicines that sat unused for a year may have quietly expired. And refresh the document section whenever anything changes — a new prescription, a new insurance card, a different destination requiring a different clinic list.\n\nKeep the kit somewhere you will actually find it, and keep a short packing list inside it noting what you deliberately left out and why. That note saves you from re-litigating the same decisions every trip.\n\nThe kit is only as current as the last time you looked at it.",
+      "faq": [
+        {
+          "question": "What does CDC actually recommend packing?",
+          "answer": "CDC's Pack Smart guidance groups items into documents, medicines, and supplies. Documents include copies of your passport and travel documents, U.S. contact information, lodging details, healthcare provider contacts, immunization records, proof of yellow fever vaccination where required, prescription copies, health insurance cards, a listing of hospitals or clinics at your destination, and U.S. embassy contact information. Medicines listed include antacids, antihistamines, cough suppressants, decongestants, diarrhea medicine, motion sickness medicine, pain and fever relievers, and prescribed medications such as antibiotics or antimalarials. Supplies include a first-aid kit, glasses or contact lenses, hand sanitizer with at least 60% alcohol, masks, insect repellent, medical alert identification, sunscreen of SPF 15 or higher, and water purification tablets."
+        },
+        {
+          "question": "Should medicines go in my carry-on or checked bag?",
+          "answer": "CDC's packing page does not set carry-on versus checked rules; it directs travelers to check the Transportation Security Administration website for current guidance on permitted and prohibited items. As a practical matter, anything you would be in trouble without if a bag were delayed is worth keeping with you. Screening rules change, so confirm current requirements before you fly rather than relying on what was true on a previous trip."
+        },
+        {
+          "question": "Can I bring any medication into any country?",
+          "answer": "No. CDC advises checking U.S. embassy guidance and customs restrictions for your destination, noting that some items may not be allowed in other countries. Certain medications that are routine in the United States are controlled or prohibited elsewhere, sometimes including common ones. Check before you pack, not at the border."
+        },
+        {
+          "question": "Do I need a full first-aid kit for a city trip?",
+          "answer": "Usually not the same one you would carry into a remote area. The documents section stays constant across trips because it is what a clinic or pharmacy asks for anywhere. The medicine and supply sections should scale with how far you will be from a pharmacy, how long you are away, and your own health needs. Buying a large pre-made kit for a week in a major city mostly buys weight."
+        },
+        {
+          "question": "Why carry prescriptions in the original bottle?",
+          "answer": "Because it identifies the drug. CDC's guidance specifies prescriptions preferably in their original bottles. Brand names vary between countries, so a loose pill in a daily organizer can be difficult for a foreign pharmacist or clinician to identify, while the labeled bottle and the generic name together resolve it quickly."
+        }
+      ],
+      "qualityChecklist": [],
+      "koreanReview": "[art_00X · How to Build a Travel Health Kit for an International Trip]\n\n■ 핵심 요약\n출국 전 \"여행 건강 키트\" 구성 글입니다. CDC Pack Smart를 뼈대로 (1) 서류 (2) 처방약·상비약 (3) 용품 (4) 여행 유형별 규모 조절 (5) 목적지 반입 규정 확인 순서로 구성했습니다. 서류 섹션을 가장 앞에 둔 것이 이 글의 차별점입니다.\n\n■ 기존 글과의 차이\nart_002·art_003은 보험 상품 비교, 앞의 \"아플 때 대응\" 글은 사후 대응입니다. 이 글은 출국 전 준비물이라 검색 의도가 명확히 분리됩니다. 보험은 서류 목록의 \"보험카드\" 항목으로만 등장하고 상품 권유가 없습니다.\n\n■ 출처 사용\nCDC Pack Smart와 Getting Health Care During Travel 2개만 사용했고 실제 본문을 읽고 대조했습니다. TSA는 403으로 접근이 막혀 인용하지 않았고, 대신 \"CDC가 TSA를 확인하라고 안내한다\"는 사실만 서술했습니다 — TSA 규정 내용 자체를 단정하지 않았습니다.\n\n■ 과장·위험 표현 점검\n- 특정 브랜드·키트·판매처 언급 없음\n- 특정 약품명 없음 (CDC의 일반 분류만 사용)\n- \"모두 사야 한다\" 표현 없음 — 오히려 \"도시 여행에 큰 키트는 무게만 늘린다\"고 축소 권고\n- 가짜 가격·후기·통계 없음\n\n■ 미국 독자가 오해할 수 있는 지점\n1. 기내/위탁 반입 규정 — CDC가 정하지 않는다는 점을 명시하고 TSA로 넘겼습니다. 여기서 임의 규정을 쓰면 위험합니다.\n2. \"미국에서 흔한 약은 어디서나 괜찮다\"는 오해 — 목적지 반입 금지 가능성을 별도 섹션으로 경고했습니다.\n3. SPF·알코올 60% 등 수치는 CDC 표기 그대로입니다.\n\n■ 추후 제휴 링크 연결 후보 위치\n- \"Supplies Worth the Space\" 섹션 (일반 여행용품)\n- \"Size the Kit to the Trip\" 섹션 하단\n단, 의약품 제휴는 규제 위험이 크므로 비의약품 위주로 검토해야 합니다.\n\n■ 공개 전 확인 사항\n1. 이미지 5장 생성·업로드 필요\n2. CDC Pack Smart 목록이 갱신되지 않았는지 발행 직전 확인\n3. 의약품 관련 제휴는 법무 검토 없이 연결 금지",
+      "status": "written",
+      "publishedUrl": "",
+      "blogId": "",
+      "createdAt": "2026-07-21T15:05:23.311Z",
+      "updatedAt": "2026-07-21T15:09:07.929Z",
+      "bodyHtml": "<p>Most travel health kits are assembled backwards. Someone buys a pre-made pouch of bandages and painkillers, adds nothing else, and leaves behind the part that actually matters when something goes wrong — the paperwork that lets a foreign clinic treat them properly.</p>\n<p>This is a guide to building the kit in the order that reflects how it actually gets used.</p>\n<h2 id=\"atlas-h2-0\">Start With the Documents</h2>\n<p>If you only do one part of this, do this one. Medicines and supplies can usually be bought at your destination. Documents cannot be reconstructed once you have left.</p>\n<p>CDC's packing guidance for travelers lists a specific set: copies of your passport and travel documents, contact information for people in the United States, lodging details, your healthcare provider's contact information, immunization records, proof of yellow fever vaccination if your destination requires it, prescription copies, health insurance cards, a listing of hospitals or clinics at your destination, and U.S. embassy contact information.</p>\n<p>Several of these deserve emphasis because travelers skip them most often.</p>\n<p>The listing of clinics at your destination is worth compiling before you go. Finding a suitable clinic is much harder while unwell, in an unfamiliar city, possibly in another language. Ten minutes of preparation replaces an hour of searching at the worst possible time.</p>\n<p>Embassy contact information matters because U.S. embassies and consulates can help travelers locate medical services and are available for emergencies around the clock. That is only useful if you can reach them without first having to look them up.</p>\n<p>Immunization records matter more than most travelers assume. Where proof of yellow fever vaccination is required for entry, it is not optional, and a missing certificate is a border problem rather than a health problem.</p>\n<p>Keep both a paper copy and a copy on your phone. Phones are lost, stolen, and drained of battery precisely when things are already going badly. A sealed paper copy in a separate bag from the originals is the cheapest redundancy available.</p>\n<h2 id=\"atlas-h2-1\">Prescriptions and Everyday Medicines</h2>\n<p>For anything you take regularly, the guidance is specific: carry prescriptions preferably in their original bottles.</p>\n<p>The reason is practical. Brand names differ between countries, so a pill in a weekly organizer may be genuinely unidentifiable to a foreign pharmacist. The labeled bottle answers the question immediately. Add a written list of your medications by generic name — it crosses a language barrier better than anything you can say.</p>\n<p>Bring enough for the full trip plus a margin for delays. Refilling a prescription abroad depends on local rules that may be nothing like the ones at home, and a delayed flight should not become a medication gap. A week of margin on a two-week trip is not excessive.</p>\n<p>Split the supply between two bags if you are checking one. A delayed bag is inconvenient; a delayed bag containing all of your medication is a different category of problem.</p>\n<p>For everyday complaints, CDC's list includes antacids, antihistamines, cough suppressants, decongestants, diarrhea medicine, motion sickness medicine, and pain or fever relievers, alongside prescribed medications such as antibiotics or antimalarials where a clinician has prescribed them.</p>\n<p>The honest case for carrying these is not that they are unavailable abroad. It is that finding an open pharmacy at an inconvenient hour, in an unfamiliar place, while feeling unwell and unable to read the packaging, is a far worse experience than opening a pouch in your room.</p>\n<h2 id=\"atlas-h2-2\">Supplies Worth the Space</h2>\n<p>CDC's supply list covers a first-aid kit, glasses or contact lenses, hand sanitizer with at least 60% alcohol, masks, insect repellent, medical alert identification, sunscreen of SPF 15 or higher, and water purification tablets.</p>\n<p>Not all of these earn their space on every trip. Sunscreen and insect repellent decisions follow the destination and season rather than a general rule, and both are widely available in most places you would need them.</p>\n<p>Two items are worth carrying almost regardless of trip type. Spare glasses or contacts, because prescription eyewear cannot be replaced quickly anywhere, and a lost pair can end a trip's usefulness immediately. And medical alert identification if you have a condition that would change emergency treatment, because it works when you cannot speak for yourself.</p>\n<p>Hand sanitizer earns its place for a specific reason: CDC lists hand hygiene alongside food and drink selection as a core way to reduce the most common travel illness. The 60% alcohol threshold is the part people get wrong when buying on price.</p>\n<p>Water purification tablets belong in the kit when you have reason to think treated water may not be reliably available. That is a judgement about your specific destination, not a default for every trip.</p>\n<h2 id=\"atlas-h2-3\">Size the Kit to the Trip</h2>\n<p>A single kit that works for both a business trip to a major city and two weeks in a remote area does not exist, and buying for the second scenario while doing the first mostly buys weight.</p>\n<p>Three questions size it reasonably.</p>\n<p>How far will you be from a pharmacy? A city with 24-hour pharmacies justifies a much smaller kit than somewhere hours from the nearest town. Distance to resupply is the single biggest variable.</p>\n<p>How long is the trip? Longer trips increase both the chance of needing something and the difficulty of getting a prescription refilled in time.</p>\n<p>What are your own health needs? Someone with a chronic condition, a serious allergy, or a regular medication is packing a different kit from someone with none, regardless of destination. If you carry emergency medication such as an epinephrine autoinjector or a rescue inhaler, that is the first item in the bag, not an afterthought.</p>\n<p>The document section stays constant across all of these. The medicine and supply sections flex.</p>\n<h2 id=\"atlas-h2-4\">What Not to Bother Packing</h2>\n<p>Counter-programming is useful here, because over-packing a health kit has its own costs — weight, customs questions, and expired items you stop checking.</p>\n<p>Large volumes of anything you can buy at the destination rarely justify the space, with the exception of your own prescriptions. Basic painkillers and antacids are available almost everywhere.</p>\n<p>Bulk first-aid supplies for injuries you are not plausibly going to have are a common overshoot. A city trip does not need trauma dressings.</p>\n<p>Anything you have never used before is a poor candidate. A trip is not the time to discover how a new medication affects you, and an unfamiliar product you cannot correctly dose is worse than not having it.</p>\n<p>Expired items are worse than nothing, because they occupy the space where a working version would be while creating the impression of preparedness.</p>\n<h2 id=\"atlas-h2-5\">Check What Your Destination Allows</h2>\n<p>This is the step that produces genuine problems, and it is easy to miss because the item is unremarkable at home.</p>\n<p>CDC advises checking U.S. embassy guidance for your destination and reviewing customs restrictions, noting plainly that some items may not be allowed in other countries. Medications that are ordinary in the United States are controlled or outright prohibited in some destinations, and this includes drugs travelers would never think to question — certain common cold remedies, some prescription stimulants, and various pain medications among them.</p>\n<p>Check the entry rules for the country you are going to, well before you pack. Carrying prescriptions in original labeled bottles, with a copy of the prescription, is also what supports you if a medication is questioned at a border. A letter from your prescriber is worth having for anything unusual or injectable.</p>\n<p>For what you can bring through airport screening in the first place, CDC points travelers to the Transportation Security Administration's guidance on permitted and prohibited items rather than setting its own rule. Screening requirements change, so check the current version before your flight instead of relying on what was true on a previous trip.</p>\n<h2 id=\"atlas-h2-6\">Assemble It Once, Reuse It</h2>\n<p>Build the kit once and keep it assembled between trips. It takes far less effort to check and top up an existing pouch than to rebuild from scratch under time pressure the night before a flight.</p>\n<p>Two maintenance habits keep it useful. Check expiry dates before each trip, since medicines that sat unused for a year may have quietly expired. And refresh the document section whenever anything changes — a new prescription, a new insurance card, a different destination requiring a different clinic list.</p>\n<p>Keep the kit somewhere you will actually find it, and keep a short packing list inside it noting what you deliberately left out and why. That note saves you from re-litigating the same decisions every trip.</p>\n<p>The kit is only as current as the last time you looked at it.</p>"
+    },
+    {
+      "id": "art_006",
+      "keywordId": "kw_013",
+      "keyword": "food and water safety when traveling abroad",
+      "title": "Food and Water Safety Abroad: How to Lower Your Risk of Getting Sick",
+      "hookTitle": "Food and Water Safety Abroad: How to Lower Your Risk of Getting Sick",
+      "slug": "food-and-water-safety-abroad",
+      "language": "en",
+      "searchIntent": "informational",
+      "excerpt": "A practical read on safer and riskier choices at the table, based on CDC guidance rather than travel folklore.",
+      "metaDescription": "Which foods and drinks carry more risk when you travel, what CDC actually says about ice, tap water and raw produce, and how to lower your chances of the most common travel illness without living on packaged snacks.",
+      "category": "Travel Health",
+      "tags": [
+        "food safety",
+        "water safety",
+        "travelers diarrhea"
+      ],
+      "template": "revenue-comparison",
+      "outline": [],
+      "quickAnswer": "Favor food that is cooked and served steaming hot, and drinks that come in unopened factory-sealed containers. Treat ice as tap water, because it usually is. Be cautious with raw items — salads, cut vegetables, raw meat and seafood — and with fresh juice prepared by someone else. In destinations where tap water may be contaminated, do not drink it untreated; boiling, filtering, or chemical treatment are the options. This lowers risk; it does not remove it.",
+      "comparisonCriteria": [
+        "Whether heat has been applied recently",
+        "Whether the container was factory sealed",
+        "Whether untreated water may have touched the item",
+        "Whether it sat at room temperature before serving"
+      ],
+      "keyTakeaways": [
+        "Travelers' diarrhea is the most common travel-related illness, and food and drink choices are the main thing you control.",
+        "Ice deserves the same caution as tap water, because it is usually made from it.",
+        "Heat and factory sealing are the two most useful signals — recently cooked and served hot, or unopened from a factory.",
+        "Carbonation is a practical hint that a drink was sealed at a factory rather than poured from an open source.",
+        "Hand hygiene sits alongside food choice; CDC lists frequent handwashing or alcohol-based sanitizer as a core prevention step."
+      ],
+      "comparisonHeaders": [
+        "Category",
+        "Lower Risk",
+        "Higher Risk"
+      ],
+      "comparisonTable": [
+        [
+          "Cooked food",
+          "Food that is cooked and served steaming hot",
+          "Buffet dishes held warm, and food left at room temperature"
+        ],
+        [
+          "Produce",
+          "Fruit and vegetables you peel yourself, or wash in bottled water",
+          "Fresh salads, cut vegetables, and unwashed produce"
+        ],
+        [
+          "Protein",
+          "Thoroughly cooked meat and seafood served hot",
+          "Raw meat, raw seafood, ceviche, and bushmeat"
+        ],
+        [
+          "Drinks",
+          "Unopened factory-sealed bottled or canned drinks, carbonated drinks, steaming hot coffee or tea, sealed pasteurized milk",
+          "Fountain sodas, freshly squeezed juice prepared by others, and warm or room-temperature drinks"
+        ],
+        [
+          "Water and ice",
+          "Bottled, boiled, filtered, or chemically treated water",
+          "Tap water where it may be contaminated, and ice made from it"
+        ]
+      ],
+      "sources": [
+        {
+          "title": "CDC Travelers' Health — Food and Drink Considerations When Traveling",
+          "url": "https://wwwnc.cdc.gov/travel/page/food-water-safety"
+        },
+        {
+          "title": "CDC Travelers' Health — Travelers' Diarrhea",
+          "url": "https://wwwnc.cdc.gov/travel/page/travelers-diarrhea"
+        }
+      ],
+      "trust": {
+        "methodology": "Every food and drink classification in this article is taken from current CDC Travelers' Health guidance, cited below, and we read those pages rather than summarizing them from other travel sites. We avoid the common travel-blog habit of presenting folklore as fact — where CDC frames something as higher risk rather than forbidden, we keep that framing. We do not sell, link to, or recommend any water filter, purification product, or supplement, and we have no affiliate relationship with any seller. Conditions differ substantially between destinations and change over time, so check current guidance for the specific country you are visiting before you travel.",
+        "reviewedAt": "2026-07-21"
+      },
+      "relatedArticles": [],
+      "heroImage": null,
+      "visualAssets": [
+        {
+          "key": "leadEditorial",
+          "placement": "afterByline",
+          "alt": "Traveler choosing between a sealed bottled drink and an open glass of water at a table abroad",
+          "prompt": "Photorealistic editorial travel photography, 16:9, 1600x900. A cafe table abroad with an unopened sealed bottle of water beside a glass, and a traveler's hand reaching toward the sealed bottle. Natural daylight, warm neutral tones, documentary feel. Bottle label is blank, no brand marks, no readable text, no watermark.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": ""
+        },
+        {
+          "key": "criteriaSupport",
+          "placement": "afterComparisonCriteria",
+          "alt": "Side by side comparison of steaming hot cooked food and a room temperature raw salad",
+          "prompt": "Photorealistic overhead photography, 16:9, 1600x900. Two plates side by side on a plain table: one with steaming hot cooked food showing visible steam, one with a cold raw salad. Even natural lighting, clean documentary composition, no styling gimmicks. No text, no logos, no watermark.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": ""
+        },
+        {
+          "key": "waterSection",
+          "placement": "afterSection:Water, Ice, and What They Touch",
+          "alt": "Sealed bottled water beside a kettle and a portable water filter on a hotel room surface",
+          "prompt": "Photorealistic still-life photography, 16:9, 1600x900. On a hotel room surface: an unopened sealed water bottle, a small electric kettle, and a portable water filter bottle. Soft window light, muted tones. All labels blank, no brand names, no watermark.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": ""
+        },
+        {
+          "key": "marketSection",
+          "placement": "afterSection:Eating Well Without Living on Packaged Snacks",
+          "alt": "Fresh market stall with whole unpeeled fruit that a traveler can peel themselves",
+          "prompt": "Photorealistic editorial travel photography, 16:9, 1600x900. A market stall displaying whole unpeeled fruit such as bananas and oranges, with a traveler selecting one. Bright natural daylight, authentic documentary style, no staged perfection. No readable signage or price text, no brand logos, no watermark.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": ""
+        },
+        {
+          "key": "handHygiene",
+          "placement": "afterFaq",
+          "alt": "Traveler using alcohol based hand sanitizer before eating at an outdoor table",
+          "prompt": "Photorealistic close-up photography, 16:9, 1600x900. Hands applying gel sanitizer from a small unlabeled bottle at an outdoor dining table before a meal. Natural daylight, shallow depth of field. Bottle is unbranded with a blank label, no readable text, no watermark.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": ""
+        }
+      ],
+      "affiliatePlan": {
+        "providerId": "",
+        "providerName": "",
+        "network": "",
+        "status": "pending",
+        "url": "",
+        "disclosure": "",
+        "cta": {
+          "topLabel": "",
+          "decisionLabel": ""
+        },
+        "productSlots": []
+      },
+      "bodyMarkdown": "Travel advice about food tends to arrive as folklore — a rule someone's cousin swears by, repeated until it sounds official. Some of it is roughly right. Some of it is superstition. This article sticks to what CDC's Travelers' Health guidance actually says, and separates the reasoning from the rules so you can apply it to situations no list covers.\n\nThe goal is not to eat nothing interesting. It is to understand which properties of a meal actually carry risk.\n\n## Why This Is Worth Thinking About\n\nTravelers' diarrhea is the most common travel-related illness. CDC identifies the highest risk in Asia excluding Japan and South Korea, the Middle East, Africa, and Central and South America.\n\nFood and drink choices are the main variable you control. Prevention, in CDC's framing, comes down to two things: careful food and beverage selection, and hand hygiene through frequent handwashing or alcohol-based sanitizer.\n\nThat second one is worth stating on its own, because it gets forgotten in discussions that focus entirely on what is on the plate.\n\nIt is also worth being clear about stakes. For most travelers this is a few unpleasant days rather than a catastrophe. The reason to take it seriously is that those days often land in the middle of a short trip, and dehydration in a hot climate compounds quickly.\n\n## The Two Signals That Matter Most\n\nNearly all of the specific rules collapse into two properties.\n\nThe first is recent heat. CDC's guidance is direct — eat only foods that are cooked and served hot. Steaming hot food has been through a process that addresses most of the concern. Food that was cooked hours ago and held warm, or left standing at room temperature, has not.\n\nThe second is factory sealing. Unopened, factory-sealed bottled or canned drinks are treated as safer. So are factory-sealed canned foods and dry packaged items such as potato chips. The seal means the contents have not met local water or local handling.\n\nOnce you have those two, most novel situations resolve themselves without a lookup. A dish you have never seen before, arriving visibly steaming, sits differently from the same dish at room temperature on a buffet.\n\n## What Falls Into the Riskier Column\n\nCDC groups several categories as riskier choices.\n\nRaw foods generally, including fresh salads and cut vegetables. The problem is rarely the vegetable itself — it is the washing water and the handling that preceded it.\n\nRaw meat and seafood, including ceviche. Marinating in citrus is a preparation technique, not a heat treatment, and it is a common point of confusion.\n\nFood from street vendors. This one is worth reading precisely: it is listed as higher risk, not as forbidden. Something cooked to order in front of you and handed over steaming is a materially different situation from something that has been sitting in a warm tray since lunch.\n\nBushmeat, meaning wild game animals, which CDC lists separately.\n\nBuffet items are worth singling out because they combine several of these problems: food held at intermediate temperatures, for unknown periods, with many people handling the serving utensils.\n\nOn the drinks side, the riskier items are fountain sodas, which are made with tap water; freshly squeezed juice prepared by someone else, where both the water and the produce handling are unknown; and drinks served warm or at room temperature.\n\n## Water, Ice, and What They Touch\n\nWater deserves its own treatment because it reaches food indirectly in ways that are easy to overlook.\n\nCDC's position on tap water is conditional rather than universal: do not drink the tap water in countries where the tap water might be contaminated. Where that applies, the water can be made safe by boiling, filtering, or chemical treatment.\n\nIce is where most travelers slip. CDC advises against using ice in destinations with limited access to clean water, or where contaminated drinking water is a concern, because it was likely made with tap water. Freezing is not a treatment. A carefully chosen sealed drink poured over local ice has undone the careful choice.\n\nThe same reasoning extends outward to things people rarely think of as drinking water. Brushing your teeth uses tap water. Rinsing a water bottle uses tap water. Produce washed for a salad was washed in something. Where the tap water is the concern, all of these inherit it.\n\nFor drinks, the safer options CDC identifies are unopened factory-sealed bottled or canned beverages, carbonated drinks, hot coffee or tea served steaming, and pasteurized milk from sealed bottles. The note on carbonation is useful — the bubbles indicate the container was sealed at a factory. It is a sealing signal, not a disinfectant, and the distinction matters.\n\nOne practical habit follows directly: check that a bottle's seal is actually intact when it is handed to you, rather than assuming. The property CDC identifies as safer is specifically unopened and factory sealed.\n\nThis is easiest to apply when you open the bottle yourself. If a drink arrives already poured, or a bottle arrives already opened at the table, you have lost the signal that made it the safer choice in the first place — not because anything is necessarily wrong with it, but because you can no longer verify the property you were relying on. Asking for the sealed bottle is a normal request in most places that serve visitors.\n\n## Eating Well Without Living on Packaged Snacks\n\nNone of this requires spending a trip on crackers and bottled water, and doing so would waste much of the point of travel.\n\nFruit and vegetables that you peel yourself, or wash in bottled water, are treated as safer options. Peeling puts the handling under your own control, which is the actual variable. This opens up a large amount of fresh food rather than closing it off.\n\nHot food cooked to order is the reliable center of most meals. Busy places that cook continuously tend to serve food that has been hot recently, which is the property that matters — not the presence of a menu in English or a tourist-friendly frontage.\n\nHot coffee and tea served steaming are safer options, which covers a good deal of ordinary daily drinking without any special effort.\n\nThe pattern that emerges is not restriction so much as sequencing: favor things that were recently heated or never opened, and take more care with things that were washed, cut, or left standing. Applied consistently, that still leaves most of a country's food available to you.\n\n## Hand Hygiene Is Half of It\n\nCDC lists hand hygiene alongside food selection as one of the two main prevention approaches — frequent handwashing, or alcohol-based hand sanitizer.\n\nThis matters most immediately before eating, and particularly when eating with your hands, which is normal in much of the world. It is easy to be careful about the food and then undo that care on the way to your mouth.\n\nIt also matters after handling money, transit surfaces, and shared serving utensils, which are the contact points travelers touch most and think about least.\n\nThis is the part of prevention that travels with you regardless of destination or venue quality, and it requires no judgement calls about a menu.\n\nSoap and running water are not always available where you need them, which is the practical argument for carrying sanitizer rather than relying on finding a sink. Public restrooms in transit hubs and markets frequently have neither, and that is exactly where you have just touched the most shared surfaces. CDC's own packing guidance lists hand sanitizer with at least 60% alcohol as a supply worth carrying, and the alcohol percentage is the specification people most often get wrong when buying on price alone.\n\n## If You Get Sick Anyway\n\nRisk reduction is not risk elimination, and getting sick does not mean you were careless.\n\nFor most cases the answer is fluids. CDC suggests oral rehydration solutions for serious cases, noting they are available through pharmacies in many developing countries. Buying a few sachets on arrival, before you need them, is a small and sensible precaution in higher-risk destinations.\n\nOn antibiotics, the guidance is restrained: consider them only for severe cases, and take them exactly as a doctor instructs. Reaching for a leftover course from a previous illness is a poor plan on both effectiveness and resistance grounds.\n\nIf severe diarrhea develops soon after you return home, CDC advises seeing a doctor and asking for stool tests, so that treatment can be matched to the actual cause rather than guessed at. Mention where you traveled and when, because it changes what a clinician will consider.\n\n## Adjust for Where You Are Actually Going\n\nThe final point is the one that generic advice tends to flatten: conditions vary enormously between destinations, and between regions within a single country.\n\nThe higher-risk regions CDC identifies are a starting point for calibration, not a verdict on any particular city, restaurant, or cuisine. Water infrastructure differs between a capital city and a rural area in the same country, and often between neighborhoods.\n\nCheck current guidance for your specific destination before you travel, rather than applying a rule you learned on a different trip to a different part of the world. The reasoning transfers; the specific risk level does not.",
+      "faq": [
+        {
+          "question": "Is street food always unsafe?",
+          "answer": "CDC lists food from street vendors among riskier choices. That is a risk statement, not a prohibition, and the underlying principles still apply — something cooked in front of you and served steaming hot is a different proposition from something that has been sitting out. If you choose to eat from street vendors, apply the same heat and freshness reasoning you would anywhere else, and accept that you are taking on more risk than you would in a controlled kitchen."
+        },
+        {
+          "question": "Can I drink tap water if locals do?",
+          "answer": "Local tolerance is not a reliable guide for a visitor, and CDC's guidance is framed around destinations where tap water might be contaminated rather than around local habits. In those destinations, do not drink tap water untreated. Boiling, filtering, and chemical treatment are the options CDC identifies. Check the situation for your specific destination before assuming either way."
+        },
+        {
+          "question": "What about ice in drinks at a nice hotel?",
+          "answer": "CDC advises against using ice in destinations with limited access to clean water, or where contaminated drinking water is a concern, because the ice was likely made with tap water. The venue's quality is not the variable that matters — the water supply is. Some hotels do use treated water for ice, but you generally cannot verify that from the table."
+        },
+        {
+          "question": "Are carbonated drinks genuinely safer?",
+          "answer": "CDC notes carbonated drinks among safer options, with the bubbles serving as an indication that the container was factory sealed. The carbonation itself is a signal about sealing rather than a treatment. An unopened factory-sealed bottle or can is the property that matters."
+        },
+        {
+          "question": "If I get sick anyway, does that mean I did something wrong?",
+          "answer": "No. These practices lower risk; they do not eliminate it. Travelers' diarrhea is the most common travel-related illness precisely because exposure is difficult to avoid entirely, particularly in higher-risk regions. CDC identifies the highest risk in Asia excluding Japan and South Korea, the Middle East, Africa, and Central and South America. If you do become ill, focus on fluids, and see a doctor for severe cases rather than reaching for leftover antibiotics."
+        },
+        {
+          "question": "Should I avoid all fresh fruit?",
+          "answer": "No. CDC treats fruit and vegetables that you peel yourself, or wash in bottled water, as safer options. The risk is not fruit itself but what untreated water and handling may have introduced. Peeling it yourself puts the handling under your control."
+        }
+      ],
+      "qualityChecklist": [],
+      "koreanReview": "[art_00X · Food and Water Safety Abroad]\n\n■ 핵심 요약\n해외 음식·물 안전 글입니다. 개별 규칙을 나열하는 대신 \"최근 가열되었는가\"와 \"공장 밀봉인가\" 두 가지 판단 기준으로 압축한 것이 이 글의 구조적 차별점입니다. 얼음·수돗물·생과일·손위생을 CDC 표현 그대로 다뤘습니다.\n\n■ 기존 글과의 차이\nart_002·art_003(보험 상품 비교), 앞의 두 글(아플 때 대응 / 출국 전 키트)과 검색 의도가 모두 다릅니다. 이 글은 현지 체류 중 \"행동 예방\"입니다. 보험 언급이 아예 없습니다.\n\n■ 출처 사용\nCDC Food and Drink Considerations + Travelers' Diarrhea 2개만 사용, 둘 다 실제 본문을 읽고 분류를 대조했습니다. 안전/위험 분류는 전부 CDC 표기를 따랐고 임의 추가하지 않았습니다.\n\n■ 과장·위험 표현 점검\n- \"길거리 음식 절대 금지\" 같은 단정 없음 — CDC가 \"riskier\"라고만 하므로 그대로 유지했습니다\n- \"이렇게 하면 안 아프다\" 보장 표현 없음 — \"위험을 낮추지만 없애지 않는다\"를 Quick Answer와 FAQ에 명시\n- 정수기·필터·영양제 등 제품 추천 없음\n- 가짜 통계·수치 없음 (CDC가 제시한 지역 구분만 사용)\n- 공포 조장 없음 — 오히려 \"포장 과자만 먹을 필요 없다\" 섹션을 별도로 배치\n\n■ 미국 독자가 오해할 수 있는 지점\n1. \"현지인이 마시면 안전하다\"는 통념 — FAQ에서 명시적으로 부정했습니다.\n2. 탄산음료가 살균 효과가 있다는 오해 — \"밀봉 신호일 뿐 소독이 아니다\"라고 두 번 구분했습니다.\n3. 고급 호텔 얼음은 안전하다는 오해 — \"변수는 시설 등급이 아니라 상수도\"라고 명시했습니다.\n4. 지역 위험도는 CDC 표기를 그대로 옮겼고 특정 국가를 비하하지 않도록 \"보정 기준일 뿐 특정 도시·식당에 대한 판정이 아니다\"를 마지막 섹션에 넣었습니다.\n\n■ 추후 제휴 링크 연결 후보 위치\n- \"Water, Ice, and What They Touch\" 섹션 (휴대용 정수 제품)\n- \"Hand Hygiene Is Half of It\" 섹션 (손소독 관련)\n현재 활성 제휴 0개이므로 CTA·Product Card 미노출 상태입니다.\n\n■ 공개 전 확인 사항\n1. 이미지 5장 생성·업로드 필요\n2. CDC 두 페이지의 분류가 갱신되지 않았는지 발행 직전 확인\n3. 특정 국가명이 부정적 맥락으로 읽히지 않는지 최종 검수",
+      "status": "written",
+      "publishedUrl": "",
+      "blogId": "",
+      "createdAt": "2026-07-21T15:05:23.322Z",
+      "updatedAt": "2026-07-21T15:10:46.230Z",
+      "bodyHtml": "<p>Travel advice about food tends to arrive as folklore — a rule someone's cousin swears by, repeated until it sounds official. Some of it is roughly right. Some of it is superstition. This article sticks to what CDC's Travelers' Health guidance actually says, and separates the reasoning from the rules so you can apply it to situations no list covers.</p>\n<p>The goal is not to eat nothing interesting. It is to understand which properties of a meal actually carry risk.</p>\n<h2 id=\"atlas-h2-0\">Why This Is Worth Thinking About</h2>\n<p>Travelers' diarrhea is the most common travel-related illness. CDC identifies the highest risk in Asia excluding Japan and South Korea, the Middle East, Africa, and Central and South America.</p>\n<p>Food and drink choices are the main variable you control. Prevention, in CDC's framing, comes down to two things: careful food and beverage selection, and hand hygiene through frequent handwashing or alcohol-based sanitizer.</p>\n<p>That second one is worth stating on its own, because it gets forgotten in discussions that focus entirely on what is on the plate.</p>\n<p>It is also worth being clear about stakes. For most travelers this is a few unpleasant days rather than a catastrophe. The reason to take it seriously is that those days often land in the middle of a short trip, and dehydration in a hot climate compounds quickly.</p>\n<h2 id=\"atlas-h2-1\">The Two Signals That Matter Most</h2>\n<p>Nearly all of the specific rules collapse into two properties.</p>\n<p>The first is recent heat. CDC's guidance is direct — eat only foods that are cooked and served hot. Steaming hot food has been through a process that addresses most of the concern. Food that was cooked hours ago and held warm, or left standing at room temperature, has not.</p>\n<p>The second is factory sealing. Unopened, factory-sealed bottled or canned drinks are treated as safer. So are factory-sealed canned foods and dry packaged items such as potato chips. The seal means the contents have not met local water or local handling.</p>\n<p>Once you have those two, most novel situations resolve themselves without a lookup. A dish you have never seen before, arriving visibly steaming, sits differently from the same dish at room temperature on a buffet.</p>\n<h2 id=\"atlas-h2-2\">What Falls Into the Riskier Column</h2>\n<p>CDC groups several categories as riskier choices.</p>\n<p>Raw foods generally, including fresh salads and cut vegetables. The problem is rarely the vegetable itself — it is the washing water and the handling that preceded it.</p>\n<p>Raw meat and seafood, including ceviche. Marinating in citrus is a preparation technique, not a heat treatment, and it is a common point of confusion.</p>\n<p>Food from street vendors. This one is worth reading precisely: it is listed as higher risk, not as forbidden. Something cooked to order in front of you and handed over steaming is a materially different situation from something that has been sitting in a warm tray since lunch.</p>\n<p>Bushmeat, meaning wild game animals, which CDC lists separately.</p>\n<p>Buffet items are worth singling out because they combine several of these problems: food held at intermediate temperatures, for unknown periods, with many people handling the serving utensils.</p>\n<p>On the drinks side, the riskier items are fountain sodas, which are made with tap water; freshly squeezed juice prepared by someone else, where both the water and the produce handling are unknown; and drinks served warm or at room temperature.</p>\n<h2 id=\"atlas-h2-3\">Water, Ice, and What They Touch</h2>\n<p>Water deserves its own treatment because it reaches food indirectly in ways that are easy to overlook.</p>\n<p>CDC's position on tap water is conditional rather than universal: do not drink the tap water in countries where the tap water might be contaminated. Where that applies, the water can be made safe by boiling, filtering, or chemical treatment.</p>\n<p>Ice is where most travelers slip. CDC advises against using ice in destinations with limited access to clean water, or where contaminated drinking water is a concern, because it was likely made with tap water. Freezing is not a treatment. A carefully chosen sealed drink poured over local ice has undone the careful choice.</p>\n<p>The same reasoning extends outward to things people rarely think of as drinking water. Brushing your teeth uses tap water. Rinsing a water bottle uses tap water. Produce washed for a salad was washed in something. Where the tap water is the concern, all of these inherit it.</p>\n<p>For drinks, the safer options CDC identifies are unopened factory-sealed bottled or canned beverages, carbonated drinks, hot coffee or tea served steaming, and pasteurized milk from sealed bottles. The note on carbonation is useful — the bubbles indicate the container was sealed at a factory. It is a sealing signal, not a disinfectant, and the distinction matters.</p>\n<p>One practical habit follows directly: check that a bottle's seal is actually intact when it is handed to you, rather than assuming. The property CDC identifies as safer is specifically unopened and factory sealed.</p>\n<p>This is easiest to apply when you open the bottle yourself. If a drink arrives already poured, or a bottle arrives already opened at the table, you have lost the signal that made it the safer choice in the first place — not because anything is necessarily wrong with it, but because you can no longer verify the property you were relying on. Asking for the sealed bottle is a normal request in most places that serve visitors.</p>\n<h2 id=\"atlas-h2-4\">Eating Well Without Living on Packaged Snacks</h2>\n<p>None of this requires spending a trip on crackers and bottled water, and doing so would waste much of the point of travel.</p>\n<p>Fruit and vegetables that you peel yourself, or wash in bottled water, are treated as safer options. Peeling puts the handling under your own control, which is the actual variable. This opens up a large amount of fresh food rather than closing it off.</p>\n<p>Hot food cooked to order is the reliable center of most meals. Busy places that cook continuously tend to serve food that has been hot recently, which is the property that matters — not the presence of a menu in English or a tourist-friendly frontage.</p>\n<p>Hot coffee and tea served steaming are safer options, which covers a good deal of ordinary daily drinking without any special effort.</p>\n<p>The pattern that emerges is not restriction so much as sequencing: favor things that were recently heated or never opened, and take more care with things that were washed, cut, or left standing. Applied consistently, that still leaves most of a country's food available to you.</p>\n<h2 id=\"atlas-h2-5\">Hand Hygiene Is Half of It</h2>\n<p>CDC lists hand hygiene alongside food selection as one of the two main prevention approaches — frequent handwashing, or alcohol-based hand sanitizer.</p>\n<p>This matters most immediately before eating, and particularly when eating with your hands, which is normal in much of the world. It is easy to be careful about the food and then undo that care on the way to your mouth.</p>\n<p>It also matters after handling money, transit surfaces, and shared serving utensils, which are the contact points travelers touch most and think about least.</p>\n<p>This is the part of prevention that travels with you regardless of destination or venue quality, and it requires no judgement calls about a menu.</p>\n<p>Soap and running water are not always available where you need them, which is the practical argument for carrying sanitizer rather than relying on finding a sink. Public restrooms in transit hubs and markets frequently have neither, and that is exactly where you have just touched the most shared surfaces. CDC's own packing guidance lists hand sanitizer with at least 60% alcohol as a supply worth carrying, and the alcohol percentage is the specification people most often get wrong when buying on price alone.</p>\n<h2 id=\"atlas-h2-6\">If You Get Sick Anyway</h2>\n<p>Risk reduction is not risk elimination, and getting sick does not mean you were careless.</p>\n<p>For most cases the answer is fluids. CDC suggests oral rehydration solutions for serious cases, noting they are available through pharmacies in many developing countries. Buying a few sachets on arrival, before you need them, is a small and sensible precaution in higher-risk destinations.</p>\n<p>On antibiotics, the guidance is restrained: consider them only for severe cases, and take them exactly as a doctor instructs. Reaching for a leftover course from a previous illness is a poor plan on both effectiveness and resistance grounds.</p>\n<p>If severe diarrhea develops soon after you return home, CDC advises seeing a doctor and asking for stool tests, so that treatment can be matched to the actual cause rather than guessed at. Mention where you traveled and when, because it changes what a clinician will consider.</p>\n<h2 id=\"atlas-h2-7\">Adjust for Where You Are Actually Going</h2>\n<p>The final point is the one that generic advice tends to flatten: conditions vary enormously between destinations, and between regions within a single country.</p>\n<p>The higher-risk regions CDC identifies are a starting point for calibration, not a verdict on any particular city, restaurant, or cuisine. Water infrastructure differs between a capital city and a rural area in the same country, and often between neighborhoods.</p>\n<p>Check current guidance for your specific destination before you travel, rather than applying a rule you learned on a different trip to a different part of the world. The reasoning transfers; the specific risk level does not.</p>"
     }
   ]
 }
