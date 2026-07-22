@@ -2,6 +2,12 @@ import Link from "next/link";
 
 const CARDS = [
   {
+    href: "/atlas/revenue",
+    title: "수익 자동화 R2",
+    description:
+      "이번 주 자동추천 → 원고·QA → 승인·발행 → 쇼핑 쇼츠 → 캠페인 → 실제 성과 (한 화면 흐름)",
+  },
+  {
     href: "/atlas/blog-studio",
     title: "Blog Studio",
     description: "한국어 MASTER 본문 작성 · Meta/Slug · 제품 연결 관리",

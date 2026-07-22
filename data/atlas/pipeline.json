@@ -1,0 +1,527 @@
+{
+  "batches": [
+    {
+      "id": "batch_001",
+      "generatedAt": "2026-07-22T14:00:07.181Z",
+      "poolSize": 37,
+      "affiliateActiveCount": 0,
+      "dataSources": [
+        "keywords.json (로컬 키워드 아이디어)",
+        "categories.json (편집 시드 리스트)",
+        "articles.json (중복 검사 대상)"
+      ],
+      "blocked": [
+        "BLOCKED_AFFILIATE_APPROVAL"
+      ],
+      "unknownFields": [
+        "trend.sevenDay",
+        "trend.thirtyDay",
+        "competition.live",
+        "officialSource.url"
+      ],
+      "candidates": [
+        {
+          "topic": "챗GPT 업무 활용법",
+          "title": "챗GPT 업무 활용법",
+          "type": "info",
+          "bucket": "practical",
+          "origin": "keyword-idea",
+          "category": "AI 활용법",
+          "reason": "정보형 주제 · 미사용 로컬 키워드 · 기존 글과 검색의도 중복 없음",
+          "trend": {
+            "sevenDay": "UNKNOWN",
+            "thirtyDay": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+          },
+          "seasonality": {
+            "level": 2,
+            "source": "local manual estimate (keywords.json)"
+          },
+          "competition": {
+            "live": "UNKNOWN",
+            "localEstimate": 3,
+            "source": "local manual estimate only"
+          },
+          "productCategory": "AI 활용법",
+          "monetization": {
+            "level": "정보형(직접 판매 아님)",
+            "productStatus": "N/A",
+            "salesCtaAllowed": false
+          },
+          "officialSource": {
+            "url": "",
+            "collectedAt": null,
+            "status": "NEEDS_CONFIGURATION: 공식 출처 미수집(원고 생성 단계에서 실제 URL 확보)"
+          },
+          "duplication": {
+            "level": "none",
+            "overlap": 0,
+            "matchedArticleId": ""
+          },
+          "score": 68,
+          "scoreBreakdown": {
+            "base": {
+              "value": 58,
+              "source": "keywords.json moneyScore"
+            },
+            "gapBonus": 10,
+            "dupPenalty": 0
+          },
+          "priority": 1
+        },
+        {
+          "topic": "how to save money fast",
+          "title": "how to save money fast",
+          "type": "tip",
+          "bucket": "practical",
+          "origin": "category-seed:money",
+          "category": "Money & Finance",
+          "reason": "실용 팁형 주제 · 편집 시드 카테고리 기반 · 기존 글과 검색의도 중복 없음",
+          "trend": {
+            "sevenDay": "UNKNOWN",
+            "thirtyDay": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+          },
+          "seasonality": {
+            "level": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION"
+          },
+          "competition": {
+            "live": "UNKNOWN",
+            "localEstimate": null,
+            "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+          },
+          "productCategory": "Money & Finance",
+          "monetization": {
+            "level": "정보형(직접 판매 아님)",
+            "productStatus": "N/A",
+            "salesCtaAllowed": false
+          },
+          "officialSource": {
+            "url": "",
+            "collectedAt": null,
+            "status": "NEEDS_CONFIGURATION: 공식 출처 미수집(원고 생성 단계에서 실제 URL 확보)"
+          },
+          "duplication": {
+            "level": "none",
+            "overlap": 0,
+            "matchedArticleId": ""
+          },
+          "score": 60,
+          "scoreBreakdown": {
+            "base": {
+              "value": 50,
+              "source": "default(50): 로컬 지표 없음"
+            },
+            "gapBonus": 10,
+            "dupPenalty": 0
+          },
+          "priority": 2
+        },
+        {
+          "topic": "credit card rewards tips",
+          "title": "credit card rewards tips",
+          "type": "tip",
+          "bucket": "practical",
+          "origin": "category-seed:money",
+          "category": "Money & Finance",
+          "reason": "실용 팁형 주제 · 편집 시드 카테고리 기반 · 기존 글과 검색의도 중복 없음",
+          "trend": {
+            "sevenDay": "UNKNOWN",
+            "thirtyDay": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+          },
+          "seasonality": {
+            "level": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION"
+          },
+          "competition": {
+            "live": "UNKNOWN",
+            "localEstimate": null,
+            "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+          },
+          "productCategory": "Money & Finance",
+          "monetization": {
+            "level": "정보형(직접 판매 아님)",
+            "productStatus": "N/A",
+            "salesCtaAllowed": false
+          },
+          "officialSource": {
+            "url": "",
+            "collectedAt": null,
+            "status": "NEEDS_CONFIGURATION: 공식 출처 미수집(원고 생성 단계에서 실제 URL 확보)"
+          },
+          "duplication": {
+            "level": "none",
+            "overlap": 9,
+            "matchedArticleId": "art_002"
+          },
+          "score": 60,
+          "scoreBreakdown": {
+            "base": {
+              "value": 50,
+              "source": "default(50): 로컬 지표 없음"
+            },
+            "gapBonus": 10,
+            "dupPenalty": 0
+          },
+          "priority": 3
+        },
+        {
+          "topic": "ChatGPT prompts for work",
+          "title": "ChatGPT prompts for work",
+          "type": "info",
+          "bucket": "practical",
+          "origin": "category-seed:ai-tech",
+          "category": "AI & Technology",
+          "reason": "정보형 주제 · 편집 시드 카테고리 기반 · 기존 글과 검색의도 중복 없음",
+          "trend": {
+            "sevenDay": "UNKNOWN",
+            "thirtyDay": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+          },
+          "seasonality": {
+            "level": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION"
+          },
+          "competition": {
+            "live": "UNKNOWN",
+            "localEstimate": null,
+            "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+          },
+          "productCategory": "AI & Technology",
+          "monetization": {
+            "level": "정보형(직접 판매 아님)",
+            "productStatus": "N/A",
+            "salesCtaAllowed": false
+          },
+          "officialSource": {
+            "url": "",
+            "collectedAt": null,
+            "status": "NEEDS_CONFIGURATION: 공식 출처 미수집(원고 생성 단계에서 실제 URL 확보)"
+          },
+          "duplication": {
+            "level": "none",
+            "overlap": 0,
+            "matchedArticleId": ""
+          },
+          "score": 60,
+          "scoreBreakdown": {
+            "base": {
+              "value": 50,
+              "source": "default(50): 로컬 지표 없음"
+            },
+            "gapBonus": 10,
+            "dupPenalty": 0
+          },
+          "priority": 4
+        },
+        {
+          "topic": "자동차 보험 비교",
+          "title": "자동차 보험 비교",
+          "type": "product",
+          "bucket": "commercial",
+          "origin": "keyword-idea",
+          "category": "자동차 보험",
+          "reason": "제품형 주제 · 미사용 로컬 키워드 · 기존 글과 검색의도 중복 없음",
+          "trend": {
+            "sevenDay": "UNKNOWN",
+            "thirtyDay": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+          },
+          "seasonality": {
+            "level": 3,
+            "source": "local manual estimate (keywords.json)"
+          },
+          "competition": {
+            "live": "UNKNOWN",
+            "localEstimate": 3,
+            "source": "local manual estimate only"
+          },
+          "productCategory": "자동차 보험",
+          "monetization": {
+            "level": "ESTIMATE_BLOCKED",
+            "productStatus": "제휴 승인 대기",
+            "salesCtaAllowed": false,
+            "note": "활성 제휴 상품 0개 — 판매 CTA를 생성하지 않습니다."
+          },
+          "officialSource": {
+            "url": "",
+            "collectedAt": null,
+            "status": "NEEDS_CONFIGURATION: 공식 출처 미수집(원고 생성 단계에서 실제 URL 확보)"
+          },
+          "duplication": {
+            "level": "none",
+            "overlap": 0,
+            "matchedArticleId": ""
+          },
+          "score": 97,
+          "scoreBreakdown": {
+            "base": {
+              "value": 87,
+              "source": "keywords.json moneyScore"
+            },
+            "gapBonus": 10,
+            "dupPenalty": 0
+          },
+          "priority": 5
+        },
+        {
+          "topic": "자동차 보험료 할인 조건",
+          "title": "자동차 보험료 할인 조건",
+          "type": "product",
+          "bucket": "commercial",
+          "origin": "keyword-idea",
+          "category": "자동차 보험",
+          "reason": "제품형 주제 · 미사용 로컬 키워드 · 기존 글과 검색의도 중복 없음",
+          "trend": {
+            "sevenDay": "UNKNOWN",
+            "thirtyDay": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+          },
+          "seasonality": {
+            "level": 2,
+            "source": "local manual estimate (keywords.json)"
+          },
+          "competition": {
+            "live": "UNKNOWN",
+            "localEstimate": 3,
+            "source": "local manual estimate only"
+          },
+          "productCategory": "자동차 보험",
+          "monetization": {
+            "level": "ESTIMATE_BLOCKED",
+            "productStatus": "제휴 승인 대기",
+            "salesCtaAllowed": false,
+            "note": "활성 제휴 상품 0개 — 판매 CTA를 생성하지 않습니다."
+          },
+          "officialSource": {
+            "url": "",
+            "collectedAt": null,
+            "status": "NEEDS_CONFIGURATION: 공식 출처 미수집(원고 생성 단계에서 실제 URL 확보)"
+          },
+          "duplication": {
+            "level": "none",
+            "overlap": 0,
+            "matchedArticleId": ""
+          },
+          "score": 76,
+          "scoreBreakdown": {
+            "base": {
+              "value": 66,
+              "source": "keywords.json moneyScore"
+            },
+            "gapBonus": 10,
+            "dupPenalty": 0
+          },
+          "priority": 6
+        },
+        {
+          "topic": "best high yield savings account",
+          "title": "best high yield savings account",
+          "type": "product",
+          "bucket": "commercial",
+          "origin": "category-seed:money",
+          "category": "Money & Finance",
+          "reason": "제품형 주제 · 편집 시드 카테고리 기반 · 기존 글과 검색의도 중복 없음",
+          "trend": {
+            "sevenDay": "UNKNOWN",
+            "thirtyDay": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+          },
+          "seasonality": {
+            "level": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION"
+          },
+          "competition": {
+            "live": "UNKNOWN",
+            "localEstimate": null,
+            "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+          },
+          "productCategory": "Money & Finance",
+          "monetization": {
+            "level": "ESTIMATE_BLOCKED",
+            "productStatus": "제휴 승인 대기",
+            "salesCtaAllowed": false,
+            "note": "활성 제휴 상품 0개 — 판매 CTA를 생성하지 않습니다."
+          },
+          "officialSource": {
+            "url": "",
+            "collectedAt": null,
+            "status": "NEEDS_CONFIGURATION: 공식 출처 미수집(원고 생성 단계에서 실제 URL 확보)"
+          },
+          "duplication": {
+            "level": "none",
+            "overlap": 0,
+            "matchedArticleId": ""
+          },
+          "score": 60,
+          "scoreBreakdown": {
+            "base": {
+              "value": 50,
+              "source": "default(50): 로컬 지표 없음"
+            },
+            "gapBonus": 10,
+            "dupPenalty": 0
+          },
+          "priority": 7
+        },
+        {
+          "topic": "best AI tools 2025",
+          "title": "best AI tools 2025",
+          "type": "product",
+          "bucket": "commercial",
+          "origin": "category-seed:ai-tech",
+          "category": "AI & Technology",
+          "reason": "제품형 주제 · 편집 시드 카테고리 기반 · 기존 글과 검색의도 중복 없음",
+          "trend": {
+            "sevenDay": "UNKNOWN",
+            "thirtyDay": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+          },
+          "seasonality": {
+            "level": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION"
+          },
+          "competition": {
+            "live": "UNKNOWN",
+            "localEstimate": null,
+            "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+          },
+          "productCategory": "AI & Technology",
+          "monetization": {
+            "level": "ESTIMATE_BLOCKED",
+            "productStatus": "제휴 승인 대기",
+            "salesCtaAllowed": false,
+            "note": "활성 제휴 상품 0개 — 판매 CTA를 생성하지 않습니다."
+          },
+          "officialSource": {
+            "url": "",
+            "collectedAt": null,
+            "status": "NEEDS_CONFIGURATION: 공식 출처 미수집(원고 생성 단계에서 실제 URL 확보)"
+          },
+          "duplication": {
+            "level": "none",
+            "overlap": 0,
+            "matchedArticleId": ""
+          },
+          "score": 60,
+          "scoreBreakdown": {
+            "base": {
+              "value": 50,
+              "source": "default(50): 로컬 지표 없음"
+            },
+            "gapBonus": 10,
+            "dupPenalty": 0
+          },
+          "priority": 8
+        },
+        {
+          "topic": "연말정산 환급금 조회",
+          "title": "연말정산 환급금 조회",
+          "type": "product",
+          "bucket": "seasonal",
+          "origin": "keyword-idea",
+          "category": "금융/세금",
+          "reason": "제품형 주제 · 미사용 로컬 키워드 · 기존 글과 검색의도 중복 없음",
+          "trend": {
+            "sevenDay": "UNKNOWN",
+            "thirtyDay": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+          },
+          "seasonality": {
+            "level": 5,
+            "source": "local manual estimate (keywords.json)"
+          },
+          "competition": {
+            "live": "UNKNOWN",
+            "localEstimate": 3,
+            "source": "local manual estimate only"
+          },
+          "productCategory": "금융/세금",
+          "monetization": {
+            "level": "ESTIMATE_BLOCKED",
+            "productStatus": "제휴 승인 대기",
+            "salesCtaAllowed": false,
+            "note": "활성 제휴 상품 0개 — 판매 CTA를 생성하지 않습니다."
+          },
+          "officialSource": {
+            "url": "",
+            "collectedAt": null,
+            "status": "NEEDS_CONFIGURATION: 공식 출처 미수집(원고 생성 단계에서 실제 URL 확보)"
+          },
+          "duplication": {
+            "level": "none",
+            "overlap": 0,
+            "matchedArticleId": ""
+          },
+          "score": 89,
+          "scoreBreakdown": {
+            "base": {
+              "value": 79,
+              "source": "keywords.json moneyScore"
+            },
+            "gapBonus": 10,
+            "dupPenalty": 0
+          },
+          "priority": 9
+        },
+        {
+          "topic": "국내 여행지 추천",
+          "title": "국내 여행지 추천",
+          "type": "info",
+          "bucket": "seasonal",
+          "origin": "keyword-idea",
+          "category": "여행",
+          "reason": "정보형 주제 · 미사용 로컬 키워드 · 기존 글과 검색의도 중복 없음",
+          "trend": {
+            "sevenDay": "UNKNOWN",
+            "thirtyDay": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+          },
+          "seasonality": {
+            "level": 5,
+            "source": "local manual estimate (keywords.json)"
+          },
+          "competition": {
+            "live": "UNKNOWN",
+            "localEstimate": 4,
+            "source": "local manual estimate only"
+          },
+          "productCategory": "여행",
+          "monetization": {
+            "level": "정보형(직접 판매 아님)",
+            "productStatus": "N/A",
+            "salesCtaAllowed": false
+          },
+          "officialSource": {
+            "url": "",
+            "collectedAt": null,
+            "status": "NEEDS_CONFIGURATION: 공식 출처 미수집(원고 생성 단계에서 실제 URL 확보)"
+          },
+          "duplication": {
+            "level": "none",
+            "overlap": 0,
+            "matchedArticleId": ""
+          },
+          "score": 72,
+          "scoreBreakdown": {
+            "base": {
+              "value": 62,
+              "source": "keywords.json moneyScore"
+            },
+            "gapBonus": 10,
+            "dupPenalty": 0
+          },
+          "priority": 10
+        }
+      ],
+      "mix": {
+        "practical": 4,
+        "commercial": 4,
+        "seasonal": 2
+      }
+    }
+  ],
+  "jobs": []
+}
