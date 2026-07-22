@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 import { readJson } from "@/lib/data-store";
 import { buildRecommendations, duplicationAgainstCorpus, assertProductionEligible } from "@/lib/atlas/recommendation-engine";
 import { AXIS_IDS } from "@/lib/atlas/atlas-scope";
+import { STEP_SEQUENCE, canApprovePublish, isResumable } from "@/lib/atlas/production-pipeline";
+import { reserveArticleId } from "@/lib/atlas/repositories/production-job-repository";
+import { researchProviderReadiness } from "@/lib/atlas/providers/research-provider";
+import { imageProviderReadiness, generateImages } from "@/lib/atlas/providers/image-provider";
+import { contentProviderReadiness } from "@/lib/atlas/providers/content-provider";
 import { runArticleQa } from "@/lib/atlas/qa-engine";
 import { buildShortsDraft } from "@/lib/atlas/shorts-engine";
 import { makeCampaignId, parseCampaignId, makeShortId } from "@/lib/atlas/campaign-engine";
@@ -120,6 +125,21 @@ export async function GET() {
   check("pipeline-qa-gate-blocks-fail", gateQaFail.ok === false);
   const gateReview = canAdvance({ stage: "ready_for_review" }, { humanApproved: false });
   check("pipeline-review-needs-human", gateReview.ok === false && gateReview.status === "AWAITING_HUMAN");
+
+  // ── R3 production pipeline (pure checks; live E2E job runs via the API)
+  check("r3-step-sequence", STEP_SEQUENCE.join(",") === "RESEARCHING,WRITING,VALIDATING,GENERATING_IMAGES,UPLOADING_IMAGES,BUILDING_PREVIEW,CREATING_BLOGGER_DRAFT");
+  check("r3-research-honest-blocked", researchProviderReadiness().ready === false, "no search provider → blocked, not faked");
+  check("r3-content-honest-blocked", contentProviderReadiness().ready === false, "no AI provider → blocked, not faked");
+  check("r3-image-honest-blocked", imageProviderReadiness().ready === false, "no image provider → blocked, not faked");
+  const imgRes = await generateImages([{}, {}, {}, {}, {}]);
+  check("r3-image-provider-no-fake-urls", imgRes.ok === false && imgRes.blocked === "BLOCKED_IMAGE_PROVIDER" && imgRes.generated.length === 0);
+  check("r3-reserve-art007", reserveArticleId() === "art_007", reserveArticleId());
+  check("r3-approve-blocked-when-not-ready", canApprovePublish({ status: "QUEUED" }).ok === false);
+  check(
+    "r3-approve-ok-when-complete",
+    canApprovePublish({ status: "READY_FOR_REVIEW", articleId: "art_x", bloggerDraft: { postId: "1" }, steps: { UPLOADING_IMAGES: { status: "done" } } }).ok === true,
+  );
+  check("r3-resumable-flags", isResumable({ status: "READY_FOR_REVIEW" }) === false && isResumable({ status: "BLOCKED_RESEARCH_PROVIDER" }) === true);
 
   const pass = results.every((r) => r.pass);
   return NextResponse.json({ pass, total: results.length, failed: results.filter((r) => !r.pass), results });

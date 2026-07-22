@@ -1,0 +1,55 @@
+{
+  "jobs": [
+    {
+      "id": "pjob_001",
+      "idempotencyKey": "what-trip-cancellation-insurance-actually-covers-and-what-it-doesnt",
+      "topic": "What Trip Cancellation Insurance Actually Covers (and What It Doesn't)",
+      "searchIntent": "Understand which cancellation reasons are reimbursable before buying a policy",
+      "axis": "trip-cancellation-interruption",
+      "recommendation": {
+        "title": "What Trip Cancellation Insurance Actually Covers (and What It Doesn't)",
+        "searchIntent": "Understand which cancellation reasons are reimbursable before buying a policy",
+        "contentAxis": {
+          "id": "trip-cancellation-interruption"
+        },
+        "relatedArticleIds": [
+          "art_002",
+          "art_003"
+        ],
+        "officialSource": {
+          "availability": "AVAILABLE"
+        }
+      },
+      "articleId": "",
+      "status": "BLOCKED_RESEARCH_PROVIDER",
+      "step": "RESEARCHING",
+      "progress": {
+        "index": 0,
+        "total": 8,
+        "percent": 0
+      },
+      "steps": {
+        "RESEARCHING": {
+          "status": "stopped",
+          "at": "2026-07-22T15:23:38.852Z",
+          "detail": "신뢰할 수 있는 출처를 자동 조사할 검색 제공자가 연결되지 않았습니다."
+        }
+      },
+      "blocked": {
+        "code": "BLOCKED_RESEARCH_PROVIDER",
+        "userMessage": "신뢰할 수 있는 출처를 자동 조사할 검색 제공자가 연결되지 않았습니다.",
+        "resumable": true,
+        "envNeeded": [
+          "ATLAS_SEARCH_API_KEY (또는 SERPAPI_KEY / BING_SEARCH_KEY)"
+        ]
+      },
+      "error": null,
+      "review": null,
+      "preview": null,
+      "bloggerDraft": null,
+      "createdAt": "2026-07-22T15:23:38.486Z",
+      "startedAt": "2026-07-22T15:23:38.850Z",
+      "updatedAt": "2026-07-22T15:23:38.853Z"
+    }
+  ]
+}

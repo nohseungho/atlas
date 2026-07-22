@@ -49,23 +49,65 @@ export default function RevenuePage() {
   const [tracking, setTracking] = useState(null);
   const [busy, setBusy] = useState("");
   const [csv, setCsv] = useState("");
+  const [prodJobs, setProdJobs] = useState([]);
+  const [r3msg, setR3msg] = useState("");
 
   useEffect(() => {
     // Client-side fetch-on-mount against our own API routes (admin tool).
     async function loadAll() {
-      const [r, p, s, t] = await Promise.all([
+      const [r, p, s, t, pj] = await Promise.all([
         api("/api/atlas/recommendations"),
         api("/api/atlas/pipeline"),
         api("/api/atlas/shorts"),
         api("/api/atlas/tracking"),
+        api("/api/atlas/production-jobs"),
       ]);
       setRec(r);
       setPipeline(p);
       setShorts(s.drafts || []);
       setTracking(t);
+      setProdJobs(pj.jobs || []);
     }
     loadAll();
   }, []);
+
+  // R3 one-click: create a production job for a candidate, then advance it.
+  async function autoProduce(candidate) {
+    setR3msg("");
+    setBusy("r3" + candidate.priority);
+    const created = await api("/api/atlas/production-jobs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ recommendation: candidate }),
+    });
+    if (created?.blocked) {
+      setR3msg(created.reason || "범위 밖 주제로 제작이 차단되었습니다.");
+      setBusy("");
+      return;
+    }
+    const jobId = created?.job?.id;
+    if (jobId) {
+      await api("/api/atlas/production-jobs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "run", jobId }),
+      });
+    }
+    if (created?.duplicate) setR3msg("이미 같은 주제의 제작 Job이 있어 중복 생성하지 않았습니다.");
+    setProdJobs((await api("/api/atlas/production-jobs")).jobs || []);
+    setBusy("");
+  }
+
+  async function retryJob(jobId) {
+    setBusy("retry" + jobId);
+    await api("/api/atlas/production-jobs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "retry", jobId }),
+    });
+    setProdJobs((await api("/api/atlas/production-jobs")).jobs || []);
+    setBusy("");
+  }
 
   async function refreshRecommendations() {
     setBusy("rec");
@@ -171,12 +213,19 @@ export default function RevenuePage() {
                   <Pill status="NA">{c.type}</Pill>
                   <span className="text-xs text-zinc-500">점수 {c.score}/{c.maxAvailableScore}</span>
                   <button
-                    onClick={() => selectTopic(c)}
+                    onClick={() => autoProduce(c)}
                     disabled={!!busy || !c.eligibility?.canGenerate}
                     title={c.eligibility?.blockedReason || ""}
-                    className="ml-auto rounded bg-emerald-600 px-2 py-1 text-xs hover:bg-emerald-500 disabled:opacity-40"
+                    className="ml-auto rounded bg-emerald-600 px-2 py-1 text-xs font-semibold hover:bg-emerald-500 disabled:opacity-40"
                   >
-                    {c.eligibility?.canGenerate ? "이 주제로 원고 시작" : "원고 생성 차단"}
+                    {busy === "r3" + c.priority ? "제작 시작 중..." : "콘텐츠 자동 제작"}
+                  </button>
+                  <button
+                    onClick={() => selectTopic(c)}
+                    disabled={!!busy || !c.eligibility?.canGenerate}
+                    className="rounded bg-zinc-700 px-2 py-1 text-xs hover:bg-zinc-600 disabled:opacity-40"
+                  >
+                    수동 파이프라인
                   </button>
                 </div>
                 <p className="mt-1 text-xs text-zinc-500">의도: {c.searchIntent}</p>
@@ -218,6 +267,15 @@ export default function RevenuePage() {
           )}
         </Section>
 
+        {/* ── R3. 원클릭 콘텐츠 자동 제작 Job ── */}
+        <Section step="R3" title="콘텐츠 자동 제작 (원클릭)" subtitle="추천 카드의 “콘텐츠 자동 제작”을 누르면 서버에서 원고→출처→검사→이미지→Preview→Blogger 초안이 하나의 Job으로 진행됩니다. 새로고침·서버 재시작 후에도 상태가 보존됩니다.">
+          {r3msg && <p className="mb-3 rounded-lg border border-amber-900 bg-amber-950/30 px-3 py-2 text-xs text-amber-300">{r3msg}</p>}
+          <div className="space-y-3">
+            {prodJobs.map((j) => <ProdJobCard key={j.id} job={j} busy={busy} onRetry={retryJob} />)}
+            {prodJobs.length === 0 && <p className="text-sm text-zinc-500">아직 제작 Job이 없습니다. 위 추천 카드에서 “콘텐츠 자동 제작”을 눌러 시작하세요.</p>}
+          </div>
+        </Section>
+
         {/* ── 2~6. 원고 파이프라인 + QA + 승인 ── */}
         <Section step="2~6" title="원고 파이프라인 · QA · 승인" subtitle="추천 선택분과, 기존 MASTER(art_004~006)를 QA에 연결해 검증할 수 있습니다.">
           <div className="mb-3 flex flex-wrap items-center gap-2 text-xs">
@@ -251,6 +309,63 @@ export default function RevenuePage() {
         <Section step="9" title="실제 성과 대시보드" subtitle="주문·판매량·매출은 제휴 네트워크가 보고한 conversion만 집계합니다. 클릭으로 주문을 추정하지 않습니다.">
           <TrackingPanel tracking={tracking} csv={csv} setCsv={setCsv} onImport={importCsv} busy={busy} />
         </Section>
+      </div>
+    </div>
+  );
+}
+
+function ProdJobCard({ job, busy, onRetry }) {
+  const blockedOrFailed = job.status?.startsWith("BLOCKED") || job.status === "FAILED";
+  const pillStatus =
+    job.status === "READY_FOR_REVIEW" || job.status === "PUBLISHED"
+      ? "PASS"
+      : job.status === "REVIEW_REQUIRED"
+      ? "WARN"
+      : blockedOrFailed
+      ? "FAIL"
+      : "NA";
+  const reason = job.blocked?.userMessage || job.error?.userMessage || job.review?.userMessage;
+  const pct = job.progress?.percent ?? 0;
+  return (
+    <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="font-mono text-xs text-zinc-500">{job.id}</span>
+        <span className="font-medium">{job.topic}</span>
+        <Pill status={pillStatus}>{job.statusLabel}</Pill>
+        <span className="ml-auto text-xs text-zinc-500">진행률 {pct}%</span>
+      </div>
+      <div className="mt-2 h-1.5 w-full overflow-hidden rounded bg-zinc-800">
+        <div className="h-full bg-emerald-600" style={{ width: `${pct}%` }} />
+      </div>
+      <div className="mt-2 flex flex-wrap gap-3 text-[11px] text-zinc-500">
+        <span>시작 {job.startedAt ? job.startedAt.slice(0, 19).replace("T", " ") : "-"}</span>
+        <span>업데이트 {job.updatedAt ? job.updatedAt.slice(0, 19).replace("T", " ") : "-"}</span>
+        <span>article: <span className="font-mono text-zinc-400">{job.articleId || "미할당"}</span></span>
+        <span>현재 단계: {job.stepLabel}</span>
+      </div>
+      {reason && (
+        <p className={`mt-2 rounded px-2 py-1 text-[11px] ${blockedOrFailed ? "bg-red-950/40 text-red-300" : "bg-amber-950/40 text-amber-300"}`}>
+          {reason}
+          {job.blocked?.envNeeded?.length ? ` · 필요한 설정: ${job.blocked.envNeeded.join(", ")}` : ""}
+        </p>
+      )}
+      <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px]">
+        <span>Blogger 초안: <Pill status={job.bloggerDraft?.postId ? "PASS" : "NA"}>{job.bloggerDraft?.postId ? "생성됨" : "없음"}</Pill></span>
+        {job.preview?.url && (
+          <a href={job.preview.url} target="_blank" rel="noreferrer" className="rounded bg-zinc-700 px-2 py-1 hover:bg-zinc-600">Preview 열기</a>
+        )}
+        {job.resumable && blockedOrFailed && (
+          <button onClick={() => onRetry(job.id)} disabled={!!busy} className="rounded bg-sky-700 px-2 py-1 hover:bg-sky-600 disabled:opacity-50">
+            {busy === "retry" + job.id ? "재시도 중..." : "재시도(재개)"}
+          </button>
+        )}
+        <button
+          disabled={!job.approve?.ok}
+          title={job.approve?.ok ? "" : (job.approve?.reasons || []).join(" · ")}
+          className="rounded bg-emerald-700 px-2 py-1 hover:bg-emerald-600 disabled:opacity-40"
+        >
+          최종 공개 발행 승인
+        </button>
       </div>
     </div>
   );
