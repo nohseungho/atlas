@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { readJson } from "@/lib/data-store";
-import { buildRecommendations, duplicationAgainstCorpus } from "@/lib/atlas/recommendation-engine";
+import { buildRecommendations, duplicationAgainstCorpus, assertProductionEligible } from "@/lib/atlas/recommendation-engine";
+import { AXIS_IDS } from "@/lib/atlas/atlas-scope";
 import { runArticleQa } from "@/lib/atlas/qa-engine";
 import { buildShortsDraft } from "@/lib/atlas/shorts-engine";
 import { makeCampaignId, parseCampaignId, makeShortId } from "@/lib/atlas/campaign-engine";
@@ -24,17 +25,32 @@ export async function GET() {
   const activeAffiliate = countActiveAffiliate(articles);
   check("affiliate-zero-active", activeAffiliate === 0, `active=${activeAffiliate}`);
 
-  // ── Recommendations
-  const rec = buildRecommendations({ keywords, articles, categories, affiliateActiveCount: activeAffiliate });
-  check("rec-count-10", rec.candidates.length === 10, `n=${rec.candidates.length}`);
-  check("rec-trend-unknown", rec.candidates.every((c) => c.trend.sevenDay === "UNKNOWN"), "no fabricated trends");
-  check("rec-affiliate-blocked", rec.blocked.includes("BLOCKED_AFFILIATE_APPROVAL"));
-  check(
-    "rec-product-no-cta",
-    rec.candidates.filter((c) => c.type === "product" || c.type === "comparison").every((c) => c.monetization.salesCtaAllowed === false),
-    "product candidates emit no CTA while affiliate inactive",
-  );
-  check("rec-priority-sequential", rec.candidates.every((c, i) => c.priority === i + 1));
+  // ── Recommendations (R2.1 scope hotfix)
+  const HANGUL = /[가-힯ᄀ-ᇿ㄰-㆏]/;
+  const rec = buildRecommendations({ keywords, articles, categories, affiliateActiveCount: activeAffiliate, liveData: false });
+  const cands = rec.candidates;
+  check("rec-count-10", cands.length === 10, `n=${cands.length}`);
+  check("rec-no-korean-generic", cands.every((c) => !HANGUL.test(c.title) && !HANGUL.test(c.searchIntent)), "no Korean in production candidates");
+  check("rec-all-english", cands.every((c) => c.title && c.searchIntent && !HANGUL.test(`${c.title}${c.searchIntent}`)));
+  check("rec-all-in-scope-axis", cands.every((c) => AXIS_IDS.has(c.contentAxis?.id)), cands.map((c) => c.contentAxis?.id).join(","));
+  check("rec-no-offscope-topics", cands.every((c) => !/chatgpt|\bai\b|productivity|car insurance|자동차|정부지원금|crypto|stock/i.test(c.title)));
+  check("rec-sourcemode-fallback", rec.sourceMode === "EDITORIAL_FALLBACK" && rec.liveData === false && cands.every((c) => c.sourceMode === "EDITORIAL_FALLBACK"));
+  check("rec-trend-competition-unknown", cands.every((c) => c.trend.sevenDay === "UNKNOWN" && c.competition.live === "UNKNOWN"));
+  check("rec-no-high-dup", cands.every((c) => c.relation.duplicationRisk !== "HIGH"));
+  check("rec-no-fabricated-numbers", cands.every((c) => c.score <= c.maxAvailableScore && c.excludedComponents.some((e) => e.component === "timeliness")), "unconfirmed timeliness excluded, not faked");
+  check("rec-affiliate-blocked", rec.blocked.includes("BLOCKED_AFFILIATE_APPROVAL") && cands.every((c) => c.monetization.salesCtaAllowed === false && c.monetization.affiliateReadiness === "BLOCKED_AFFILIATE_APPROVAL"));
+  check("rec-priority-sequential", cands.every((c, i) => c.priority === i + 1));
+
+  // Rejected pool must contain the exact off-scope items seen on screen.
+  const rejTopics = rec.rejected.map((r) => r.topic);
+  check("rec-rejects-korean-keyword", rejTopics.some((t) => HANGUL.test(t)), rejTopics.filter((t) => HANGUL.test(t)).slice(0, 3).join(" | "));
+  check("rec-rejects-ai-generic", rejTopics.some((t) => /chatgpt|prompts for work/i.test(t)));
+
+  // ── Server-side scope gate (no UI bypass)
+  const offScope = { title: "챗GPT 업무 활용법", searchIntent: "생산성 향상", contentAxis: { id: "ai" } };
+  const inScope = cands[0];
+  check("gate-server-blocks-offscope", assertProductionEligible(offScope, articles).ok === false);
+  check("gate-server-allows-inscope", assertProductionEligible(inScope, articles).ok === true, assertProductionEligible(inScope, articles).reason || "ok");
 
   // ── Duplication detection vs corpus (art_004 topic)
   const dup = duplicationAgainstCorpus("What to Do If You Get Sick While Traveling Abroad", "", articles);

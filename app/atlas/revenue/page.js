@@ -144,13 +144,23 @@ export default function RevenuePage() {
         </header>
 
         {/* ── 1. 이번 주 자동추천 ── */}
-        <Section step="1" title="이번 주 자동추천" subtitle={rec ? `근거: ${rec.dataSources?.join(" · ")} · 생성 ${rec.generatedAt?.slice(0, 16)}` : ""}>
+        <Section
+          step="1"
+          title={rec?.sourceMode === "LIVE" ? "이번 주 자동추천 (실시간)" : "이번 주 편집 추천 (실시간 트렌드 미연결)"}
+          subtitle={rec ? `축: 여행보험·여행 안전 클러스터 · Production ${rec.counts?.production ?? 0}건 · 제외 ${rec.counts?.rejected ?? 0}건` : ""}
+        >
+          {rec && rec.sourceMode !== "LIVE" && (
+            <p className="mb-3 rounded-lg border border-amber-900 bg-amber-950/30 px-3 py-2 text-xs text-amber-300">
+              실시간 트렌드 연결 안 됨 · 현재 후보는 <b>ATLAS 편집 기준(EDITORIAL_FALLBACK)</b> 기반이며 실제 트렌드·검색량으로
+              검증되지 않았습니다. {rec.scopeNote}
+            </p>
+          )}
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <button onClick={refreshRecommendations} disabled={!!busy} className="rounded-lg bg-zinc-700 px-3 py-1.5 text-sm hover:bg-zinc-600 disabled:opacity-50">
               {busy === "rec" ? "생성 중..." : "새로 추천 생성"}
             </button>
+            <Pill status={rec?.sourceMode === "LIVE" ? "PASS" : "NEEDS_CONFIGURATION"}>{rec?.sourceMode || "..."}</Pill>
             {rec?.blocked?.map((b) => <Pill key={b} status="NEEDS_CONFIGURATION">{b}</Pill>)}
-            {rec?.mix && <span className="text-xs text-zinc-500">구성 실용 {rec.mix.practical} · 제품/비교 {rec.mix.commercial} · 계절 {rec.mix.seasonal}</span>}
           </div>
           <div className="space-y-2">
             {(rec?.candidates || []).map((c) => (
@@ -159,22 +169,53 @@ export default function RevenuePage() {
                   <span className="font-mono text-xs text-zinc-500">#{c.priority}</span>
                   <span className="font-medium">{c.title}</span>
                   <Pill status="NA">{c.type}</Pill>
-                  <span className="text-xs text-zinc-500">점수 {c.score}</span>
-                  <button onClick={() => selectTopic(c)} disabled={!!busy} className="ml-auto rounded bg-emerald-600 px-2 py-1 text-xs hover:bg-emerald-500 disabled:opacity-50">
-                    이 주제로 원고 시작
+                  <span className="text-xs text-zinc-500">점수 {c.score}/{c.maxAvailableScore}</span>
+                  <button
+                    onClick={() => selectTopic(c)}
+                    disabled={!!busy || !c.eligibility?.canGenerate}
+                    title={c.eligibility?.blockedReason || ""}
+                    className="ml-auto rounded bg-emerald-600 px-2 py-1 text-xs hover:bg-emerald-500 disabled:opacity-40"
+                  >
+                    {c.eligibility?.canGenerate ? "이 주제로 원고 시작" : "원고 생성 차단"}
                   </button>
                 </div>
+                <p className="mt-1 text-xs text-zinc-500">의도: {c.searchIntent}</p>
                 <p className="mt-1 text-xs text-zinc-400">{c.reason}</p>
                 <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-zinc-500">
-                  <span>7일/30일 트렌드: <Pill status="UNKNOWN">UNKNOWN</Pill></span>
-                  <span>경쟁도: <Pill status="UNKNOWN">{c.competition.live}</Pill></span>
-                  <span>수익화: {c.monetization.productStatus === "제휴 승인 대기" ? <Pill status="NEEDS_CONFIGURATION">제휴 승인 대기</Pill> : c.monetization.level}</span>
-                  <span>중복도: {c.duplication.level} ({c.duplication.overlap}%)</span>
+                  <span>축: <Pill status="NA">{c.contentAxis?.label}</Pill></span>
+                  <span>출처모드: <Pill status={c.sourceMode === "LIVE" ? "PASS" : "NEEDS_CONFIGURATION"}>{c.sourceMode}</Pill></span>
+                  <span>트렌드: <Pill status="UNKNOWN">{c.trend?.sevenDay}</Pill></span>
+                  <span>경쟁도: <Pill status="UNKNOWN">{c.competition?.live}</Pill></span>
+                  <span>중복위험: <Pill status={c.relation?.duplicationRisk === "HIGH" ? "FAIL" : c.relation?.duplicationRisk === "MEDIUM" ? "WARN" : "PASS"}>{c.relation?.duplicationRisk}</Pill>{c.relation?.overlappingArticleIds?.length ? ` (${c.relation.overlappingArticleIds.join(",")})` : ""}</span>
                 </div>
+                <div className="mt-1 flex flex-wrap gap-2 text-[11px] text-zinc-500">
+                  <span>클러스터: {c.relation?.clusterRole}</span>
+                  <span>근거: {c.officialSource?.availability}</span>
+                  <span>제휴: <Pill status="NEEDS_CONFIGURATION">{c.monetization?.affiliateReadiness}</Pill></span>
+                  <span>향후 상품군: {(c.monetization?.futureProductCategories || []).join(", ") || "-"}</span>
+                </div>
+                <details className="mt-1">
+                  <summary className="cursor-pointer text-[11px] text-emerald-400">점수 계산 근거</summary>
+                  <p className="text-[11px] text-zinc-500">
+                    {Object.entries(c.scoreBreakdown || {}).map(([k, v]) => `${k} ${v}`).join(" · ")}
+                    {(c.excludedComponents || []).length ? ` · 제외: ${c.excludedComponents.map((e) => `${e.component}(${e.reason})`).join(", ")}` : ""}
+                  </p>
+                </details>
+                {!c.eligibility?.canGenerate && <p className="mt-1 text-[11px] text-red-300">{c.eligibility?.blockedReason}</p>}
               </div>
             ))}
             {!rec && <p className="text-sm text-zinc-500">불러오는 중...</p>}
           </div>
+          {rec?.rejected?.length > 0 && (
+            <details className="mt-3">
+              <summary className="cursor-pointer text-xs text-zinc-500">범위 밖 제외 후보 {rec.rejected.length}건 (Production에서 차단됨)</summary>
+              <ul className="mt-2 space-y-1 text-[11px] text-zinc-600">
+                {rec.rejected.map((r, i) => (
+                  <li key={i}>· <span className="text-zinc-400">{r.topic}</span> — {r.reason} <span className="text-zinc-700">[{r.sourcePool}]</span></li>
+                ))}
+              </ul>
+            </details>
+          )}
         </Section>
 
         {/* ── 2~6. 원고 파이프라인 + QA + 승인 ── */}
