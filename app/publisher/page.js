@@ -319,6 +319,8 @@ function PublisherContent() {
               tall
             />
 
+            <BloggerDraftPanel article={selected} blogs={blogs} />
+
             <BloggerChecklist article={selected} />
 
             <VisualAssetsPanel key={`${selected.id}-assets`} article={selected} onSaved={loadArticles} />
@@ -406,6 +408,131 @@ function PublisherContent() {
           </section>
         )}
       </div>
+    </div>
+  );
+}
+
+// One-click "Blogger 초안 반영": PATCH an existing manual draft or create a new
+// DRAFT — never a public publish. Idempotent server-side (same postId reused).
+function BloggerDraftPanel({ article, blogs }) {
+  const connectedBlogs = blogs.filter((b) => b.tokenRef);
+  const [blogId, setBlogId] = useState(() => connectedBlogs[0]?.id || "");
+  const [busy, setBusy] = useState(false);
+  const [result, setResult] = useState(null);
+
+  async function run() {
+    if (!blogId || busy) return;
+    setBusy(true);
+    setResult(null);
+    try {
+      const res = await fetch("/api/atlas/blogger-draft", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ articleId: article.id, blogId }),
+      });
+      setResult(await res.json());
+    } catch {
+      setResult({ status: "error", errorCode: "NETWORK_ERROR" });
+    }
+    setBusy(false);
+  }
+
+  const editUrl =
+    result?.status === "ok" && result.bloggerBlogId && result.postId
+      ? `https://www.blogger.com/blog/post/edit/${result.bloggerBlogId}/${result.postId}`
+      : "";
+
+  return (
+    <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-semibold text-zinc-300">Blogger 초안 반영</h3>
+        <span className="text-xs text-zinc-500">공개 발행 아님 · DRAFT 전용</span>
+      </div>
+
+      {connectedBlogs.length === 0 ? (
+        <div className="mt-3 space-y-2">
+          <p className="text-sm text-amber-400">Blogger 연결 필요</p>
+          <a
+            href="/blog-manager"
+            className="inline-block rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-500"
+          >
+            Blogger 연결
+          </a>
+        </div>
+      ) : (
+        <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <select
+            value={blogId}
+            onChange={(e) => setBlogId(e.target.value)}
+            className="rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-emerald-500"
+          >
+            {connectedBlogs.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name} [연결됨]
+              </option>
+            ))}
+          </select>
+          <button
+            type="button"
+            onClick={run}
+            disabled={busy || !blogId}
+            className={`rounded-lg px-4 py-2 text-sm font-semibold ${
+              !busy && blogId ? "bg-blue-600 text-white hover:bg-blue-500" : "cursor-not-allowed bg-zinc-800 text-zinc-500"
+            }`}
+          >
+            {busy ? "초안 반영 중..." : "Blogger 초안 반영"}
+          </button>
+        </div>
+      )}
+
+      {result && (
+        <div className="mt-3 text-xs">
+          {result.status === "ok" ? (
+            <div className="space-y-1">
+              <p className="text-emerald-400">
+                Blogger 초안에 반영되었습니다. ({result.action === "patched" ? "기존 초안 업데이트" : "새 초안 생성"})
+              </p>
+              <p className="text-zinc-400">postId: {result.postId}</p>
+              <p className={result.remote?.isDraft ? "text-emerald-400" : "text-red-400"}>
+                상태: {result.remote?.status || "?"} {result.remote?.isDraft ? "(DRAFT 유지)" : "(확인 필요)"}
+              </p>
+              <p className="text-zinc-400">
+                이미지: {result.remote?.imgCount ?? 0}개 (Cloudinary {result.remote?.cloudinaryCount ?? 0})
+              </p>
+              {editUrl && (
+                <a href={editUrl} target="_blank" rel="noopener noreferrer" className="inline-block text-blue-400 hover:underline">
+                  Blogger 초안 편집 열기
+                </a>
+              )}
+            </div>
+          ) : result.status === "reconnect_required" ? (
+            <div className="space-y-2">
+              <p className="text-amber-400">{result.message || "Blogger 연결이 만료되었습니다."}</p>
+              {blogId && (
+                <a
+                  href={`/api/auth/blogger/start?blogId=${blogId}`}
+                  className="inline-block rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-500"
+                >
+                  다시 연결
+                </a>
+              )}
+            </div>
+          ) : result.status === "multiple_candidates" ? (
+            <div className="space-y-1">
+              <p className="text-amber-400">{result.message}</p>
+              {(result.candidates || []).map((c) => (
+                <p key={c.id} className="text-zinc-500">
+                  - {c.title} (postId: {c.id})
+                </p>
+              ))}
+            </div>
+          ) : (
+            <p className="text-red-400">
+              실패: {result.errorCode || "오류"} {result.issues ? `(${result.issues.join(", ")})` : ""} {result.message || ""}
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
