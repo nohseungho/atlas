@@ -23,6 +23,13 @@ const CARDS = [
     description: "수동 제작한 영상의 경로 · 블로그 연결 · 상태 등록",
   },
   {
+    href: "/publisher",
+    title: "Publisher",
+    subtitle: "Blogger 실제 발행 관제",
+    description:
+      "Blogger 실제 공개 상태 동기화 → 미리보기 → 승인 → 자동 발행 (postId·URL·발행시각 서버 저장, 중복 발행 차단)",
+  },
+  {
     href: "/atlas/publishing",
     title: "Publishing Center",
     description: "승인된 블로그·영상 패키지 확인 및 발행 준비",
@@ -31,6 +38,13 @@ const CARDS = [
     href: "/atlas/product-center",
     title: "Product Center",
     description: "Affiliate 상품 마스터 DB · 블로그/쇼츠에서 재사용",
+  },
+  {
+    href: "/deal-hunter",
+    title: "Deal Hunter",
+    subtitle: "반품·개봉·리퍼 특가 검색",
+    description:
+      "국내외 판매처의 할인 상품을 검수하고 제휴 링크와 쇼핑쇼츠 후보를 관리합니다.",
   },
 ];
 
@@ -60,6 +74,9 @@ export default function AtlasPage() {
               className="rounded-xl border border-zinc-800 bg-zinc-900 p-5 transition hover:border-emerald-600"
             >
               <h2 className="text-lg font-semibold">{card.title}</h2>
+              {card.subtitle ? (
+                <p className="mt-1 text-sm text-zinc-500">{card.subtitle}</p>
+              ) : null}
               <p className="mt-2 text-sm text-zinc-400">{card.description}</p>
             </Link>
           ))}

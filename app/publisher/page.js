@@ -22,6 +22,22 @@ const PREVIEW_DEVICES = [
   { id: "mobile", label: "Mobile 390px", width: 390 },
 ];
 
+const PUBLISH_STATE_LABELS = {
+  written: "작성 완료 (승인 전)",
+  approved: "승인됨 (발행 대기)",
+  publishing: "발행 중",
+  published: "발행 완료",
+  publish_failed: "발행 실패",
+};
+
+const PUBLISH_STATE_STYLES = {
+  written: "bg-zinc-700 text-zinc-300",
+  approved: "bg-amber-500/20 text-amber-300",
+  publishing: "bg-blue-500/20 text-blue-300",
+  published: "bg-emerald-500/20 text-emerald-300",
+  publish_failed: "bg-red-500/20 text-red-300",
+};
+
 const ADSENSE_CHECKLIST = [
   "개인정보처리방침(Privacy Policy) 페이지 존재",
   "독창적이고 가치 있는 콘텐츠 (복사/저품질 콘텐츠 없음)",
@@ -47,11 +63,12 @@ function PublisherContent() {
 
   const [articles, setArticles] = useState([]);
   const [blogs, setBlogs] = useState([]);
+  const [view, setView] = useState(null);
   const [selectedId, setSelectedId] = useState("");
+  const [previewedIds, setPreviewedIds] = useState([]);
   const [targetBlogId, setTargetBlogId] = useState("");
   const [publishedUrl, setPublishedUrl] = useState("");
   const [publishing, setPublishing] = useState(false);
-  const [autoPublishing, setAutoPublishing] = useState(false);
   const [message, setMessage] = useState("");
   const [publishResult, setPublishResult] = useState(null);
   const [authRequiredBlogId, setAuthRequiredBlogId] = useState("");
@@ -68,11 +85,25 @@ function PublisherContent() {
     setBlogs(data.items || []);
   }
 
+  // Publisher state comes from the server on every load — publish state, postId,
+  // URL, publish time and approval all survive a refresh / browser restart.
+  async function loadView() {
+    const res = await fetch("/api/atlas/publisher-status", { cache: "no-store" });
+    const data = await res.json();
+    setView(data);
+    return data;
+  }
+
+  async function refreshAll() {
+    await Promise.all([loadArticles(), loadView()]);
+  }
+
   useEffect(() => {
     // Client-side fetch-on-mount against our own API route; intentional for this admin tool.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadArticles();
     loadBlogs();
+    loadView();
   }, []);
 
   useEffect(() => {
@@ -82,47 +113,62 @@ function PublisherContent() {
     }
   }, [preselectId, articles]);
 
-  const displayArticles = articles.filter((a) => ["written", "published"].includes(a.status));
-  const writtenArticles = displayArticles.filter((a) => a.status === "written");
   const readyBlogs = blogs.filter((b) => b.status === "ready");
+  const connectedBlogs = blogs.filter((b) => b.tokenRef);
   const selected = articles.find((a) => a.id === selectedId);
-  const selectedBlogRecord = blogs.find((b) => b.id === targetBlogId);
-  const canAutoPublish = Boolean(selectedBlogRecord?.tokenRef);
   const isAlreadyPublished = Boolean(selected && (selected.status === "published" || selected.publishedUrl));
 
-  async function handleAutoPublish() {
-    if (!selected || !targetBlogId || !canAutoPublish) return;
-    setAutoPublishing(true);
+  function openPreview(articleId) {
+    setSelectedId(articleId);
+    setPublishResult(null);
+    setPreviewedIds((prev) => (prev.includes(articleId) ? prev : [...prev, articleId]));
+  }
+
+  async function handleAutoPublish(articleId, blogId) {
     setMessage("");
     setAuthRequiredBlogId("");
-    try {
-      const res = await fetch("/api/publish", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ articleId: selected.id, blogId: targetBlogId }),
-      });
-      const data = await res.json();
-      if (data.status === "succeeded") {
-        clearAuthIssue(targetBlogId);
-        setPublishResult({ publishedUrl: data.publishedUrl });
-        setSelectedId("");
-        setTargetBlogId("");
-        setMessage("");
-        loadArticles();
-      } else if (data.status === "duplicate") {
-        setMessage("이미 발행된 글입니다. 중복 발행이 차단되었습니다.");
-        loadArticles();
-      } else if (data.status === "auth_required") {
-        flagAuthIssue(targetBlogId, data.error);
-        setAuthRequiredBlogId(targetBlogId);
-        setMessage("Blogger 인증이 만료되었습니다. 아래에서 재연결 후 다시 시도해주세요.");
-      } else {
-        setMessage(`자동 발행 실패: ${data.error || "오류 발생"}`);
-      }
-    } catch {
-      setMessage("자동 발행 중 네트워크 오류가 발생했습니다.");
+    const res = await fetch("/api/publish", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ articleId, blogId }),
+    });
+    const data = await res.json();
+
+    if (data.status === "succeeded") {
+      clearAuthIssue(blogId);
+      setPublishResult({ publishedUrl: data.publishedUrl, postId: data.postId, verified: data.verified });
+    } else if (data.status === "linked_existing") {
+      setMessage(`기존 글 연결됨 (${data.matchedBy} 일치) — 새 게시물을 만들지 않았습니다. postId: ${data.postId}`);
+    } else if (data.status === "duplicate") {
+      setMessage("이미 발행된 글입니다. 중복 발행이 차단되었습니다.");
+    } else if (data.status === "in_progress") {
+      setMessage("이미 발행 요청이 진행 중입니다.");
+    } else if (data.status === "not_approved") {
+      setMessage("승인되지 않은 글입니다. 미리보기 확인 후 승인해주세요.");
+    } else if (data.status === "conflict") {
+      setMessage(`중복 위험: ${data.error}`);
+    } else if (data.status === "auth_required") {
+      flagAuthIssue(blogId, data.error);
+      setAuthRequiredBlogId(blogId);
+      setMessage("Blogger 재연결 필요 — 재연결 후 다시 시도해주세요.");
+    } else {
+      setMessage(`자동 발행 실패: ${data.error || "오류 발생"}`);
     }
-    setAutoPublishing(false);
+
+    await refreshAll();
+    return data;
+  }
+
+  async function handleApproval(articleId, action) {
+    setMessage("");
+    const res = await fetch("/api/atlas/publisher-approval", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ articleId, action }),
+    });
+    const data = await res.json();
+    if (data.status !== "ok") setMessage(`승인 처리 실패: ${data.errorCode || "오류"}`);
+    await refreshAll();
   }
 
   async function handlePublish() {
@@ -153,7 +199,7 @@ function PublisherContent() {
     setSelectedId("");
     setPublishedUrl("");
     setTargetBlogId("");
-    loadArticles();
+    refreshAll();
   }
 
   async function copy(text) {
@@ -171,7 +217,9 @@ function PublisherContent() {
         <header className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Publisher</h1>
-            <p className="mt-1 text-sm text-zinc-400">Blogger에 수동으로 복사해서 발행합니다.</p>
+            <p className="mt-1 text-sm text-zinc-400">
+              Blogger 실제 공개 상태를 동기화하고, 승인한 글만 자동 발행합니다.
+            </p>
           </div>
           <Link href="/" className="text-sm text-emerald-400 hover:underline">
             ← Dashboard
@@ -191,88 +239,27 @@ function PublisherContent() {
           </ul>
         </section>
 
-        <section className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
-          <h2 className="text-lg font-semibold">작성 완료 글 ({writtenArticles.length})</h2>
-          <div className="mt-4 space-y-2">
-            {writtenArticles.map((a) => (
-              <label
-                key={a.id}
-                className={`flex cursor-pointer items-center justify-between rounded-lg border px-4 py-3 text-sm ${
-                  selectedId === a.id ? "border-emerald-500 bg-emerald-500/5" : "border-zinc-800"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <input
-                    type="radio"
-                    name="article"
-                    checked={selectedId === a.id}
-                    onChange={() => { setSelectedId(a.id); setPublishResult(null); }}
-                  />
-                  <div>
-                    <p className="font-medium">{a.title}</p>
-                    <p className="text-xs text-zinc-500">{a.category}</p>
-                  </div>
-                </div>
-              </label>
-            ))}
-            {writtenArticles.length === 0 && (
-              <p className="text-sm text-zinc-500">발행 대기 중인 글이 없습니다.</p>
-            )}
-          </div>
-        </section>
-
-        {displayArticles.length - writtenArticles.length > 0 && (
-          <section className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
-            <h2 className="text-lg font-semibold text-zinc-400">
-              이미 발행됨 ({displayArticles.length - writtenArticles.length})
-            </h2>
-            <div className="mt-4 space-y-2">
-              {displayArticles
-                .filter((a) => a.status === "published" || a.publishedUrl)
-                .map((a) => (
-                  <div
-                    key={a.id}
-                    className={`flex items-center justify-between rounded-lg border px-4 py-3 text-sm ${
-                      selectedId === a.id ? "border-emerald-500 bg-emerald-500/5" : "border-zinc-800 opacity-60"
-                    }`}
-                  >
-                    <div>
-                      <p className="font-medium">{a.title}</p>
-                      <p className="text-xs text-zinc-500">{a.category}</p>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="rounded-full bg-zinc-700 px-2 py-1 text-xs text-zinc-400">
-                        발행됨
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => { setSelectedId(a.id); setPublishResult(null); }}
-                        className="rounded-md bg-zinc-800 px-2 py-1 text-xs text-emerald-400 hover:bg-zinc-700"
-                      >
-                        이미지 · 미리보기
-                      </button>
-                      {a.publishedUrl && (
-                        <a
-                          href={a.publishedUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="rounded-md bg-zinc-800 px-2 py-1 text-xs text-blue-400 hover:bg-zinc-700"
-                        >
-                          게시글 보기
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                ))}
-            </div>
-          </section>
-        )}
+        <PublisherControlCenter
+          view={view}
+          connectedBlogs={connectedBlogs}
+          selectedId={selectedId}
+          previewedIds={previewedIds}
+          onPreview={openPreview}
+          onApproval={handleApproval}
+          onAutoPublish={handleAutoPublish}
+          onSynced={setView}
+          onRefresh={refreshAll}
+          message={message}
+        />
 
         {publishResult && (
           <section className="rounded-xl border border-emerald-700 bg-emerald-500/10 p-6 space-y-4">
             <div>
               <h2 className="text-lg font-semibold text-emerald-300">자동 발행 성공!</h2>
-              <p className="mt-1 text-sm text-zinc-300">Blogger에 글이 정상 발행되었습니다.</p>
+              <p className="mt-1 text-sm text-zinc-300">
+                Blogger에 글이 정상 발행되었습니다. postId: {publishResult.postId || "-"}
+                {publishResult.verified ? " (공개 상태 재조회 확인됨)" : ""}
+              </p>
             </div>
             <a
               href={publishResult.publishedUrl}
@@ -323,7 +310,7 @@ function PublisherContent() {
 
             <BloggerChecklist article={selected} />
 
-            <VisualAssetsPanel key={`${selected.id}-assets`} article={selected} onSaved={loadArticles} />
+            <VisualAssetsPanel key={`${selected.id}-assets`} article={selected} onSaved={refreshAll} />
 
             <LocalPreviewPanel key={`${selected.id}-preview`} article={selected} />
 
@@ -365,26 +352,11 @@ function PublisherContent() {
                   >
                     {publishing ? "처리 중..." : "발행 완료"}
                   </button>
-                  <button
-                    type="button"
-                    onClick={handleAutoPublish}
-                    disabled={autoPublishing || !canAutoPublish || isAlreadyPublished}
-                    title={
-                      isAlreadyPublished
-                        ? "이미 발행된 글입니다"
-                        : !canAutoPublish
-                        ? "Blogger 연결된 블로그를 선택해주세요"
-                        : "Blogger API로 자동 발행"
-                    }
-                    className={`rounded-lg px-4 py-2 text-sm font-semibold ${
-                      canAutoPublish && !autoPublishing && !isAlreadyPublished
-                        ? "bg-blue-600 text-white hover:bg-blue-500"
-                        : "cursor-not-allowed bg-zinc-800 text-zinc-500"
-                    }`}
-                  >
-                    {autoPublishing ? "발행 중..." : "자동 발행"}
-                  </button>
                 </div>
+                <p className="text-xs text-zinc-500">
+                  Blogger API 자동 발행은 위 <span className="text-zinc-300">Blogger 발행 관제</span>에서 승인 후 실행합니다.
+                  이 입력란은 외부에서 직접 발행한 글의 URL을 기록할 때만 사용합니다.
+                </p>
               </div>
               {message && <p className="mt-2 text-sm text-zinc-400">{message}</p>}
               {authRequiredBlogId && (
@@ -408,6 +380,287 @@ function PublisherContent() {
           </section>
         )}
       </div>
+    </div>
+  );
+}
+
+// Blogger 발행 관제: real public state on top, one row per article underneath.
+// Every value shown here is server data (data/atlas/*.json) — nothing is read
+// from localStorage, so a refresh or a browser restart shows the same thing.
+function PublisherControlCenter({
+  view,
+  connectedBlogs,
+  selectedId,
+  previewedIds,
+  onPreview,
+  onApproval,
+  onAutoPublish,
+  onSynced,
+  onRefresh,
+  message,
+}) {
+  const [blogId, setBlogId] = useState("");
+  const [syncing, setSyncing] = useState(false);
+  const [syncNote, setSyncNote] = useState("");
+  const [busyId, setBusyId] = useState("");
+
+  useEffect(() => {
+    if (!blogId && connectedBlogs.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setBlogId(connectedBlogs[0].id);
+    }
+  }, [blogId, connectedBlogs]);
+
+  const counts = view?.counts;
+  const state = view?.state;
+  const rows = view?.rows || [];
+  const externalPosts = state?.externalPosts || [];
+  const needsReconnect = state?.connection === "reconnect_required";
+
+  async function runSync() {
+    if (syncing || !blogId) return;
+    setSyncing(true);
+    setSyncNote("");
+    try {
+      const res = await fetch("/api/atlas/blogger-sync", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ blogId }),
+      });
+      const data = await res.json();
+      onSynced(data);
+      if (data.status === "reconnect_required") setSyncNote("Blogger 재연결 필요");
+      else if (data.status === "error") setSyncNote(`동기화 실패: ${data.message || "오류"}`);
+      else if (data.status === "conflict") setSyncNote("동일 제목 공개 게시물이 중복되어 일부는 자동 연결하지 않았습니다.");
+      else setSyncNote(`동기화 완료 — 실제 공개 ${data.counts?.bloggerLive ?? "?"}개`);
+      await onRefresh();
+    } catch {
+      setSyncNote("동기화 중 네트워크 오류가 발생했습니다.");
+    }
+    setSyncing(false);
+  }
+
+  // Every row action locks the whole list while it is in flight, so rapid
+  // double-clicks cannot fire a second publish request.
+  async function runRowAction(rowId, fn) {
+    if (busyId) return;
+    setBusyId(rowId);
+    try {
+      await fn();
+    } finally {
+      setBusyId("");
+    }
+  }
+
+  return (
+    <section className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className="text-lg font-semibold">Blogger 발행 관제</h2>
+        <div className="flex flex-wrap items-center gap-2">
+          <select
+            value={blogId}
+            onChange={(e) => setBlogId(e.target.value)}
+            className="rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-xs text-zinc-100 outline-none focus:border-emerald-500"
+          >
+            {connectedBlogs.length === 0 && <option value="">연결된 블로그 없음</option>}
+            {connectedBlogs.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name} [연결됨]
+              </option>
+            ))}
+          </select>
+          <button
+            type="button"
+            onClick={runSync}
+            disabled={syncing || !blogId}
+            className={`rounded-lg px-4 py-2 text-sm font-semibold ${
+              !syncing && blogId ? "bg-blue-600 text-white hover:bg-blue-500" : "cursor-not-allowed bg-zinc-800 text-zinc-500"
+            }`}
+          >
+            {syncing ? "동기화 중..." : "Blogger 상태 동기화"}
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
+        <StatTile label="Blogger 실제 공개" value={counts?.bloggerLive} />
+        <StatTile label="ATLAS 연결 공개" value={counts?.atlasLinked} tone="emerald" />
+        <StatTile label="외부 게시물" value={counts?.external} />
+        <StatTile label="발행 대기" value={counts?.pending} tone="amber" />
+        <StatTile label="연결 누락" value={counts?.missingLinks} tone={counts?.missingLinks ? "red" : "zinc"} />
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-500">
+        <span>마지막 동기화: {state?.lastSyncedAt ? new Date(state.lastSyncedAt).toLocaleString("ko-KR") : "없음"}</span>
+        <span>
+          Blogger 연결:{" "}
+          <span className={needsReconnect ? "text-amber-400" : state?.connection === "connected" ? "text-emerald-400" : "text-zinc-400"}>
+            {needsReconnect ? "재연결 필요" : state?.connection === "connected" ? "연결됨" : "미확인"}
+          </span>
+        </span>
+      </div>
+
+      {needsReconnect && blogId && (
+        <a
+          href={`/api/auth/blogger/start?blogId=${blogId}`}
+          className="mt-3 inline-block rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-500"
+        >
+          Blogger 재연결
+        </a>
+      )}
+
+      {syncNote && <p className="mt-3 text-sm text-zinc-400">{syncNote}</p>}
+      {message && <p className="mt-1 text-sm text-amber-300">{message}</p>}
+
+      <div className="mt-5 space-y-2">
+        {rows.map((row) => {
+          const previewed = previewedIds.includes(row.articleId);
+          const busy = busyId === row.articleId;
+          return (
+            <div
+              key={row.articleId}
+              className={`rounded-lg border px-4 py-3 text-sm ${
+                selectedId === row.articleId ? "border-emerald-500 bg-emerald-500/5" : "border-zinc-800"
+              }`}
+            >
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="font-medium">
+                    <span className="mr-2 font-mono text-xs text-zinc-500">{row.articleId}</span>
+                    {row.title}
+                  </p>
+                  <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
+                    <span className={`rounded-full px-2 py-0.5 ${PUBLISH_STATE_STYLES[row.publishState] || "bg-zinc-700 text-zinc-300"}`}>
+                      {PUBLISH_STATE_LABELS[row.publishState] || row.publishState}
+                    </span>
+                    <span className={row.postId ? "text-emerald-400" : row.missingLink ? "text-red-400" : "text-zinc-500"}>
+                      Blogger {row.postId ? `연결됨 (${row.bloggerStatus || "LIVE"})` : row.missingLink ? "연결 누락" : "미연결"}
+                    </span>
+                    {row.postId && <span className="font-mono text-zinc-500">postId {row.postId}</span>}
+                    {row.publishedAt && (
+                      <span className="text-zinc-500">발행 {new Date(row.publishedAt).toLocaleString("ko-KR")}</span>
+                    )}
+                  </div>
+                  {row.url && (
+                    <a
+                      href={row.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1 block break-all text-xs text-blue-400 hover:underline"
+                    >
+                      {row.url}
+                    </a>
+                  )}
+                  {row.error && (
+                    <p className="mt-1 text-xs text-red-400">
+                      {row.errorCode ? `[${row.errorCode}] ` : ""}
+                      {row.error}
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex shrink-0 flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => onPreview(row.articleId)}
+                    className="rounded-md bg-zinc-800 px-2 py-1 text-xs text-emerald-400 hover:bg-zinc-700"
+                  >
+                    미리보기
+                  </button>
+
+                  {row.canApprove && (
+                    <button
+                      type="button"
+                      disabled={busy || !previewed}
+                      title={previewed ? "발행 승인" : "먼저 미리보기를 확인해주세요"}
+                      onClick={() => runRowAction(row.articleId, () => onApproval(row.articleId, "approve"))}
+                      className={`rounded-md px-2 py-1 text-xs font-semibold ${
+                        previewed && !busy ? "bg-amber-600 text-white hover:bg-amber-500" : "cursor-not-allowed bg-zinc-800 text-zinc-500"
+                      }`}
+                    >
+                      승인
+                    </button>
+                  )}
+
+                  {row.canRevoke && (
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => runRowAction(row.articleId, () => onApproval(row.articleId, "revoke"))}
+                      className="rounded-md bg-zinc-800 px-2 py-1 text-xs text-zinc-300 hover:bg-zinc-700 disabled:opacity-50"
+                    >
+                      승인 취소
+                    </button>
+                  )}
+
+                  <button
+                    type="button"
+                    disabled={!row.canPublish || busy || !blogId}
+                    title={
+                      row.canPublish
+                        ? "승인된 글을 Blogger에 자동 발행합니다"
+                        : row.publishState === "published"
+                        ? "이미 발행된 글입니다"
+                        : "승인 후에만 자동 발행할 수 있습니다"
+                    }
+                    onClick={() => runRowAction(row.articleId, () => onAutoPublish(row.articleId, blogId))}
+                    className={`rounded-md px-2 py-1 text-xs font-semibold ${
+                      row.canPublish && !busy && blogId
+                        ? "bg-blue-600 text-white hover:bg-blue-500"
+                        : "cursor-not-allowed bg-zinc-800 text-zinc-500"
+                    }`}
+                  >
+                    {busy ? "처리 중..." : "자동 발행"}
+                  </button>
+
+                  {row.canUpdateExisting && (
+                    <button
+                      type="button"
+                      onClick={() => onPreview(row.articleId)}
+                      title="기존 Blogger 글 업데이트는 아래 '이미지 준비 상태' 패널에서 실행합니다 (새 글 생성 없음)"
+                      className="rounded-md bg-zinc-800 px-2 py-1 text-xs text-zinc-300 hover:bg-zinc-700"
+                    >
+                      기존 글 업데이트
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+        {rows.length === 0 && <p className="text-sm text-zinc-500">글이 없습니다.</p>}
+      </div>
+
+      {externalPosts.length > 0 && (
+        <div className="mt-5 border-t border-zinc-800 pt-4">
+          <h3 className="text-sm font-semibold text-zinc-300">외부 게시물 ({externalPosts.length})</h3>
+          <p className="mt-1 text-xs text-zinc-500">
+            Blogger에는 공개되어 있지만 ATLAS article이 아닌 게시물입니다. ATLAS article로 생성하지 않습니다.
+          </p>
+          <ul className="mt-2 space-y-1 text-xs text-zinc-400">
+            {externalPosts.map((p) => (
+              <li key={p.id} className="break-all">
+                · {p.title || "(제목 없음)"} <span className="font-mono text-zinc-600">postId {p.id}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function StatTile({ label, value, tone = "zinc" }) {
+  const toneClass = {
+    zinc: "text-zinc-100",
+    emerald: "text-emerald-400",
+    amber: "text-amber-400",
+    red: "text-red-400",
+  }[tone];
+  return (
+    <div className="rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2">
+      <p className="text-xs text-zinc-500">{label}</p>
+      <p className={`mt-1 text-xl font-bold ${toneClass}`}>{value ?? "-"}</p>
     </div>
   );
 }
