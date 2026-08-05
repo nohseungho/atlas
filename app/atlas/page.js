@@ -15,7 +15,8 @@ const CARDS = [
   {
     href: "/atlas/shorts-studio",
     title: "Shorts Studio",
-    description: "카테고리 · AI 엔진 · 길이 기준 MagicLight 프롬프트 생성",
+    description:
+      "9:16 콘텐츠 제작 · MagicLight 프롬프트 + 상품 사진형 판매카드 6장(1080×1920 PNG·ZIP)",
   },
   {
     href: "/atlas/video-library",
@@ -37,7 +38,8 @@ const CARDS = [
   {
     href: "/atlas/product-center",
     title: "Product Center",
-    description: "Affiliate 상품 마스터 DB · 블로그/쇼츠에서 재사용",
+    description:
+      "상품 마스터 DB · 가격/근거/이미지 등록 → 블로그·쇼츠·판매카드에서 같은 ID로 재사용",
   },
   {
     href: "/deal-hunter",

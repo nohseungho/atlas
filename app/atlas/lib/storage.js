@@ -5,6 +5,8 @@ export const KEYS = {
   blogDrafts: "atlas.blogDrafts",
   videoLibrary: "atlas.videoLibrary",
   publishingReady: "atlas.publishingReady",
+  // 판매카드 작업 상태(프리셋·플랫폼·문구 수정본·이미지 배치). 상품 ID를 키로 쓴다.
+  photoCards: "atlas.photoCards",
 };
 
 export function readList(key) {

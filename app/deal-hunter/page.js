@@ -3,6 +3,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { KEYS, readList, writeList } from "@/app/atlas/lib/storage";
+import { normalizeProductInput } from "@/lib/atlas/photo-card/product-model";
 
 const CONDITION_LABELS = {
   SEALED_RETURN: "미개봉 반품",
@@ -281,6 +283,51 @@ export default function DealHunterPage() {
     setForm((prev) => ({ ...prev, [field]: value }));
   }
 
+  // 검수된 상품을 Product Center로 그대로 넘긴다. deal.id에서 만든 고정 ID를 쓰므로
+  // 같은 상품을 여러 번 보내도 새 레코드가 늘지 않고 기존 레코드가 갱신된다.
+  function sendToProductCenter(deal) {
+    const productId = `product_${deal.id}`;
+    const sameCurrencyReference =
+      deal.referenceNewPrice !== null && deal.referenceCurrency === deal.currency
+        ? deal.referenceNewPrice
+        : null;
+
+    const result = normalizeProductInput({
+      id: productId,
+      name: deal.title,
+      vendor: deal.source,
+      currency: deal.currency,
+      currentPrice: deal.price,
+      listPrice: sameCurrencyReference,
+      shippingFee: deal.shippingCost,
+      productUrl: deal.sourceUrl,
+      affiliateLink: deal.affiliateUrl,
+      features: [deal.conditionOriginal, deal.packageContents, deal.warranty, deal.returnPolicy].filter(
+        Boolean,
+      ),
+      priceSource: `Deal Hunter · ${deal.source} (${deal.sourceMode === "API" ? "API 수집" : "수동 검수"})`,
+      priceCheckedAt: deal.checkedAt,
+      imageNote: (deal.imageUrls || []).join("\n"),
+      note: [deal.conditionEvidence, deal.discountBasis].filter(Boolean).join(" / "),
+      imageSource: deal.sourceUrl,
+    });
+
+    if (!result.ok) {
+      setMessage(`Product Center 전송 실패: ${result.errors.join(" / ")}`);
+      return;
+    }
+
+    const products = readList(KEYS.products);
+    const existing = products.find((p) => p.id === productId);
+    const next = existing
+      ? products.map((p) => (p.id === productId ? { ...p, ...result.product } : p))
+      : [result.product, ...products];
+    writeList(KEYS.products, next);
+    setMessage(
+      `${existing ? "Product Center 상품을 갱신했습니다" : "Product Center로 보냈습니다"}: ${productId} · 이미지 업로드 후 판매카드를 만들 수 있습니다.`,
+    );
+  }
+
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       <nav className="border-b border-zinc-800 px-6 py-4 sm:px-10">
@@ -530,7 +577,13 @@ export default function DealHunterPage() {
               </p>
             ) : (
               deals.map((deal) => (
-                <DealCard key={deal.id} deal={deal} busy={busyId === deal.id} onPatch={patchDeal} />
+                <DealCard
+                  key={deal.id}
+                  deal={deal}
+                  busy={busyId === deal.id}
+                  onPatch={patchDeal}
+                  onSendToProductCenter={sendToProductCenter}
+                />
               ))
             )}
           </section>
@@ -627,7 +680,7 @@ function SearchResultBlock({ result, busyId, onSave }) {
   );
 }
 
-function DealCard({ deal, busy, onPatch }) {
+function DealCard({ deal, busy, onPatch, onSendToProductCenter }) {
   const [affiliateInput, setAffiliateInput] = useState(deal.affiliateUrl || "");
 
   const shortsBlocked =
@@ -726,6 +779,21 @@ function DealCard({ deal, busy, onPatch }) {
             <button type="button" className={btnClass} disabled={busy} onClick={() => onPatch(deal.id, { checkedAt: new Date().toISOString() })}>
               지금 확인함으로 갱신
             </button>
+            <button
+              type="button"
+              className={btnClass}
+              disabled={busy}
+              title="상품명·가격·근거·URL을 Product Center로 복사합니다. 같은 상품은 다시 만들지 않고 갱신합니다."
+              onClick={() => onSendToProductCenter(deal)}
+            >
+              Product Center로 보내기
+            </button>
+            <Link
+              href={`/atlas/shorts-studio?mode=photo&productId=product_${deal.id}`}
+              className={`${btnClass} inline-block`}
+            >
+              판매카드 제작 →
+            </Link>
           </div>
 
           <div className="flex flex-wrap items-end gap-2">

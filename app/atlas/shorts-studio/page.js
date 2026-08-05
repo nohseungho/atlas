@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { KEYS, readList } from "@/app/atlas/lib/storage";
+import PhotoCardStudio from "./PhotoCardStudio";
 
 const CATEGORIES = ["Mystery", "History", "Nature", "Outdoor Safety"];
 const AI_ENGINES = ["MagicLight", "Seedance", "Kling", "Veo", "Runway"];
@@ -78,7 +79,15 @@ Tone: Fact-based, restrained, focused on safety information rather than salesman
 Product Tie-in: ${productLine}`;
 }
 
+// 9:16 SNS 콘텐츠를 만드는 화면이 Shorts Studio 하나이므로, 상품 사진형 판매카드도
+// 새 화면을 만들지 않고 여기에 모드 탭으로 붙인다.
+const MODES = [
+  { id: "prompt", label: "MagicLight 프롬프트" },
+  { id: "photo", label: "상품 사진형 판매카드" },
+];
+
 export default function ShortsStudioPage() {
+  const [mode, setMode] = useState("prompt");
   const [category, setCategory] = useState(CATEGORIES[0]);
   const [aiEngine, setAiEngine] = useState(AI_ENGINES[0]);
   const [duration, setDuration] = useState(DURATIONS[0]);
@@ -87,7 +96,18 @@ export default function ShortsStudioPage() {
   const [prompt, setPrompt] = useState("");
 
   useEffect(() => {
-    setProducts(readList(KEYS.products));
+    let cancelled = false;
+    Promise.resolve().then(() => {
+      if (cancelled) return;
+      setProducts(readList(KEYS.products));
+      // Product Center에서 "판매카드 제작"으로 넘어오면 바로 해당 모드로 연다.
+      if (new URLSearchParams(window.location.search).get("mode") === "photo") {
+        setMode("photo");
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   function toggleProduct(id) {
@@ -120,13 +140,30 @@ export default function ShortsStudioPage() {
         <header>
           <h1 className="text-2xl font-bold">Shorts Studio</h1>
           <p className="mt-1 text-sm text-zinc-400">
-            카테고리 · AI 엔진 · 길이 기준 MagicLight 프롬프트 생성 (현재는
-            Mystery + ATLAS BLACK FILE, Outdoor Safety + ATLAS SAFETY FILE
-            스타일만 하드코딩)
+            9:16 SNS 콘텐츠 제작. MagicLight 영상 프롬프트와 상품 사진형 판매카드를
+            같은 화면에서 다룹니다.
           </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {MODES.map((m) => (
+              <button
+                key={m.id}
+                type="button"
+                onClick={() => setMode(m.id)}
+                className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
+                  mode === m.id
+                    ? "bg-emerald-600 text-white"
+                    : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+                }`}
+              >
+                {m.label}
+              </button>
+            ))}
+          </div>
         </header>
 
-        <section className="grid gap-4 lg:grid-cols-2">
+        {mode === "photo" ? <PhotoCardStudio /> : null}
+
+        <section className={`grid gap-4 lg:grid-cols-2 ${mode === "photo" ? "hidden" : ""}`}>
           <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
             <h2 className="text-lg font-semibold">Prompt Input</h2>
             <div className="mt-4 space-y-3">
