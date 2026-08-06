@@ -156,6 +156,42 @@ export default function MoneyHunterPage() {
     }
   }
 
+  // Both import paths (paste box above, file picker below) funnel through this
+  // so they report identically. Previously the file path printed "등록 완료"
+  // for a duplicate response that carried no QA at all, which read as if the
+  // gate had passed.
+  function applyPackageResponse(data) {
+    setImportResult(data);
+
+    if (data.status === "ok" && data.duplicate) {
+      setDailyMsg(
+        `기존 등록을 그대로 반환했습니다 (${data.articleId}) — 재검수는 실행되지 않았습니다. ` +
+          `수정본 재등록은 검수 실패(REVIEW_REQUIRED) 상태에서만 가능합니다.`,
+      );
+      return;
+    }
+    if (data.status === "ok") {
+      setDailyMsg(
+        `${data.retry ? "재검수 통과" : "검수 통과"}: ${data.articleId} · 이미지 ${data.qa?.distinctCloudinary ?? 0}/5 · ` +
+          `라벨 ${(data.seo?.labels || []).length}개 · 내부링크 ${(data.seo?.internalLinks || []).length}개 → 승인 및 예약 가능`,
+      );
+      return;
+    }
+    if (data.status === "qa_failed") {
+      setDailyMsg(`검수 실패 ${data.qa?.blocking?.length ?? 0}건 — 발행이 차단되었습니다. 아래 항목을 수정해 다시 등록하세요.`);
+      return;
+    }
+    if (data.status === "duplicate_review_required") {
+      setDailyMsg(`중복 검토 필요: ${data.reason || ""}`);
+      return;
+    }
+    if (data.status === "needs_configuration") {
+      setDailyMsg(`설정 필요: ${(data.envNeeded || []).join(", ")}`);
+      return;
+    }
+    setDailyMsg(`등록 거부: ${data.errorCode || data.status} ${(data.issues || []).join(", ")}`);
+  }
+
   // Paste the ChatGPT JSON straight in; no file download/upload round trip.
   async function importPastedPackage() {
     const text = pasteText.trim();
@@ -178,15 +214,7 @@ export default function MoneyHunterPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ package: pkg }),
       });
-      const data = await res.json();
-      setImportResult(data);
-      if (data.status === "ok") {
-        setDailyMsg(`검수 통과: ${data.articleId} · 라벨 ${(data.seo?.labels || []).length}개 · 내부링크 ${(data.seo?.internalLinks || []).length}개 → 승인 및 예약 가능`);
-      } else if (data.status === "qa_failed") {
-        setDailyMsg(`검수 실패 ${data.qa?.blocking?.length ?? 0}건 — 발행이 차단되었습니다.`);
-      } else {
-        setDailyMsg(`등록 거부: ${data.errorCode || data.status} ${(data.issues || []).join(", ")}`);
-      }
+      applyPackageResponse(await res.json());
       loadKeywords();
     } catch {
       setDailyMsg("네트워크 오류");
@@ -246,11 +274,12 @@ export default function MoneyHunterPage() {
     setHandoffBusy(false);
   }
 
-  // Register the single atlas-package JSON returned by ChatGPT.
+  // Register the single atlas-package JSON returned by ChatGPT (file picker).
+  // Reports through the same QA panel as the paste box above.
   async function importPackage(file) {
     if (!file) return;
     setHandoffBusy(true);
-    setHandoffMsg("패키지 검증·이미지 업로드 중...");
+    setHandoffMsg("패키지 검증·이미지 업로드 중... 결과는 상단 '오늘의 글 준비' 검수 패널에 표시됩니다.");
     try {
       const text = await file.text();
       let pkg;
@@ -267,15 +296,16 @@ export default function MoneyHunterPage() {
         body: JSON.stringify({ package: pkg }),
       });
       const data = await res.json();
-      if (data.status === "ok") {
-        setHandoffMsg(`등록 완료: ${data.articleId} · Cloudinary 이미지 ${data.qa?.distinctCloudinary ?? 0}/5 · ${data.duplicate ? "기존 재사용(중복 생성 없음)" : "신규"} → Publisher에서 'Blogger 초안 반영'`);
-      } else if (data.status === "duplicate_review_required") {
-        setHandoffMsg(`중복 검토 필요: ${data.reason || ""}`);
-      } else if (data.status === "needs_configuration") {
-        setHandoffMsg(`설정 필요: ${(data.envNeeded || []).join(", ")}`);
-      } else {
-        setHandoffMsg(`등록 거부: ${data.errorCode || data.status} ${(data.issues || []).join(", ")}`);
-      }
+      applyPackageResponse(data);
+      setHandoffMsg(
+        data.status === "qa_failed"
+          ? `검수 실패 ${data.qa?.blocking?.length ?? 0}건 — 상단 검수 패널에서 사유를 확인하세요.`
+          : data.status === "ok" && data.duplicate
+            ? "기존 등록 반환 — 재검수는 실행되지 않았습니다."
+            : data.status === "ok"
+              ? `등록 완료: ${data.articleId} — 상단 검수 패널에서 결과를 확인하세요.`
+              : `등록 거부: ${data.errorCode || data.status}`,
+      );
       loadKeywords();
     } catch {
       setHandoffMsg("네트워크 오류");
@@ -483,17 +513,27 @@ export default function MoneyHunterPage() {
             </div>
           )}
 
-          {importResult?.qa && (
+          {importResult && (
             <div className="mt-4 rounded-lg border border-zinc-800 bg-zinc-950 p-4">
               <h3 className="text-sm font-semibold">
-                자동 검수 {importResult.qa.pass ? (
-                  <span className="text-emerald-400">통과</span>
+                {!importResult.qa ? (
+                  // A duplicate/rejected response carries no QA. Saying nothing
+                  // here is what let "등록 완료" read as "검수 통과".
+                  <span className="text-amber-400">자동 검수 미실행 — 기존 등록이 그대로 반환되었습니다</span>
+                ) : importResult.qa.pass ? (
+                  <>자동 검수 <span className="text-emerald-400">통과</span>{importResult.retry ? " (재검수)" : ""}</>
                 ) : (
-                  <span className="text-red-400">실패 — 발행 차단</span>
+                  <>자동 검수 <span className="text-red-400">실패 — 발행 차단</span></>
                 )}
               </h3>
 
-              {(importResult.qa.blocking || []).length > 0 && (
+              {!importResult.qa && (
+                <p className="mt-2 text-xs text-zinc-400">
+                  {importResult.message || "수정본을 다시 검수하려면 검수 실패(REVIEW_REQUIRED) 상태여야 합니다."}
+                </p>
+              )}
+
+              {(importResult.qa?.blocking || []).length > 0 && (
                 <ul className="mt-2 space-y-1 text-xs text-red-300">
                   {importResult.qa.blocking.map((b) => (
                     <li key={b.id}>✖ {b.label} — {b.reason}</li>
@@ -501,7 +541,7 @@ export default function MoneyHunterPage() {
                 </ul>
               )}
 
-              {(importResult.qa.needsHumanReview || []).length > 0 && (
+              {(importResult.qa?.needsHumanReview || []).length > 0 && (
                 <ul className="mt-2 space-y-1 text-xs text-amber-300">
                   {importResult.qa.needsHumanReview.map((r) => (
                     <li key={r.id}>● 사람 확인 필요: {r.reason}</li>
@@ -516,7 +556,9 @@ export default function MoneyHunterPage() {
                 </p>
               )}
 
-              {importResult.status === "ok" && importResult.articleId && (
+              {/* Approval is offered only when THIS response actually passed the
+                  gate — a duplicate return carries no QA and must not unlock it. */}
+              {importResult.status === "ok" && importResult.qa?.pass && importResult.articleId && (
                 <button
                   type="button"
                   onClick={() => approveAndSchedule(importResult.articleId)}

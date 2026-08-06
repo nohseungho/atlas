@@ -19,8 +19,8 @@ import { listProductionJobs, updateProductionJob, reserveArticleId } from "@/lib
 import { buildSeoPackage } from "@/lib/atlas/seo-engine";
 import { applyRelatedBlock } from "@/lib/atlas/seo-backfill";
 import { runContentQa } from "@/lib/atlas/content-qa";
-import { STATE } from "@/lib/atlas/content-pipeline-state";
-import { advance } from "@/lib/atlas/repositories/content-pipeline-repository";
+import { STATE, isRetryEligible } from "@/lib/atlas/content-pipeline-state";
+import { advance, getEntry } from "@/lib/atlas/repositories/content-pipeline-repository";
 
 export const runtime = "nodejs";
 
@@ -115,6 +115,17 @@ export async function POST(request) {
   if (job.moneyHunterId && pkg.moneyHunterId && pkg.moneyHunterId !== job.moneyHunterId) {
     return NextResponse.json({ status: "error", errorCode: "MONEY_HUNTER_ID_MISMATCH" }, { status: 400 });
   }
+
+  // ─── Retry of a QA-failed draft ─────────────────────────────────────────
+  // A job that failed content QA sits at REVIEW_REQUIRED / DRAFT_READY. Sending
+  // a corrected package for it must RE-RUN the gate against the same article,
+  // not hit the idempotent early return — otherwise the fix is reported as
+  // "already registered" and the article silently keeps its failing body.
+  // Anything at QA_PASSED or beyond keeps the old idempotent behaviour, so a
+  // resend can never rewrite an approved, scheduled, or published article.
+  const priorArticleId = job.articleId || "";
+  const entryState = getEntry(job.id)?.state || "";
+  const isRetry = isRetryEligible({ articleId: priorArticleId, jobStatus: job.status, state: entryState });
   if (!nicheMatches(blogId, { category: pkg.category || "", keyword: pkg.title || "" })) {
     // title alone may not carry niche tokens; only reject if clearly cross-niche.
     if (/k-?beauty|skincare|cosmetic|makeup/i.test(`${pkg.title} ${pkg.category}`)) {
@@ -128,15 +139,41 @@ export async function POST(request) {
   const hq = validatePackageHtml(pkg.articleHtml);
   if (!hq.ok) return NextResponse.json({ status: "rejected", errorCode: "MASTER_QA_FAILED", issues: hq.issues }, { status: 400 });
 
-  // 2) semantic dedup (never auto-pass ambiguous)
   const existing = readJson("articles.json").articles || [];
-  const dedup = checkPackageDedup(pkg, existing);
+
+  // 2) idempotency: this job already produced an article → return it, no re-work.
+  //    This runs BEFORE dedup on purpose. "This job already made this article"
+  //    is a stronger signal than semantic similarity, and leaving it after dedup
+  //    meant a resend was rejected as "exact title duplicate of its own article"
+  //    instead of returning the idempotent result.
+  //    Skipped for a retry, which is precisely a request to redo the work on
+  //    the SAME articleId.
+  if (priorArticleId && !isRetry) {
+    const a = existing.find((x) => x.id === priorArticleId);
+    if (a) {
+      return NextResponse.json({
+        status: "ok",
+        duplicate: true,
+        articleId: priorArticleId,
+        jobId: job.id,
+        state: entryState,
+        message: "이미 등록된 패키지입니다(중복 생성 없음). 재검수가 필요하면 QA 실패 상태에서만 다시 등록할 수 있습니다.",
+      });
+    }
+  }
+
+  // 3) semantic dedup (never auto-pass ambiguous). On a retry the job's OWN
+  // article is excluded — and only that one — so the corrected package is not
+  // rejected as a duplicate of the draft it is replacing. Every other article
+  // still counts, so a retry can never smuggle in a duplicate of another post.
+  const dedupCorpus = isRetry ? existing.filter((a) => a.id !== priorArticleId) : existing;
+  const dedup = checkPackageDedup(pkg, dedupCorpus);
   if (dedup.verdict === "FAIL") return NextResponse.json({ status: "rejected", errorCode: "DUPLICATE", reason: dedup.reason }, { status: 409 });
   if (dedup.verdict === "DUPLICATE_REVIEW_REQUIRED") {
     return NextResponse.json({ status: "duplicate_review_required", reason: dedup.reason, of: dedup.of }, { status: 200 });
   }
 
-  // 3) image magic-byte validation BEFORE any external upload
+  // 4) image magic-byte validation BEFORE any external upload
   const imgs = pkg.images || [];
   const imgIssues = [];
   for (const role of IMAGE_ROLES) {
@@ -147,20 +184,17 @@ export async function POST(request) {
   }
   if (imgIssues.length) return NextResponse.json({ status: "rejected", errorCode: "IMAGE_BYTES_INVALID", issues: imgIssues }, { status: 400 });
 
-  // 4) idempotency: this job already produced an article → return it, no re-work.
-  if (job.articleId) {
-    const a = existing.find((x) => x.id === job.articleId);
-    if (a) {
-      return NextResponse.json({ status: "ok", duplicate: true, articleId: job.articleId, jobId: job.id, message: "이미 등록된 패키지입니다(중복 생성 없음)." });
-    }
-  }
-
   if (!isCloudinaryConfigured()) {
     return NextResponse.json({ status: "needs_configuration", errorCode: "CLOUDINARY_CONFIG_MISSING", envNeeded: ["CLOUDINARY_URL"] }, { status: 200 });
   }
 
   // 5) upload 5 images (fixed public_id per role = idempotent overwrite).
-  const slug = pkg.slug;
+  //    On a retry the ORIGINAL article's slug is reused, because the Cloudinary
+  //    public_id is derived from it: keeping it means the 5 assets are
+  //    overwritten in place instead of a second set being created under a new
+  //    folder. The slug is frozen for the same reason (see 6b).
+  const priorArticle = priorArticleId ? existing.find((a) => a.id === priorArticleId) : null;
+  const slug = isRetry && priorArticle?.slug ? priorArticle.slug : pkg.slug;
   const roleUrlAlt = [];
   try {
     for (const role of IMAGE_ROLES) {
@@ -186,8 +220,8 @@ export async function POST(request) {
   // only from real publishedUrls, so an empty/new blog yields none rather than
   // an invented URL — buildSeoPackage reports that instead of hiding it.
   const seo = buildSeoPackage(
-    { ...pkg, keyword: pkg.title, visualAssets: roleUrlAlt.map((r) => ({ publicUrl: r.url })) },
-    { articles: existing, excludeId: job.articleId || "" },
+    { ...pkg, slug, keyword: pkg.title, visualAssets: roleUrlAlt.map((r) => ({ publicUrl: r.url })) },
+    { articles: existing, excludeId: priorArticleId },
   );
   const finalHtml = applyRelatedBlock(withImages, seo.internalLinks);
 
@@ -200,7 +234,9 @@ export async function POST(request) {
     return { key: role, placement: PLACEMENT, alt: r.alt, width: 1600, height: 900, fit: "cover", required: true, localSrc: "", publicUrl: r.url };
   });
   const record = {
-    id: articleId, keyword: pkg.title, title: pkg.title, hookTitle: pkg.title, slug: pkg.slug,
+    // seo.slug (not pkg.slug) so the record matches the slug the images were
+    // uploaded under — on a retry that is the original article's slug.
+    id: articleId, keyword: pkg.title, title: pkg.title, hookTitle: pkg.title, slug: seo.slug,
     language: "en", searchIntent: pkg.searchIntentKey || "informational",
     searchIntentKey: pkg.searchIntentKey || "informational", coreQuestion: pkg.coreQuestion || "",
     topicEntities: pkg.topicEntities || [], desiredReaderAction: pkg.desiredReaderAction || "",
@@ -221,7 +257,9 @@ export async function POST(request) {
     moneyHunterId: pkg.moneyHunterId || job.moneyHunterId || "",
     researchQuery: pkg.researchQuery || "", researchedAt: pkg.researchedAt || "",
     trendEvidence: pkg.trendEvidence || "", purchaseIntent: pkg.purchaseIntent || "", affiliatePotential: pkg.affiliatePotential || "",
-    contentGap: pkg.contentGap || "", createdAt: now, updatedAt: now,
+    // A retry replaces the record in place, so the original creation time is
+    // kept — only updatedAt moves.
+    contentGap: pkg.contentGap || "", createdAt: priorArticle?.createdAt || now, updatedAt: now,
   };
   const existingIdx = articlesData.articles.findIndex((a) => a.id === articleId);
   if (existingIdx >= 0) articlesData.articles[existingIdx] = record;
@@ -251,7 +289,8 @@ export async function POST(request) {
 
   // Pipeline state: DRAFT_READY always, then QA_PASSED only when the gate is
   // clean. A failed gate is left at DRAFT_READY with the reasons attached —
-  // never marked QA_PASSED so the UI cannot offer approval.
+  // never marked QA_PASSED so the UI cannot offer approval. On a retry the
+  // entry is already DRAFT_READY, so this call is a no-op the guard refuses.
   advance(job.id, STATE.DRAFT_READY, { note: `초안 등록 (${articleId})`, patch: { articleId } });
   const stateResult = contentQa.pass
     ? advance(job.id, STATE.QA_PASSED, { note: contentQa.summary })
@@ -259,6 +298,7 @@ export async function POST(request) {
 
   return NextResponse.json({
     status: contentQa.pass ? "ok" : "qa_failed",
+    retry: isRetry,
     jobId: job.id,
     articleId,
     state: stateResult.ok ? STATE.QA_PASSED : STATE.DRAFT_READY,
