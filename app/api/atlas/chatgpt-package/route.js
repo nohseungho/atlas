@@ -16,6 +16,11 @@ import { nicheMatches } from "@/lib/atlas/money-hunter-select";
 import { isCloudinaryConfigured, uploadArticleImageData } from "@/lib/atlas/providers/cloudinary-provider";
 import { EMBEDDED_PLACEMENT } from "@/lib/atlas/revenue-layout-engine";
 import { listProductionJobs, updateProductionJob, reserveArticleId } from "@/lib/atlas/repositories/production-job-repository";
+import { buildSeoPackage } from "@/lib/atlas/seo-engine";
+import { applyRelatedBlock } from "@/lib/atlas/seo-backfill";
+import { runContentQa } from "@/lib/atlas/content-qa";
+import { STATE } from "@/lib/atlas/content-pipeline-state";
+import { advance } from "@/lib/atlas/repositories/content-pipeline-repository";
 
 export const runtime = "nodejs";
 
@@ -173,9 +178,18 @@ export async function POST(request) {
   if (distinct.size !== 5) return NextResponse.json({ status: "error", errorCode: "IMAGE_URLS_NOT_DISTINCT" }, { status: 502 });
 
   // 6) assemble final HTML + final QA (5 imgs / 5 distinct URLs / no data-url).
-  const finalHtml = assembleHtml(pkg.articleHtml, roleUrlAlt);
-  const fq = finalHtmlQa(finalHtml);
+  const withImages = assembleHtml(pkg.articleHtml, roleUrlAlt);
+  const fq = finalHtmlQa(withImages);
   if (!fq.ok) return NextResponse.json({ status: "rejected", errorCode: "FINAL_HTML_QA_FAILED", issues: fq.issues }, { status: 400 });
+
+  // 6b) SEO surfaces derived from the live corpus (§5). Internal links come
+  // only from real publishedUrls, so an empty/new blog yields none rather than
+  // an invented URL — buildSeoPackage reports that instead of hiding it.
+  const seo = buildSeoPackage(
+    { ...pkg, keyword: pkg.title, visualAssets: roleUrlAlt.map((r) => ({ publicUrl: r.url })) },
+    { articles: existing, excludeId: job.articleId || "" },
+  );
+  const finalHtml = applyRelatedBlock(withImages, seo.internalLinks);
 
   // 7) write the article record (base64 never stored) + docs final HTML.
   const articlesData = readJson("articles.json");
@@ -190,8 +204,11 @@ export async function POST(request) {
     language: "en", searchIntent: pkg.searchIntentKey || "informational",
     searchIntentKey: pkg.searchIntentKey || "informational", coreQuestion: pkg.coreQuestion || "",
     topicEntities: pkg.topicEntities || [], desiredReaderAction: pkg.desiredReaderAction || "",
-    excerpt: pkg.excerpt || "", metaDescription: pkg.metaDescription, category: pkg.category || "Travel",
+    excerpt: pkg.excerpt || "", metaDescription: seo.metaDescription || pkg.metaDescription, category: pkg.category || "Travel",
     tags: pkg.tags || [], template: pkg.revenueTemplate || "guide", persona: pkg.readerPersona || "US Tourist",
+    // SEO surfaces the publisher consumes: labels go to Blogger, internalLinks
+    // are already rendered into the Related block, jsonLd ships with the post.
+    seoCluster: seo.cluster, seoLabels: seo.labels, internalLinks: seo.internalLinks, jsonLd: seo.jsonLd,
     outline: pkg.outline || [], quickAnswer: pkg.quickAnswer || "", comparisonCriteria: pkg.comparisonCriteria || [],
     keyTakeaways: pkg.keyTakeaways || [], comparisonHeaders: pkg.comparisonHeaders || [], comparisonTable: pkg.comparisonTable || [],
     sources: (pkg.sources || []).map((s) => (typeof s === "string" ? { title: s, url: s } : s)),
@@ -214,22 +231,53 @@ export async function POST(request) {
   // Final HTML override used by the existing "Blogger 초안 반영" route (DRAFT-only).
   fs.writeFileSync(path.join(process.cwd(), "docs", `${articleId}-blogger-final.html`), finalHtml + "\n", "utf-8");
 
-  // 8) checkpoint the job (QA passed; DRAFT creation is downstream + OAuth-gated).
+  // 8) full content QA (§6). A FAIL keeps the article stored but leaves the
+  // pipeline short of QA_PASSED, which is what disables the publish button.
+  const contentQa = runContentQa(record, { articles: articlesData.articles });
+
   updateProductionJob(job.id, (j) => {
     j.articleId = articleId;
-    j.status = "READY_TO_PUBLISH";
+    j.status = contentQa.pass ? "READY_TO_PUBLISH" : "REVIEW_REQUIRED";
     j.step = "QA";
     j.steps = j.steps || {};
-    j.steps.PACKAGE_IMPORTED = { status: "done", at: now, detail: `이미지 5장 Cloudinary 업로드·QA 통과 (${articleId})` };
+    j.steps.PACKAGE_IMPORTED = { status: "done", at: now, detail: `이미지 5장 Cloudinary 업로드·구조 QA 통과 (${articleId})` };
+    j.steps.CONTENT_QA = {
+      status: contentQa.pass ? "done" : "review",
+      at: now,
+      detail: contentQa.summary,
+      data: { blocking: contentQa.blocking, needsHumanReview: contentQa.needsHumanReview },
+    };
   });
 
+  // Pipeline state: DRAFT_READY always, then QA_PASSED only when the gate is
+  // clean. A failed gate is left at DRAFT_READY with the reasons attached —
+  // never marked QA_PASSED so the UI cannot offer approval.
+  advance(job.id, STATE.DRAFT_READY, { note: `초안 등록 (${articleId})`, patch: { articleId } });
+  const stateResult = contentQa.pass
+    ? advance(job.id, STATE.QA_PASSED, { note: contentQa.summary })
+    : { ok: false, reason: contentQa.summary };
+
   return NextResponse.json({
-    status: "ok",
+    status: contentQa.pass ? "ok" : "qa_failed",
     jobId: job.id,
     articleId,
+    state: stateResult.ok ? STATE.QA_PASSED : STATE.DRAFT_READY,
     images: roleUrlAlt.map((r) => ({ role: r.role, url: r.url })),
     finalHtml: `docs/${articleId}-blogger-final.html`,
-    qa: { imgCount: fq.imgCount, distinctCloudinary: fq.distinctCloudinary, pass: true },
-    nextStep: "Publisher에서 Blogger 재연결 후 'Blogger 초안 반영'으로 DRAFT 생성",
+    qa: {
+      imgCount: fq.imgCount,
+      distinctCloudinary: fq.distinctCloudinary,
+      pass: contentQa.pass,
+      blocking: contentQa.blocking,
+      needsHumanReview: contentQa.needsHumanReview,
+      checks: contentQa.checks,
+    },
+    seo: {
+      cluster: seo.cluster, slug: seo.slug, metaLength: seo.metaLength,
+      labels: seo.labels, internalLinks: seo.internalLinks.map((l) => l.url), issues: seo.issues,
+    },
+    nextStep: contentQa.pass
+      ? "미리보기 확인 후 '승인 및 예약' 한 번으로 발행 예약"
+      : "검수 실패 항목을 수정한 뒤 다시 붙여넣으세요. 발행은 차단되어 있습니다.",
   });
 }

@@ -20,6 +20,7 @@ import {
   getJobsByArticleId,
 } from "@/lib/atlas/repositories/publishing-repository";
 import { buildBloggerHtml } from "@/lib/html-exporter";
+import { selectLabels } from "@/lib/atlas/seo-engine";
 import { PUBLISH_STATE, publishStateOf, matchLivePost } from "@/lib/atlas/publisher-sync";
 
 export const runtime = "nodejs";
@@ -189,11 +190,17 @@ export async function POST(request) {
     job = createPublishJob({ articleId, channelId: blogId, provider: "blogger" });
     updatePublishJobStatus(job.id, { status: "running", incrementAttempt: true, message: "자동 발행 시작" });
 
+    // Labels and the search description are part of the post from the first
+    // publish now — backfilling them later means editing an already-indexed
+    // post, which is exactly the situation the existing 8 posts are in.
     const content = {
       bloggerBlogId: session.bloggerBlogId,
       title: article.title || "",
       html: buildBloggerHtml(article),
-      labels: article.tags || [],
+      labels: (article.seoLabels || []).length
+        ? article.seoLabels
+        : selectLabels({ title: article.title, keyword: article.keyword || article.title, tags: article.tags || [] }),
+      metaDescription: article.metaDescription || "",
     };
 
     const result = await session.run((accessToken) =>

@@ -50,6 +50,13 @@ export default function MoneyHunterPage() {
   const [deleteMsg, setDeleteMsg] = useState("");
   const [deleteBusy, setDeleteBusy] = useState(false);
 
+  // ── 오늘의 글 준비 (Daily Content Pipeline) ──────────────────────────────
+  const [daily, setDaily] = useState(null);      // { jobId, keyword, promptText, brief }
+  const [dailyBusy, setDailyBusy] = useState(false);
+  const [dailyMsg, setDailyMsg] = useState("");
+  const [pasteText, setPasteText] = useState("");
+  const [importResult, setImportResult] = useState(null);
+
   async function loadKeywords() {
     setLoading(true);
     const res = await fetch("/api/keywords", { cache: "no-store" });
@@ -103,6 +110,117 @@ export default function MoneyHunterPage() {
     a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  // One click: pick today's keyword, check duplicates, build the brief + the
+  // internal-link list, and return one prompt. No generation API is called.
+  async function prepareDailyArticle(force = false) {
+    setDailyBusy(true);
+    setDailyMsg("");
+    setImportResult(null);
+    try {
+      const res = await fetch("/api/atlas/daily-brief", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ blogId: "blog_001", force }),
+      });
+      const data = await res.json();
+      if (data.status === "ok" || data.status === "in_progress") {
+        setDaily(data);
+        setDailyMsg(
+          data.status === "in_progress"
+            ? data.message
+            : `키워드 선택: "${data.keyword.keyword}" · 내부링크 후보 ${data.internalLinkCount}개 · 프롬프트 준비 완료`,
+        );
+      } else if (data.status === "blocked") {
+        setDaily(null);
+        setDailyMsg(`준비 불가: ${data.message}`);
+      } else {
+        setDaily(null);
+        setDailyMsg(`오류: ${data.errorCode || data.message || "실패"}`);
+      }
+      loadKeywords();
+    } catch {
+      setDailyMsg("네트워크 오류");
+    }
+    setDailyBusy(false);
+  }
+
+  async function copyPrompt() {
+    if (!daily?.promptText) return;
+    try {
+      await navigator.clipboard.writeText(daily.promptText);
+      setDailyMsg("프롬프트를 복사했습니다. ChatGPT에 붙여넣고 실행하세요.");
+    } catch {
+      setDailyMsg("복사 실패 — 아래 상자에서 직접 선택해 복사하세요.");
+    }
+  }
+
+  // Paste the ChatGPT JSON straight in; no file download/upload round trip.
+  async function importPastedPackage() {
+    const text = pasteText.trim();
+    if (!text) {
+      setDailyMsg("붙여넣은 내용이 없습니다.");
+      return;
+    }
+    let pkg;
+    try {
+      pkg = JSON.parse(text);
+    } catch {
+      setDailyMsg("JSON 파싱 실패 — ChatGPT 응답의 JSON 부분만 붙여넣으세요.");
+      return;
+    }
+    setDailyBusy(true);
+    setDailyMsg("패키지 검증 · 이미지 업로드 · 검수 중...");
+    try {
+      const res = await fetch("/api/atlas/chatgpt-package", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ package: pkg }),
+      });
+      const data = await res.json();
+      setImportResult(data);
+      if (data.status === "ok") {
+        setDailyMsg(`검수 통과: ${data.articleId} · 라벨 ${(data.seo?.labels || []).length}개 · 내부링크 ${(data.seo?.internalLinks || []).length}개 → 승인 및 예약 가능`);
+      } else if (data.status === "qa_failed") {
+        setDailyMsg(`검수 실패 ${data.qa?.blocking?.length ?? 0}건 — 발행이 차단되었습니다.`);
+      } else {
+        setDailyMsg(`등록 거부: ${data.errorCode || data.status} ${(data.issues || []).join(", ")}`);
+      }
+      loadKeywords();
+    } catch {
+      setDailyMsg("네트워크 오류");
+    }
+    setDailyBusy(false);
+  }
+
+  // The user's single final action: QA gate → approval → next publish slot.
+  // This does NOT send anything to Blogger.
+  async function approveAndSchedule(articleId) {
+    setDailyBusy(true);
+    setDailyMsg("검수 확인 및 예약 중...");
+    try {
+      const res = await fetch("/api/atlas/schedule", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "approve-and-schedule", articleId }),
+      });
+      const data = await res.json();
+      if (data.status === "ok") {
+        setDailyMsg(`${data.message} — ${data.nextStep}`);
+        setImportResult(null);
+        setDaily(null);
+        setPasteText("");
+      } else if (data.status === "qa_failed") {
+        setImportResult({ status: "qa_failed", qa: { blocking: data.blocking, checks: data.checks } });
+        setDailyMsg(`검수 실패로 예약이 차단되었습니다 (${(data.blocking || []).length}건).`);
+      } else {
+        setDailyMsg(`예약 실패: ${data.errorCode || data.message || "오류"}`);
+      }
+    } catch {
+      setDailyMsg("네트워크 오류");
+    }
+    setDailyBusy(false);
   }
 
   // Export the secret-free ChatGPT request file for a candidate (Blog 01 only).
@@ -293,6 +411,124 @@ export default function MoneyHunterPage() {
             ← Dashboard
           </Link>
         </header>
+
+        <section className="rounded-xl border border-emerald-800/60 bg-zinc-900 p-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-semibold text-emerald-300">오늘의 글 준비</h2>
+              <p className="mt-1 text-xs text-zinc-500">
+                키워드 선택 → 중복 확인 → 브리프 → 내부링크 후보 → 프롬프트 생성까지 한 번에. 글 생성은 ChatGPT에서
+                직접 실행하며, ATLAS는 유료 생성 API를 호출하지 않습니다.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => prepareDailyArticle(false)}
+              disabled={dailyBusy}
+              className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 disabled:opacity-40"
+            >
+              {dailyBusy ? "처리 중..." : "오늘의 글 준비"}
+            </button>
+          </div>
+
+          {dailyMsg && <p className="mt-3 rounded-md bg-zinc-950 px-3 py-2 text-sm text-zinc-300">{dailyMsg}</p>}
+
+          {daily?.brief && (
+            <div className="mt-4 space-y-3">
+              <dl className="grid gap-2 text-xs sm:grid-cols-3">
+                <BriefFact label="키워드" value={daily.brief.keyword} />
+                <BriefFact label="클러스터" value={daily.brief.clusterName || "(미분류)"} />
+                <BriefFact label="Job" value={daily.jobId} />
+              </dl>
+
+              <div>
+                <div className="mb-1 flex items-center justify-between">
+                  <span className="text-xs font-semibold text-zinc-400">
+                    1단계 — ChatGPT 프롬프트 (내부링크 {daily.brief.internalLinkTargets?.length ?? 0}개 포함)
+                  </span>
+                  <button
+                    type="button"
+                    onClick={copyPrompt}
+                    className="rounded-md bg-blue-600 px-3 py-1 text-xs font-semibold text-white hover:bg-blue-500"
+                  >
+                    프롬프트 복사
+                  </button>
+                </div>
+                <textarea
+                  readOnly
+                  value={daily.promptText}
+                  className="h-40 w-full rounded-md border border-zinc-700 bg-zinc-950 p-3 font-mono text-[11px] text-zinc-300"
+                />
+              </div>
+
+              <div>
+                <span className="mb-1 block text-xs font-semibold text-zinc-400">
+                  2단계 — ChatGPT가 돌려준 JSON을 그대로 붙여넣기
+                </span>
+                <textarea
+                  value={pasteText}
+                  onChange={(e) => setPasteText(e.target.value)}
+                  placeholder='{ "schemaVersion": "atlas-package/1", ... }'
+                  className="h-28 w-full rounded-md border border-zinc-700 bg-zinc-950 p-3 font-mono text-[11px] text-zinc-100"
+                />
+                <button
+                  type="button"
+                  onClick={importPastedPackage}
+                  disabled={dailyBusy || !pasteText.trim()}
+                  className="mt-2 rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-500 disabled:opacity-40"
+                >
+                  결과 가져오기 · 검수 실행
+                </button>
+              </div>
+            </div>
+          )}
+
+          {importResult?.qa && (
+            <div className="mt-4 rounded-lg border border-zinc-800 bg-zinc-950 p-4">
+              <h3 className="text-sm font-semibold">
+                자동 검수 {importResult.qa.pass ? (
+                  <span className="text-emerald-400">통과</span>
+                ) : (
+                  <span className="text-red-400">실패 — 발행 차단</span>
+                )}
+              </h3>
+
+              {(importResult.qa.blocking || []).length > 0 && (
+                <ul className="mt-2 space-y-1 text-xs text-red-300">
+                  {importResult.qa.blocking.map((b) => (
+                    <li key={b.id}>✖ {b.label} — {b.reason}</li>
+                  ))}
+                </ul>
+              )}
+
+              {(importResult.qa.needsHumanReview || []).length > 0 && (
+                <ul className="mt-2 space-y-1 text-xs text-amber-300">
+                  {importResult.qa.needsHumanReview.map((r) => (
+                    <li key={r.id}>● 사람 확인 필요: {r.reason}</li>
+                  ))}
+                </ul>
+              )}
+
+              {importResult.seo && (
+                <p className="mt-2 text-xs text-zinc-400">
+                  meta {importResult.seo.metaLength}자 · 라벨 {(importResult.seo.labels || []).join(", ")} · 내부링크{" "}
+                  {(importResult.seo.internalLinks || []).length}개 · slug {importResult.seo.slug}
+                </p>
+              )}
+
+              {importResult.status === "ok" && importResult.articleId && (
+                <button
+                  type="button"
+                  onClick={() => approveAndSchedule(importResult.articleId)}
+                  disabled={dailyBusy}
+                  className="mt-3 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 disabled:opacity-40"
+                >
+                  승인 및 예약
+                </button>
+              )}
+            </div>
+          )}
+        </section>
 
         <section className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
           <h2 className="text-lg font-semibold">새 키워드 등록</h2>
@@ -555,6 +791,15 @@ function usageLabel(k) {
   if (u.articleId) return `글 사용 · ${u.articleId}`;
   if (u.used) return "사용 중";
   return "미사용";
+}
+
+function BriefFact({ label, value }) {
+  return (
+    <div className="rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2">
+      <dt className="text-[10px] uppercase tracking-wide text-zinc-500">{label}</dt>
+      <dd className="mt-0.5 text-zinc-200">{value}</dd>
+    </div>
+  );
 }
 
 function Field({ label, children, className = "" }) {
