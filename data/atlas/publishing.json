@@ -304,6 +304,21 @@
       "updatedAt": "2026-08-04T13:41:53.081Z",
       "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/08/emergency-medical-evacuation-insurance.html",
       "externalId": "6896434214995734520"
+    },
+    {
+      "id": "job_021",
+      "articleId": "art_011",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "attemptCount": 1,
+      "maxAttempts": 3,
+      "lastError": null,
+      "nextRetryAt": null,
+      "createdAt": "2026-08-06T16:11:37.136Z",
+      "updatedAt": "2026-08-06T16:11:40.016Z",
+      "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/08/travel-medical-insurance-for-seniors.html",
+      "externalId": "4250809504362179987"
     }
   ],
   "history": [
@@ -1032,6 +1047,39 @@
       "message": "Blogger 자동 발행 성공",
       "error": null,
       "createdAt": "2026-08-04T13:41:53.083Z"
+    },
+    {
+      "id": "hist_067",
+      "jobId": "job_021",
+      "articleId": "art_011",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "queued",
+      "message": "Job 생성",
+      "error": null,
+      "createdAt": "2026-08-06T16:11:37.138Z"
+    },
+    {
+      "id": "hist_068",
+      "jobId": "job_021",
+      "articleId": "art_011",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "running",
+      "message": "자동 발행 시작",
+      "error": null,
+      "createdAt": "2026-08-06T16:11:37.143Z"
+    },
+    {
+      "id": "hist_069",
+      "jobId": "job_021",
+      "articleId": "art_011",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "message": "Blogger 자동 발행 성공",
+      "error": null,
+      "createdAt": "2026-08-06T16:11:40.018Z"
     }
   ]
 }

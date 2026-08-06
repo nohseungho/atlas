@@ -161,6 +161,367 @@
       "blogId": "blog_001",
       "moneyHunterId": "kw_018",
       "mode": "CHATGPT_HANDOFF"
+    },
+    {
+      "id": "pjob_005",
+      "idempotencyKey": "travel-medical-insurance-for-seniors-over-65",
+      "topic": "travel medical insurance for seniors over 65",
+      "searchIntent": "senior-international-travel-medical-insurance-checklist",
+      "axis": "",
+      "recommendation": {
+        "title": "travel medical insurance for seniors over 65",
+        "searchIntent": "senior-international-travel-medical-insurance-checklist"
+      },
+      "articleId": "art_011",
+      "status": "READY_TO_PUBLISH",
+      "step": "QA",
+      "progress": {
+        "index": 0,
+        "total": 8,
+        "percent": 0
+      },
+      "steps": {
+        "PACKAGE_IMPORTED": {
+          "status": "done",
+          "at": "2026-08-06T16:04:35.891Z",
+          "detail": "이미지 5장 Cloudinary 업로드·구조 QA 통과 (art_011)"
+        },
+        "CONTENT_QA": {
+          "status": "done",
+          "at": "2026-08-06T16:04:35.891Z",
+          "detail": "자동 검수 통과 (사람 확인 필요 1건) — 승인·예약 가능",
+          "data": {
+            "blocking": [],
+            "needsHumanReview": [
+              {
+                "id": "fabrication",
+                "label": "통계·기관·인용문 실재 여부",
+                "reason": "수치 주장 14건. 사실 여부는 자동 검증이 불가능합니다 — 출처 6개와 대조해 사람이 확인해야 합니다."
+              }
+            ]
+          }
+        }
+      },
+      "blocked": null,
+      "error": null,
+      "review": null,
+      "preview": null,
+      "bloggerDraft": null,
+      "createdAt": "2026-08-06T15:01:30.696Z",
+      "startedAt": null,
+      "updatedAt": "2026-08-06T16:07:59.948Z",
+      "blogId": "blog_001",
+      "moneyHunterId": "kw_019",
+      "mode": "CHATGPT_HANDOFF",
+      "contentEntry": {
+        "id": "cp_pjob_005",
+        "blogId": "blog_001",
+        "keywordId": "kw_019",
+        "keyword": "travel medical insurance for seniors over 65",
+        "state": "SCHEDULED",
+        "failedFrom": "",
+        "failure": null,
+        "articleId": "art_011",
+        "jobId": "pjob_005",
+        "brief": {
+          "schemaVersion": "atlas-brief/1",
+          "blogId": "blog_001",
+          "keywordId": "kw_019",
+          "keyword": "travel medical insurance for seniors over 65",
+          "category": "Travel",
+          "searchIntent": "senior-international-travel-medical-insurance-checklist",
+          "cluster": "medical-abroad",
+          "clusterName": "Medical Emergencies Abroad",
+          "audience": "U.S. travelers preparing for an international trip",
+          "coreQuestion": "If this goes wrong on a trip, how much can a U.S. traveler lose — and what should they do before departure?",
+          "sections": [
+            {
+              "id": "quickAnswer",
+              "heading": "Quick Answer",
+              "required": true,
+              "note": "2-3 sentences that answer the search query outright, before any preamble."
+            },
+            {
+              "id": "moneyAtRisk",
+              "heading": "The Money at Risk",
+              "required": true,
+              "note": "What this specific problem actually costs a U.S. traveler, with sourced figures only."
+            },
+            {
+              "id": "decisionTable",
+              "heading": "Situation-by-situation comparison or decision table",
+              "required": true,
+              "note": "A real HTML <table> comparing scenarios/options — not a restatement of the prose."
+            },
+            {
+              "id": "beforeYouTravel",
+              "heading": "What to Do Before You Travel",
+              "required": true,
+              "note": "Concrete pre-trip actions, in the order a reader would do them."
+            },
+            {
+              "id": "commonMistakes",
+              "heading": "Common Mistakes",
+              "required": true,
+              "note": "Mistakes that cost money or coverage, each with the consequence."
+            },
+            {
+              "id": "faq",
+              "heading": "FAQ",
+              "required": true,
+              "note": "Exactly 5 questions a U.S. traveler would actually type."
+            },
+            {
+              "id": "sources",
+              "heading": "Sources & References",
+              "required": true,
+              "note": "At least 3 authoritative HTTPS sources, linked inline where used."
+            },
+            {
+              "id": "relatedGuides",
+              "heading": "Related ATLAS Guides",
+              "required": true,
+              "note": "ATLAS inserts this block — leave the marker, do not invent URLs."
+            }
+          ],
+          "requiredArtifact": [
+            "comparison table",
+            "decision table",
+            "checklist",
+            "cost-estimate breakdown"
+          ],
+          "coveredAngles": [
+            {
+              "id": "art_002",
+              "title": "Travel Insurance for International Trips: What to Compare First",
+              "coreQuestion": "",
+              "cluster": "travel-insurance"
+            },
+            {
+              "id": "art_003",
+              "title": "Travel Medical Insurance vs. Trip Insurance: Which Coverage Fits an International Trip?",
+              "coreQuestion": "",
+              "cluster": "travel-insurance"
+            },
+            {
+              "id": "art_004",
+              "title": "What to Do If You Get Sick While Traveling Abroad",
+              "coreQuestion": "",
+              "cluster": "medical-abroad"
+            },
+            {
+              "id": "art_005",
+              "title": "How to Build a Travel Health Kit for an International Trip",
+              "coreQuestion": "",
+              "cluster": "medical-abroad"
+            },
+            {
+              "id": "art_006",
+              "title": "Food and Water Safety Abroad: How to Lower Your Risk of Getting Sick",
+              "coreQuestion": "",
+              "cluster": "medical-abroad"
+            },
+            {
+              "id": "art_008",
+              "title": "Travel Insurance Pre-Existing Condition Waiver: How to Qualify",
+              "coreQuestion": "How can a U.S. traveler qualify for a travel insurance pre-existing medical condition exclusion waiver?",
+              "cluster": "travel-insurance"
+            },
+            {
+              "id": "art_009",
+              "title": "Cruise Travel Insurance: How to Compare Medical Evacuation Coverage",
+              "coreQuestion": "How should a U.S. cruise traveler compare emergency medical expense and medical evacuation insurance coverage?",
+              "cluster": "travel-insurance"
+            },
+            {
+              "id": "art_010",
+              "title": "Emergency Medical Evacuation Insurance for Remote Travel: What to Check",
+              "coreQuestion": "When does a remote international trip justify separate medical evacuation coverage, and which transport, destination, and assistance-service terms matter most?",
+              "cluster": "medical-abroad"
+            }
+          ],
+          "internalLinkTargets": [
+            {
+              "articleId": "art_010",
+              "title": "Emergency Medical Evacuation Insurance for Remote Travel: What to Check",
+              "url": "https://atlas-money-2026.blogspot.com/2026/08/emergency-medical-evacuation-insurance.html",
+              "cluster": "medical-abroad",
+              "score": 6
+            },
+            {
+              "articleId": "art_005",
+              "title": "How to Build a Travel Health Kit for an International Trip",
+              "url": "https://atlas-money-2026.blogspot.com/2026/07/how-to-build-travel-health-kit-for_02069363082.html",
+              "cluster": "medical-abroad",
+              "score": 4
+            },
+            {
+              "articleId": "art_003",
+              "title": "Travel Medical Insurance vs. Trip Insurance: Which Coverage Fits an International Trip?",
+              "url": "https://atlas-money-2026.blogspot.com/2026/07/travel-medical-insurance-vs-trip-insurance.html",
+              "cluster": "travel-insurance",
+              "score": 3
+            },
+            {
+              "articleId": "art_004",
+              "title": "What to Do If You Get Sick While Traveling Abroad",
+              "url": "https://atlas-money-2026.blogspot.com/2026/07/what-to-do-if-you-get-sick-while-traveling-abroad.html",
+              "cluster": "medical-abroad",
+              "score": 3
+            }
+          ],
+          "internalLinkRule": "Use ONLY these 4 URLs for internal links (2-4). Never invent an ATLAS URL.",
+          "createdAt": "2026-08-06T15:01:30.684Z"
+        },
+        "scheduledAt": "2026-08-07T13:00:00.000Z",
+        "publishedUrl": "",
+        "history": [
+          {
+            "state": "IDEA",
+            "at": "2026-08-06T15:01:30.700Z",
+            "note": "파이프라인 등록"
+          },
+          {
+            "state": "SELECTED",
+            "at": "2026-08-06T15:01:30.703Z",
+            "note": "오늘의 글 준비: travel medical insurance for seniors over 65"
+          },
+          {
+            "state": "BRIEF_READY",
+            "at": "2026-08-06T15:01:30.705Z",
+            "note": "오늘의 글 준비: travel medical insurance for seniors over 65"
+          },
+          {
+            "state": "DRAFT_READY",
+            "at": "2026-08-06T15:42:03.585Z",
+            "note": "초안 등록 (art_011)"
+          },
+          {
+            "state": "QA_PASSED",
+            "at": "2026-08-06T16:04:35.901Z",
+            "note": "자동 검수 통과 (사람 확인 필요 1건) — 승인·예약 가능"
+          },
+          {
+            "state": "APPROVED",
+            "at": "2026-08-06T16:07:59.945Z",
+            "note": "사람 승인"
+          },
+          {
+            "state": "SCHEDULED",
+            "at": "2026-08-06T16:07:59.948Z",
+            "note": "예약 2026-08-07T13:00:00.000Z"
+          }
+        ],
+        "createdAt": "2026-08-06T15:01:30.700Z",
+        "updatedAt": "2026-08-06T16:07:59.948Z"
+      }
+    },
+    {
+      "id": "pjob_006",
+      "idempotencyKey": "choosing-travel-medical-insurance-for-senior-travelers",
+      "topic": "Choosing Travel Medical Insurance for Senior Travelers",
+      "searchIntent": "Find age-appropriate travel medical coverage and pre-existing condition rules",
+      "axis": "traveler-segment-coverage",
+      "recommendation": {
+        "title": "Choosing Travel Medical Insurance for Senior Travelers",
+        "searchIntent": "Find age-appropriate travel medical coverage and pre-existing condition rules",
+        "type": "segment-guide",
+        "contentAxis": {
+          "id": "traveler-segment-coverage",
+          "label": "Family, Senior, Student and Frequent Traveler Coverage"
+        },
+        "reason": "Segment-specific guidance that differentiates from the general comparison posts.",
+        "origin": "editorial-seed",
+        "sourceMode": "EDITORIAL_FALLBACK",
+        "liveData": false,
+        "trend": {
+          "sevenDay": "UNKNOWN",
+          "thirtyDay": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+        },
+        "competition": {
+          "live": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+        },
+        "relation": {
+          "duplicationRisk": "LOW",
+          "overlappingArticleIds": [],
+          "relatedArticleIds": [
+            "art_003"
+          ],
+          "differentiatedIntent": "Find age-appropriate travel medical coverage and pre-existing condition rules",
+          "clusterRole": "기존 art_003 클러스터 보완"
+        },
+        "officialSource": {
+          "availability": "AVAILABLE",
+          "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+          "collectedAt": null
+        },
+        "monetization": {
+          "potential": "높음",
+          "futureProductCategories": [
+            "senior travel medical insurance"
+          ],
+          "activeAffiliateLinks": 0,
+          "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+          "salesCtaAllowed": false
+        },
+        "score": 90,
+        "scoreBreakdown": {
+          "contentFit": 30,
+          "intentUsefulness": 20,
+          "clusterConnection": 15,
+          "sourceAvailability": 15,
+          "monetizationReadiness": 10
+        },
+        "excludedComponents": [
+          {
+            "component": "timeliness",
+            "max": 10,
+            "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+          }
+        ],
+        "maxAvailableScore": 90,
+        "hardGate": {
+          "pass": true,
+          "failures": []
+        },
+        "eligibility": {
+          "canGenerate": true,
+          "blockedReason": null
+        },
+        "priority": 1
+      },
+      "articleId": "",
+      "status": "BLOCKED_RESEARCH_PROVIDER",
+      "step": "RESEARCHING",
+      "progress": {
+        "index": 0,
+        "total": 8,
+        "percent": 0
+      },
+      "steps": {
+        "RESEARCHING": {
+          "status": "stopped",
+          "at": "2026-08-06T15:02:13.910Z",
+          "detail": "신뢰할 수 있는 출처를 자동 조사할 검색 제공자가 연결되지 않았습니다."
+        }
+      },
+      "blocked": {
+        "code": "BLOCKED_RESEARCH_PROVIDER",
+        "userMessage": "신뢰할 수 있는 출처를 자동 조사할 검색 제공자가 연결되지 않았습니다.",
+        "resumable": true,
+        "envNeeded": [
+          "OPENAI_API_KEY (또는 TAVILY_API_KEY)"
+        ]
+      },
+      "error": null,
+      "review": null,
+      "preview": null,
+      "bloggerDraft": null,
+      "createdAt": "2026-08-06T15:02:01.683Z",
+      "startedAt": "2026-08-06T15:02:01.698Z",
+      "updatedAt": "2026-08-06T15:02:13.912Z"
     }
   ]
 }
