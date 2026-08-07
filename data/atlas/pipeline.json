@@ -1,0 +1,844 @@
+{
+  "batches": [
+    {
+      "id": "batch_001",
+      "generatedAt": "2026-07-29T09:53:52.398Z",
+      "sourceMode": "EDITORIAL_FALLBACK",
+      "liveData": false,
+      "scopeNote": "실시간 트렌드가 연결되지 않았습니다. 현재 후보는 ATLAS 편집 기준(여행보험·여행 안전 클러스터) 기반이며, 실제 트렌드·검색량으로 검증되지 않았습니다.",
+      "dataSources": [
+        "ATLAS editorial evergreen seeds (in-scope, English)",
+        "articles.json (art_002~006 중복·클러스터 검사)"
+      ],
+      "affiliateActiveCount": 0,
+      "blocked": [
+        "BLOCKED_AFFILIATE_APPROVAL"
+      ],
+      "unknownFields": [
+        "trend.sevenDay",
+        "trend.thirtyDay",
+        "competition.live",
+        "officialSource.url"
+      ],
+      "counts": {
+        "production": 10,
+        "rejected": 29,
+        "contentAxes": 10
+      },
+      "candidates": [
+        {
+          "title": "Choosing Travel Medical Insurance for Senior Travelers",
+          "searchIntent": "Find age-appropriate travel medical coverage and pre-existing condition rules",
+          "type": "segment-guide",
+          "contentAxis": {
+            "id": "traveler-segment-coverage",
+            "label": "Family, Senior, Student and Frequent Traveler Coverage"
+          },
+          "reason": "Segment-specific guidance that differentiates from the general comparison posts.",
+          "origin": "editorial-seed",
+          "sourceMode": "EDITORIAL_FALLBACK",
+          "liveData": false,
+          "trend": {
+            "sevenDay": "UNKNOWN",
+            "thirtyDay": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+          },
+          "competition": {
+            "live": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+          },
+          "relation": {
+            "duplicationRisk": "LOW",
+            "overlappingArticleIds": [],
+            "relatedArticleIds": [
+              "art_003"
+            ],
+            "differentiatedIntent": "Find age-appropriate travel medical coverage and pre-existing condition rules",
+            "clusterRole": "기존 art_003 클러스터 보완"
+          },
+          "officialSource": {
+            "availability": "AVAILABLE",
+            "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+            "collectedAt": null
+          },
+          "monetization": {
+            "potential": "높음",
+            "futureProductCategories": [
+              "senior travel medical insurance"
+            ],
+            "activeAffiliateLinks": 0,
+            "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+            "salesCtaAllowed": false
+          },
+          "score": 90,
+          "scoreBreakdown": {
+            "contentFit": 30,
+            "intentUsefulness": 20,
+            "clusterConnection": 15,
+            "sourceAvailability": 15,
+            "monetizationReadiness": 10
+          },
+          "excludedComponents": [
+            {
+              "component": "timeliness",
+              "max": 10,
+              "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+            }
+          ],
+          "maxAvailableScore": 90,
+          "hardGate": {
+            "pass": true,
+            "failures": []
+          },
+          "eligibility": {
+            "canGenerate": true,
+            "blockedReason": null
+          },
+          "priority": 1
+        },
+        {
+          "title": "Student Travel Insurance for Studying Abroad: A Practical Guide",
+          "searchIntent": "Compare student travel medical plans for a semester or year abroad",
+          "type": "segment-guide",
+          "contentAxis": {
+            "id": "traveler-segment-coverage",
+            "label": "Family, Senior, Student and Frequent Traveler Coverage"
+          },
+          "reason": "Reaches the study-abroad audience with a distinct purchase intent.",
+          "origin": "editorial-seed",
+          "sourceMode": "EDITORIAL_FALLBACK",
+          "liveData": false,
+          "trend": {
+            "sevenDay": "UNKNOWN",
+            "thirtyDay": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+          },
+          "competition": {
+            "live": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+          },
+          "relation": {
+            "duplicationRisk": "LOW",
+            "overlappingArticleIds": [],
+            "relatedArticleIds": [
+              "art_003"
+            ],
+            "differentiatedIntent": "Compare student travel medical plans for a semester or year abroad",
+            "clusterRole": "기존 art_003 클러스터 보완"
+          },
+          "officialSource": {
+            "availability": "AVAILABLE",
+            "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+            "collectedAt": null
+          },
+          "monetization": {
+            "potential": "높음",
+            "futureProductCategories": [
+              "student travel insurance"
+            ],
+            "activeAffiliateLinks": 0,
+            "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+            "salesCtaAllowed": false
+          },
+          "score": 90,
+          "scoreBreakdown": {
+            "contentFit": 30,
+            "intentUsefulness": 20,
+            "clusterConnection": 15,
+            "sourceAvailability": 15,
+            "monetizationReadiness": 10
+          },
+          "excludedComponents": [
+            {
+              "component": "timeliness",
+              "max": 10,
+              "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+            }
+          ],
+          "maxAvailableScore": 90,
+          "hardGate": {
+            "pass": true,
+            "failures": []
+          },
+          "eligibility": {
+            "canGenerate": true,
+            "blockedReason": null
+          },
+          "priority": 2
+        },
+        {
+          "title": "How to Use Travel Insurance Comparison Sites Effectively",
+          "searchIntent": "Compare multiple travel insurance quotes without overpaying or under-covering",
+          "type": "buying-guide",
+          "contentAxis": {
+            "id": "travel-product-comparison",
+            "label": "Overseas Travel Safety & Convenience Product Comparison"
+          },
+          "reason": "High monetization-fit buying guide that maps directly to future affiliate marketplaces.",
+          "origin": "editorial-seed",
+          "sourceMode": "EDITORIAL_FALLBACK",
+          "liveData": false,
+          "trend": {
+            "sevenDay": "UNKNOWN",
+            "thirtyDay": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+          },
+          "competition": {
+            "live": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+          },
+          "relation": {
+            "duplicationRisk": "LOW",
+            "overlappingArticleIds": [],
+            "relatedArticleIds": [
+              "art_002"
+            ],
+            "differentiatedIntent": "Compare multiple travel insurance quotes without overpaying or under-covering",
+            "clusterRole": "기존 art_002 클러스터 보완"
+          },
+          "officialSource": {
+            "availability": "AVAILABLE",
+            "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+            "collectedAt": null
+          },
+          "monetization": {
+            "potential": "높음",
+            "futureProductCategories": [
+              "travel insurance comparison marketplace"
+            ],
+            "activeAffiliateLinks": 0,
+            "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+            "salesCtaAllowed": false
+          },
+          "score": 90,
+          "scoreBreakdown": {
+            "contentFit": 30,
+            "intentUsefulness": 20,
+            "clusterConnection": 15,
+            "sourceAvailability": 15,
+            "monetizationReadiness": 10
+          },
+          "excludedComponents": [
+            {
+              "component": "timeliness",
+              "max": 10,
+              "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+            }
+          ],
+          "maxAvailableScore": 90,
+          "hardGate": {
+            "pass": true,
+            "failures": []
+          },
+          "eligibility": {
+            "canGenerate": true,
+            "blockedReason": null
+          },
+          "priority": 3
+        },
+        {
+          "title": "Annual Multi-Trip Travel Insurance: Is It Worth It?",
+          "searchIntent": "Decide between single-trip and annual multi-trip policies for frequent travelers",
+          "type": "comparison",
+          "contentAxis": {
+            "id": "traveler-segment-coverage",
+            "label": "Family, Senior, Student and Frequent Traveler Coverage"
+          },
+          "reason": "Frequent-traveler comparison with clear commercial intent.",
+          "origin": "editorial-seed",
+          "sourceMode": "EDITORIAL_FALLBACK",
+          "liveData": false,
+          "trend": {
+            "sevenDay": "UNKNOWN",
+            "thirtyDay": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+          },
+          "competition": {
+            "live": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+          },
+          "relation": {
+            "duplicationRisk": "LOW",
+            "overlappingArticleIds": [],
+            "relatedArticleIds": [
+              "art_002",
+              "art_003"
+            ],
+            "differentiatedIntent": "Decide between single-trip and annual multi-trip policies for frequent travelers",
+            "clusterRole": "기존 art_002, art_003 클러스터 보완"
+          },
+          "officialSource": {
+            "availability": "AVAILABLE",
+            "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+            "collectedAt": null
+          },
+          "monetization": {
+            "potential": "높음",
+            "futureProductCategories": [
+              "annual multi-trip insurance"
+            ],
+            "activeAffiliateLinks": 0,
+            "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+            "salesCtaAllowed": false
+          },
+          "score": 90,
+          "scoreBreakdown": {
+            "contentFit": 30,
+            "intentUsefulness": 20,
+            "clusterConnection": 15,
+            "sourceAvailability": 15,
+            "monetizationReadiness": 10
+          },
+          "excludedComponents": [
+            {
+              "component": "timeliness",
+              "max": 10,
+              "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+            }
+          ],
+          "maxAvailableScore": 90,
+          "hardGate": {
+            "pass": true,
+            "failures": []
+          },
+          "eligibility": {
+            "canGenerate": true,
+            "blockedReason": null
+          },
+          "priority": 4
+        },
+        {
+          "title": "What Trip Cancellation Insurance Actually Covers (and What It Doesn't)",
+          "searchIntent": "Understand which cancellation reasons are reimbursable before buying a policy",
+          "type": "guide",
+          "contentAxis": {
+            "id": "trip-cancellation-interruption",
+            "label": "Trip Cancellation and Interruption"
+          },
+          "reason": "Complements the comparison guides with a focused explainer on a high-confusion coverage type.",
+          "origin": "editorial-seed",
+          "sourceMode": "EDITORIAL_FALLBACK",
+          "liveData": false,
+          "trend": {
+            "sevenDay": "UNKNOWN",
+            "thirtyDay": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+          },
+          "competition": {
+            "live": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+          },
+          "relation": {
+            "duplicationRisk": "LOW",
+            "overlappingArticleIds": [],
+            "relatedArticleIds": [
+              "art_002",
+              "art_003"
+            ],
+            "differentiatedIntent": "Understand which cancellation reasons are reimbursable before buying a policy",
+            "clusterRole": "기존 art_002, art_003 클러스터 보완"
+          },
+          "officialSource": {
+            "availability": "AVAILABLE",
+            "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+            "collectedAt": null
+          },
+          "monetization": {
+            "potential": "보통",
+            "futureProductCategories": [
+              "travel insurance comparison",
+              "cancel-for-any-reason upgrade"
+            ],
+            "activeAffiliateLinks": 0,
+            "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+            "salesCtaAllowed": false
+          },
+          "score": 88,
+          "scoreBreakdown": {
+            "contentFit": 30,
+            "intentUsefulness": 20,
+            "clusterConnection": 15,
+            "sourceAvailability": 15,
+            "monetizationReadiness": 8
+          },
+          "excludedComponents": [
+            {
+              "component": "timeliness",
+              "max": 10,
+              "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+            }
+          ],
+          "maxAvailableScore": 90,
+          "hardGate": {
+            "pass": true,
+            "failures": []
+          },
+          "eligibility": {
+            "canGenerate": true,
+            "blockedReason": null
+          },
+          "priority": 5
+        },
+        {
+          "title": "Travel Insurance for Baggage Delay and Lost Luggage: What to Check",
+          "searchIntent": "Decide whether baggage protection is worth it and how to file a claim",
+          "type": "comparison",
+          "contentAxis": {
+            "id": "baggage-travel-disruption",
+            "label": "Baggage Delay, Loss and Travel Disruption"
+          },
+          "reason": "Adds a disruption-focused angle absent from the current cluster.",
+          "origin": "editorial-seed",
+          "sourceMode": "EDITORIAL_FALLBACK",
+          "liveData": false,
+          "trend": {
+            "sevenDay": "UNKNOWN",
+            "thirtyDay": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+          },
+          "competition": {
+            "live": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+          },
+          "relation": {
+            "duplicationRisk": "LOW",
+            "overlappingArticleIds": [],
+            "relatedArticleIds": [
+              "art_002"
+            ],
+            "differentiatedIntent": "Decide whether baggage protection is worth it and how to file a claim",
+            "clusterRole": "기존 art_002 클러스터 보완"
+          },
+          "officialSource": {
+            "availability": "AVAILABLE",
+            "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+            "collectedAt": null
+          },
+          "monetization": {
+            "potential": "보통",
+            "futureProductCategories": [
+              "travel insurance comparison",
+              "luggage trackers"
+            ],
+            "activeAffiliateLinks": 0,
+            "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+            "salesCtaAllowed": false
+          },
+          "score": 88,
+          "scoreBreakdown": {
+            "contentFit": 30,
+            "intentUsefulness": 20,
+            "clusterConnection": 15,
+            "sourceAvailability": 15,
+            "monetizationReadiness": 8
+          },
+          "excludedComponents": [
+            {
+              "component": "timeliness",
+              "max": 10,
+              "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+            }
+          ],
+          "maxAvailableScore": 90,
+          "hardGate": {
+            "pass": true,
+            "failures": []
+          },
+          "eligibility": {
+            "canGenerate": true,
+            "blockedReason": null
+          },
+          "priority": 6
+        },
+        {
+          "title": "Travel Insurance for Adventure and Outdoor Activities Abroad",
+          "searchIntent": "Understand exclusions and add-ons for hiking, diving and skiing trips",
+          "type": "guide",
+          "contentAxis": {
+            "id": "adventure-outdoor-safety",
+            "label": "Adventure and Outdoor Travel Safety"
+          },
+          "reason": "Adds an activity-risk angle and connects to future outdoor-gear product comparison.",
+          "origin": "editorial-seed",
+          "sourceMode": "EDITORIAL_FALLBACK",
+          "liveData": false,
+          "trend": {
+            "sevenDay": "UNKNOWN",
+            "thirtyDay": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+          },
+          "competition": {
+            "live": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+          },
+          "relation": {
+            "duplicationRisk": "LOW",
+            "overlappingArticleIds": [],
+            "relatedArticleIds": [
+              "art_002"
+            ],
+            "differentiatedIntent": "Understand exclusions and add-ons for hiking, diving and skiing trips",
+            "clusterRole": "기존 art_002 클러스터 보완"
+          },
+          "officialSource": {
+            "availability": "AVAILABLE",
+            "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+            "collectedAt": null
+          },
+          "monetization": {
+            "potential": "보통",
+            "futureProductCategories": [
+              "adventure sports coverage",
+              "outdoor safety gear"
+            ],
+            "activeAffiliateLinks": 0,
+            "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+            "salesCtaAllowed": false
+          },
+          "score": 88,
+          "scoreBreakdown": {
+            "contentFit": 30,
+            "intentUsefulness": 20,
+            "clusterConnection": 15,
+            "sourceAvailability": 15,
+            "monetizationReadiness": 8
+          },
+          "excludedComponents": [
+            {
+              "component": "timeliness",
+              "max": 10,
+              "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+            }
+          ],
+          "maxAvailableScore": 90,
+          "hardGate": {
+            "pass": true,
+            "failures": []
+          },
+          "eligibility": {
+            "canGenerate": true,
+            "blockedReason": null
+          },
+          "priority": 7
+        },
+        {
+          "title": "Does Your Health Insurance Cover You Abroad? What to Know",
+          "searchIntent": "Verify whether domestic health insurance applies overseas and fill the gaps",
+          "type": "guide",
+          "contentAxis": {
+            "id": "travel-medical-insurance",
+            "label": "Travel Medical Insurance"
+          },
+          "reason": "Answers a common pre-purchase question that leads into travel-medical coverage.",
+          "origin": "editorial-seed",
+          "sourceMode": "EDITORIAL_FALLBACK",
+          "liveData": false,
+          "trend": {
+            "sevenDay": "UNKNOWN",
+            "thirtyDay": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+          },
+          "competition": {
+            "live": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+          },
+          "relation": {
+            "duplicationRisk": "LOW",
+            "overlappingArticleIds": [],
+            "relatedArticleIds": [
+              "art_003",
+              "art_004"
+            ],
+            "differentiatedIntent": "Verify whether domestic health insurance applies overseas and fill the gaps",
+            "clusterRole": "기존 art_003, art_004 클러스터 보완"
+          },
+          "officialSource": {
+            "availability": "AVAILABLE",
+            "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+            "collectedAt": null
+          },
+          "monetization": {
+            "potential": "보통",
+            "futureProductCategories": [
+              "travel medical insurance"
+            ],
+            "activeAffiliateLinks": 0,
+            "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+            "salesCtaAllowed": false
+          },
+          "score": 88,
+          "scoreBreakdown": {
+            "contentFit": 30,
+            "intentUsefulness": 20,
+            "clusterConnection": 15,
+            "sourceAvailability": 15,
+            "monetizationReadiness": 8
+          },
+          "excludedComponents": [
+            {
+              "component": "timeliness",
+              "max": 10,
+              "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+            }
+          ],
+          "maxAvailableScore": 90,
+          "hardGate": {
+            "pass": true,
+            "failures": []
+          },
+          "eligibility": {
+            "canGenerate": true,
+            "blockedReason": null
+          },
+          "priority": 8
+        },
+        {
+          "title": "Emergency Medical Coverage Limits: How Much Is Enough Abroad?",
+          "searchIntent": "Choose adequate emergency medical benefit limits for an international trip",
+          "type": "guide",
+          "contentAxis": {
+            "id": "emergency-medical-evacuation",
+            "label": "Emergency Medical and Evacuation Coverage"
+          },
+          "reason": "Deepens the coverage-limits discussion without repeating the comparison posts.",
+          "origin": "editorial-seed",
+          "sourceMode": "EDITORIAL_FALLBACK",
+          "liveData": false,
+          "trend": {
+            "sevenDay": "UNKNOWN",
+            "thirtyDay": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+          },
+          "competition": {
+            "live": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+          },
+          "relation": {
+            "duplicationRisk": "LOW",
+            "overlappingArticleIds": [],
+            "relatedArticleIds": [
+              "art_002",
+              "art_003"
+            ],
+            "differentiatedIntent": "Choose adequate emergency medical benefit limits for an international trip",
+            "clusterRole": "기존 art_002, art_003 클러스터 보완"
+          },
+          "officialSource": {
+            "availability": "AVAILABLE",
+            "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+            "collectedAt": null
+          },
+          "monetization": {
+            "potential": "보통",
+            "futureProductCategories": [
+              "travel medical insurance"
+            ],
+            "activeAffiliateLinks": 0,
+            "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+            "salesCtaAllowed": false
+          },
+          "score": 88,
+          "scoreBreakdown": {
+            "contentFit": 30,
+            "intentUsefulness": 20,
+            "clusterConnection": 15,
+            "sourceAvailability": 15,
+            "monetizationReadiness": 8
+          },
+          "excludedComponents": [
+            {
+              "component": "timeliness",
+              "max": 10,
+              "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+            }
+          ],
+          "maxAvailableScore": 90,
+          "hardGate": {
+            "pass": true,
+            "failures": []
+          },
+          "eligibility": {
+            "canGenerate": true,
+            "blockedReason": null
+          },
+          "priority": 9
+        },
+        {
+          "title": "How to Prepare for Travel Health Risks by Destination",
+          "searchIntent": "Check destination-specific health risks and required precautions before departure",
+          "type": "checklist",
+          "contentAxis": {
+            "id": "destination-risk-preparation",
+            "label": "Destination-specific Travel Risk Preparation"
+          },
+          "reason": "Bridges the travel-health posts with a destination-planning workflow.",
+          "origin": "editorial-seed",
+          "sourceMode": "EDITORIAL_FALLBACK",
+          "liveData": false,
+          "trend": {
+            "sevenDay": "UNKNOWN",
+            "thirtyDay": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+          },
+          "competition": {
+            "live": "UNKNOWN",
+            "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+          },
+          "relation": {
+            "duplicationRisk": "LOW",
+            "overlappingArticleIds": [],
+            "relatedArticleIds": [
+              "art_004",
+              "art_006"
+            ],
+            "differentiatedIntent": "Check destination-specific health risks and required precautions before departure",
+            "clusterRole": "기존 art_004, art_006 클러스터 보완"
+          },
+          "officialSource": {
+            "availability": "AVAILABLE",
+            "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+            "collectedAt": null
+          },
+          "monetization": {
+            "potential": "낮음",
+            "futureProductCategories": [
+              "travel medical insurance",
+              "vaccination/telehealth services"
+            ],
+            "activeAffiliateLinks": 0,
+            "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+            "salesCtaAllowed": false
+          },
+          "score": 86,
+          "scoreBreakdown": {
+            "contentFit": 30,
+            "intentUsefulness": 20,
+            "clusterConnection": 15,
+            "sourceAvailability": 15,
+            "monetizationReadiness": 6
+          },
+          "excludedComponents": [
+            {
+              "component": "timeliness",
+              "max": 10,
+              "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+            }
+          ],
+          "maxAvailableScore": 90,
+          "hardGate": {
+            "pass": true,
+            "failures": []
+          },
+          "eligibility": {
+            "canGenerate": true,
+            "blockedReason": null
+          },
+          "priority": 10
+        }
+      ],
+      "rejected": [
+        {
+          "topic": "travel health kit for international travel",
+          "sourcePool": "keywords.json",
+          "reason": "ATLAS 콘텐츠 축 밖"
+        },
+        {
+          "topic": "한국 화장품 꿀팁",
+          "sourcePool": "keywords.json",
+          "reason": "영문 아님(국내 주제)"
+        },
+        {
+          "topic": "trip delay insurance vs airline refund rights",
+          "sourcePool": "keywords.json",
+          "reason": "ATLAS 콘텐츠 축 밖"
+        },
+        {
+          "topic": "how to save money fast",
+          "sourcePool": "categories.json:money",
+          "reason": "ATLAS 콘텐츠 축 밖"
+        },
+        {
+          "topic": "best high yield savings account",
+          "sourcePool": "categories.json:money",
+          "reason": "ATLAS 콘텐츠 축 밖"
+        },
+        {
+          "topic": "credit card rewards tips",
+          "sourcePool": "categories.json:money",
+          "reason": "ATLAS 콘텐츠 축 밖"
+        },
+        {
+          "topic": "best AI tools 2025",
+          "sourcePool": "categories.json:ai-tech",
+          "reason": "ATLAS 콘텐츠 축 밖"
+        },
+        {
+          "topic": "ChatGPT prompts for work",
+          "sourcePool": "categories.json:ai-tech",
+          "reason": "ATLAS 콘텐츠 축 밖"
+        },
+        {
+          "topic": "free AI image generators",
+          "sourcePool": "categories.json:ai-tech",
+          "reason": "ATLAS 콘텐츠 축 밖"
+        },
+        {
+          "topic": "cheap flights to Europe",
+          "sourcePool": "categories.json:travel",
+          "reason": "ATLAS 콘텐츠 축 밖"
+        },
+        {
+          "topic": "best road trip routes USA",
+          "sourcePool": "categories.json:travel",
+          "reason": "ATLAS 콘텐츠 축 밖"
+        },
+        {
+          "topic": "budget travel tips 2025",
+          "sourcePool": "categories.json:travel",
+          "reason": "ATLAS 콘텐츠 축 밖"
+        },
+        {
+          "topic": "best health insurance for self employed",
+          "sourcePool": "categories.json:health",
+          "reason": "ATLAS 콘텐츠 축 밖"
+        },
+        {
+          "topic": "how to lower blood pressure naturally",
+          "sourcePool": "categories.json:health",
+          "reason": "ATLAS 콘텐츠 축 밖"
+        },
+        {
+          "topic": "cheap gym alternatives",
+          "sourcePool": "categories.json:health",
+          "reason": "ATLAS 콘텐츠 축 밖"
+        },
+        {
+          "topic": "how to declutter your home",
+          "sourcePool": "categories.json:lifestyle",
+          "reason": "ATLAS 콘텐츠 축 밖"
+        },
+        {
+          "topic": "morning routine for productivity",
+          "sourcePool": "categories.json:lifestyle",
+          "reason": "ATLAS 콘텐츠 축 밖"
+        },
+        {
+          "topic": "best side hustles 2025",
+          "sourcePool": "categories.json:lifestyle",
+          "reason": "ATLAS 콘텐츠 축 밖"
+        },
+        {
+          "topic": "cheapest car insurance 2025",
+          "sourcePool": "categories.json:cars",
+          "reason": "ATLAS 콘텐츠 축 밖"
+        },
+        {
+          "topic": "best electric cars under 40k",
+          "sourcePool": "categories.json:cars",
+          "reason": "ATLAS 콘텐츠 축 밖"
+        }
+      ]
+    }
+  ],
+  "jobs": []
+}

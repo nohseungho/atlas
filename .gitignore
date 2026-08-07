@@ -43,3 +43,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# ATLAS: 로컬 임시 산출물(zip, 로그, 추출 이미지)은 저장소에 남기지 않는다
+/tmp/

@@ -1,6 +1,431 @@
 {
   "keywords": [
     {
+      "id": "kw_011",
+      "keyword": "what to do if you get sick while traveling abroad",
+      "category": "Travel Health",
+      "intent": "informational",
+      "searchVolumeLevel": 3,
+      "cpcLevel": 2,
+      "competitionLevel": 3,
+      "commercialLevel": 2,
+      "seasonality": 3,
+      "moneyScore": 37,
+      "status": "written",
+      "memo": "A2 sprint — affiliate approval content",
+      "createdAt": "2026-07-21T15:05:23.284Z",
+      "updatedAt": "2026-07-21T15:05:23.299Z",
+      "koLabel": "해외 여행을 위한 최고의 여행자 보험"
+    },
+    {
+      "id": "kw_012",
+      "keyword": "travel health kit for international travel",
+      "category": "Trip Preparation",
+      "intent": "informational",
+      "searchVolumeLevel": 3,
+      "cpcLevel": 2,
+      "competitionLevel": 3,
+      "commercialLevel": 2,
+      "seasonality": 3,
+      "moneyScore": 37,
+      "status": "written",
+      "memo": "A2 sprint — affiliate approval content",
+      "createdAt": "2026-07-21T15:05:23.306Z",
+      "updatedAt": "2026-07-21T15:05:23.311Z"
+    },
+    {
+      "id": "kw_013",
+      "keyword": "food and water safety when traveling abroad",
+      "category": "Travel Health",
+      "intent": "informational",
+      "searchVolumeLevel": 3,
+      "cpcLevel": 2,
+      "competitionLevel": 3,
+      "commercialLevel": 2,
+      "seasonality": 3,
+      "moneyScore": 37,
+      "status": "written",
+      "memo": "A2 sprint — affiliate approval content",
+      "createdAt": "2026-07-21T15:05:23.317Z",
+      "updatedAt": "2026-07-21T15:05:23.322Z"
+    },
+    {
+      "id": "kw_015",
+      "keyword": "한국 화장품 꿀팁",
+      "category": "K뷰티",
+      "intent": "informational",
+      "searchVolumeLevel": 5,
+      "cpcLevel": 5,
+      "competitionLevel": 3,
+      "commercialLevel": 5,
+      "seasonality": 5,
+      "moneyScore": 92,
+      "status": "idea",
+      "memo": "",
+      "createdAt": "2026-07-27T13:27:06.245Z",
+      "updatedAt": "2026-07-27T22:36:25.721Z"
+    },
+    {
+      "id": "kw_016",
+      "keyword": "travel insurance pre-existing condition waiver",
+      "category": "Travel",
+      "intent": "travel-insurance-pre-existing-condition-waiver-eligibility",
+      "searchVolumeLevel": null,
+      "cpcLevel": null,
+      "competitionLevel": null,
+      "commercialLevel": null,
+      "seasonality": null,
+      "searchVolume": "UNKNOWN",
+      "cpc": "UNKNOWN",
+      "moneyScore": null,
+      "coreQuestion": "How can a U.S. traveler tell whether a travel insurance policy waives its pre-existing condition exclusion, and what purchase timing and eligibility rules should be checked?",
+      "searchIntentKey": "travel-insurance-pre-existing-condition-waiver-eligibility",
+      "topicEntities": [
+        "pre-existing condition exclusion",
+        "coverage waiver",
+        "purchase deadline",
+        "look-back period",
+        "medical eligibility"
+      ],
+      "desiredReaderAction": "Compare waiver eligibility, purchase deadlines, covered trip-cost requirements, and policy definitions before buying a plan.",
+      "commercialIntent": "high",
+      "affiliatePotential": "high",
+      "competition": "high",
+      "trendEvidence": "The NAIC's June 2026 consumer guidance specifically tells buyers to check whether pre-existing conditions are excluded, while CDC guidance identifies travelers with pre-existing conditions as a group that may benefit from specialized coverage.",
+      "sources": [
+        {
+          "url": "https://content.naic.org/article/should-i-get-travel-insurance"
+        },
+        {
+          "url": "https://www.cdc.gov/yellow-book/hcp/health-care-abroad/travel-insurance.html"
+        },
+        {
+          "url": "https://travel.state.gov/en/international-travel/planning/guidance/insurance.html"
+        }
+      ],
+      "status": "idea",
+      "source": "chatgpt-keyword-handoff",
+      "handoffJobId": "kwreq_ms3eru9j",
+      "memo": "",
+      "createdAt": "2026-07-27T15:58:43.117Z",
+      "updatedAt": "2026-07-27T15:58:43.117Z"
+    },
+    {
+      "id": "kw_017",
+      "keyword": "cruise travel insurance medical evacuation coverage",
+      "category": "Travel",
+      "intent": "cruise-insurance-medical-evacuation-checklist",
+      "searchVolumeLevel": null,
+      "cpcLevel": null,
+      "competitionLevel": null,
+      "commercialLevel": null,
+      "seasonality": null,
+      "searchVolume": "UNKNOWN",
+      "cpc": "UNKNOWN",
+      "moneyScore": null,
+      "coreQuestion": "What medical care, ship-to-shore evacuation, trip interruption, and missed-port details should a traveler check before insuring an international cruise?",
+      "searchIntentKey": "cruise-insurance-medical-evacuation-checklist",
+      "topicEntities": [
+        "cruise ship",
+        "medical evacuation",
+        "shipboard medical care",
+        "trip interruption",
+        "missed connection"
+      ],
+      "desiredReaderAction": "Review cruise-specific medical evacuation and interruption terms, then compare suitable policies before the final payment date.",
+      "commercialIntent": "high",
+      "affiliatePotential": "high",
+      "competition": "high",
+      "trendEvidence": "CDC cruise guidance advises travelers to determine whether existing health insurance works abroad and to consider additional health-care and evacuation coverage, creating a distinct cruise-specific purchase decision.",
+      "sources": [
+        {
+          "url": "https://wwwnc.cdc.gov/travel/page/cruise-ship"
+        },
+        {
+          "url": "https://wwwnc.cdc.gov/travel/page/insurance"
+        },
+        {
+          "url": "https://travel.state.gov/en/international-travel/planning/guidance/insurance.html"
+        }
+      ],
+      "status": "idea",
+      "source": "chatgpt-keyword-handoff",
+      "handoffJobId": "kwreq_ms3eru9j",
+      "memo": "",
+      "createdAt": "2026-07-27T15:58:43.117Z",
+      "updatedAt": "2026-07-27T15:58:43.117Z"
+    },
+    {
+      "id": "kw_018",
+      "keyword": "emergency medical evacuation insurance for remote travel",
+      "category": "Travel",
+      "intent": "remote-travel-medical-evacuation-policy-selection",
+      "searchVolumeLevel": null,
+      "cpcLevel": null,
+      "competitionLevel": null,
+      "commercialLevel": null,
+      "seasonality": null,
+      "searchVolume": "UNKNOWN",
+      "cpc": "UNKNOWN",
+      "moneyScore": null,
+      "coreQuestion": "When does a remote international trip justify separate medical evacuation coverage, and which transport, destination, and assistance-service terms matter most?",
+      "searchIntentKey": "remote-travel-medical-evacuation-policy-selection",
+      "topicEntities": [
+        "remote destination",
+        "air ambulance",
+        "medical evacuation",
+        "repatriation",
+        "24-hour assistance"
+      ],
+      "desiredReaderAction": "Assess destination medical capacity and compare evacuation limits, transport rules, and assistance services before departure.",
+      "commercialIntent": "high",
+      "affiliatePotential": "high",
+      "competition": "medium",
+      "trendEvidence": "The U.S. State Department strongly recommends medical evacuation insurance for higher-risk or limited-care areas, and CDC separately advises it for remote destinations where local care may not meet U.S. standards.",
+      "sources": [
+        {
+          "url": "https://travel.state.gov/en/international-travel/planning/guidance/insurance.html"
+        },
+        {
+          "url": "https://wwwnc.cdc.gov/travel/page/insurance"
+        },
+        {
+          "url": "https://travel.state.gov/en/international-travel/planning/guidance/medicine-health.html"
+        }
+      ],
+      "status": "idea",
+      "source": "chatgpt-keyword-handoff",
+      "handoffJobId": "kwreq_ms3eru9j",
+      "memo": "",
+      "createdAt": "2026-07-27T15:58:43.117Z",
+      "updatedAt": "2026-07-27T15:58:43.117Z"
+    },
+    {
+      "id": "kw_019",
+      "keyword": "travel medical insurance for seniors over 65",
+      "category": "Travel",
+      "intent": "senior-international-travel-medical-insurance-checklist",
+      "searchVolumeLevel": null,
+      "cpcLevel": null,
+      "competitionLevel": null,
+      "commercialLevel": null,
+      "seasonality": null,
+      "searchVolume": "UNKNOWN",
+      "cpc": "UNKNOWN",
+      "moneyScore": null,
+      "coreQuestion": "What should U.S. travelers over 65 check for overseas medical care, evacuation, age limits, chronic-condition exclusions, and primary versus secondary coverage?",
+      "searchIntentKey": "senior-international-travel-medical-insurance-checklist",
+      "topicEntities": [
+        "older travelers",
+        "age limits",
+        "Medicare abroad",
+        "chronic conditions",
+        "medical evacuation"
+      ],
+      "desiredReaderAction": "Confirm existing coverage abroad and compare senior-suitable medical and evacuation policies with attention to age and condition restrictions.",
+      "commercialIntent": "high",
+      "affiliatePotential": "high",
+      "competition": "high",
+      "trendEvidence": "CDC's current older-traveler guidance recommends checking overseas health coverage and considering additional medical and evacuation insurance; its Yellow Book specifically flags travelers over 65 as potential candidates for specialized policies.",
+      "sources": [
+        {
+          "url": "https://wwwnc.cdc.gov/travel/page/senior-citizens"
+        },
+        {
+          "url": "https://www.cdc.gov/yellow-book/hcp/health-care-abroad/travel-insurance.html"
+        },
+        {
+          "url": "https://wwwnc.cdc.gov/travel/page/health-care-during-travel"
+        }
+      ],
+      "status": "idea",
+      "source": "chatgpt-keyword-handoff",
+      "handoffJobId": "kwreq_ms3eru9j",
+      "memo": "",
+      "createdAt": "2026-07-27T15:58:43.117Z",
+      "updatedAt": "2026-07-27T15:58:43.117Z"
+    },
+    {
+      "id": "kw_020",
+      "keyword": "adventure travel insurance exclusions for hiking and scuba",
+      "category": "Travel",
+      "intent": "adventure-activity-exclusions-rescue-insurance",
+      "searchVolumeLevel": null,
+      "cpcLevel": null,
+      "competitionLevel": null,
+      "commercialLevel": null,
+      "seasonality": null,
+      "searchVolume": "UNKNOWN",
+      "cpc": "UNKNOWN",
+      "moneyScore": null,
+      "coreQuestion": "How can travelers check whether hiking at altitude, scuba diving, skiing, or other adventure activities are excluded or require specialist rescue coverage?",
+      "searchIntentKey": "adventure-activity-exclusions-rescue-insurance",
+      "topicEntities": [
+        "adventure travel",
+        "high-altitude hiking",
+        "scuba diving",
+        "rescue insurance",
+        "hazardous activity exclusion"
+      ],
+      "desiredReaderAction": "Match every planned activity to policy exclusions and compare specialist medical, rescue, and repatriation coverage where needed.",
+      "commercialIntent": "high",
+      "affiliatePotential": "high",
+      "competition": "medium",
+      "trendEvidence": "CDC's 2025 Yellow Book identifies travel, medical, rescue, repatriation, and security coverage as relevant to adventure travel, while NAIC warns that policies may exclude activities insurers classify as dangerous.",
+      "sources": [
+        {
+          "url": "https://www.cdc.gov/yellow-book/hcp/travel-for-work-other/adventure-travel.html"
+        },
+        {
+          "url": "https://content.naic.org/article/should-i-get-travel-insurance"
+        },
+        {
+          "url": "https://wwwnc.cdc.gov/travel/page/senior-citizens"
+        }
+      ],
+      "status": "idea",
+      "source": "chatgpt-keyword-handoff",
+      "handoffJobId": "kwreq_ms3eru9j",
+      "memo": "",
+      "createdAt": "2026-07-27T15:58:43.117Z",
+      "updatedAt": "2026-07-27T15:58:43.117Z"
+    },
+    {
+      "id": "kw_021",
+      "keyword": "travel insurance for pregnancy complications abroad",
+      "category": "Travel",
+      "intent": "pregnancy-travel-health-insurance-coverage-check",
+      "searchVolumeLevel": null,
+      "cpcLevel": null,
+      "competitionLevel": null,
+      "commercialLevel": null,
+      "seasonality": null,
+      "searchVolume": "UNKNOWN",
+      "cpc": "UNKNOWN",
+      "moneyScore": null,
+      "coreQuestion": "What pregnancy, neonatal care, gestational-limit, and medical evacuation provisions should a pregnant traveler verify before an international trip?",
+      "searchIntentKey": "pregnancy-travel-health-insurance-coverage-check",
+      "topicEntities": [
+        "pregnancy complications",
+        "neonatal care",
+        "gestational limits",
+        "travel health insurance",
+        "medical evacuation"
+      ],
+      "desiredReaderAction": "Verify pregnancy and neonatal exclusions with existing insurers and compare supplemental travel health and evacuation coverage before travel.",
+      "commercialIntent": "high",
+      "affiliatePotential": "medium",
+      "competition": "medium",
+      "trendEvidence": "CDC's 2025 guidance says many health policies do not cover pregnancy or neonatal complications outside the United States and advises pregnant travelers to consider appropriate travel health and evacuation coverage.",
+      "sources": [
+        {
+          "url": "https://www.cdc.gov/yellow-book/hcp/family-travel/pregnant-travelers.html"
+        },
+        {
+          "url": "https://wwwnc.cdc.gov/travel/page/pregnant-travelers"
+        },
+        {
+          "url": "https://wwwnc.cdc.gov/travel/page/health-care-during-travel"
+        }
+      ],
+      "status": "idea",
+      "source": "chatgpt-keyword-handoff",
+      "handoffJobId": "kwreq_ms3eru9j",
+      "memo": "",
+      "createdAt": "2026-07-27T15:58:43.117Z",
+      "updatedAt": "2026-07-27T15:58:43.117Z"
+    },
+    {
+      "id": "kw_022",
+      "keyword": "trip delay insurance vs airline refund rights",
+      "category": "Travel",
+      "intent": "trip-delay-coverage-versus-airline-refund-rights",
+      "searchVolumeLevel": null,
+      "cpcLevel": null,
+      "competitionLevel": null,
+      "commercialLevel": null,
+      "seasonality": null,
+      "searchVolume": "UNKNOWN",
+      "cpc": "UNKNOWN",
+      "moneyScore": null,
+      "coreQuestion": "Which disrupted-trip costs are an airline required to refund, and which delay expenses may instead depend on travel insurance or a carrier's voluntary commitments?",
+      "searchIntentKey": "trip-delay-coverage-versus-airline-refund-rights",
+      "topicEntities": [
+        "flight delay",
+        "airline refund",
+        "trip delay insurance",
+        "covered expenses",
+        "airline commitments"
+      ],
+      "desiredReaderAction": "Check airline refund rights first, then compare trip-delay benefits, waiting periods, covered expenses, and documentation requirements.",
+      "commercialIntent": "medium",
+      "affiliatePotential": "high",
+      "competition": "high",
+      "trendEvidence": "Current U.S. DOT guidance distinguishes legal refund or compensation rights from costs airlines are not required to cover, leaving a separate decision about delay insurance benefits.",
+      "sources": [
+        {
+          "url": "https://www.transportation.gov/airconsumer/fly-rights"
+        },
+        {
+          "url": "https://www.transportation.gov/airconsumer/airline-customer-service-dashboard"
+        },
+        {
+          "url": "https://wwwnc.cdc.gov/travel/page/insurance"
+        }
+      ],
+      "status": "idea",
+      "source": "chatgpt-keyword-handoff",
+      "handoffJobId": "kwreq_ms3eru9j",
+      "memo": "",
+      "createdAt": "2026-07-27T15:58:43.117Z",
+      "updatedAt": "2026-07-27T15:58:43.117Z"
+    },
+    {
+      "id": "kw_023",
+      "keyword": "when to buy travel insurance for hurricane season",
+      "category": "Travel",
+      "intent": "hurricane-season-travel-insurance-purchase-timing",
+      "searchVolumeLevel": null,
+      "cpcLevel": null,
+      "competitionLevel": null,
+      "commercialLevel": null,
+      "seasonality": null,
+      "searchVolume": "UNKNOWN",
+      "cpc": "UNKNOWN",
+      "moneyScore": null,
+      "coreQuestion": "How does buying travel insurance before or after a storm is named affect hurricane-related trip cancellation and interruption coverage?",
+      "searchIntentKey": "hurricane-season-travel-insurance-purchase-timing",
+      "topicEntities": [
+        "hurricane season",
+        "named storm",
+        "foreseeable event",
+        "trip cancellation",
+        "coverage effective date"
+      ],
+      "desiredReaderAction": "Compare policy purchase timing, named-storm exclusions, cancellation triggers, and destination risks before a storm becomes foreseeable.",
+      "commercialIntent": "high",
+      "affiliatePotential": "high",
+      "competition": "medium",
+      "trendEvidence": "NAIC consumer guidance explains that travel insurance is designed for unforeseen events and that buying after a tropical storm is named typically will not cover claims related to that storm.",
+      "sources": [
+        {
+          "url": "https://content.naic.org/article/consumer-insight-taking-trip-information-about-travel-insurance-you-should-know-you-hit-road"
+        },
+        {
+          "url": "https://content.naic.org/article/should-i-get-travel-insurance"
+        },
+        {
+          "url": "https://travel.state.gov/en/international-travel/planning/checklist.html"
+        }
+      ],
+      "status": "idea",
+      "source": "chatgpt-keyword-handoff",
+      "handoffJobId": "kwreq_ms3eru9j",
+      "memo": "",
+      "createdAt": "2026-07-27T15:58:43.117Z",
+      "updatedAt": "2026-07-27T15:58:43.117Z"
+    },
+    {
       "id": "kw_001",
       "keyword": "자동차 보험 비교",
       "category": "자동차 보험",
@@ -169,23 +594,6 @@
       "createdAt": "2026-07-01T00:00:00.000Z",
       "updatedAt": "2026-07-01T00:00:00.000Z",
       "koLabel": ""
-    },
-    {
-      "id": "kw_011",
-      "keyword": "best travel insurance for international trips",
-      "category": "Travel Insurance",
-      "intent": "commercial",
-      "searchVolumeLevel": 3,
-      "cpcLevel": 3,
-      "competitionLevel": 3,
-      "commercialLevel": 3,
-      "seasonality": 2,
-      "moneyScore": 47,
-      "status": "written",
-      "memo": "글로벌 테스트용 키워드 (첫 글로벌 블로그 발행 테스트)",
-      "createdAt": "2026-07-06T11:12:46.698Z",
-      "updatedAt": "2026-07-06T11:16:11.491Z",
-      "koLabel": "해외 여행을 위한 최고의 여행자 보험"
     }
   ]
 }

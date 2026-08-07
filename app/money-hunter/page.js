@@ -53,6 +53,10 @@ export default function MoneyHunterPage() {
   const [form, setForm] = useState(emptyForm);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [handoffMsg, setHandoffMsg] = useState("");
+  const [handoffBusy, setHandoffBusy] = useState(false);
+  const [deleteMsg, setDeleteMsg] = useState("");
+  const [deleteBusy, setDeleteBusy] = useState(false);
 
   async function loadKeywords() {
     setLoading(true);
@@ -99,7 +103,191 @@ export default function MoneyHunterPage() {
     loadKeywords();
   }
 
-  const sorted = [...keywords].sort((a, b) => b.moneyScore - a.moneyScore);
+  function downloadJson(filename, obj) {
+    const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // Export the secret-free ChatGPT request file for a candidate (Blog 01 only).
+  async function exportRequest(moneyHunterId) {
+    setHandoffBusy(true);
+    setHandoffMsg("");
+    try {
+      const res = await fetch("/api/atlas/chatgpt-request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ blogId: "blog_001", moneyHunterId }),
+      });
+      const data = await res.json();
+      if (data.status === "ok") {
+        downloadJson(data.filename, data.request);
+        setHandoffMsg(`요청 파일 내보냄: ${data.filename} — ChatGPT에 업로드하세요.`);
+      } else {
+        setHandoffMsg(`내보내기 실패: ${data.errorCode || data.message || "오류"}`);
+      }
+    } catch {
+      setHandoffMsg("네트워크 오류");
+    }
+    setHandoffBusy(false);
+  }
+
+  // Register the single atlas-package JSON returned by ChatGPT.
+  async function importPackage(file) {
+    if (!file) return;
+    setHandoffBusy(true);
+    setHandoffMsg("패키지 검증·이미지 업로드 중...");
+    try {
+      const text = await file.text();
+      let pkg;
+      try {
+        pkg = JSON.parse(text);
+      } catch {
+        setHandoffMsg("JSON 파싱 실패");
+        setHandoffBusy(false);
+        return;
+      }
+      const res = await fetch("/api/atlas/chatgpt-package", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ package: pkg }),
+      });
+      const data = await res.json();
+      if (data.status === "ok") {
+        setHandoffMsg(`등록 완료: ${data.articleId} · Cloudinary 이미지 ${data.qa?.distinctCloudinary ?? 0}/5 · ${data.duplicate ? "기존 재사용(중복 생성 없음)" : "신규"} → Publisher에서 'Blogger 초안 반영'`);
+      } else if (data.status === "duplicate_review_required") {
+        setHandoffMsg(`중복 검토 필요: ${data.reason || ""}`);
+      } else if (data.status === "needs_configuration") {
+        setHandoffMsg(`설정 필요: ${(data.envNeeded || []).join(", ")}`);
+      } else {
+        setHandoffMsg(`등록 거부: ${data.errorCode || data.status} ${(data.issues || []).join(", ")}`);
+      }
+      loadKeywords();
+    } catch {
+      setHandoffMsg("네트워크 오류");
+    }
+    setHandoffBusy(false);
+  }
+
+  // Export the English keyword-discovery request (Blog 01), upload to ChatGPT.
+  async function exportKeywordRequest() {
+    setHandoffBusy(true);
+    setHandoffMsg("");
+    try {
+      const res = await fetch("/api/atlas/keyword-request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ blogId: "blog_001" }),
+      });
+      const data = await res.json();
+      if (data.status === "ok") {
+        downloadJson(data.filename, data.request);
+        setHandoffMsg(`키워드 발굴 요청 내보냄: ${data.filename} — ChatGPT에 업로드하세요.`);
+      } else {
+        setHandoffMsg(`내보내기 실패: ${data.errorCode || data.message || "오류"}`);
+      }
+    } catch {
+      setHandoffMsg("네트워크 오류");
+    }
+    setHandoffBusy(false);
+  }
+
+  // Register the recommended-keyword package; only validated English Blog-01
+  // candidates are added to the Money Hunter DB.
+  async function importKeywordPackage(file) {
+    if (!file) return;
+    setHandoffBusy(true);
+    setHandoffMsg("추천 키워드 검증·등록 중...");
+    try {
+      const text = await file.text();
+      let pkg;
+      try {
+        pkg = JSON.parse(text);
+      } catch {
+        setHandoffMsg("JSON 파싱 실패");
+        setHandoffBusy(false);
+        return;
+      }
+      const res = await fetch("/api/atlas/keyword-package", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ package: pkg }),
+      });
+      const data = await res.json();
+      if (data.status === "ok") {
+        setHandoffMsg(`추천 키워드 등록: 추가 ${data.added}개 · 거부 ${(data.rejected || []).length} · 검토필요 ${(data.review || []).length}`);
+      } else {
+        setHandoffMsg(`등록 거부: ${data.errorCode || data.status} ${(data.errors || []).join(", ")}`);
+      }
+      loadKeywords();
+    } catch {
+      setHandoffMsg("네트워크 오류");
+    }
+    setHandoffBusy(false);
+  }
+
+  // Delete one UNUSED keyword (server blocks if it has usage history).
+  async function deleteKeyword(id, name) {
+    if (!window.confirm(`"${name}" 키워드를 삭제할까요?`)) return;
+    setDeleteBusy(true);
+    setDeleteMsg("");
+    try {
+      const res = await fetch("/api/keywords", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      const data = await res.json();
+      if (data.status === "ok") setDeleteMsg(`삭제됨: ${name}`);
+      else if (data.status === "blocked") setDeleteMsg(`"${name}": 사용 기록이 있어 삭제할 수 없습니다.`);
+      else setDeleteMsg(`삭제 실패: ${data.errorCode || data.message || "오류"}`);
+      loadKeywords();
+    } catch {
+      setDeleteMsg("네트워크 오류");
+    }
+    setDeleteBusy(false);
+  }
+
+  // Bulk-delete only UNUSED Korean keywords. English / used keywords are safe.
+  async function bulkDeleteKorean() {
+    const hangul = /[ᄀ-ᇿ㄰-㆏가-힣]/;
+    const targets = keywords.filter((k) => hangul.test(k.keyword || "") && !(k.usage && k.usage.used));
+    if (targets.length === 0) {
+      setDeleteMsg("삭제할 미사용 한글 키워드가 없습니다.");
+      return;
+    }
+    if (!window.confirm(`미사용 한글 키워드 ${targets.length}개를 삭제할까요? (영어·사용 이력 키워드는 제외됩니다.)`)) return;
+    setDeleteBusy(true);
+    setDeleteMsg("");
+    try {
+      const res = await fetch("/api/keywords", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bulkKorean: true }),
+      });
+      const data = await res.json();
+      setDeleteMsg(`일괄 삭제: ${data.deleted ?? 0}개 삭제됨${data.message ? ` — ${data.message}` : ""}`);
+      loadKeywords();
+    } catch {
+      setDeleteMsg("네트워크 오류");
+    }
+    setDeleteBusy(false);
+  }
+
+  // Display-only sort: newest registration first (KST). Records without a
+  // createdAt keep their original array order at the bottom. Ids / usage links
+  // are never changed.
+  const withDate = keywords.map((k, i) => ({ k, i })).filter((x) => x.k.createdAt);
+  withDate.sort((a, b) => {
+    const t = new Date(b.k.createdAt).getTime() - new Date(a.k.createdAt).getTime();
+    return t !== 0 ? t : a.i - b.i;
+  });
+  const noDate = keywords.map((k, i) => ({ k, i })).filter((x) => !x.k.createdAt);
+  const sorted = [...withDate.map((x) => x.k), ...noDate.map((x) => x.k)];
 
   return (
     <div className="min-h-screen bg-zinc-950 px-6 py-10 text-zinc-100 sm:px-10">
@@ -202,31 +390,95 @@ export default function MoneyHunterPage() {
         </section>
 
         <section className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
-          <h2 className="text-lg font-semibold">키워드 목록 ({sorted.length})</h2>
+          <h2 className="text-lg font-semibold">영문 키워드 발굴 (ChatGPT)</h2>
+          <p className="mt-1 text-xs text-zinc-500">
+            Blog 01 전용 · 추가 API 비용 없음. 발굴 요청을 내보내 ChatGPT에 업로드하고, 반환된 추천 키워드 패키지를 등록하면
+            검증된 영어 후보만 아래 DB에 추가됩니다(한글·타 niche·중복 자동 거부).
+          </p>
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={exportKeywordRequest}
+              disabled={handoffBusy}
+              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500 disabled:opacity-40"
+            >
+              영문 키워드 발굴 요청 내보내기
+            </button>
+            <label className="text-sm text-zinc-300">추천 키워드 패키지 등록:</label>
+            <input
+              type="file"
+              accept="application/json"
+              disabled={handoffBusy}
+              onChange={(e) => importKeywordPackage(e.target.files?.[0])}
+              className="text-sm text-zinc-300"
+            />
+          </div>
+        </section>
+
+        <section className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+          <h2 className="text-lg font-semibold">무료 제작 (ChatGPT Handoff)</h2>
+          <p className="mt-1 text-xs text-zinc-500">
+            추가 API 비용 없음 · Blog 01 전용. 아래 목록의 &quot;제작 요청&quot;으로 요청 파일을 내보내 ChatGPT에 업로드하고,
+            반환된 atlas-package JSON을 여기서 등록하면 Cloudinary 업로드·QA·중복검사가 자동 처리됩니다.
+          </p>
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <label className="text-sm text-zinc-300">제작 패키지 등록:</label>
+            <input
+              type="file"
+              accept="application/json"
+              disabled={handoffBusy}
+              onChange={(e) => importPackage(e.target.files?.[0])}
+              className="text-sm text-zinc-300"
+            />
+          </div>
+          {handoffMsg && <p className="mt-2 text-sm text-emerald-400">{handoffMsg}</p>}
+        </section>
+
+        <section className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 className="text-lg font-semibold">키워드 목록 ({sorted.length})</h2>
+            <button
+              type="button"
+              onClick={bulkDeleteKorean}
+              disabled={deleteBusy}
+              className="rounded-md bg-red-600/80 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-600 disabled:opacity-40"
+            >
+              미사용 한글 키워드 일괄 삭제
+            </button>
+          </div>
+          {deleteMsg && <p className="mt-2 text-sm text-amber-400">{deleteMsg}</p>}
           {loading ? (
             <p className="mt-4 text-sm text-zinc-500">불러오는 중...</p>
           ) : (
             <div className="mt-4 overflow-x-auto">
-              <table className="w-full min-w-[720px] text-left text-sm">
+              <table className="w-full min-w-[1040px] text-left text-sm">
                 <thead className="text-zinc-500">
                   <tr className="border-b border-zinc-800">
+                    <th className="py-2 pr-4">No.</th>
                     <th className="py-2 pr-4">키워드</th>
                     <th className="py-2 pr-4">카테고리</th>
                     <th className="py-2 pr-4">의도</th>
+                    <th className="py-2 pr-4">등록일시(KST)</th>
+                    <th className="py-2 pr-4">출처</th>
+                    <th className="py-2 pr-4">사용 상태</th>
                     <th className="py-2 pr-4">Money Score</th>
                     <th className="py-2 pr-4">상태</th>
                     <th className="py-2 pr-4">작업</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {sorted.map((k) => (
+                  {sorted.map((k, idx) => (
                     <tr key={k.id} className="border-b border-zinc-900">
+                      <td className="py-2 pr-4 text-zinc-500">{idx + 1}</td>
                       <td className="py-2 pr-4 font-medium">{k.keyword}</td>
                       <td className="py-2 pr-4 text-zinc-400">{k.category}</td>
                       <td className="py-2 pr-4 text-zinc-400">{k.intent}</td>
+                      <td className="py-2 pr-4 whitespace-nowrap text-zinc-400">{fmtKST(k.createdAt)}</td>
+                      <td className="py-2 pr-4 whitespace-nowrap text-zinc-400">{sourceLabel(k)}</td>
+                      <td className="py-2 pr-4 whitespace-nowrap text-zinc-400">{usageLabel(k)}</td>
                       <td className="py-2 pr-4">
                         <span className="rounded-full bg-emerald-500/10 px-2 py-1 text-xs font-semibold text-emerald-400">
-                          {k.moneyScore}
+                          {k.moneyScore ?? "—"}
                         </span>
                       </td>
                       <td className="py-2 pr-4">
@@ -241,6 +493,13 @@ export default function MoneyHunterPage() {
                       <td className="py-2 pr-4">
                         <div className="flex gap-2">
                           <button
+                            onClick={() => exportRequest(k.id)}
+                            disabled={handoffBusy}
+                            className="rounded-md bg-blue-600 px-2 py-1 text-xs text-white hover:bg-blue-500 disabled:opacity-40"
+                          >
+                            제작 요청
+                          </button>
+                          <button
                             onClick={() => updateStatus(k.id, "selected")}
                             disabled={k.status === "selected"}
                             className="rounded-md bg-zinc-800 px-2 py-1 text-xs hover:bg-zinc-700 disabled:opacity-40"
@@ -254,13 +513,21 @@ export default function MoneyHunterPage() {
                           >
                             Idea로 되돌리기
                           </button>
+                          <button
+                            onClick={() => deleteKeyword(k.id, k.keyword)}
+                            disabled={deleteBusy || (k.usage && k.usage.used)}
+                            title={k.usage && k.usage.used ? "사용 기록이 있어 삭제할 수 없습니다" : "키워드 삭제"}
+                            className="rounded-md bg-red-600/80 px-2 py-1 text-xs text-white hover:bg-red-600 disabled:opacity-40"
+                          >
+                            삭제
+                          </button>
                         </div>
                       </td>
                     </tr>
                   ))}
                   {sorted.length === 0 && (
                     <tr>
-                      <td colSpan={6} className="py-6 text-center text-zinc-500">
+                      <td colSpan={10} className="py-6 text-center text-zinc-500">
                         등록된 키워드가 없습니다.
                       </td>
                     </tr>
@@ -273,6 +540,29 @@ export default function MoneyHunterPage() {
       </div>
     </div>
   );
+}
+
+function fmtKST(iso) {
+  if (!iso) return "기존 데이터";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "기존 데이터";
+  const kst = new Date(d.getTime() + 9 * 3600 * 1000);
+  const p = (n) => String(n).padStart(2, "0");
+  return `${kst.getUTCFullYear()}-${p(kst.getUTCMonth() + 1)}-${p(kst.getUTCDate())} ${p(kst.getUTCHours())}:${p(kst.getUTCMinutes())}`;
+}
+
+function sourceLabel(k) {
+  if (k.source === "chatgpt-keyword-handoff") return "영문 추천";
+  if (k.source === "manual") return "수동 등록";
+  return "기존 데이터";
+}
+
+function usageLabel(k) {
+  const u = k.usage || {};
+  if (u.pjob) return `제작 요청 완료 · ${u.pjob}`;
+  if (u.articleId) return `글 사용 · ${u.articleId}`;
+  if (u.used) return "사용 중";
+  return "미사용";
 }
 
 function Field({ label, children, className = "" }) {

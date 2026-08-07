@@ -5,6 +5,10 @@ import {
   createPublishJob,
   updatePublishJobStatus,
 } from "@/lib/atlas/repositories/publishing-repository";
+import { buildShortsDraft } from "@/lib/atlas/shorts-engine";
+import { countActiveAffiliate } from "@/lib/atlas/affiliate-status";
+import { saveShortDraft, existingShortIds, getShortDraftsByArticle } from "@/lib/atlas/repositories/shorts-repository";
+import { registerCampaigns } from "@/lib/atlas/repositories/tracking-repository";
 
 const FILE = "articles.json";
 
@@ -55,6 +59,14 @@ export async function PATCH(request) {
   if (body.status) article.status = body.status;
   if (typeof body.publishedUrl === "string") article.publishedUrl = body.publishedUrl;
   if (typeof body.blogId === "string") article.blogId = body.blogId;
+  if (Array.isArray(body.visualAssets)) article.visualAssets = body.visualAssets;
+  if (typeof body.title === "string") article.title = body.title;
+  if (typeof body.hookTitle === "string") article.hookTitle = body.hookTitle;
+  if (typeof body.koreanReview === "string") article.koreanReview = body.koreanReview;
+  if (typeof body.bodyMarkdown === "string") {
+    article.bodyMarkdown = body.bodyMarkdown;
+    article.bodyHtml = markdownToHtml(body.bodyMarkdown);
+  }
 
   // MASTER 원고: ChatGPT 검수를 거친 최종 영문을 별도 필드로 저장한다.
   // draftMarkdown/bodyMarkdown(AI 초안)은 절대 덮어쓰지 않고 그대로 보존한다.
@@ -94,6 +106,31 @@ export async function PATCH(request) {
       keyword.status = "published";
       keyword.updatedAt = now;
       writeJson("keywords.json", keywordsData);
+    }
+
+    // R2: on publish success, auto-create a Shopping Shorts DRAFT for the same
+    // articleId (semi-automatic — a human still reviews/exports; no auto-posting).
+    // Idempotent: skip if this article already has a shorts draft. Server-side
+    // affiliate is 0-active today, so the draft is informational-only.
+    if (getShortDraftsByArticle(article.id).length === 0) {
+      const draft = buildShortsDraft(article, {
+        affiliateActiveCount: countActiveAffiliate(data.articles),
+        bloggerUrl: body.publishedUrl || article.publishedUrl || "",
+        existingShortIds: existingShortIds(),
+        isProduction: true,
+      });
+      saveShortDraft(draft);
+      registerCampaigns(
+        draft.campaigns.map((c) => ({
+          campaignId: c.campaignId,
+          articleId: draft.articleId,
+          shortId: draft.shortId,
+          platform: c.platform,
+          productId: c.productId,
+          bloggerUrl: draft.bloggerUrl,
+          isProduction: true,
+        })),
+      );
     }
   }
 
