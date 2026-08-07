@@ -91,10 +91,15 @@ export async function POST(request) {
       writeJson("blogs.json", blogsData);
     }
 
+    // MASTER 원고가 있으면 그것을 발행 본문으로 사용한다(Draft는 절대 발행하지 않는다).
+    const publishContent = article.masterApproved
+      ? { ...article, bodyMarkdown: article.masterMarkdown, bodyHtml: article.masterHtml }
+      : article;
+
     const content = {
       bloggerBlogId,
       title: article.title || "",
-      html: buildBloggerHtml(article),
+      html: buildBloggerHtml(publishContent),
       labels: article.tags || [],
     };
 

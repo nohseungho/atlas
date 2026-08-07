@@ -38,6 +38,7 @@ export async function POST(request) {
   const keyword = {
     id: `kw_${String(maxNum + 1).padStart(3, "0")}`,
     keyword: body.keyword,
+    koLabel: body.koLabel || "",
     category: body.category,
     intent: body.intent || "informational",
     ...levels,
@@ -70,6 +71,7 @@ export async function PATCH(request) {
 
   if (body.status) keyword.status = body.status;
   if (typeof body.memo === "string") keyword.memo = body.memo;
+  if (typeof body.koLabel === "string") keyword.koLabel = body.koLabel;
   keyword.updatedAt = new Date().toISOString();
 
   writeJson(FILE, data);

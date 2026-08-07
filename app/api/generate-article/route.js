@@ -28,6 +28,9 @@ export async function POST(request) {
   const article = {
     id: `art_${String(maxNum + 1).padStart(3, "0")}`,
     ...draft,
+    draftMarkdown: draft.bodyMarkdown,
+    masterMarkdown: "",
+    masterApproved: false,
     createdAt: now,
     updatedAt: now,
   };

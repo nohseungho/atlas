@@ -3,7 +3,15 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+// ATLAS 기본 운영은 글로벌 블로그 기준 — 영어권 SEO/Affiliate 키워드를 우선 노출한다.
+// 한국 키워드(국내 쇼츠 프로젝트용)는 목록 하단에 유지.
 const CATEGORY_OPTIONS = [
+  "Outdoor & Camping",
+  "Travel Gear",
+  "Home & Productivity",
+  "Coffee & Kitchen",
+  "AI Tools",
+  "Tech Gadgets",
   "자동차 보험",
   "정부지원금",
   "전기세/생활비 절약",
@@ -21,7 +29,7 @@ const inputClass =
 
 const emptyForm = {
   keyword: "",
-  category: CATEGORY_OPTIONS[0],
+  category: CATEGORY_OPTIONS[0], // 글로벌 카테고리를 기본값으로
   intent: "commercial",
   searchVolumeLevel: 3,
   cpcLevel: 3,

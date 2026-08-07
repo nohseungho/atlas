@@ -109,6 +109,12 @@ export default function DashboardPage() {
             Writer
           </Link>
           <Link
+            href="/blog-manager"
+            className="rounded-lg bg-zinc-800 px-4 py-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-700"
+          >
+            Blog Manager
+          </Link>
+          <Link
             href="/publisher"
             className="rounded-lg bg-zinc-800 px-4 py-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-700"
           >

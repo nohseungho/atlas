@@ -50,8 +50,14 @@ export default function PublisherPage() {
   const readyBlogs = blogs.filter((b) => b.status === "ready");
   const selected = articles.find((a) => a.id === selectedId);
   const selectedBlogRecord = blogs.find((b) => b.id === targetBlogId);
-  const canAutoPublish = Boolean(selectedBlogRecord?.tokenRef);
+  const hasMaster = Boolean(selected?.masterApproved);
+  const canAutoPublish = Boolean(selectedBlogRecord?.tokenRef) && hasMaster;
   const isAlreadyPublished = Boolean(selected && (selected.status === "published" || selected.publishedUrl));
+  // Publisher는 MASTER 원고를 우선 사용한다. Draft(bodyMarkdown)는 절대 덮어쓰지 않고
+  // 이 화면에 보여줄 미리보기/체크리스트용으로만 MASTER를 덧씌운 사본을 만든다.
+  const publishPreview = hasMaster
+    ? { ...selected, bodyMarkdown: selected.masterMarkdown, bodyHtml: selected.masterHtml }
+    : selected;
 
   async function handleAutoPublish() {
     if (!selected || !targetBlogId || !canAutoPublish) return;
@@ -86,6 +92,10 @@ export default function PublisherPage() {
 
   async function handlePublish() {
     if (!selected) return;
+    if (!hasMaster) {
+      setMessage("MASTER 원고가 필요합니다. Writer에서 MASTER 원고를 먼저 등록해주세요.");
+      return;
+    }
     if (!publishedUrl.trim()) {
       setMessage("발행 URL을 입력해주세요.");
       return;
@@ -131,9 +141,14 @@ export default function PublisherPage() {
             <h1 className="text-2xl font-bold">Publisher</h1>
             <p className="mt-1 text-sm text-zinc-400">Blogger에 수동으로 복사해서 발행합니다.</p>
           </div>
-          <Link href="/" className="text-sm text-emerald-400 hover:underline">
-            ← Dashboard
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link href="/blog-manager" className="text-sm text-emerald-400 hover:underline">
+              Blog Manager
+            </Link>
+            <Link href="/" className="text-sm text-emerald-400 hover:underline">
+              ← Dashboard
+            </Link>
+          </div>
         </header>
 
         <section className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
@@ -171,6 +186,15 @@ export default function PublisherPage() {
                     <p className="text-xs text-zinc-500">{a.category}</p>
                   </div>
                 </div>
+                <span
+                  className={`shrink-0 rounded-full px-2 py-1 text-xs font-semibold ${
+                    a.masterApproved
+                      ? "bg-emerald-500/20 text-emerald-300"
+                      : "bg-amber-500/20 text-amber-300"
+                  }`}
+                >
+                  {a.masterApproved ? "MASTER 완료" : "MASTER 필요"}
+                </span>
               </label>
             ))}
             {writtenArticles.length === 0 && (
@@ -261,14 +285,19 @@ export default function PublisherPage() {
             <CopyBlock label="제목" value={selected.title} onCopy={copy} />
             <CopyBlock label="메타 설명" value={selected.metaDescription} onCopy={copy} />
             <CopyBlock label="태그" value={(selected.tags || []).join(", ")} onCopy={copy} />
+            {!hasMaster && (
+              <p className="rounded-lg border border-amber-700 bg-amber-500/10 px-4 py-2 text-xs text-amber-300">
+                MASTER 원고가 아직 없어 아래 미리보기는 Writer 초안(Draft) 기준입니다. Writer에서 MASTER 원고를 저장하면 이 미리보기와 발행 내용이 MASTER로 전환됩니다.
+              </p>
+            )}
             <CopyBlock
               label="Blogger 복사용 HTML"
-              value={buildBloggerHtml(selected)}
+              value={buildBloggerHtml(publishPreview)}
               onCopy={copy}
               tall
             />
 
-            <BloggerChecklist article={selected} />
+            <BloggerChecklist article={publishPreview} />
 
             <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
               <h2 className="text-lg font-semibold">발행 완료 처리</h2>
@@ -294,7 +323,8 @@ export default function PublisherPage() {
                   />
                   <button
                     onClick={handlePublish}
-                    disabled={publishing}
+                    disabled={publishing || !hasMaster}
+                    title={!hasMaster ? "Writer에서 MASTER 원고를 먼저 등록해주세요" : undefined}
                     className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 disabled:opacity-50"
                   >
                     {publishing ? "처리 중..." : "발행 완료"}
@@ -306,6 +336,8 @@ export default function PublisherPage() {
                     title={
                       isAlreadyPublished
                         ? "이미 발행된 글입니다"
+                        : !hasMaster
+                        ? "Writer에서 MASTER 원고를 먼저 등록해주세요"
                         : !canAutoPublish
                         ? "Blogger 연결된 블로그를 선택해주세요"
                         : "Blogger API로 자동 발행"
