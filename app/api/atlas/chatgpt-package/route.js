@@ -112,8 +112,18 @@ export async function POST(request) {
   if (!job) return NextResponse.json({ status: "error", errorCode: "JOB_NOT_FOUND" }, { status: 404 });
   const blogId = job.blogId || pkg.blogId || "blog_001";
 
-  if (job.moneyHunterId && pkg.moneyHunterId && pkg.moneyHunterId !== job.moneyHunterId) {
-    return NextResponse.json({ status: "error", errorCode: "MONEY_HUNTER_ID_MISMATCH" }, { status: 400 });
+  // A jobId is bound to exactly one candidate. A package returned for a
+  // different candidate — or with the binding stripped out — must never be
+  // attached to this job, or one job ends up owning two topics' articles.
+  if (job.moneyHunterId && pkg.moneyHunterId !== job.moneyHunterId) {
+    return NextResponse.json({
+      status: "conflict",
+      errorCode: "JOB_CANDIDATE_CONFLICT",
+      jobId: job.id,
+      expectedMoneyHunterId: job.moneyHunterId,
+      receivedMoneyHunterId: pkg.moneyHunterId || "",
+      message: `${job.id}은(는) 후보 ${job.moneyHunterId}("${job.topic}")에 연결된 Job입니다. 받은 패키지의 후보는 ${pkg.moneyHunterId || "(없음)"} — 해당 후보의 요청 파일을 다시 내려받아 같은 jobId로 진행하세요.`,
+    }, { status: 409 });
   }
 
   // ─── Retry of a QA-failed draft ─────────────────────────────────────────

@@ -6,6 +6,7 @@ import { readJson } from "@/lib/data-store";
 import { buildHandoffRequest, buildRecommendationCandidate, automationMode } from "@/lib/atlas/chatgpt-handoff";
 import { nicheMatches } from "@/lib/atlas/money-hunter-select";
 import { assertProductionEligible } from "@/lib/atlas/recommendation-engine";
+import { handoffRequestKey } from "@/lib/atlas/job-identity";
 import { listProductionJobs, createProductionJob, updateProductionJob } from "@/lib/atlas/repositories/production-job-repository";
 
 export const runtime = "nodejs";
@@ -29,8 +30,28 @@ function markHandoff(jobId, { blogId, moneyHunterId }) {
   });
 }
 
-// Money Hunter path: the candidate comes from keywords.json, one job per
-// (blogId + moneyHunterId).
+// One job per (blogId + candidate), for both paths.
+//   • an existing request for this candidate → that job, untouched
+//   • otherwise a NEW job whose identity is the request itself, so it never
+//     adopts an unrelated job that merely shares a topic. That adoption is what
+//     returned the July research-blocked pjob_001 for a fresh Trip Cancellation
+//     request instead of a new number.
+// The key is read and written in one synchronous pass, so clicks racing each
+// other still resolve to a single job.
+function claimHandoffJob({ blogId, candidateId, recommendation }) {
+  const existing = findHandoffJob(blogId, candidateId);
+  if (existing) return { job: existing, duplicate: true };
+
+  const { job, duplicate } = createProductionJob({
+    recommendation,
+    idempotencyKey: handoffRequestKey({ blogId, candidateId }),
+  });
+  return duplicate
+    ? { job, duplicate: true }
+    : { job: markHandoff(job.id, { blogId, moneyHunterId: candidateId }), duplicate: false };
+}
+
+// Money Hunter path: the candidate comes from keywords.json.
 function jobForKeyword(blogId, moneyHunterId, keywords) {
   const kw = keywords.find((k) => k.id === moneyHunterId);
   if (!kw) return { error: NextResponse.json({ status: "error", errorCode: "CANDIDATE_NOT_FOUND" }, { status: 404 }) };
@@ -40,27 +61,20 @@ function jobForKeyword(blogId, moneyHunterId, keywords) {
     return { error: NextResponse.json({ status: "error", errorCode: "NICHE_MISMATCH", message: `이 후보는 ${blogId} niche와 맞지 않습니다.` }, { status: 400 }) };
   }
 
-  const existing = findHandoffJob(blogId, moneyHunterId);
-  const job = existing
-    ? updateProductionJob(existing.id, (j) => {
-        if (!j.mode) j.mode = "CHATGPT_HANDOFF";
-        if (["QUEUED", "CHATGPT_REQUEST_READY"].includes(j.status)) j.status = "WAITING_FOR_CHATGPT_PACKAGE";
-      })
-    : markHandoff(createProductionJob({ recommendation: { title: kw.keyword, searchIntent: kw.intent } }).job.id, { blogId, moneyHunterId });
-
+  const { job, duplicate } = claimHandoffJob({
+    blogId,
+    candidateId: kw.id,
+    recommendation: { title: kw.keyword, searchIntent: kw.intent },
+  });
   return {
     job,
-    duplicate: !!existing,
+    duplicate,
     candidate: { id: kw.id, keyword: kw.keyword, moneyScore: kw.moneyScore, category: kw.category },
   };
 }
 
-// R2 path: the recommendation card has no keywords.json id, so the topic itself
-// is the key. createProductionJob() dedupes on the topic slug, which is what
-// makes a re-click (or two clicks racing each other) reuse the same job and hand
-// back the same request file instead of creating a second one. A job that
-// already exists is returned untouched — a manual request must not rewrite the
-// state of a job the automatic pipeline is already running.
+// R2 path: the recommendation card has no keywords.json id, so the candidate id
+// is derived from the topic (buildRecommendationCandidate).
 function jobForRecommendation(blogId, recommendation, articles) {
   // Same Hard Gate the automatic pipeline uses — a manual request cannot smuggle
   // an off-scope topic past it. It runs first so an off-scope card reports the
@@ -75,8 +89,7 @@ function jobForRecommendation(blogId, recommendation, articles) {
     return { error: NextResponse.json({ status: "error", errorCode: "RECOMMENDATION_TOPIC_REQUIRED", message: "추천 후보의 주제(영문)를 읽지 못했습니다." }, { status: 400 }) };
   }
 
-  const { job: created, duplicate } = createProductionJob({ recommendation });
-  const job = duplicate ? created : markHandoff(created.id, { blogId, moneyHunterId: candidate.id });
+  const { job, duplicate } = claimHandoffJob({ blogId, candidateId: candidate.id, recommendation });
   return { job, duplicate, candidate };
 }
 

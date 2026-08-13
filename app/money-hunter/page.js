@@ -189,6 +189,12 @@ export default function MoneyHunterPage() {
       setDailyMsg(`설정 필요: ${(data.envNeeded || []).join(", ")}`);
       return;
     }
+    // A jobId bound to another candidate is a conflict, not a QA failure — the
+    // server names both sides, so show that instead of the bare error code.
+    if (data.status === "conflict") {
+      setDailyMsg(`Job 충돌: ${data.message}`);
+      return;
+    }
     setDailyMsg(`등록 거부: ${data.errorCode || data.status} ${(data.issues || []).join(", ")}`);
   }
 
@@ -304,7 +310,9 @@ export default function MoneyHunterPage() {
             ? "기존 등록 반환 — 재검수는 실행되지 않았습니다."
             : data.status === "ok"
               ? `등록 완료: ${data.articleId} — 상단 검수 패널에서 결과를 확인하세요.`
-              : `등록 거부: ${data.errorCode || data.status}`,
+              : data.status === "conflict"
+                ? `등록 거부(Job 충돌): ${data.message}`
+                : `등록 거부: ${data.message || data.errorCode || data.status}`,
       );
       loadKeywords();
     } catch {
