@@ -13,6 +13,7 @@ import {
   validatePackageStructure, validatePackageHtml, checkPackageDedup, validateImageBase64, isMeaningfulAlt, IMAGE_ROLES,
 } from "@/lib/atlas/chatgpt-handoff";
 import { nicheMatches } from "@/lib/atlas/money-hunter-select";
+import { checkHeroCharacter, readPackageHeroCharacterId } from "@/lib/atlas/letters-cast";
 import { isCloudinaryConfigured, uploadArticleImageData } from "@/lib/atlas/providers/cloudinary-provider";
 import { EMBEDDED_PLACEMENT } from "@/lib/atlas/revenue-layout-engine";
 import { listProductionJobs, updateProductionJob, reserveArticleId } from "@/lib/atlas/repositories/production-job-repository";
@@ -123,6 +124,27 @@ export async function POST(request) {
       expectedMoneyHunterId: job.moneyHunterId,
       receivedMoneyHunterId: pkg.moneyHunterId || "",
       message: `${job.id}은(는) 후보 ${job.moneyHunterId}("${job.topic}")에 연결된 Job입니다. 받은 패키지의 후보는 ${pkg.moneyHunterId || "(없음)"} — 해당 후보의 요청 파일을 다시 내려받아 같은 jobId로 진행하세요.`,
+    }, { status: 409 });
+  }
+
+  // ATLAS Letters — the hero character is bound to the job when its request file
+  // is exported. A package built around a different person (or one that dropped
+  // the binding) is refused here, before any image is uploaded, so an article
+  // can never ship a face the request did not ask for. Jobs with no Letters
+  // binding — everything up to art_013 — are not subject to this check.
+  const hero = checkHeroCharacter({
+    expected: job.letters?.heroCharacterId,
+    received: readPackageHeroCharacterId(pkg),
+  });
+  if (!hero.ok) {
+    return NextResponse.json({
+      status: "conflict",
+      errorCode: "LETTERS_CHARACTER_CONFLICT",
+      jobId: job.id,
+      expectedHeroCharacterId: hero.expected,
+      receivedHeroCharacterId: hero.received,
+      masterFileName: job.letters?.masterFileName || "",
+      message: hero.message,
     }, { status: 409 });
   }
 

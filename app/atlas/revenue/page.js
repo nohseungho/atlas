@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { castForWeek } from "@/lib/atlas/letters-cast";
 
 // ─── ATLAS Revenue Automation R2 — one screen, one flow ──────────────────────
 // 이번 주 자동추천 → 주제 선택 → 원고 생성 → QA → 미리보기 → 승인·발행
@@ -68,6 +69,13 @@ export default function RevenuePage() {
   const [prodJobs, setProdJobs] = useState([]);
   const [r3msg, setR3msg] = useState("");
   const [handoff, setHandoff] = useState(null); // { priority, ok, text } — per-card result
+  // ATLAS Letters pair for the current week. Resolved after mount so the server
+  // render and the browser never disagree about which week "now" falls in.
+  const [week, setWeek] = useState(null);
+
+  useEffect(() => {
+    setWeek(castForWeek(new Date()));
+  }, []);
 
   useEffect(() => {
     // Client-side fetch-on-mount against our own API routes (admin tool).
@@ -152,7 +160,7 @@ export default function RevenuePage() {
         setHandoff({
           priority: candidate.priority,
           ok: true,
-          text: `${data.filename} 다운로드 — ChatGPT에 업로드하세요. Job ${data.jobId}${data.duplicate ? " (이미 있던 요청을 다시 받았습니다 · 새 Job 없음)" : " (새 요청 생성)"}`,
+          text: `${data.filename} 다운로드 — ChatGPT에 업로드하세요. Job ${data.jobId}${data.duplicate ? " (이미 있던 요청을 다시 받았습니다 · 새 Job 없음)" : " (새 요청 생성)"}${data.letters ? ` · ATLAS Letters ${data.letters.label} · 대표 인물 ${data.letters.heroCharacterId} (${data.letters.masterFileName})` : ""}`,
         });
         setProdJobs((await api("/api/atlas/production-jobs")).jobs || []);
       } else {
@@ -237,6 +245,13 @@ export default function RevenuePage() {
             <p className="mb-3 rounded-lg border border-amber-900 bg-amber-950/30 px-3 py-2 text-xs text-amber-300">
               실시간 트렌드 연결 안 됨 · 현재 후보는 <b>ATLAS 편집 기준(EDITORIAL_FALLBACK)</b> 기반이며 실제 트렌드·검색량으로
               검증되지 않았습니다. {rec.scopeNote}
+            </p>
+          )}
+          {week && (
+            <p className="mb-3 rounded-lg border border-fuchsia-900 bg-fuchsia-950/30 px-3 py-2 text-xs text-fuchsia-200">
+              ATLAS Letters · <b>이번 주: {week.label}</b> (부탁 → 답변) · {week.weekStart} ~ {week.weekEnd} (Asia/Seoul) ·
+              대표 이미지 인물: <b>{week.heroCharacterId}</b> · 마스터 {week.masterFileName} · 얼굴 고정(의상·표정·장소만 변경).
+              매주 월요일 00:00에 역할이 교대됩니다.
             </p>
           )}
           <div className="mb-3 flex flex-wrap items-center gap-2">

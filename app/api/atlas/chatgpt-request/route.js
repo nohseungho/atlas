@@ -4,6 +4,7 @@
 import { NextResponse } from "next/server";
 import { readJson } from "@/lib/data-store";
 import { buildHandoffRequest, buildRecommendationCandidate, automationMode } from "@/lib/atlas/chatgpt-handoff";
+import { castForWeek, castFromRecord } from "@/lib/atlas/letters-cast";
 import { nicheMatches } from "@/lib/atlas/money-hunter-select";
 import { assertProductionEligible } from "@/lib/atlas/recommendation-engine";
 import { handoffRequestKey } from "@/lib/atlas/job-identity";
@@ -49,6 +50,21 @@ function claimHandoffJob({ blogId, candidateId, recommendation }) {
   return duplicate
     ? { job, duplicate: true }
     : { job: markHandoff(job.id, { blogId, moneyHunterId: candidateId }), duplicate: false };
+}
+
+// ATLAS Letters — the requester/responder pair for this job, frozen on first
+// export. The rotation (미지 ↔ 스오, every Monday 00:00 Asia/Seoul) decides who
+// asks in a NEW job's week; once that is written onto the job it is what every
+// later export of the same request returns. Without the freeze, re-downloading
+// a request file after Monday would hand back the other person's face for an
+// article whose images were already generated from the first one.
+function resolveJobCast(job, now = new Date()) {
+  const stored = castFromRecord(job.letters);
+  if (stored) return stored;
+  const cast = castForWeek(now);
+  if (!cast) return null;
+  updateProductionJob(job.id, (j) => { j.letters = cast; });
+  return cast;
 }
 
 // Money Hunter path: the candidate comes from keywords.json.
@@ -117,6 +133,8 @@ export async function POST(request) {
     (k) => nicheMatches(blogId, { category: k.category, keyword: k.keyword }) && !usedIds.has(k.id)
   );
 
+  const cast = resolveJobCast(job);
+
   const req = buildHandoffRequest({
     jobId: job.id,
     blog,
@@ -125,6 +143,7 @@ export async function POST(request) {
     unusedCandidates,
     persona: PERSONA,
     template: TEMPLATE,
+    cast,
   });
 
   return NextResponse.json({
@@ -133,6 +152,9 @@ export async function POST(request) {
     jobId: job.id,
     duplicate,
     filename: `atlas-request-${job.id}.json`,
+    // Surfaced separately so the screen can state this week's pair without
+    // re-deriving it from the downloaded file.
+    letters: cast,
     request: req,
   });
 }
