@@ -403,10 +403,15 @@ function PublisherControlCenter({
   const [syncing, setSyncing] = useState(false);
   const [syncNote, setSyncNote] = useState("");
   const [busyId, setBusyId] = useState("");
+  const [pinKits, setPinKits] = useState({});   // articleId → kit
+  const [pinNotes, setPinNotes] = useState({}); // articleId → { ok, text }
+  const [pinBusyId, setPinBusyId] = useState("");
 
   useEffect(() => {
     if (!blogId && connectedBlogs.length > 0) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+      // Default the target blog to the first connected one. (The
+      // set-state-in-effect suppression that used to sit here is gone: the rule
+      // stopped reporting this line, and a dead directive is itself a warning.)
       setBlogId(connectedBlogs[0].id);
     }
   }, [blogId, connectedBlogs]);
@@ -438,6 +443,42 @@ function PublisherControlCenter({
       setSyncNote("동기화 중 네트워크 오류가 발생했습니다.");
     }
     setSyncing(false);
+  }
+
+  // Pinterest 홍보 준비 — builds (or re-returns) the pin material for one
+  // published article. Nothing is posted to Pinterest: the result panel below
+  // the row is what the operator uploads by hand.
+  async function preparePinterestKit(articleId) {
+    if (pinBusyId) return;
+    setPinBusyId(articleId);
+    setPinNotes((prev) => ({ ...prev, [articleId]: null }));
+    try {
+      const res = await fetch("/api/atlas/pinterest-kit", {
+        method: "POST",
+        cache: "no-store",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ articleId }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.status === "ok" && data.kit) {
+        setPinKits((prev) => ({ ...prev, [articleId]: data.kit }));
+        setPinNotes((prev) => ({
+          ...prev,
+          [articleId]: { ok: true, text: data.duplicate ? "이미 만들어 둔 홍보자료입니다 (새로 생성하지 않음)." : "홍보자료를 생성했습니다." },
+        }));
+      } else {
+        setPinNotes((prev) => ({
+          ...prev,
+          [articleId]: { ok: false, text: `홍보자료 생성 실패: ${data.message || data.errorCode || `서버 응답 ${res.status}`}` },
+        }));
+      }
+    } catch (err) {
+      setPinNotes((prev) => ({
+        ...prev,
+        [articleId]: { ok: false, text: `홍보자료 생성 실패: 서버에 연결하지 못했습니다 (${String(err?.message || err)})` },
+      }));
+    }
+    setPinBusyId("");
   }
 
   // Every row action locks the whole list while it is in flight, so rapid
@@ -623,8 +664,27 @@ function PublisherControlCenter({
                       기존 글 업데이트
                     </button>
                   )}
+
+                  {row.publishState === "published" && row.url && (
+                    <button
+                      type="button"
+                      disabled={!!pinBusyId}
+                      onClick={() => preparePinterestKit(row.articleId)}
+                      title="발행된 글의 대표 이미지로 Pinterest 세로 이미지·제목·설명·링크를 준비합니다 (자동 게시 없음)"
+                      className="rounded-md bg-rose-700 px-2 py-1 text-xs font-semibold text-white hover:bg-rose-600 disabled:opacity-50"
+                    >
+                      {pinBusyId === row.articleId ? "준비 중..." : "Pinterest 홍보 준비"}
+                    </button>
+                  )}
                 </div>
               </div>
+
+              {pinNotes[row.articleId] && (
+                <p className={`mt-2 rounded px-2 py-1 text-xs ${pinNotes[row.articleId].ok ? "bg-emerald-950/40 text-emerald-300" : "bg-red-950/40 text-red-300"}`}>
+                  {pinNotes[row.articleId].text}
+                </p>
+              )}
+              {pinKits[row.articleId] && <PinterestKitPanel kit={pinKits[row.articleId]} />}
             </div>
           );
         })}
@@ -647,6 +707,84 @@ function PublisherControlCenter({
         </div>
       )}
     </section>
+  );
+}
+
+// The prepared pin, inside the article's own row — one image, three texts, and
+// the four actions that move them into Pinterest by hand.
+function PinterestKitPanel({ kit }) {
+  const [copied, setCopied] = useState("");
+
+  async function copyField(field, value) {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(field);
+    } catch {
+      setCopied(`${field}-fail`);
+    }
+  }
+
+  const fields = [
+    ["title", "제목 복사", kit.title],
+    ["description", "설명 복사", kit.description],
+    ["link", "링크 복사", kit.link],
+  ];
+
+  return (
+    <div className="mt-3 rounded-lg border border-rose-900 bg-rose-950/20 p-3">
+      <div className="flex flex-wrap items-start gap-4">
+        {/* eslint-disable-next-line @next/next/no-img-element -- Cloudinary delivery URL, not a bundled asset */}
+        <img
+          src={kit.image.url}
+          alt={`${kit.articleTitle} Pinterest 핀 미리보기`}
+          width={kit.image.width}
+          height={kit.image.height}
+          className="w-[160px] shrink-0 rounded border border-zinc-700"
+        />
+        <div className="min-w-0 flex-1 space-y-2">
+          <div className="flex flex-wrap items-center gap-2 text-xs">
+            <span className="rounded bg-rose-900/60 px-2 py-0.5 font-semibold text-rose-200">Pinterest 홍보자료</span>
+            <span className="text-zinc-400">
+              {kit.image.width}×{kit.image.height} (2:3) · 설명 {kit.description.length}자
+            </span>
+            <span className="font-mono text-zinc-600">{kit.id || kit.articleId}</span>
+          </div>
+
+          <div className="space-y-1 text-xs">
+            <p className="text-zinc-300"><span className="text-zinc-500">훅</span> {kit.hook}</p>
+            <p className="text-zinc-300"><span className="text-zinc-500">제목</span> {kit.title}</p>
+            <p className="text-zinc-400"><span className="text-zinc-500">설명</span> {kit.description}</p>
+            <a href={kit.link} target="_blank" rel="noopener noreferrer" className="block break-all text-blue-400 hover:underline">
+              {kit.link}
+            </a>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <a
+              href={kit.image.downloadUrl}
+              download={kit.image.filename}
+              className="rounded-md bg-rose-700 px-2 py-1 text-xs font-semibold text-white hover:bg-rose-600"
+            >
+              이미지 다운로드
+            </a>
+            {fields.map(([field, label, value]) => (
+              <button
+                key={field}
+                type="button"
+                onClick={() => copyField(field, value)}
+                className="rounded-md bg-zinc-800 px-2 py-1 text-xs text-zinc-200 hover:bg-zinc-700"
+              >
+                {copied === field ? "복사됨 ✓" : copied === `${field}-fail` ? "복사 실패" : label}
+              </button>
+            ))}
+          </div>
+
+          <p className="text-[11px] text-zinc-500">
+            Pinterest 자동 로그인·자동 게시는 하지 않습니다. 위 자료를 Pinterest에서 직접 업로드하세요.
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
 

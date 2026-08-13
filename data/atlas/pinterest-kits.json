@@ -1,0 +1,23 @@
+{
+  "kits": [
+    {
+      "id": "pin_001",
+      "articleId": "art_013",
+      "articleTitle": "What Trip Cancellation Insurance Actually Covers (and What It Doesn't)",
+      "hook": "WHAT TRIP CANCELLATION INSURANCE REALLY COVERS",
+      "title": "What Trip Cancellation Insurance Actually Covers",
+      "description": "Trip cancellation insurance generally reimburses eligible prepaid, non-refundable costs only when a cancellation matches a covered reason and every timing and documentation rule is satisfied. Learn what trip cancellation insurance actually covers, common exclusions, airline refund rules, CFAR limits, and the documents needed for a valid claim. Read the full ATLAS guide before you book.",
+      "link": "https://atlas-money-2026.blogspot.com/2026/08/what-trip-cancellation-insurance.html",
+      "image": {
+        "url": "https://res.cloudinary.com/dmfbj4tu/image/upload/c_fill,g_auto,w_1000,h_1500,q_auto/e_brightness:-38/e_saturation:-12/l_text:Arial_68_bold_center:WHAT%20TRIP%20CANCELLATION%20INSURANCE%20REALLY%20COVERS,co_white,w_800,c_fit/fl_layer_apply,g_center,y_-30/l_text:Arial_27_center:ATLAS%20%C2%B7%20atlas-money-2026.blogspot.com,co_rgb:e2e8f0,w_820,c_fit/fl_layer_apply,g_south,y_96/v1786626071/atlas/articles/trip-cancellation-insurance-what-it-covers/featured.jpg",
+        "downloadUrl": "https://res.cloudinary.com/dmfbj4tu/image/upload/c_fill,g_auto,w_1000,h_1500,q_auto/e_brightness:-38/e_saturation:-12/l_text:Arial_68_bold_center:WHAT%20TRIP%20CANCELLATION%20INSURANCE%20REALLY%20COVERS,co_white,w_800,c_fit/fl_layer_apply,g_center,y_-30/l_text:Arial_27_center:ATLAS%20%C2%B7%20atlas-money-2026.blogspot.com,co_rgb:e2e8f0,w_820,c_fit/fl_layer_apply,g_south,y_96/fl_attachment:atlas-pin-art_013/v1786626071/atlas/articles/trip-cancellation-insurance-what-it-covers/featured.jpg",
+        "filename": "atlas-pin-art_013.jpg",
+        "width": 1000,
+        "height": 1500,
+        "sourceAssetKey": "featured",
+        "sourceUrl": "https://res.cloudinary.com/dmfbj4tu/image/upload/c_fill,f_webp,h_900,q_auto,w_1600/v1786626071/atlas/articles/trip-cancellation-insurance-what-it-covers/featured?_a=BAMAAAX00"
+      },
+      "createdAt": "2026-08-13T13:22:42.426Z"
+    }
+  ]
+}
