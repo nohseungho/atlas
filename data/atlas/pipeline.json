@@ -840,5 +840,622 @@
       ]
     }
   ],
-  "jobs": []
+  "jobs": [
+    {
+      "id": "pjob_001",
+      "topic": "Student Travel Insurance for Studying Abroad: A Practical Guide",
+      "type": "segment-guide",
+      "stage": "recommendation",
+      "linkedArticleId": "",
+      "recommendation": {
+        "title": "Student Travel Insurance for Studying Abroad: A Practical Guide",
+        "searchIntent": "Compare student travel medical plans for a semester or year abroad",
+        "type": "segment-guide",
+        "contentAxis": {
+          "id": "traveler-segment-coverage",
+          "label": "Family, Senior, Student and Frequent Traveler Coverage"
+        },
+        "reason": "Reaches the study-abroad audience with a distinct purchase intent.",
+        "origin": "editorial-seed",
+        "sourceMode": "EDITORIAL_FALLBACK",
+        "liveData": false,
+        "trend": {
+          "sevenDay": "UNKNOWN",
+          "thirtyDay": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+        },
+        "competition": {
+          "live": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+        },
+        "relation": {
+          "duplicationRisk": "LOW",
+          "overlappingArticleIds": [],
+          "relatedArticleIds": [
+            "art_003"
+          ],
+          "differentiatedIntent": "Compare student travel medical plans for a semester or year abroad",
+          "clusterRole": "기존 art_003 클러스터 보완"
+        },
+        "officialSource": {
+          "availability": "AVAILABLE",
+          "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+          "collectedAt": null
+        },
+        "monetization": {
+          "potential": "높음",
+          "futureProductCategories": [
+            "student travel insurance"
+          ],
+          "activeAffiliateLinks": 0,
+          "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+          "salesCtaAllowed": false
+        },
+        "score": 90,
+        "scoreBreakdown": {
+          "contentFit": 30,
+          "intentUsefulness": 20,
+          "clusterConnection": 15,
+          "sourceAvailability": 15,
+          "monetizationReadiness": 10
+        },
+        "excludedComponents": [
+          {
+            "component": "timeliness",
+            "max": 10,
+            "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+          }
+        ],
+        "maxAvailableScore": 90,
+        "hardGate": {
+          "pass": true,
+          "failures": []
+        },
+        "eligibility": {
+          "canGenerate": true,
+          "blockedReason": null
+        },
+        "priority": 2
+      },
+      "humanApproved": false,
+      "imagesReady": false,
+      "history": [
+        {
+          "stage": "recommendation",
+          "at": "2026-08-13T08:59:33.905Z",
+          "note": "job 생성"
+        }
+      ],
+      "createdAt": "2026-08-13T08:59:33.905Z",
+      "updatedAt": "2026-08-13T08:59:33.905Z"
+    },
+    {
+      "id": "pjob_002",
+      "topic": "Student Travel Insurance for Studying Abroad: A Practical Guide",
+      "type": "segment-guide",
+      "stage": "recommendation",
+      "linkedArticleId": "",
+      "recommendation": {
+        "title": "Student Travel Insurance for Studying Abroad: A Practical Guide",
+        "searchIntent": "Compare student travel medical plans for a semester or year abroad",
+        "type": "segment-guide",
+        "contentAxis": {
+          "id": "traveler-segment-coverage",
+          "label": "Family, Senior, Student and Frequent Traveler Coverage"
+        },
+        "reason": "Reaches the study-abroad audience with a distinct purchase intent.",
+        "origin": "editorial-seed",
+        "sourceMode": "EDITORIAL_FALLBACK",
+        "liveData": false,
+        "trend": {
+          "sevenDay": "UNKNOWN",
+          "thirtyDay": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+        },
+        "competition": {
+          "live": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+        },
+        "relation": {
+          "duplicationRisk": "LOW",
+          "overlappingArticleIds": [],
+          "relatedArticleIds": [
+            "art_003"
+          ],
+          "differentiatedIntent": "Compare student travel medical plans for a semester or year abroad",
+          "clusterRole": "기존 art_003 클러스터 보완"
+        },
+        "officialSource": {
+          "availability": "AVAILABLE",
+          "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+          "collectedAt": null
+        },
+        "monetization": {
+          "potential": "높음",
+          "futureProductCategories": [
+            "student travel insurance"
+          ],
+          "activeAffiliateLinks": 0,
+          "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+          "salesCtaAllowed": false
+        },
+        "score": 90,
+        "scoreBreakdown": {
+          "contentFit": 30,
+          "intentUsefulness": 20,
+          "clusterConnection": 15,
+          "sourceAvailability": 15,
+          "monetizationReadiness": 10
+        },
+        "excludedComponents": [
+          {
+            "component": "timeliness",
+            "max": 10,
+            "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+          }
+        ],
+        "maxAvailableScore": 90,
+        "hardGate": {
+          "pass": true,
+          "failures": []
+        },
+        "eligibility": {
+          "canGenerate": true,
+          "blockedReason": null
+        },
+        "priority": 2
+      },
+      "humanApproved": false,
+      "imagesReady": false,
+      "history": [
+        {
+          "stage": "recommendation",
+          "at": "2026-08-13T09:03:41.651Z",
+          "note": "job 생성"
+        }
+      ],
+      "createdAt": "2026-08-13T09:03:41.651Z",
+      "updatedAt": "2026-08-13T09:03:41.651Z"
+    },
+    {
+      "id": "pjob_003",
+      "topic": "Student Travel Insurance for Studying Abroad: A Practical Guide",
+      "type": "segment-guide",
+      "stage": "recommendation",
+      "linkedArticleId": "",
+      "recommendation": {
+        "title": "Student Travel Insurance for Studying Abroad: A Practical Guide",
+        "searchIntent": "Compare student travel medical plans for a semester or year abroad",
+        "type": "segment-guide",
+        "contentAxis": {
+          "id": "traveler-segment-coverage",
+          "label": "Family, Senior, Student and Frequent Traveler Coverage"
+        },
+        "reason": "Reaches the study-abroad audience with a distinct purchase intent.",
+        "origin": "editorial-seed",
+        "sourceMode": "EDITORIAL_FALLBACK",
+        "liveData": false,
+        "trend": {
+          "sevenDay": "UNKNOWN",
+          "thirtyDay": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+        },
+        "competition": {
+          "live": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+        },
+        "relation": {
+          "duplicationRisk": "LOW",
+          "overlappingArticleIds": [],
+          "relatedArticleIds": [
+            "art_003"
+          ],
+          "differentiatedIntent": "Compare student travel medical plans for a semester or year abroad",
+          "clusterRole": "기존 art_003 클러스터 보완"
+        },
+        "officialSource": {
+          "availability": "AVAILABLE",
+          "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+          "collectedAt": null
+        },
+        "monetization": {
+          "potential": "높음",
+          "futureProductCategories": [
+            "student travel insurance"
+          ],
+          "activeAffiliateLinks": 0,
+          "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+          "salesCtaAllowed": false
+        },
+        "score": 90,
+        "scoreBreakdown": {
+          "contentFit": 30,
+          "intentUsefulness": 20,
+          "clusterConnection": 15,
+          "sourceAvailability": 15,
+          "monetizationReadiness": 10
+        },
+        "excludedComponents": [
+          {
+            "component": "timeliness",
+            "max": 10,
+            "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+          }
+        ],
+        "maxAvailableScore": 90,
+        "hardGate": {
+          "pass": true,
+          "failures": []
+        },
+        "eligibility": {
+          "canGenerate": true,
+          "blockedReason": null
+        },
+        "priority": 2
+      },
+      "humanApproved": false,
+      "imagesReady": false,
+      "history": [
+        {
+          "stage": "recommendation",
+          "at": "2026-08-13T09:03:51.327Z",
+          "note": "job 생성"
+        }
+      ],
+      "createdAt": "2026-08-13T09:03:51.327Z",
+      "updatedAt": "2026-08-13T09:03:51.327Z"
+    },
+    {
+      "id": "pjob_004",
+      "topic": "Student Travel Insurance for Studying Abroad: A Practical Guide",
+      "type": "segment-guide",
+      "stage": "recommendation",
+      "linkedArticleId": "",
+      "recommendation": {
+        "title": "Student Travel Insurance for Studying Abroad: A Practical Guide",
+        "searchIntent": "Compare student travel medical plans for a semester or year abroad",
+        "type": "segment-guide",
+        "contentAxis": {
+          "id": "traveler-segment-coverage",
+          "label": "Family, Senior, Student and Frequent Traveler Coverage"
+        },
+        "reason": "Reaches the study-abroad audience with a distinct purchase intent.",
+        "origin": "editorial-seed",
+        "sourceMode": "EDITORIAL_FALLBACK",
+        "liveData": false,
+        "trend": {
+          "sevenDay": "UNKNOWN",
+          "thirtyDay": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+        },
+        "competition": {
+          "live": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+        },
+        "relation": {
+          "duplicationRisk": "LOW",
+          "overlappingArticleIds": [],
+          "relatedArticleIds": [
+            "art_003"
+          ],
+          "differentiatedIntent": "Compare student travel medical plans for a semester or year abroad",
+          "clusterRole": "기존 art_003 클러스터 보완"
+        },
+        "officialSource": {
+          "availability": "AVAILABLE",
+          "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+          "collectedAt": null
+        },
+        "monetization": {
+          "potential": "높음",
+          "futureProductCategories": [
+            "student travel insurance"
+          ],
+          "activeAffiliateLinks": 0,
+          "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+          "salesCtaAllowed": false
+        },
+        "score": 90,
+        "scoreBreakdown": {
+          "contentFit": 30,
+          "intentUsefulness": 20,
+          "clusterConnection": 15,
+          "sourceAvailability": 15,
+          "monetizationReadiness": 10
+        },
+        "excludedComponents": [
+          {
+            "component": "timeliness",
+            "max": 10,
+            "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+          }
+        ],
+        "maxAvailableScore": 90,
+        "hardGate": {
+          "pass": true,
+          "failures": []
+        },
+        "eligibility": {
+          "canGenerate": true,
+          "blockedReason": null
+        },
+        "priority": 2
+      },
+      "humanApproved": false,
+      "imagesReady": false,
+      "history": [
+        {
+          "stage": "recommendation",
+          "at": "2026-08-13T09:03:52.443Z",
+          "note": "job 생성"
+        }
+      ],
+      "createdAt": "2026-08-13T09:03:52.443Z",
+      "updatedAt": "2026-08-13T09:03:52.443Z"
+    },
+    {
+      "id": "pjob_005",
+      "topic": "Student Travel Insurance for Studying Abroad: A Practical Guide",
+      "type": "segment-guide",
+      "stage": "recommendation",
+      "linkedArticleId": "",
+      "recommendation": {
+        "title": "Student Travel Insurance for Studying Abroad: A Practical Guide",
+        "searchIntent": "Compare student travel medical plans for a semester or year abroad",
+        "type": "segment-guide",
+        "contentAxis": {
+          "id": "traveler-segment-coverage",
+          "label": "Family, Senior, Student and Frequent Traveler Coverage"
+        },
+        "reason": "Reaches the study-abroad audience with a distinct purchase intent.",
+        "origin": "editorial-seed",
+        "sourceMode": "EDITORIAL_FALLBACK",
+        "liveData": false,
+        "trend": {
+          "sevenDay": "UNKNOWN",
+          "thirtyDay": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+        },
+        "competition": {
+          "live": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+        },
+        "relation": {
+          "duplicationRisk": "LOW",
+          "overlappingArticleIds": [],
+          "relatedArticleIds": [
+            "art_003"
+          ],
+          "differentiatedIntent": "Compare student travel medical plans for a semester or year abroad",
+          "clusterRole": "기존 art_003 클러스터 보완"
+        },
+        "officialSource": {
+          "availability": "AVAILABLE",
+          "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+          "collectedAt": null
+        },
+        "monetization": {
+          "potential": "높음",
+          "futureProductCategories": [
+            "student travel insurance"
+          ],
+          "activeAffiliateLinks": 0,
+          "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+          "salesCtaAllowed": false
+        },
+        "score": 90,
+        "scoreBreakdown": {
+          "contentFit": 30,
+          "intentUsefulness": 20,
+          "clusterConnection": 15,
+          "sourceAvailability": 15,
+          "monetizationReadiness": 10
+        },
+        "excludedComponents": [
+          {
+            "component": "timeliness",
+            "max": 10,
+            "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+          }
+        ],
+        "maxAvailableScore": 90,
+        "hardGate": {
+          "pass": true,
+          "failures": []
+        },
+        "eligibility": {
+          "canGenerate": true,
+          "blockedReason": null
+        },
+        "priority": 2
+      },
+      "humanApproved": false,
+      "imagesReady": false,
+      "history": [
+        {
+          "stage": "recommendation",
+          "at": "2026-08-13T09:03:53.025Z",
+          "note": "job 생성"
+        }
+      ],
+      "createdAt": "2026-08-13T09:03:53.025Z",
+      "updatedAt": "2026-08-13T09:03:53.025Z"
+    },
+    {
+      "id": "pjob_006",
+      "topic": "Student Travel Insurance for Studying Abroad: A Practical Guide",
+      "type": "segment-guide",
+      "stage": "recommendation",
+      "linkedArticleId": "",
+      "recommendation": {
+        "title": "Student Travel Insurance for Studying Abroad: A Practical Guide",
+        "searchIntent": "Compare student travel medical plans for a semester or year abroad",
+        "type": "segment-guide",
+        "contentAxis": {
+          "id": "traveler-segment-coverage",
+          "label": "Family, Senior, Student and Frequent Traveler Coverage"
+        },
+        "reason": "Reaches the study-abroad audience with a distinct purchase intent.",
+        "origin": "editorial-seed",
+        "sourceMode": "EDITORIAL_FALLBACK",
+        "liveData": false,
+        "trend": {
+          "sevenDay": "UNKNOWN",
+          "thirtyDay": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+        },
+        "competition": {
+          "live": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+        },
+        "relation": {
+          "duplicationRisk": "LOW",
+          "overlappingArticleIds": [],
+          "relatedArticleIds": [
+            "art_003"
+          ],
+          "differentiatedIntent": "Compare student travel medical plans for a semester or year abroad",
+          "clusterRole": "기존 art_003 클러스터 보완"
+        },
+        "officialSource": {
+          "availability": "AVAILABLE",
+          "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+          "collectedAt": null
+        },
+        "monetization": {
+          "potential": "높음",
+          "futureProductCategories": [
+            "student travel insurance"
+          ],
+          "activeAffiliateLinks": 0,
+          "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+          "salesCtaAllowed": false
+        },
+        "score": 90,
+        "scoreBreakdown": {
+          "contentFit": 30,
+          "intentUsefulness": 20,
+          "clusterConnection": 15,
+          "sourceAvailability": 15,
+          "monetizationReadiness": 10
+        },
+        "excludedComponents": [
+          {
+            "component": "timeliness",
+            "max": 10,
+            "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+          }
+        ],
+        "maxAvailableScore": 90,
+        "hardGate": {
+          "pass": true,
+          "failures": []
+        },
+        "eligibility": {
+          "canGenerate": true,
+          "blockedReason": null
+        },
+        "priority": 2
+      },
+      "humanApproved": false,
+      "imagesReady": false,
+      "history": [
+        {
+          "stage": "recommendation",
+          "at": "2026-08-13T09:03:53.506Z",
+          "note": "job 생성"
+        }
+      ],
+      "createdAt": "2026-08-13T09:03:53.506Z",
+      "updatedAt": "2026-08-13T09:03:53.506Z"
+    },
+    {
+      "id": "pjob_007",
+      "topic": "Student Travel Insurance for Studying Abroad: A Practical Guide",
+      "type": "segment-guide",
+      "stage": "recommendation",
+      "linkedArticleId": "",
+      "recommendation": {
+        "title": "Student Travel Insurance for Studying Abroad: A Practical Guide",
+        "searchIntent": "Compare student travel medical plans for a semester or year abroad",
+        "type": "segment-guide",
+        "contentAxis": {
+          "id": "traveler-segment-coverage",
+          "label": "Family, Senior, Student and Frequent Traveler Coverage"
+        },
+        "reason": "Reaches the study-abroad audience with a distinct purchase intent.",
+        "origin": "editorial-seed",
+        "sourceMode": "EDITORIAL_FALLBACK",
+        "liveData": false,
+        "trend": {
+          "sevenDay": "UNKNOWN",
+          "thirtyDay": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+        },
+        "competition": {
+          "live": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+        },
+        "relation": {
+          "duplicationRisk": "LOW",
+          "overlappingArticleIds": [],
+          "relatedArticleIds": [
+            "art_003"
+          ],
+          "differentiatedIntent": "Compare student travel medical plans for a semester or year abroad",
+          "clusterRole": "기존 art_003 클러스터 보완"
+        },
+        "officialSource": {
+          "availability": "AVAILABLE",
+          "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+          "collectedAt": null
+        },
+        "monetization": {
+          "potential": "높음",
+          "futureProductCategories": [
+            "student travel insurance"
+          ],
+          "activeAffiliateLinks": 0,
+          "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+          "salesCtaAllowed": false
+        },
+        "score": 90,
+        "scoreBreakdown": {
+          "contentFit": 30,
+          "intentUsefulness": 20,
+          "clusterConnection": 15,
+          "sourceAvailability": 15,
+          "monetizationReadiness": 10
+        },
+        "excludedComponents": [
+          {
+            "component": "timeliness",
+            "max": 10,
+            "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+          }
+        ],
+        "maxAvailableScore": 90,
+        "hardGate": {
+          "pass": true,
+          "failures": []
+        },
+        "eligibility": {
+          "canGenerate": true,
+          "blockedReason": null
+        },
+        "priority": 2
+      },
+      "humanApproved": false,
+      "imagesReady": false,
+      "history": [
+        {
+          "stage": "recommendation",
+          "at": "2026-08-13T09:08:05.266Z",
+          "note": "job 생성"
+        }
+      ],
+      "createdAt": "2026-08-13T09:08:05.266Z",
+      "updatedAt": "2026-08-13T09:08:05.266Z"
+    }
+  ]
 }
