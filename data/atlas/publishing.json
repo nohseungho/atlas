@@ -334,6 +334,21 @@
       "updatedAt": "2026-08-13T10:59:12.510Z",
       "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/08/student-travel-medical-insurance-for.html",
       "externalId": "1520642843708483503"
+    },
+    {
+      "id": "job_023",
+      "articleId": "art_013",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "attemptCount": 1,
+      "maxAttempts": 3,
+      "lastError": null,
+      "nextRetryAt": null,
+      "createdAt": "2026-08-13T13:06:17.987Z",
+      "updatedAt": "2026-08-13T13:06:21.195Z",
+      "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/08/what-trip-cancellation-insurance.html",
+      "externalId": "2131174677883722164"
     }
   ],
   "history": [
@@ -1128,6 +1143,39 @@
       "message": "Blogger 자동 발행 성공",
       "error": null,
       "createdAt": "2026-08-13T10:59:12.512Z"
+    },
+    {
+      "id": "hist_073",
+      "jobId": "job_023",
+      "articleId": "art_013",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "queued",
+      "message": "Job 생성",
+      "error": null,
+      "createdAt": "2026-08-13T13:06:17.989Z"
+    },
+    {
+      "id": "hist_074",
+      "jobId": "job_023",
+      "articleId": "art_013",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "running",
+      "message": "자동 발행 시작",
+      "error": null,
+      "createdAt": "2026-08-13T13:06:17.993Z"
+    },
+    {
+      "id": "hist_075",
+      "jobId": "job_023",
+      "articleId": "art_013",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "message": "Blogger 자동 발행 성공",
+      "error": null,
+      "createdAt": "2026-08-13T13:06:21.198Z"
     }
   ]
 }
