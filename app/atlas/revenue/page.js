@@ -42,6 +42,22 @@ async function api(url, options) {
   return res.json().catch(() => ({}));
 }
 
+// Saves a JSON object as a file download. The anchor is attached to the document
+// and the object URL is only revoked after the click has been processed —
+// Chrome cancels the download of a detached anchor whose blob URL is revoked in
+// the same tick, which looks exactly like "the button does nothing".
+function downloadJson(filename, obj) {
+  const url = URL.createObjectURL(new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.rel = "noopener";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
 export default function RevenuePage() {
   const [rec, setRec] = useState(null);
   const [pipeline, setPipeline] = useState(null);
@@ -51,6 +67,7 @@ export default function RevenuePage() {
   const [csv, setCsv] = useState("");
   const [prodJobs, setProdJobs] = useState([]);
   const [r3msg, setR3msg] = useState("");
+  const [handoff, setHandoff] = useState(null); // { priority, ok, text } — per-card result
 
   useEffect(() => {
     // Client-side fetch-on-mount against our own API routes (admin tool).
@@ -115,14 +132,39 @@ export default function RevenuePage() {
     setBusy("");
   }
 
-  async function selectTopic(candidate) {
-    setBusy("select");
-    await api("/api/atlas/recommendations", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ recommendation: candidate }),
-    });
-    setPipeline(await api("/api/atlas/pipeline"));
+  // 수동 제작요청 — API 비용 없이 ChatGPT에 올릴 요청 파일(atlas-request-{jobId}.json)을
+  // 내려받는다. 같은 후보를 다시 눌러도 Job은 늘지 않고 같은 요청 파일이 다시 받아진다.
+  // 실패는 조용히 넘기지 않고 카드에 사유를 그대로 표시한다.
+  async function exportRequest(candidate) {
+    if (busy) return;
+    setBusy("req" + candidate.priority);
+    setHandoff(null);
+    try {
+      const res = await fetch("/api/atlas/chatgpt-request", {
+        method: "POST",
+        cache: "no-store",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ blogId: "blog_001", recommendation: candidate }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.status === "ok" && data.request) {
+        downloadJson(data.filename, data.request);
+        setHandoff({
+          priority: candidate.priority,
+          ok: true,
+          text: `${data.filename} 다운로드 — ChatGPT에 업로드하세요. Job ${data.jobId}${data.duplicate ? " (이미 있던 요청을 다시 받았습니다 · 새 Job 없음)" : " (새 요청 생성)"}`,
+        });
+        setProdJobs((await api("/api/atlas/production-jobs")).jobs || []);
+      } else {
+        setHandoff({
+          priority: candidate.priority,
+          ok: false,
+          text: `요청 파일 생성 실패: ${data.message || data.errorCode || `서버 응답 ${res.status}`}`,
+        });
+      }
+    } catch (err) {
+      setHandoff({ priority: candidate.priority, ok: false, text: `요청 파일 생성 실패: 서버에 연결하지 못했습니다 (${String(err?.message || err)})` });
+    }
     setBusy("");
   }
 
@@ -221,13 +263,19 @@ export default function RevenuePage() {
                     {busy === "r3" + c.priority ? "제작 시작 중..." : "콘텐츠 자동 제작"}
                   </button>
                   <button
-                    onClick={() => selectTopic(c)}
+                    onClick={() => exportRequest(c)}
                     disabled={!!busy || !c.eligibility?.canGenerate}
+                    title="ChatGPT에 올릴 요청 파일(atlas-request-{jobId}.json)을 내려받습니다. API 비용 없음."
                     className="rounded bg-zinc-700 px-2 py-1 text-xs hover:bg-zinc-600 disabled:opacity-40"
                   >
-                    수동 파이프라인
+                    {busy === "req" + c.priority ? "요청 파일 만드는 중..." : "수동 제작요청"}
                   </button>
                 </div>
+                {handoff?.priority === c.priority && (
+                  <p className={`mt-2 rounded px-2 py-1 text-[11px] ${handoff.ok ? "bg-emerald-950/40 text-emerald-300" : "bg-red-950/40 text-red-300"}`}>
+                    {handoff.text}
+                  </p>
+                )}
                 <p className="mt-1 text-xs text-zinc-500">의도: {c.searchIntent}</p>
                 <p className="mt-1 text-xs text-zinc-400">{c.reason}</p>
                 <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-zinc-500">
@@ -277,7 +325,7 @@ export default function RevenuePage() {
         </Section>
 
         {/* ── 2~6. 원고 파이프라인 + QA + 승인 ── */}
-        <Section step="2~6" title="원고 파이프라인 · QA · 승인" subtitle="추천 선택분과, 기존 MASTER(art_004~006)를 QA에 연결해 검증할 수 있습니다.">
+        <Section step="2~6" title="원고 파이프라인 · QA · 승인" subtitle="기존 파이프라인 작업과, 기존 MASTER(art_004~006)를 QA에 연결해 검증할 수 있습니다.">
           <div className="mb-3 flex flex-wrap items-center gap-2 text-xs">
             <span className="text-zinc-500">기존 MASTER로 QA 시작:</span>
             {["art_004", "art_005", "art_006"].map((id) => (
@@ -293,7 +341,7 @@ export default function RevenuePage() {
             {(pipeline?.jobs || []).map((job) => (
               <JobCard key={job.id} job={job} busy={busy} onAction={jobAction} onMakeShort={makeShort} />
             ))}
-            {pipeline && pipeline.jobs.length === 0 && <p className="text-sm text-zinc-500">아직 파이프라인 작업이 없습니다. 위에서 주제를 선택하거나 MASTER를 연결하세요.</p>}
+            {pipeline && pipeline.jobs.length === 0 && <p className="text-sm text-zinc-500">아직 파이프라인 작업이 없습니다. 위에서 기존 MASTER를 QA에 연결하세요.</p>}
           </div>
         </Section>
 
