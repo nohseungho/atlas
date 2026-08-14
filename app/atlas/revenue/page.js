@@ -1,42 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { castForWeek } from "@/lib/atlas/letters-cast";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 
-// ─── ATLAS Revenue Automation R2 — one screen, one flow ──────────────────────
-// 이번 주 자동추천 → 주제 선택 → 원고 생성 → QA → 미리보기 → 승인·발행
-//  → 쇼핑 쇼츠 초안 → 캠페인 링크 → 실제 성과
-// 개발 용어 대신 각 단계의 현재 상태 / 다음 행동 / 실패 이유를 한글로 표시한다.
+// ─── 블로그 글 만들기 — 1번부터 5번까지 한 화면 ─────────────────────────────
+// 사용자는 설명 없이 위에서 아래로 따라가기만 하면 된다. 화면에는 "지금 눌러야
+// 할 버튼 1개"만 보이고, 앞 단계가 끝나면 다음 단계가 자동으로 열린다.
+// 개발자용 정보(내부 Job 번호, 스키마명, 중복 판정 상세, 런타임 진단, 서버
+// 자동 제작, 쇼츠·캠페인·성과)는 지우지 않고 맨 아래 "고급 설정" 안에 보존한다.
+// API와 저장 로직은 기존 것을 그대로 호출한다.
 
-const STATUS_STYLE = {
-  PASS: "bg-emerald-500/20 text-emerald-300",
-  FAIL: "bg-red-500/20 text-red-300",
-  WARN: "bg-amber-500/20 text-amber-300",
-  NA: "bg-zinc-700 text-zinc-300",
-  NEEDS_CONFIGURATION: "bg-sky-500/20 text-sky-300",
-  UNKNOWN: "bg-zinc-700 text-zinc-400",
+const STEPS = [
+  { n: 1, title: "글 주제 선택", hint: "이번 주 추천 주제 중 하나를 고릅니다." },
+  { n: 2, title: "제작 요청 파일 받기", hint: "받은 파일을 ChatGPT에 올려 글을 만듭니다." },
+  { n: 3, title: "완성 글 파일 등록", hint: "ChatGPT가 준 파일을 이 화면에 등록합니다." },
+  { n: 4, title: "미리보기·검수", hint: "본문을 확인하고 발행을 승인합니다." },
+  { n: 5, title: "블로그 발행", hint: "블로그에 실제로 올립니다." },
+];
+
+const STATE_STYLE = {
+  done: "border-emerald-600 bg-emerald-950/40 text-emerald-300",
+  active: "border-sky-500 bg-sky-950/40 text-sky-200",
+  wait: "border-zinc-800 bg-zinc-900 text-zinc-500",
 };
-
-function Pill({ status, children }) {
-  return (
-    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_STYLE[status] || "bg-zinc-700 text-zinc-300"}`}>
-      {children || status}
-    </span>
-  );
-}
-
-function Section({ step, title, subtitle, children }) {
-  return (
-    <section className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
-      <div className="flex items-baseline gap-3">
-        <span className="rounded-md bg-emerald-600/20 px-2 py-1 font-mono text-xs text-emerald-300">{step}</span>
-        <h2 className="text-lg font-semibold">{title}</h2>
-      </div>
-      {subtitle && <p className="mt-1 text-xs text-zinc-500">{subtitle}</p>}
-      <div className="mt-4">{children}</div>
-    </section>
-  );
-}
+const STATE_LABEL = { done: "완료", active: "진행 중", wait: "대기" };
 
 async function api(url, options) {
   const res = await fetch(url, { cache: "no-store", ...options });
@@ -59,70 +46,202 @@ function downloadJson(filename, obj) {
   setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
 
+// 요청 파일을 이미 받았는지 / 완성 글이 등록됐는지 / 승인·발행됐는지를 저장된
+// 작업 기록에서 그대로 읽는다. 화면이 상태를 따로 만들지 않으므로 새로고침해도
+// 같은 단계가 열린다.
+function currentStepOf(job, row) {
+  if (!job) return 1;
+  const requestReady = job.mode === "CHATGPT_HANDOFF" || Boolean(job.articleId);
+  if (!requestReady) return 2;
+  if (!job.articleId) return 3;
+  if (row?.publishState === "published") return 5;
+  if (row?.publishState === "approved" || row?.canPublish) return 5;
+  return 4;
+}
+
 export default function RevenuePage() {
   const [rec, setRec] = useState(null);
+  const [jobs, setJobs] = useState([]);
+  const [rows, setRows] = useState([]);
   const [pipeline, setPipeline] = useState(null);
   const [shorts, setShorts] = useState([]);
   const [tracking, setTracking] = useState(null);
-  const [busy, setBusy] = useState("");
   const [csv, setCsv] = useState("");
-  const [prodJobs, setProdJobs] = useState([]);
-  const [r3msg, setR3msg] = useState("");
-  const [handoff, setHandoff] = useState(null); // { priority, ok, text } — per-card result
-  // ATLAS Letters pair for the current week. Resolved after mount so the server
-  // render and the browser never disagree about which week "now" falls in.
-  const [week, setWeek] = useState(null);
+  const [busy, setBusy] = useState("");
+  const [msg, setMsg] = useState(null); // { step, ok, text }
+  const [pickedTopic, setPickedTopic] = useState(null);
+  const [currentJobId, setCurrentJobId] = useState("");
+  const [openStep, setOpenStep] = useState(null);
 
-  useEffect(() => {
-    setWeek(castForWeek(new Date()));
-  }, []);
+  async function loadWork() {
+    const [pj, pub] = await Promise.all([api("/api/atlas/production-jobs"), api("/api/atlas/publisher-status")]);
+    setJobs(pj.jobs || []);
+    setRows(pub.rows || []);
+  }
 
   useEffect(() => {
     // Client-side fetch-on-mount against our own API routes (admin tool).
     async function loadAll() {
-      const [r, p, s, t, pj] = await Promise.all([
+      const [r, p, s, t] = await Promise.all([
         api("/api/atlas/recommendations"),
         api("/api/atlas/pipeline"),
         api("/api/atlas/shorts"),
         api("/api/atlas/tracking"),
-        api("/api/atlas/production-jobs"),
       ]);
       setRec(r);
       setPipeline(p);
       setShorts(s.drafts || []);
       setTracking(t);
-      setProdJobs(pj.jobs || []);
+      await loadWork();
     }
     loadAll();
   }, []);
 
-  // R3 one-click: create a production job for a candidate, then advance it.
+  const rowFor = (job) => rows.find((r) => r.articleId === job?.articleId) || null;
+  const publishedIds = useMemo(
+    () => new Set(rows.filter((r) => r.publishState === "published").map((r) => r.articleId)),
+    [rows],
+  );
+  const isPublished = (job) => Boolean(job?.articleId) && publishedIds.has(job.articleId);
+
+  // 이 화면이 다루는 글 = 사람이 5단계로 진행하는 작업. 실패로 판정됐거나 서버
+  // 제공자 미연결로 막힌 옛 작업은 목록에서 빼고 고급 설정에만 남긴다.
+  const flow = useMemo(
+    () =>
+      jobs
+        .filter((j) => j.topic && j.status !== "FAILED" && !String(j.status).startsWith("BLOCKED"))
+        .sort((a, b) => b.id.localeCompare(a.id)),
+    [jobs],
+  );
+
+  // "__new__" = 사용자가 새 글을 시작한 상태 (아직 작업 기록이 없다).
+  const job = currentJobId === "__new__" ? null : flow.find((j) => j.id === currentJobId) || flow[0] || null;
+  const row = rowFor(job);
+  const cur = job ? currentStepOf(job, row) : pickedTopic ? 2 : 1;
+  const published = Boolean(job) && isPublished(job);
+  const open = openStep ?? cur;
+
+  const statusOf = (n) => (published || n < cur ? "done" : n === cur ? "active" : "wait");
+  const goto = (n) => {
+    setMsg(null);
+    setOpenStep(n);
+  };
+  // 작업이 끝나면 새 상태를 다시 읽고, 다음 단계가 스스로 열리게 한다.
+  const advance = () => setOpenStep(null);
+
+  const topicForRequest = job?.recommendation || pickedTopic;
+
+  // ── 2. 제작 요청 파일 받기 (기존 /api/atlas/chatgpt-request 그대로) ──
+  async function getRequestFile() {
+    if (!topicForRequest) return;
+    setBusy("step2");
+    setMsg(null);
+    try {
+      const res = await fetch("/api/atlas/chatgpt-request", {
+        method: "POST",
+        cache: "no-store",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ blogId: "blog_001", recommendation: topicForRequest }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.status === "ok" && data.request) {
+        downloadJson(data.filename, data.request);
+        setCurrentJobId(data.jobId);
+        setMsg({ step: 2, ok: true, text: "요청 파일을 내려받았습니다. 이 파일을 ChatGPT에 올리고, 돌려받은 파일을 3번에서 등록하세요." });
+        await loadWork();
+        advance();
+      } else {
+        setMsg({ step: 2, ok: false, text: `요청 파일을 만들지 못했습니다: ${data.message || data.errorCode || `서버 응답 ${res.status}`}` });
+      }
+    } catch (err) {
+      setMsg({ step: 2, ok: false, text: `요청 파일을 만들지 못했습니다: 서버에 연결하지 못했습니다 (${String(err?.message || err)})` });
+    }
+    setBusy("");
+  }
+
+  // ── 3. 완성 글 파일 등록 (기존 /api/atlas/chatgpt-package 그대로) ──
+  async function registerFinishedFile(file) {
+    if (!file) return;
+    setBusy("step3");
+    setMsg({ step: 3, ok: true, text: "파일을 확인하고 이미지 올리는 중입니다. 잠시만 기다려 주세요." });
+    try {
+      const text = await file.text();
+      let pkg;
+      try {
+        pkg = JSON.parse(text);
+      } catch {
+        setMsg({ step: 3, ok: false, text: "파일을 읽지 못했습니다 — ChatGPT가 돌려준 파일을 그대로 선택하세요." });
+        setBusy("");
+        return;
+      }
+      const data = await api("/api/atlas/chatgpt-package", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ package: pkg }),
+      });
+      if (data.status === "ok" && data.duplicate) {
+        setMsg({ step: 3, ok: true, text: "이미 등록된 글입니다. 다시 등록하지 않고 다음 단계로 넘어갑니다." });
+      } else if (data.status === "ok") {
+        setMsg({ step: 3, ok: true, text: "등록과 자동 검수를 마쳤습니다. 4번에서 본문을 확인하세요." });
+      } else if (data.status === "qa_failed") {
+        setMsg({ step: 3, ok: false, text: `자동 검수를 통과하지 못했습니다 (${data.qa?.blocking?.length ?? 0}건). 아래 “고급 설정”에서 사유를 확인해 수정한 뒤 다시 등록하세요.` });
+      } else if (data.status === "needs_configuration") {
+        setMsg({ step: 3, ok: false, text: "이미지 저장소 설정이 필요합니다. 관리자에게 문의하세요." });
+      } else {
+        setMsg({ step: 3, ok: false, text: `등록하지 못했습니다: ${data.message || data.reason || data.errorCode || data.status}` });
+      }
+      await loadWork();
+      if (data.status === "ok") advance();
+    } catch {
+      setMsg({ step: 3, ok: false, text: "등록하지 못했습니다: 서버에 연결하지 못했습니다." });
+    }
+    setBusy("");
+  }
+
+  // ── 4. 미리보기·검수 → 발행 승인 (기존 /api/atlas/publisher-approval 그대로) ──
+  async function approveForPublish() {
+    if (!job?.articleId) return;
+    setBusy("step4");
+    setMsg(null);
+    const data = await api("/api/atlas/publisher-approval", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ articleId: job.articleId, action: "approve" }),
+    });
+    if (data.status === "ok") {
+      setMsg({ step: 4, ok: true, text: "발행 승인이 저장되었습니다. 5번에서 블로그에 올리세요." });
+      setRows(data.rows || []);
+      await loadWork();
+      advance();
+    } else {
+      setMsg({ step: 4, ok: false, text: `승인하지 못했습니다: ${data.errorCode === "ALREADY_PUBLISHED" ? "이미 발행된 글입니다." : data.errorCode || "알 수 없는 이유"}` });
+    }
+    setBusy("");
+  }
+
+  // ── 고급: 기존 기능 유지 ──
+  async function refreshRecommendations() {
+    setBusy("rec");
+    setRec(await api("/api/atlas/recommendations?fresh=1"));
+    setBusy("");
+  }
   async function autoProduce(candidate) {
-    setR3msg("");
-    setBusy("r3" + candidate.priority);
+    setBusy("auto");
     const created = await api("/api/atlas/production-jobs", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ recommendation: candidate }),
     });
-    if (created?.blocked) {
-      setR3msg(created.reason || "범위 밖 주제로 제작이 차단되었습니다.");
-      setBusy("");
-      return;
-    }
-    const jobId = created?.job?.id;
-    if (jobId) {
+    if (created?.job?.id) {
       await api("/api/atlas/production-jobs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "run", jobId }),
+        body: JSON.stringify({ action: "run", jobId: created.job.id }),
       });
     }
-    if (created?.duplicate) setR3msg("이미 같은 주제의 제작 Job이 있어 중복 생성하지 않았습니다.");
-    setProdJobs((await api("/api/atlas/production-jobs")).jobs || []);
+    await loadWork();
     setBusy("");
   }
-
   async function retryJob(jobId) {
     setBusy("retry" + jobId);
     await api("/api/atlas/production-jobs", {
@@ -130,52 +249,9 @@ export default function RevenuePage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "retry", jobId }),
     });
-    setProdJobs((await api("/api/atlas/production-jobs")).jobs || []);
+    await loadWork();
     setBusy("");
   }
-
-  async function refreshRecommendations() {
-    setBusy("rec");
-    setRec(await api("/api/atlas/recommendations?fresh=1"));
-    setBusy("");
-  }
-
-  // 수동 제작요청 — API 비용 없이 ChatGPT에 올릴 요청 파일(atlas-request-{jobId}.json)을
-  // 내려받는다. 같은 후보를 다시 눌러도 Job은 늘지 않고 같은 요청 파일이 다시 받아진다.
-  // 실패는 조용히 넘기지 않고 카드에 사유를 그대로 표시한다.
-  async function exportRequest(candidate) {
-    if (busy) return;
-    setBusy("req" + candidate.priority);
-    setHandoff(null);
-    try {
-      const res = await fetch("/api/atlas/chatgpt-request", {
-        method: "POST",
-        cache: "no-store",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ blogId: "blog_001", recommendation: candidate }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (res.ok && data.status === "ok" && data.request) {
-        downloadJson(data.filename, data.request);
-        setHandoff({
-          priority: candidate.priority,
-          ok: true,
-          text: `${data.filename} 다운로드 — ChatGPT에 업로드하세요. Job ${data.jobId}${data.duplicate ? " (이미 있던 요청을 다시 받았습니다 · 새 Job 없음)" : " (새 요청 생성)"}${data.letters ? ` · ATLAS Letters ${data.letters.label} · 대표 인물 ${data.letters.heroCharacterId} (${data.letters.masterFileName})` : ""}`,
-        });
-        setProdJobs((await api("/api/atlas/production-jobs")).jobs || []);
-      } else {
-        setHandoff({
-          priority: candidate.priority,
-          ok: false,
-          text: `요청 파일 생성 실패: ${data.message || data.errorCode || `서버 응답 ${res.status}`}`,
-        });
-      }
-    } catch (err) {
-      setHandoff({ priority: candidate.priority, ok: false, text: `요청 파일 생성 실패: 서버에 연결하지 못했습니다 (${String(err?.message || err)})` });
-    }
-    setBusy("");
-  }
-
   async function startQaForArticle(articleId) {
     setBusy("qa");
     await api("/api/atlas/recommendations", {
@@ -186,7 +262,6 @@ export default function RevenuePage() {
     setPipeline(await api("/api/atlas/pipeline"));
     setBusy("");
   }
-
   async function jobAction(jobId, action) {
     setBusy(jobId + action);
     await api("/api/atlas/pipeline", {
@@ -197,7 +272,6 @@ export default function RevenuePage() {
     setPipeline(await api("/api/atlas/pipeline"));
     setBusy("");
   }
-
   async function makeShort(articleId) {
     setBusy("short" + articleId);
     await api("/api/atlas/shorts", {
@@ -209,7 +283,6 @@ export default function RevenuePage() {
     setTracking(await api("/api/atlas/tracking"));
     setBusy("");
   }
-
   async function importCsv() {
     setBusy("csv");
     await api("/api/atlas/tracking", {
@@ -221,215 +294,422 @@ export default function RevenuePage() {
     setBusy("");
   }
 
+  const qaData = job?.steps?.CONTENT_QA?.data;
+
   return (
-    <div className="px-6 py-10 sm:px-10">
-      <div className="mx-auto max-w-5xl space-y-6">
+    <div className="px-4 py-8 sm:px-10 sm:py-10">
+      <div className="mx-auto max-w-4xl space-y-6">
         <header>
-          <h1 className="text-2xl font-bold">수익 자동화 (Revenue R2)</h1>
+          <h1 className="text-2xl font-bold">블로그 글 만들기</h1>
           <p className="mt-1 text-sm text-zinc-400">
-            자동추천 → 원고·QA → 승인·발행 → 쇼핑 쇼츠 → 캠페인 → 실제 성과. 한 화면에서 전체 흐름을 확인합니다.
-          </p>
-          <p className="mt-2 rounded-lg border border-sky-900 bg-sky-950/30 px-3 py-2 text-xs text-sky-300">
-            정직성 원칙: 실시간 트렌드·경쟁도·실제 클릭/주문/매출은 외부 연동이 확인되기 전까지 UNKNOWN 또는 BLOCKED로
-            표시하며, 추측값을 실제 데이터처럼 보여주지 않습니다.
+            아래 1번부터 5번까지 순서대로 따라가면 글 한 편이 블로그에 올라갑니다. 지금 눌러야 할 버튼만 보입니다.
           </p>
         </header>
 
-        {/* ── 1. 이번 주 자동추천 ── */}
-        <Section
-          step="1"
-          title={rec?.sourceMode === "LIVE" ? "이번 주 자동추천 (실시간)" : "이번 주 편집 추천 (실시간 트렌드 미연결)"}
-          subtitle={rec ? `축: 여행보험·여행 안전 클러스터 · Production ${rec.counts?.production ?? 0}건 · 제외 ${rec.counts?.rejected ?? 0}건` : ""}
-        >
-          {rec && rec.sourceMode !== "LIVE" && (
-            <p className="mb-3 rounded-lg border border-amber-900 bg-amber-950/30 px-3 py-2 text-xs text-amber-300">
-              실시간 트렌드 연결 안 됨 · 현재 후보는 <b>ATLAS 편집 기준(EDITORIAL_FALLBACK)</b> 기반이며 실제 트렌드·검색량으로
-              검증되지 않았습니다. {rec.scopeNote}
-            </p>
-          )}
-          {week && (
-            <p className="mb-3 rounded-lg border border-fuchsia-900 bg-fuchsia-950/30 px-3 py-2 text-xs text-fuchsia-200">
-              ATLAS Letters · <b>이번 주: {week.label}</b> (부탁 → 답변) · {week.weekStart} ~ {week.weekEnd} (Asia/Seoul) ·
-              대표 이미지 인물: <b>{week.heroCharacterId}</b> · 마스터 {week.masterFileName} · 얼굴 고정(의상·표정·장소만 변경).
-              매주 월요일 00:00에 역할이 교대됩니다.
-            </p>
-          )}
-          <div className="mb-3 flex flex-wrap items-center gap-2">
-            <button onClick={refreshRecommendations} disabled={!!busy} className="rounded-lg bg-zinc-700 px-3 py-1.5 text-sm hover:bg-zinc-600 disabled:opacity-50">
-              {busy === "rec" ? "생성 중..." : "새로 추천 생성"}
-            </button>
-            <Pill status={rec?.sourceMode === "LIVE" ? "PASS" : "NEEDS_CONFIGURATION"}>{rec?.sourceMode || "..."}</Pill>
-            {rec?.blocked?.map((b) => <Pill key={b} status="NEEDS_CONFIGURATION">{b}</Pill>)}
-          </div>
-          <div className="space-y-2">
-            {(rec?.candidates || []).map((c) => (
-              <div key={c.priority} className="rounded-lg border border-zinc-800 bg-zinc-950 p-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-mono text-xs text-zinc-500">#{c.priority}</span>
-                  <span className="font-medium">{c.title}</span>
-                  <Pill status="NA">{c.type}</Pill>
-                  <span className="text-xs text-zinc-500">점수 {c.score}/{c.maxAvailableScore}</span>
-                  <button
-                    onClick={() => autoProduce(c)}
-                    disabled={!!busy || !c.eligibility?.canGenerate}
-                    title={c.eligibility?.blockedReason || ""}
-                    className="ml-auto rounded bg-emerald-600 px-2 py-1 text-xs font-semibold hover:bg-emerald-500 disabled:opacity-40"
-                  >
-                    {busy === "r3" + c.priority ? "제작 시작 중..." : "콘텐츠 자동 제작"}
-                  </button>
-                  <button
-                    onClick={() => exportRequest(c)}
-                    disabled={!!busy || !c.eligibility?.canGenerate}
-                    title="ChatGPT에 올릴 요청 파일(atlas-request-{jobId}.json)을 내려받습니다. API 비용 없음."
-                    className="rounded bg-zinc-700 px-2 py-1 text-xs hover:bg-zinc-600 disabled:opacity-40"
-                  >
-                    {busy === "req" + c.priority ? "요청 파일 만드는 중..." : "수동 제작요청"}
-                  </button>
-                </div>
-                {handoff?.priority === c.priority && (
-                  <p className={`mt-2 rounded px-2 py-1 text-[11px] ${handoff.ok ? "bg-emerald-950/40 text-emerald-300" : "bg-red-950/40 text-red-300"}`}>
-                    {handoff.text}
-                  </p>
-                )}
-                <p className="mt-1 text-xs text-zinc-500">의도: {c.searchIntent}</p>
-                <p className="mt-1 text-xs text-zinc-400">{c.reason}</p>
-                <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-zinc-500">
-                  <span>축: <Pill status="NA">{c.contentAxis?.label}</Pill></span>
-                  <span>출처모드: <Pill status={c.sourceMode === "LIVE" ? "PASS" : "NEEDS_CONFIGURATION"}>{c.sourceMode}</Pill></span>
-                  <span>트렌드: <Pill status="UNKNOWN">{c.trend?.sevenDay}</Pill></span>
-                  <span>경쟁도: <Pill status="UNKNOWN">{c.competition?.live}</Pill></span>
-                  <span>중복위험: <Pill status={c.relation?.duplicationRisk === "HIGH" ? "FAIL" : c.relation?.duplicationRisk === "MEDIUM" ? "WARN" : "PASS"}>{c.relation?.duplicationRisk}</Pill>{c.relation?.overlappingArticleIds?.length ? ` (${c.relation.overlappingArticleIds.join(",")})` : ""}</span>
-                </div>
-                <div className="mt-1 flex flex-wrap gap-2 text-[11px] text-zinc-500">
-                  <span>클러스터: {c.relation?.clusterRole}</span>
-                  <span>근거: {c.officialSource?.availability}</span>
-                  <span>제휴: <Pill status="NEEDS_CONFIGURATION">{c.monetization?.affiliateReadiness}</Pill></span>
-                  <span>향후 상품군: {(c.monetization?.futureProductCategories || []).join(", ") || "-"}</span>
-                </div>
-                <details className="mt-1">
-                  <summary className="cursor-pointer text-[11px] text-emerald-400">점수 계산 근거</summary>
-                  <p className="text-[11px] text-zinc-500">
-                    {Object.entries(c.scoreBreakdown || {}).map(([k, v]) => `${k} ${v}`).join(" · ")}
-                    {(c.excludedComponents || []).length ? ` · 제외: ${c.excludedComponents.map((e) => `${e.component}(${e.reason})`).join(", ")}` : ""}
-                  </p>
-                </details>
-                {!c.eligibility?.canGenerate && <p className="mt-1 text-[11px] text-red-300">{c.eligibility?.blockedReason}</p>}
-              </div>
-            ))}
-            {!rec && <p className="text-sm text-zinc-500">불러오는 중...</p>}
-          </div>
-          {rec?.rejected?.length > 0 && (
-            <details className="mt-3">
-              <summary className="cursor-pointer text-xs text-zinc-500">범위 밖 제외 후보 {rec.rejected.length}건 (Production에서 차단됨)</summary>
-              <ul className="mt-2 space-y-1 text-[11px] text-zinc-600">
-                {rec.rejected.map((r, i) => (
-                  <li key={i}>· <span className="text-zinc-400">{r.topic}</span> — {r.reason} <span className="text-zinc-700">[{r.sourcePool}]</span></li>
-                ))}
-              </ul>
-            </details>
-          )}
-        </Section>
+        {/* ── 진행 표시 ── */}
+        <ol className="grid gap-2 sm:grid-cols-5">
+          {STEPS.map((s) => {
+            const st = statusOf(s.n);
+            return (
+              <li key={s.n}>
+                <button
+                  type="button"
+                  onClick={() => (st === "wait" ? null : goto(s.n))}
+                  disabled={st === "wait"}
+                  className={`w-full rounded-xl border px-3 py-3 text-left transition ${STATE_STYLE[st]} ${
+                    open === s.n ? "ring-2 ring-sky-500/60" : ""
+                  } ${st === "wait" ? "cursor-not-allowed" : "hover:brightness-125"}`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-xs">{s.n}</span>
+                    <span className="text-xs font-semibold">{STATE_LABEL[st]}</span>
+                    {st === "done" && <span aria-hidden>✓</span>}
+                  </div>
+                  <p className="mt-1 text-sm font-medium leading-tight">{s.title}</p>
+                </button>
+              </li>
+            );
+          })}
+        </ol>
 
-        {/* ── R3. 원클릭 콘텐츠 자동 제작 Job ── */}
-        <Section step="R3" title="콘텐츠 자동 제작 (원클릭)" subtitle="추천 카드의 “콘텐츠 자동 제작”을 누르면 서버에서 원고→출처→검사→이미지→Preview→Blogger 초안이 하나의 Job으로 진행됩니다. 새로고침·서버 재시작 후에도 상태가 보존됩니다.">
-          {r3msg && <p className="mb-3 rounded-lg border border-amber-900 bg-amber-950/30 px-3 py-2 text-xs text-amber-300">{r3msg}</p>}
-          <div className="space-y-3">
-            {prodJobs.map((j) => <ProdJobCard key={j.id} job={j} busy={busy} onRetry={retryJob} />)}
-            {prodJobs.length === 0 && <p className="text-sm text-zinc-500">아직 제작 Job이 없습니다. 위 추천 카드에서 “콘텐츠 자동 제작”을 눌러 시작하세요.</p>}
+        {/* 글이 여러 개일 때만 노출. 내부 번호 대신 주제로 고른다. */}
+        {flow.length > 1 && (
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-3">
+            <p className="text-xs text-zinc-500">내 글 목록 (누르면 그 글의 단계로 이동)</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {flow.slice(0, 8).map((w) => (
+                <button
+                  key={w.id}
+                  type="button"
+                  onClick={() => {
+                    setCurrentJobId(w.id);
+                    setOpenStep(null);
+                    setMsg(null);
+                  }}
+                  className={`rounded-lg border px-3 py-1.5 text-xs ${
+                    w.id === job?.id ? "border-sky-500 bg-sky-950/40 text-sky-200" : "border-zinc-700 text-zinc-400 hover:text-zinc-100"
+                  }`}
+                >
+                  {w.topic} · {isPublished(w) ? "발행 완료" : `${currentStepOf(w, rowFor(w))}단계`}
+                </button>
+              ))}
+            </div>
           </div>
-        </Section>
+        )}
 
-        {/* ── 2~6. 원고 파이프라인 + QA + 승인 ── */}
-        <Section step="2~6" title="원고 파이프라인 · QA · 승인" subtitle="기존 파이프라인 작업과, 기존 MASTER(art_004~006)를 QA에 연결해 검증할 수 있습니다.">
-          <div className="mb-3 flex flex-wrap items-center gap-2 text-xs">
-            <span className="text-zinc-500">기존 MASTER로 QA 시작:</span>
-            {["art_004", "art_005", "art_006"].map((id) => (
-              <button key={id} onClick={() => startQaForArticle(id)} disabled={!!busy} className="rounded bg-zinc-700 px-2 py-1 hover:bg-zinc-600 disabled:opacity-50">
-                {id}
+        {/* ── 1. 글 주제 선택 ── */}
+        <StepCard step={STEPS[0]} status={statusOf(1)} open={open === 1} onNext={() => goto(2)} nextEnabled={cur > 1}>
+          {statusOf(1) === "done" && (job || pickedTopic) ? (
+            <>
+              <p className="text-sm text-zinc-300">
+                고른 주제: <b className="text-zinc-100">{job?.topic || pickedTopic?.title}</b>
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setCurrentJobId("__new__");
+                  setPickedTopic(null);
+                  goto(1);
+                }}
+                className="mt-3 rounded-lg border border-zinc-700 px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-100"
+              >
+                다른 주제로 새 글 시작
               </button>
-            ))}
-            {pipeline?.providerReadiness && (
-              <span className="ml-auto">원고 자동생성 제공자: <Pill status={pipeline.providerReadiness.ready ? "PASS" : "NEEDS_CONFIGURATION"}>{pipeline.providerReadiness.status}</Pill></span>
-            )}
-          </div>
-          <div className="space-y-3">
-            {(pipeline?.jobs || []).map((job) => (
-              <JobCard key={job.id} job={job} busy={busy} onAction={jobAction} onMakeShort={makeShort} />
-            ))}
-            {pipeline && pipeline.jobs.length === 0 && <p className="text-sm text-zinc-500">아직 파이프라인 작업이 없습니다. 위에서 기존 MASTER를 QA에 연결하세요.</p>}
-          </div>
-        </Section>
+            </>
+          ) : (
+            <>
+              <p className="text-sm text-zinc-400">이번 주 추천 주제입니다. 하나를 고르세요.</p>
+              <div className="mt-3 space-y-2">
+                {(rec?.candidates || []).map((c) => (
+                  <button
+                    key={c.priority}
+                    type="button"
+                    onClick={() => setPickedTopic(c)}
+                    className={`block w-full rounded-lg border p-3 text-left transition ${
+                      pickedTopic?.title === c.title ? "border-sky-500 bg-sky-950/30" : "border-zinc-800 bg-zinc-950 hover:border-zinc-600"
+                    }`}
+                  >
+                    <span className="text-sm font-medium">{c.title}</span>
+                    <span className="mt-1 block text-xs text-zinc-500">{c.reason}</span>
+                  </button>
+                ))}
+                {!rec && <p className="text-sm text-zinc-500">불러오는 중...</p>}
+                {rec && (rec.candidates || []).length === 0 && (
+                  <p className="text-sm text-zinc-500">지금은 새로 쓸 만한 주제가 없습니다. 고급 설정에서 새로 추천을 만들 수 있습니다.</p>
+                )}
+              </div>
+              <PrimaryButton
+                disabled={!pickedTopic || !!busy}
+                onClick={() => {
+                  setCurrentJobId("__new__");
+                  goto(2);
+                }}
+              >
+                이 주제로 시작하기
+              </PrimaryButton>
+            </>
+          )}
+        </StepCard>
 
-        {/* ── 7~8. 쇼핑 쇼츠 초안 + 캠페인 ── */}
-        <Section step="7~8" title="쇼핑 쇼츠 초안 · 캠페인 링크" subtitle="발행 성공 시 자동 생성됩니다. 미발행 글은 Preview 전용(Production 집계 제외).">
-          <div className="space-y-3">
-            {shorts.map((d) => <ShortCard key={d.shortId} draft={d} />)}
-            {shorts.length === 0 && <p className="text-sm text-zinc-500">쇼츠 초안이 없습니다. 파이프라인 카드에서 “쇼츠 초안 만들기”를 누르거나 글을 발행하세요.</p>}
-          </div>
-        </Section>
+        {/* ── 2. 제작 요청 파일 받기 ── */}
+        <StepCard step={STEPS[1]} status={statusOf(2)} open={open === 2} onNext={() => goto(3)} nextEnabled={cur > 2}>
+          {statusOf(2) === "wait" ? (
+            <p className="text-sm text-zinc-500">1번에서 주제를 먼저 고르세요.</p>
+          ) : (
+            <>
+              <p className="text-sm text-zinc-300">
+                주제: <b className="text-zinc-100">{job?.topic || pickedTopic?.title}</b>
+              </p>
+              <p className="mt-2 text-sm text-zinc-400">
+                버튼을 누르면 요청 파일이 내려받아집니다. 그 파일을 ChatGPT 대화창에 올리고, ChatGPT가 돌려준 파일을 3번에서 등록하세요.
+              </p>
+              <PrimaryButton disabled={!!busy || !topicForRequest} onClick={getRequestFile}>
+                {busy === "step2" ? "만드는 중..." : statusOf(2) === "done" ? "요청 파일 다시 받기" : "제작 요청 파일 받기"}
+              </PrimaryButton>
+            </>
+          )}
+          <Note msg={msg} step={2} />
+        </StepCard>
 
-        {/* ── 9. 실제 성과 대시보드 ── */}
-        <Section step="9" title="실제 성과 대시보드" subtitle="주문·판매량·매출은 제휴 네트워크가 보고한 conversion만 집계합니다. 클릭으로 주문을 추정하지 않습니다.">
-          <TrackingPanel tracking={tracking} csv={csv} setCsv={setCsv} onImport={importCsv} busy={busy} />
-        </Section>
+        {/* ── 3. 완성 글 파일 등록 ── */}
+        <StepCard step={STEPS[2]} status={statusOf(3)} open={open === 3} onNext={() => goto(4)} nextEnabled={cur > 3}>
+          {statusOf(3) === "wait" ? (
+            <p className="text-sm text-zinc-500">2번에서 요청 파일을 먼저 받으세요.</p>
+          ) : statusOf(3) === "done" ? (
+            <p className="text-sm text-emerald-300">완성 글이 이미 등록되어 있습니다. 다시 등록하지 않아도 됩니다.</p>
+          ) : (
+            <>
+              <p className="text-sm text-zinc-400">ChatGPT가 돌려준 파일을 선택하면 이미지 저장과 자동 검수까지 한 번에 처리됩니다.</p>
+              <input
+                id="finished-file"
+                type="file"
+                accept="application/json,.json"
+                className="hidden"
+                disabled={!!busy}
+                onChange={(e) => registerFinishedFile(e.target.files?.[0])}
+              />
+              <label
+                htmlFor="finished-file"
+                className={`mt-4 inline-block rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white ${
+                  busy ? "opacity-40" : "cursor-pointer hover:bg-emerald-500"
+                }`}
+              >
+                {busy === "step3" ? "등록 중..." : "완성 글 파일 선택"}
+              </label>
+            </>
+          )}
+          <Note msg={msg} step={3} />
+        </StepCard>
+
+        {/* ── 4. 미리보기·검수 ── */}
+        <StepCard step={STEPS[3]} status={statusOf(4)} open={open === 4} onNext={() => goto(5)} nextEnabled={cur > 4}>
+          {statusOf(4) === "wait" ? (
+            <p className="text-sm text-zinc-500">3번에서 완성 글을 먼저 등록하세요.</p>
+          ) : (
+            <>
+              <p className="text-sm text-zinc-300">
+                글 제목: <b className="text-zinc-100">{row?.title || job?.topic}</b>
+              </p>
+              <p className="mt-2 text-sm text-zinc-400">
+                {qaData
+                  ? `자동 검수 통과 · 사람이 직접 확인할 항목 ${qaData.needsHumanReview?.length ?? 0}건`
+                  : "본문을 열어 내용을 확인하세요."}
+              </p>
+              {(qaData?.needsHumanReview || []).map((r) => (
+                <p key={r.id} className="mt-1 text-xs text-amber-300">● {r.reason}</p>
+              ))}
+              {job?.articleId && (
+                <Link
+                  href={`/writer/${job.articleId}`}
+                  className="mt-3 inline-block rounded-lg border border-zinc-700 px-3 py-1.5 text-xs text-zinc-300 hover:text-zinc-100"
+                >
+                  본문 미리보기 열기
+                </Link>
+              )}
+              {statusOf(4) === "done" ? (
+                <p className="mt-3 text-sm text-emerald-300">검수와 발행 승인이 끝났습니다.</p>
+              ) : (
+                <PrimaryButton disabled={!!busy} onClick={approveForPublish}>
+                  {busy === "step4" ? "승인 중..." : "검수 완료 · 발행 승인"}
+                </PrimaryButton>
+              )}
+            </>
+          )}
+          <Note msg={msg} step={4} />
+        </StepCard>
+
+        {/* ── 5. 블로그 발행 ── */}
+        <StepCard step={STEPS[4]} status={statusOf(5)} open={open === 5} nextEnabled={false}>
+          {statusOf(5) === "wait" ? (
+            <p className="text-sm text-zinc-500">4번에서 발행 승인을 먼저 하세요.</p>
+          ) : published ? (
+            <>
+              <p className="text-sm text-emerald-300">블로그에 발행되었습니다.</p>
+              {row?.url && (
+                <a href={row.url} target="_blank" rel="noreferrer" className="mt-2 inline-block text-xs text-sky-300 underline">
+                  발행된 글 열기
+                </a>
+              )}
+            </>
+          ) : (
+            <>
+              <p className="text-sm text-zinc-400">
+                승인이 끝났습니다. 발행 화면에서 마지막으로 확인하고 블로그에 올리세요.
+              </p>
+              <Link
+                href="/publisher"
+                className="mt-4 inline-block rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500"
+              >
+                블로그 발행 화면 열기
+              </Link>
+            </>
+          )}
+        </StepCard>
+
+        {published && (
+          <p className="rounded-lg border border-emerald-900 bg-emerald-950/30 px-3 py-2 text-xs text-emerald-300">
+            이 글은 5단계까지 모두 끝났습니다. 새 글을 시작하려면 1번에서 “다른 주제로 새 글 시작”을 누르세요.
+          </p>
+        )}
+
+        {/* ── 고급 설정 / 개발자 정보 (기존 기능 전부 보존) ── */}
+        <details className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+          <summary className="cursor-pointer text-sm font-semibold text-zinc-400">고급 설정 · 개발자 정보</summary>
+          <div className="mt-4 space-y-6">
+            <section>
+              <h3 className="text-sm font-semibold text-zinc-300">추천 엔진 진단</h3>
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-zinc-500">
+                <button onClick={refreshRecommendations} disabled={!!busy} className="rounded bg-zinc-700 px-2 py-1 text-zinc-200 hover:bg-zinc-600 disabled:opacity-50">
+                  {busy === "rec" ? "생성 중..." : "새로 추천 생성"}
+                </button>
+                <span>sourceMode: {rec?.sourceMode || "-"}</span>
+                <span>Production {rec?.counts?.production ?? 0} · 제외 {rec?.counts?.rejected ?? 0}</span>
+                {rec?.blocked?.map((b) => <span key={b}>{b}</span>)}
+              </div>
+              <p className="mt-2 text-[11px] text-zinc-600">{rec?.scopeNote}</p>
+              {job?.letters && (
+                <p className="mt-2 text-[11px] text-fuchsia-300">
+                  이 글의 ATLAS Letters {job.letters.label} ({job.letters.weekStart}~{job.letters.weekEnd}) · 대표 인물 {job.letters.heroCharacterId} ·
+                  마스터 {job.letters.masterFileName}
+                </p>
+              )}
+              {rec?.rejected?.length > 0 && (
+                <details className="mt-2">
+                  <summary className="cursor-pointer text-[11px] text-zinc-500">중복·범위 제외 후보 {rec.rejected.length}건</summary>
+                  <ul className="mt-1 space-y-1 text-[11px] text-zinc-600">
+                    {rec.rejected.map((r, i) => (
+                      <li key={i}>· {r.topic} — {r.reason} [{r.sourcePool}]</li>
+                    ))}
+                  </ul>
+                </details>
+              )}
+              {rec?.candidates?.length > 0 && (
+                <details className="mt-2">
+                  <summary className="cursor-pointer text-[11px] text-zinc-500">후보 점수·축·중복위험</summary>
+                  <ul className="mt-1 space-y-1 text-[11px] text-zinc-500">
+                    {rec.candidates.map((c) => (
+                      <li key={c.priority}>
+                        #{c.priority} {c.title} — 점수 {c.score}/{c.maxAvailableScore} · 축 {c.contentAxis?.label} · 중복위험{" "}
+                        {c.relation?.duplicationRisk} · {c.moneyHunterId || c.origin}
+                        <button onClick={() => autoProduce(c)} disabled={!!busy} className="ml-2 rounded bg-zinc-700 px-1.5 py-0.5 text-zinc-200 disabled:opacity-40">
+                          서버 자동 제작
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              )}
+            </section>
+
+            <section>
+              <h3 className="text-sm font-semibold text-zinc-300">제작 Job 원본 (내부 번호·상태)</h3>
+              <div className="mt-2 space-y-2">
+                {jobs.map((j) => <ProdJobRow key={j.id} job={j} busy={busy} onRetry={retryJob} />)}
+              </div>
+            </section>
+
+            <section>
+              <h3 className="text-sm font-semibold text-zinc-300">원고 파이프라인 · QA (기존 화면)</h3>
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
+                <span className="text-zinc-500">기존 MASTER로 QA 시작:</span>
+                {["art_004", "art_005", "art_006"].map((id) => (
+                  <button key={id} onClick={() => startQaForArticle(id)} disabled={!!busy} className="rounded bg-zinc-700 px-2 py-1 text-zinc-200 hover:bg-zinc-600 disabled:opacity-50">
+                    {id}
+                  </button>
+                ))}
+              </div>
+              <div className="mt-2 space-y-2">
+                {(pipeline?.jobs || []).map((pj) => (
+                  <JobCard key={pj.id} job={pj} busy={busy} onAction={jobAction} onMakeShort={makeShort} />
+                ))}
+              </div>
+            </section>
+
+            <section>
+              <h3 className="text-sm font-semibold text-zinc-300">쇼핑 쇼츠 · 캠페인</h3>
+              <div className="mt-2 space-y-2">
+                {shorts.map((d) => <ShortCard key={d.shortId} draft={d} />)}
+                {shorts.length === 0 && <p className="text-xs text-zinc-600">쇼츠 초안이 없습니다.</p>}
+              </div>
+            </section>
+
+            <section>
+              <h3 className="text-sm font-semibold text-zinc-300">실제 성과</h3>
+              <div className="mt-2">
+                <TrackingPanel tracking={tracking} csv={csv} setCsv={setCsv} onImport={importCsv} busy={busy} />
+              </div>
+            </section>
+
+            <section className="flex flex-wrap gap-3 text-xs text-zinc-500">
+              <Link href="/money-hunter" className="underline hover:text-zinc-200">키워드 DB · 영문 키워드 발굴</Link>
+              <Link href="/atlas/publishing" className="underline hover:text-zinc-200">발행 준비 확인</Link>
+              <Link href="/publisher" className="underline hover:text-zinc-200">Blogger 발행 관제</Link>
+            </section>
+          </div>
+        </details>
       </div>
     </div>
   );
 }
 
-function ProdJobCard({ job, busy, onRetry }) {
-  const blockedOrFailed = job.status?.startsWith("BLOCKED") || job.status === "FAILED";
-  const pillStatus =
-    job.status === "READY_FOR_REVIEW" || job.status === "PUBLISHED"
-      ? "PASS"
-      : job.status === "REVIEW_REQUIRED"
-      ? "WARN"
-      : blockedOrFailed
-      ? "FAIL"
-      : "NA";
-  const reason = job.blocked?.userMessage || job.error?.userMessage || job.review?.userMessage;
-  const pct = job.progress?.percent ?? 0;
+function StepCard({ step, status, open, children, onNext, nextEnabled }) {
+  if (!open) {
+    return (
+      <section className={`rounded-xl border px-4 py-3 ${STATE_STYLE[status]}`}>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-mono text-xs">{step.n}</span>
+          <h2 className="text-sm font-semibold">{step.title}</h2>
+          <span className="ml-auto text-xs">{STATE_LABEL[status]}</span>
+        </div>
+      </section>
+    );
+  }
   return (
-    <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-3">
+    <section className={`rounded-xl border bg-zinc-900 p-5 ${status === "wait" ? "border-zinc-800" : status === "done" ? "border-emerald-700" : "border-sky-600"}`}>
       <div className="flex flex-wrap items-center gap-2">
-        <span className="font-mono text-xs text-zinc-500">{job.id}</span>
-        <span className="font-medium">{job.topic}</span>
-        <Pill status={pillStatus}>{job.statusLabel}</Pill>
-        <span className="ml-auto text-xs text-zinc-500">진행률 {pct}%</span>
+        <span className={`rounded-md px-2 py-1 font-mono text-xs ${status === "done" ? "bg-emerald-600/20 text-emerald-300" : status === "active" ? "bg-sky-600/20 text-sky-200" : "bg-zinc-800 text-zinc-500"}`}>
+          {step.n}
+        </span>
+        <h2 className="text-lg font-semibold">{step.title}</h2>
+        <span className={`ml-auto rounded-full px-2 py-0.5 text-xs ${status === "done" ? "bg-emerald-500/20 text-emerald-300" : status === "active" ? "bg-sky-500/20 text-sky-200" : "bg-zinc-800 text-zinc-500"}`}>
+          {STATE_LABEL[status]}
+        </span>
       </div>
-      <div className="mt-2 h-1.5 w-full overflow-hidden rounded bg-zinc-800">
-        <div className="h-full bg-emerald-600" style={{ width: `${pct}%` }} />
-      </div>
-      <div className="mt-2 flex flex-wrap gap-3 text-[11px] text-zinc-500">
-        <span>시작 {job.startedAt ? job.startedAt.slice(0, 19).replace("T", " ") : "-"}</span>
-        <span>업데이트 {job.updatedAt ? job.updatedAt.slice(0, 19).replace("T", " ") : "-"}</span>
-        <span>article: <span className="font-mono text-zinc-400">{job.articleId || "미할당"}</span></span>
-        <span>현재 단계: {job.stepLabel}</span>
-      </div>
-      {reason && (
-        <p className={`mt-2 rounded px-2 py-1 text-[11px] ${blockedOrFailed ? "bg-red-950/40 text-red-300" : "bg-amber-950/40 text-amber-300"}`}>
-          {reason}
-          {job.blocked?.envNeeded?.length ? ` · 필요한 설정: ${job.blocked.envNeeded.join(", ")}` : ""}
-        </p>
+      <p className="mt-1 text-xs text-zinc-500">{step.hint}</p>
+      <div className="mt-4">{children}</div>
+      {onNext && nextEnabled && (
+        <button
+          type="button"
+          onClick={onNext}
+          className="mt-4 w-full rounded-lg border border-sky-600 px-4 py-2 text-sm font-semibold text-sky-200 hover:bg-sky-950/40 sm:w-auto"
+        >
+          다음 단계로 →
+        </button>
       )}
-      <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px]">
-        <span>Blogger 초안: <Pill status={job.bloggerDraft?.postId ? "PASS" : "NA"}>{job.bloggerDraft?.postId ? "생성됨" : "없음"}</Pill></span>
-        {job.preview?.url && (
-          <a href={job.preview.url} target="_blank" rel="noreferrer" className="rounded bg-zinc-700 px-2 py-1 hover:bg-zinc-600">Preview 열기</a>
-        )}
-        {job.resumable && blockedOrFailed && (
-          <button onClick={() => onRetry(job.id)} disabled={!!busy} className="rounded bg-sky-700 px-2 py-1 hover:bg-sky-600 disabled:opacity-50">
-            {busy === "retry" + job.id ? "재시도 중..." : "재시도(재개)"}
+    </section>
+  );
+}
+
+function PrimaryButton({ children, ...props }) {
+  return (
+    <button
+      type="button"
+      {...props}
+      className="mt-4 w-full rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500 disabled:opacity-40 sm:w-auto"
+    >
+      {children}
+    </button>
+  );
+}
+
+function Note({ msg, step }) {
+  if (!msg || msg.step !== step) return null;
+  return (
+    <p className={`mt-3 rounded-lg px-3 py-2 text-xs ${msg.ok ? "bg-emerald-950/40 text-emerald-300" : "bg-red-950/40 text-red-300"}`}>{msg.text}</p>
+  );
+}
+
+function ProdJobRow({ job, busy, onRetry }) {
+  const blockedOrFailed = job.status?.startsWith("BLOCKED") || job.status === "FAILED";
+  const reason = job.blocked?.userMessage || job.error?.userMessage || job.review?.userMessage;
+  // 중복으로 종료된 작업은 재시도 대상이 아니다 — 같은 글이 이미 발행돼 있으므로
+  // 재개하면 중복 원고를 다시 만들게 된다.
+  const closedAsDuplicate = Boolean(job.duplicateOf);
+  return (
+    <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-2 text-[11px] text-zinc-500">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="font-mono text-zinc-400">{job.id}</span>
+        <span className="text-zinc-300">{job.topic}</span>
+        <span>{closedAsDuplicate ? `${job.duplicateOf}로 발행 완료된 중복 작업` : job.statusLabel || job.status}</span>
+        <span>article {job.articleId || "-"}</span>
+        <span>{job.moneyHunterId || "-"}</span>
+        {job.resumable && blockedOrFailed && !closedAsDuplicate && (
+          <button onClick={() => onRetry(job.id)} disabled={!!busy} className="ml-auto rounded bg-sky-800 px-2 py-0.5 text-sky-100 disabled:opacity-50">
+            {busy === "retry" + job.id ? "재시도 중..." : "재시도"}
           </button>
         )}
-        <button
-          disabled={!job.approve?.ok}
-          title={job.approve?.ok ? "" : (job.approve?.reasons || []).join(" · ")}
-          className="rounded bg-emerald-700 px-2 py-1 hover:bg-emerald-600 disabled:opacity-40"
-        >
-          최종 공개 발행 승인
-        </button>
       </div>
+      {reason && <p className="mt-1 text-amber-400">{reason}</p>}
     </div>
   );
 }
@@ -440,40 +720,35 @@ function JobCard({ job, busy, onAction, onMakeShort }) {
   return (
     <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-3">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="font-medium">{job.topic || job.linkedArticleId}</span>
-        <Pill status="NA">{info.label || job.stage}</Pill>
-        <span className="text-xs text-zinc-500">다음: {info.next}</span>
-        {job.linkedArticleId && <span className="text-[11px] text-zinc-600">({job.linkedArticleId})</span>}
+        <span className="text-sm font-medium">{job.topic || job.linkedArticleId}</span>
+        <span className="rounded-full bg-zinc-700 px-2 py-0.5 text-[11px] text-zinc-300">{info.label || job.stage}</span>
+        <span className="text-[11px] text-zinc-500">다음: {info.next}</span>
       </div>
-
       {job.qa && (
         <div className="mt-2 space-y-1">
           <div className="flex items-center gap-2 text-xs">
             <span>자동 QA:</span>
-            <Pill status={job.qa.pass ? "PASS" : "FAIL"}>{job.qa.pass ? "통과" : `실패 ${job.qa.failCount}건`}</Pill>
+            <span className={`rounded-full px-2 py-0.5 text-[11px] ${job.qa.pass ? "bg-emerald-500/20 text-emerald-300" : "bg-red-500/20 text-red-300"}`}>
+              {job.qa.pass ? "통과" : `실패 ${job.qa.failCount}건`}
+            </span>
             <span className="text-zinc-500">{job.qa.publishNote}</span>
           </div>
           <ul className="grid gap-1 sm:grid-cols-2">
             {job.qa.checks.map((c) => (
-              <li key={c.id} className="flex items-start gap-2 text-[11px] text-zinc-400">
-                <Pill status={c.status}>{c.status}</Pill>
-                <span><b className="text-zinc-300">{c.label}</b> — {c.reason}</span>
+              <li key={c.id} className="text-[11px] text-zinc-400">
+                [{c.status}] <b className="text-zinc-300">{c.label}</b> — {c.reason}
               </li>
             ))}
           </ul>
         </div>
       )}
-
-      {!adv.ok && adv.reason && (
-        <p className="mt-2 rounded bg-amber-950/40 px-2 py-1 text-[11px] text-amber-300">다음 단계 잠김: {adv.reason}</p>
-      )}
-
+      {!adv.ok && adv.reason && <p className="mt-2 rounded bg-amber-950/40 px-2 py-1 text-[11px] text-amber-300">다음 단계 잠김: {adv.reason}</p>}
       <div className="mt-2 flex flex-wrap gap-2">
-        <button onClick={() => onAction(job.id, "advance")} disabled={!!busy || !adv.ok} className="rounded bg-emerald-600 px-2 py-1 text-xs hover:bg-emerald-500 disabled:opacity-40">
+        <button onClick={() => onAction(job.id, "advance")} disabled={!!busy || !adv.ok} className="rounded bg-emerald-700 px-2 py-1 text-xs text-white hover:bg-emerald-600 disabled:opacity-40">
           다음 단계로 →
         </button>
         {job.stage === "ready_for_review" && !job.humanApproved && (
-          <button onClick={() => onAction(job.id, "approve")} disabled={!!busy} className="rounded bg-sky-600 px-2 py-1 text-xs hover:bg-sky-500 disabled:opacity-50">
+          <button onClick={() => onAction(job.id, "approve")} disabled={!!busy} className="rounded bg-sky-700 px-2 py-1 text-xs text-white hover:bg-sky-600 disabled:opacity-50">
             사람 최종 승인
           </button>
         )}
@@ -497,19 +772,19 @@ function ShortCard({ draft }) {
     <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-3">
       <div className="flex flex-wrap items-center gap-2">
         <span className="font-mono text-xs text-zinc-500">{draft.shortId}</span>
-        <span className="font-medium">{draft.hook}</span>
-        <Pill status={draft.mode === "commerce" ? "PASS" : "NA"}>{draft.mode === "commerce" ? "판매형" : "정보형"}</Pill>
-        <Pill status={draft.isProduction ? "PASS" : "WARN"}>{draft.isProduction ? "Production" : "Preview"}</Pill>
+        <span className="text-sm font-medium">{draft.hook}</span>
+        <span className="rounded-full bg-zinc-700 px-2 py-0.5 text-[11px] text-zinc-300">{draft.mode === "commerce" ? "판매형" : "정보형"}</span>
+        <span className={`rounded-full px-2 py-0.5 text-[11px] ${draft.isProduction ? "bg-emerald-500/20 text-emerald-300" : "bg-amber-500/20 text-amber-300"}`}>
+          {draft.isProduction ? "Production" : "Preview"}
+        </span>
       </div>
       <p className="mt-1 text-xs text-zinc-500">{draft.productionNote}</p>
-      {!draft.productTieIn.enabled && (
-        <p className="mt-1 text-[11px] text-amber-300">{draft.productTieIn.reason}</p>
-      )}
+      {!draft.productTieIn.enabled && <p className="mt-1 text-[11px] text-amber-300">{draft.productTieIn.reason}</p>}
       <div className="mt-2 text-[11px] text-zinc-500">
         캠페인:{" "}
         {draft.campaigns.map((c) => (
           <span key={c.campaignId} className="mr-2 inline-block">
-            {c.platform}=<span className="font-mono text-zinc-400">{c.campaignId}</span> <Pill status="NEEDS_CONFIGURATION">{c.trackedUrlStatus}</Pill>
+            {c.platform}=<span className="font-mono text-zinc-400">{c.campaignId}</span> {c.trackedUrlStatus}
           </span>
         ))}
       </div>
@@ -531,21 +806,20 @@ function ShortCard({ draft }) {
 }
 
 function TrackingPanel({ tracking, csv, setCsv, onImport, busy }) {
-  if (!tracking) return <p className="text-sm text-zinc-500">불러오는 중...</p>;
+  if (!tracking) return <p className="text-xs text-zinc-600">불러오는 중...</p>;
   const ns = tracking.networkStatus || {};
   const d = tracking.dashboard || {};
   const t = d.totals || {};
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap gap-2 text-xs">
-        <span>제휴 승인: <Pill status={ns.affiliateApproval === "APPROVED" ? "PASS" : "FAIL"}>{ns.affiliateApproval}</Pill></span>
-        <span>공개 추적: <Pill status="FAIL">{ns.publicTracking}</Pill></span>
-        <span>Impact API: <Pill status={ns.apiSync?.impact?.startsWith("READY") ? "PASS" : "NEEDS_CONFIGURATION"}>{ns.apiSync?.impact}</Pill></span>
-        <span>VisitorsCoverage: <Pill status="NEEDS_CONFIGURATION">{ns.apiSync?.visitorsCoverage}</Pill></span>
+      <div className="flex flex-wrap gap-2 text-[11px] text-zinc-500">
+        <span>제휴 승인: {ns.affiliateApproval}</span>
+        <span>공개 추적: {ns.publicTracking}</span>
+        <span>Impact API: {ns.apiSync?.impact}</span>
+        <span>VisitorsCoverage: {ns.apiSync?.visitorsCoverage}</span>
         <span>활성 상품: {ns.activeProductCount}</span>
       </div>
       <p className="rounded bg-amber-950/40 px-2 py-1 text-[11px] text-amber-300">{ns.note}</p>
-
       <div className="grid grid-cols-2 gap-2 text-center sm:grid-cols-4">
         {[
           ["실제 클릭", t.clicks],
@@ -564,20 +838,29 @@ function TrackingPanel({ tracking, csv, setCsv, onImport, busy }) {
         ))}
       </div>
       <div className="flex flex-wrap gap-3 text-[11px] text-zinc-500">
-        <span>상태분리 — 대기 {t.statusCounts?.pending ?? 0} · 승인 {t.statusCounts?.approved ?? 0} · 취소 {t.statusCounts?.reversed ?? 0} · 환불 {t.statusCounts?.refunded ?? 0}</span>
+        <span>
+          상태분리 — 대기 {t.statusCounts?.pending ?? 0} · 승인 {t.statusCounts?.approved ?? 0} · 취소 {t.statusCounts?.reversed ?? 0} · 환불{" "}
+          {t.statusCounts?.refunded ?? 0}
+        </span>
         <span>데이터 출처: {d.dataSource}</span>
         <span>마지막 동기화: {d.lastSyncAt || "없음"}</span>
       </div>
-
       <details>
         <summary className="cursor-pointer text-xs text-emerald-400">공식 CSV 리포트 import (fallback)</summary>
-        <p className="mt-2 text-[11px] text-zinc-500">헤더 예: actionId,campaignId,status,units,revenue,commission,isTest — 중복 actionId는 자동 제외, 실제 네트워크 데이터만 인정됩니다.</p>
-        <textarea value={csv} onChange={(e) => setCsv(e.target.value)} placeholder="actionId,campaignId,status,units,revenue,commission&#10;A100,c__art-004__...,approved,1,120,12" className="mt-2 h-24 w-full rounded border border-zinc-700 bg-black/40 p-2 font-mono text-[11px]" />
+        <p className="mt-2 text-[11px] text-zinc-500">헤더 예: actionId,campaignId,status,units,revenue,commission,isTest — 중복 actionId는 자동 제외됩니다.</p>
+        <textarea
+          value={csv}
+          onChange={(e) => setCsv(e.target.value)}
+          placeholder="actionId,campaignId,status,units,revenue,commission"
+          className="mt-2 h-24 w-full rounded border border-zinc-700 bg-black/40 p-2 font-mono text-[11px]"
+        />
         <button onClick={onImport} disabled={!!busy || !csv.trim()} className="mt-2 rounded bg-zinc-700 px-3 py-1 text-xs hover:bg-zinc-600 disabled:opacity-50">
           {busy === "csv" ? "가져오는 중..." : "CSV 가져오기"}
         </button>
         {tracking.imports?.length > 0 && (
-          <p className="mt-2 text-[11px] text-zinc-500">최근 import: 추가 {tracking.imports.at(-1).added} · 중복제외 {tracking.imports.at(-1).skippedDuplicates} · 거부 {tracking.imports.at(-1).rejected}</p>
+          <p className="mt-2 text-[11px] text-zinc-500">
+            최근 import: 추가 {tracking.imports.at(-1).added} · 중복제외 {tracking.imports.at(-1).skippedDuplicates} · 거부 {tracking.imports.at(-1).rejected}
+          </p>
         )}
       </details>
     </div>

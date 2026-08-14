@@ -7,11 +7,11 @@ export const metadata = {
 
 const NAV_ITEMS = [
   { href: "/atlas", label: "Dashboard" },
-  { href: "/atlas/revenue", label: "수익 자동화 R2" },
+  { href: "/atlas/revenue", label: "블로그 글 만들기" },
   { href: "/atlas/blog-studio", label: "Blog Studio" },
   { href: "/atlas/shorts-studio", label: "Shorts Studio" },
   { href: "/atlas/video-library", label: "Video Library" },
-  { href: "/atlas/publishing", label: "Publishing Center" },
+  { href: "/atlas/publishing", label: "블로그 발행" },
   { href: "/atlas/product-center", label: "Product Center" },
 ];
 

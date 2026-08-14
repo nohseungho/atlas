@@ -20,10 +20,15 @@ function generate() {
   const keywords = readJson("keywords.json").keywords || [];
   const articles = readJson("articles.json").articles || [];
   const categories = readJson("categories.json").items || [];
+  // Jobs that already exist are part of the duplicate check: a topic already in
+  // production is not a new recommendation. They also tell the builder which
+  // Money Hunter candidates are spent, so a refilled slot never re-offers one.
+  const jobs = readJson("production-jobs.json").jobs || [];
   return buildRecommendations({
     keywords,
     articles,
     categories,
+    jobs,
     affiliateActiveCount: countActiveAffiliate(articles),
     liveData: trendLive(),
   });

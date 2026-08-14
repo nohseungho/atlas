@@ -2501,6 +2501,250 @@
       "bloggerStatus": "LIVE",
       "bloggerSyncedAt": "2026-08-13T13:06:21.194Z",
       "publishedAt": "2026-08-13T13:06:21.194Z"
+    },
+    {
+      "id": "art_014",
+      "keyword": "When to Buy Travel Insurance for Hurricane Season",
+      "title": "When to Buy Travel Insurance for Hurricane Season",
+      "hookTitle": "When to Buy Travel Insurance for Hurricane Season",
+      "slug": "when-to-buy-travel-insurance-hurricane-season",
+      "language": "en",
+      "searchIntent": "hurricane-season-travel-insurance-purchase-timing",
+      "searchIntentKey": "hurricane-season-travel-insurance-purchase-timing",
+      "coreQuestion": "When should a traveler buy travel insurance for a hurricane-season trip so that a future storm remains unforeseen under the policy?",
+      "topicEntities": [
+        "hurricane season",
+        "named storm",
+        "travel insurance",
+        "trip cancellation",
+        "trip interruption",
+        "Cancel For Any Reason",
+        "airline refund"
+      ],
+      "desiredReaderAction": "Compare policy terms immediately after the first nonrefundable trip payment and before a relevant storm becomes a named or known event.",
+      "excerpt": "",
+      "metaDescription": "Learn when to buy travel insurance for hurricane season, what named-storm exclusions mean, and how to protect nonrefundable trip costs before forecasts change.",
+      "category": "Travel",
+      "tags": [
+        "travel insurance",
+        "hurricane season",
+        "named storm",
+        "trip cancellation",
+        "travel planning"
+      ],
+      "template": "guide",
+      "persona": "US Tourist",
+      "seoCluster": "travel-insurance",
+      "seoLabels": [
+        "Travel Insurance",
+        "Trip Cost",
+        "hurricane season",
+        "named storm"
+      ],
+      "internalLinks": [
+        {
+          "articleId": "art_002",
+          "title": "Travel Insurance for International Trips: What to Compare First",
+          "url": "https://atlas-money-2026.blogspot.com/2026/07/best-travel-insurance-for-international.html",
+          "cluster": "travel-insurance",
+          "score": 5
+        },
+        {
+          "articleId": "art_003",
+          "title": "Travel Medical Insurance vs. Trip Insurance: Which Coverage Fits an International Trip?",
+          "url": "https://atlas-money-2026.blogspot.com/2026/07/travel-medical-insurance-vs-trip-insurance.html",
+          "cluster": "travel-insurance",
+          "score": 5
+        },
+        {
+          "articleId": "art_008",
+          "title": "Travel Insurance Pre-Existing Condition Waiver: How to Qualify",
+          "url": "https://atlas-money-2026.blogspot.com/2026/07/travel-insurance-pre-existing-condition.html",
+          "cluster": "travel-insurance",
+          "score": 5
+        },
+        {
+          "articleId": "art_009",
+          "title": "Cruise Travel Insurance: How to Compare Medical Evacuation Coverage",
+          "url": "https://atlas-money-2026.blogspot.com/2026/07/cruise-travel-insurance-how-to-compare.html",
+          "cluster": "travel-insurance",
+          "score": 5
+        }
+      ],
+      "jsonLd": {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "When to Buy Travel Insurance for Hurricane Season",
+        "description": "Learn when to buy travel insurance for hurricane season, what named-storm exclusions mean, and how to protect nonrefundable trip costs before forecasts change.",
+        "inLanguage": "en-US",
+        "isAccessibleForFree": true,
+        "publisher": {
+          "@type": "Organization",
+          "name": "ATLAS — Travel Risk & Cost Guides",
+          "url": "https://atlas-money-2026.blogspot.com"
+        },
+        "image": [
+          "https://res.cloudinary.com/dmfbj4tu/image/upload/c_fill,f_webp,h_900,q_auto,w_1600/v1786715978/atlas/articles/when-to-buy-travel-insurance-hurricane-season/featured?_a=BAMAAAX00",
+          "https://res.cloudinary.com/dmfbj4tu/image/upload/c_fill,f_webp,h_900,q_auto,w_1600/v1786715979/atlas/articles/when-to-buy-travel-insurance-hurricane-season/context?_a=BAMAAAX00",
+          "https://res.cloudinary.com/dmfbj4tu/image/upload/c_fill,f_webp,h_900,q_auto,w_1600/v1786715981/atlas/articles/when-to-buy-travel-insurance-hurricane-season/comparison?_a=BAMAAAX00",
+          "https://res.cloudinary.com/dmfbj4tu/image/upload/c_fill,f_webp,h_900,q_auto,w_1600/v1786715983/atlas/articles/when-to-buy-travel-insurance-hurricane-season/action?_a=BAMAAAX00",
+          "https://res.cloudinary.com/dmfbj4tu/image/upload/c_fill,f_webp,h_900,q_auto,w_1600/v1786715984/atlas/articles/when-to-buy-travel-insurance-hurricane-season/checklist?_a=BAMAAAX00"
+        ]
+      },
+      "outline": [],
+      "quickAnswer": "Compare or buy coverage immediately after the first nonrefundable payment and before a storm that could affect the trip becomes a named or known event.",
+      "comparisonCriteria": [],
+      "keyTakeaways": [],
+      "comparisonHeaders": [],
+      "comparisonTable": [],
+      "sources": [
+        {
+          "title": "National Association of Insurance Commissioners — Taking a Trip? What to Know About Travel Insurance",
+          "url": "https://content.naic.org/article/consumer-insight-taking-trip-information-about-travel-insurance-you-should-know-you-hit-road"
+        },
+        {
+          "title": "NOAA — Prepare Before Hurricane Season",
+          "url": "https://www.noaa.gov/prepare-before-hurricane-season"
+        },
+        {
+          "title": "U.S. Department of Transportation — Refunds",
+          "url": "https://www.transportation.gov/individuals/aviation-consumer-protection/refunds"
+        },
+        {
+          "title": "U.S. Department of State — Travel Insurance",
+          "url": "https://travel.state.gov/en/international-travel/planning/guidance/insurance.html"
+        },
+        {
+          "title": "National Hurricane Center — Tropical Weather Outlooks",
+          "url": "https://www.nhc.noaa.gov/"
+        }
+      ],
+      "trust": {
+        "methodology": "A timing-first guide that separates the first nonrefundable payment, named-storm foreseeability, supplier refunds, airline refund rights, standard covered reasons, and optional CFAR rules."
+      },
+      "relatedArticles": [],
+      "heroImage": null,
+      "visualAssets": [
+        {
+          "key": "featured",
+          "placement": "embedded",
+          "alt": "Miji reviews a coastal itinerary and travel insurance documents beside a hurricane weather map at home.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": "https://res.cloudinary.com/dmfbj4tu/image/upload/c_fill,f_webp,h_900,q_auto,w_1600/v1786715978/atlas/articles/when-to-buy-travel-insurance-hurricane-season/featured?_a=BAMAAAX00"
+        },
+        {
+          "key": "context",
+          "placement": "embedded",
+          "alt": "Miji checks a weather alert with her suitcase in a coastal airport as storm clouds gather outside.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": "https://res.cloudinary.com/dmfbj4tu/image/upload/c_fill,f_webp,h_900,q_auto,w_1600/v1786715979/atlas/articles/when-to-buy-travel-insurance-hurricane-season/context?_a=BAMAAAX00"
+        },
+        {
+          "key": "comparison",
+          "placement": "embedded",
+          "alt": "Miji compares two travel coverage summaries with a calendar, hotel folder, and flight documents.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": "https://res.cloudinary.com/dmfbj4tu/image/upload/c_fill,f_webp,h_900,q_auto,w_1600/v1786715981/atlas/articles/when-to-buy-travel-insurance-hurricane-season/comparison?_a=BAMAAAX00"
+        },
+        {
+          "key": "action",
+          "placement": "embedded",
+          "alt": "Miji saves booking receipts and policy documents immediately after reserving a coastal vacation.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": "https://res.cloudinary.com/dmfbj4tu/image/upload/c_fill,f_webp,h_900,q_auto,w_1600/v1786715983/atlas/articles/when-to-buy-travel-insurance-hurricane-season/action?_a=BAMAAAX00"
+        },
+        {
+          "key": "checklist",
+          "placement": "embedded",
+          "alt": "Miji packs medication, a charger, flashlight, passport, and waterproof document sleeve for a coastal trip.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": "https://res.cloudinary.com/dmfbj4tu/image/upload/c_fill,f_webp,h_900,q_auto,w_1600/v1786715984/atlas/articles/when-to-buy-travel-insurance-hurricane-season/checklist?_a=BAMAAAX00"
+        }
+      ],
+      "affiliatePlan": {
+        "providerId": "",
+        "providerName": "",
+        "network": "",
+        "status": "pending",
+        "url": "",
+        "disclosure": "",
+        "cta": {
+          "topLabel": "",
+          "decisionLabel": ""
+        },
+        "productSlots": []
+      },
+      "bodyMarkdown": "",
+      "bodyHtml": "<h2>Quick Answer</h2>\n<p>Buy or compare travel insurance as soon as you make your first nonrefundable trip payment, not when a hurricane appears on the forecast. Once a tropical storm is named or otherwise becomes a known event, a newly purchased policy will typically exclude losses connected to that storm, so the useful window may already be closed.</p>\n<p><strong>ATLAS Letters — Miji to Suo:</strong> Suo, I found a good coastal hotel for late summer, but the rate becomes nonrefundable today. Should I insure the trip now, wait for the seasonal forecast, or buy only if a storm starts moving toward the destination?</p>\n<p><strong>Suo’s reply:</strong> Treat the first nonrefundable payment as the decision point. First confirm what the airline, hotel, cruise line, and credit card already promise. Then compare a policy while the trip is still free of a known storm that could affect it.</p>\n<figure style=\"margin:28px 0;\">\n  <img src=\"https://res.cloudinary.com/dmfbj4tu/image/upload/c_fill,f_webp,h_900,q_auto,w_1600/v1786715978/atlas/articles/when-to-buy-travel-insurance-hurricane-season/featured?_a=BAMAAAX00\" alt=\"Miji reviews a coastal itinerary and travel insurance documents beside a hurricane weather map at home.\" loading=\"eager\" decoding=\"async\" style=\"display:block;width:100%;height:auto;border-radius:12px;\" />\n</figure>\n\n<h2>The Money at Risk</h2>\n<p>The amount at risk is the portion of your trip that you cannot recover from the travel supplier. Add the nonrefundable airfare, hotel deposits, cruise fare, vacation rental, tours, transfers, event tickets, and prepaid activities. Do not insure a refundable amount simply because it appears on the booking total. Keep the cancellation terms that were shown when you paid.</p>\n<p>Hurricane-season disruption can create several different losses. A carrier may cancel a flight, a hotel may remain open while the airport closes, a cruise may change ports, or you may reach the destination and then have to leave early. One refund rule or one insurance benefit does not automatically solve all four situations.</p>\n<p>The U.S. Department of Transportation says a passenger is entitled to a refund when an airline cancels a flight and the passenger chooses not to travel or accept alternative compensation. A refund may also be due after a significant schedule change when the traveler declines the changed itinerary. That protection concerns the airline ticket and certain airline fees; it does not automatically repay unrelated lodging, tours, meals, ground transport, or the unused part of a trip already underway.</p>\n<p>The National Association of Insurance Commissioners advises that travel insurance is designed for sudden and unforeseen events. It specifically warns that buying after a winter or tropical storm is named typically will not provide coverage for claims related to that event. This is why waiting for a threatening forecast can turn a policy purchase into a payment for protection that does not address the storm you are worried about.</p>\n<figure style=\"margin:28px 0;\">\n  <img src=\"https://res.cloudinary.com/dmfbj4tu/image/upload/c_fill,f_webp,h_900,q_auto,w_1600/v1786715979/atlas/articles/when-to-buy-travel-insurance-hurricane-season/context?_a=BAMAAAX00\" alt=\"Miji checks a weather alert with her suitcase in a coastal airport as storm clouds gather outside.\" loading=\"lazy\" decoding=\"async\" style=\"display:block;width:100%;height:auto;border-radius:12px;\" />\n</figure>\n<p><strong>Insurance disclaimer:</strong> This guide provides general U.S. consumer information, not legal, financial, medical, or individualized insurance advice. Coverage, exclusions, eligibility, effective dates, reimbursement percentages, required documentation, and claim decisions depend on the actual policy, booking terms, facts of the loss, and applicable law.</p>\n\n<h2>Situation Comparison or Decision Table</h2>\n<figure style=\"margin:28px 0;\">\n  <img src=\"https://res.cloudinary.com/dmfbj4tu/image/upload/c_fill,f_webp,h_900,q_auto,w_1600/v1786715981/atlas/articles/when-to-buy-travel-insurance-hurricane-season/comparison?_a=BAMAAAX00\" alt=\"Miji compares two travel coverage summaries with a calendar, hotel folder, and flight documents.\" loading=\"lazy\" decoding=\"async\" style=\"display:block;width:100%;height:auto;border-radius:12px;\" />\n</figure>\n<div style=\"overflow-x:auto;\">\n<table>\n  <thead><tr><th>Situation</th><th>Best time to act</th><th>What may help</th><th>What to verify</th></tr></thead>\n  <tbody>\n    <tr><td>You just paid a nonrefundable hotel or cruise deposit</td><td>Compare policies immediately, while no relevant storm is known</td><td>Standard trip cancellation or interruption benefits for listed covered reasons</td><td>Effective date, covered severe-weather triggers, destination evacuation, carrier shutdown, lodging uninhabitability, and claim documents</td></tr>\n    <tr><td>The booking is still fully refundable</td><td>Record the free-cancellation deadline and compare before the first amount becomes nonrefundable</td><td>Supplier refund terms may protect the payment without a claim</td><td>Exact deadline, time zone, cancellation method, and whether fees remain nonrefundable</td></tr>\n    <tr><td>A tropical storm has already been named</td><td>Do not assume a new policy covers that storm; read the known-event language before buying</td><td>Existing coverage purchased earlier and supplier refunds may still apply</td><td>When the event became foreseeable under the contract and whether the claimed loss is connected to it</td></tr>\n    <tr><td>You want freedom to cancel because forecasts make you uncomfortable</td><td>Review optional Cancel For Any Reason terms soon after the first trip payment</td><td>CFAR may cover a broader decision to cancel, subject to strict timing and partial reimbursement</td><td>Purchase window, required insured trip cost, cancellation deadline, eligibility, and reimbursement percentage</td></tr>\n    <tr><td>The airline cancels but the hotel remains open</td><td>Request the airline remedy first, then examine the remaining prepaid losses</td><td>DOT airfare refund rights plus any applicable policy benefit for the other losses</td><td>Whether you accepted rebooking, the hotel cancellation terms, and the policy’s carrier-delay or cancellation trigger</td></tr>\n    <tr><td>You are already traveling when an evacuation order or closure occurs</td><td>Contact the insurer’s assistance line as soon as it is safe</td><td>Trip interruption, delay, missed connection, or additional-expense benefits may apply</td><td>Covered trigger, daily and total limits, approval requirements, receipts, and proof of the official order or closure</td></tr>\n  </tbody>\n</table>\n</div>\n<p>The key distinction is between a bad forecast and a covered loss. A standard policy does not usually pay simply because you would rather avoid uncertain weather. The contract may instead require a specified event such as a carrier cancellation, mandatory evacuation, destination becoming uninhabitable, or a defined delay. The wording and timing control.</p>\n\n<h2>What to Do Before You Travel</h2>\n<ol>\n  <li><strong>List the first nonrefundable date.</strong> Put every airfare, lodging, cruise, tour, transfer, and activity into a simple worksheet. Record the amount, refund deadline, and cancellation rule. This establishes when your financial exposure actually begins.</li>\n  <li><strong>Compare coverage immediately after that exposure begins.</strong> Do not wait for a seasonal outlook or a storm track. Early comparison preserves more options and gives you time to read the policy before a named event limits storm-related coverage.</li>\n  <li><strong>Separate supplier refunds from insurance.</strong> Save the airline contract of carriage, hotel rate terms, cruise policy, and tour cancellation terms. Ask what happens after a named storm, airport closure, evacuation order, shortened cruise, or destination closure. A supplier credit is not the same as a cash refund, and accepting it may affect another claim.</li>\n  <li><strong>Read the severe-weather definitions.</strong> Search the policy for hurricane, named storm, severe weather, natural disaster, mandatory evacuation, uninhabitable, common carrier, trip cancellation, trip interruption, delay, and foreseeable event. Do not rely on a sales-page summary.</li>\n  <li><strong>Check the timing rules.</strong> Confirm when coverage becomes effective, whether benefits tied to the first trip payment have an eligibility window, and whether all prepaid trip costs must be insured. Optional CFAR and some waivers can have stricter deadlines than standard benefits.</li>\n  <li><strong>Match coverage to the real failure point.</strong> If the largest risk is a cruise deposit, verify itinerary-change and embarkation terms. If it is a vacation rental, verify what happens when access is blocked but the building is undamaged. If it is an international trip, separately check emergency medical and evacuation benefits because trip cancellation insurance usually does not pay foreign medical bills.</li>\n  <li><strong>Keep evidence before a storm exists.</strong> Save dated booking confirmations, payment receipts, policy certificate, full policy wording, and screenshots or PDFs of cancellation terms. If disruption occurs, save carrier notices, official evacuation orders, closure notices, delay records, new travel receipts, and refund correspondence.</li>\n  <li><strong>Know the first phone call.</strong> Save the insurer’s assistance and claim numbers offline. When disruption begins, contact the carrier or supplier for its remedy, then contact the insurer before making expensive alternative arrangements when it is safe and practical to do so.</li>\n  <li><strong>Monitor official information.</strong> NOAA says the Atlantic and central Pacific hurricane seasons officially run from June 1 through November 30. Use National Hurricane Center outlooks and destination emergency agencies for decisions; social posts and model screenshots are not substitutes for official notices required by a claim.</li>\n  <li><strong>Make a go, change, or cancel decision sheet.</strong> Write who can cancel each reservation, the last refundable moment, what evidence is required, and which expenses need prior approval. This converts a vague weather worry into actions that can be taken quickly.</li>\n</ol>\n<figure style=\"margin:28px 0;\">\n  <img src=\"https://res.cloudinary.com/dmfbj4tu/image/upload/c_fill,f_webp,h_900,q_auto,w_1600/v1786715983/atlas/articles/when-to-buy-travel-insurance-hurricane-season/action?_a=BAMAAAX00\" alt=\"Miji saves booking receipts and policy documents immediately after reserving a coastal vacation.\" loading=\"lazy\" decoding=\"async\" style=\"display:block;width:100%;height:auto;border-radius:12px;\" />\n</figure>\n<p>A practical buying script is: “My first nonrefundable payment was made on this date. Which hurricane or severe-weather events are covered, when does coverage start, what makes an event foreseeable, and what documents would prove cancellation, interruption, or delay?” Save the answer with the policy version you reviewed.</p>\n<figure style=\"margin:28px 0;\">\n  <img src=\"https://res.cloudinary.com/dmfbj4tu/image/upload/c_fill,f_webp,h_900,q_auto,w_1600/v1786715984/atlas/articles/when-to-buy-travel-insurance-hurricane-season/checklist?_a=BAMAAAX00\" alt=\"Miji packs medication, a charger, flashlight, passport, and waterproof document sleeve for a coastal trip.\" loading=\"lazy\" decoding=\"async\" style=\"display:block;width:100%;height:auto;border-radius:12px;\" />\n</figure>\n<ul>\n  <li>First nonrefundable payment date and amount</li>\n  <li>Supplier cancellation and refund deadlines</li>\n  <li>Full policy wording, not only a benefit summary</li>\n  <li>Named-storm and foreseeable-event definition</li>\n  <li>Covered cancellation, interruption, and delay triggers</li>\n  <li>CFAR eligibility and timing rules, if considered</li>\n  <li>Airline refund and rebooking decision recorded separately</li>\n  <li>Offline assistance numbers and official weather sources</li>\n  <li>Folder for notices, receipts, refund records, and claim evidence</li>\n</ul>\n\n<h2>Common Mistakes</h2>\n<p><strong>Waiting until a storm is named.</strong> The consequence is that the event may already be foreseeable and excluded from a newly purchased policy. Compare coverage when the first payment becomes nonrefundable.</p>\n<p><strong>Assuming every hurricane-related loss is covered.</strong> The consequence is a denied claim when the policy requires a specific trigger that never occurred. Match the facts to the contract’s listed covered reasons.</p>\n<p><strong>Insuring refundable expenses.</strong> The consequence can be paying to insure money the supplier would already return. Calculate only the genuine nonrefundable exposure and update it as additional payments are made.</p>\n<p><strong>Treating CFAR as ordinary cancellation coverage.</strong> The consequence is missing a purchase deadline, cancellation cutoff, or trip-cost requirement. Review CFAR as a separate optional benefit with separate rules.</p>\n<p><strong>Confusing an airline refund with complete trip reimbursement.</strong> The consequence is leaving hotel, cruise, rental, or tour losses unresolved. Handle the carrier remedy first, then assess each remaining prepaid expense.</p>\n<p><strong>Canceling based only on an alarming forecast.</strong> The consequence may be a voluntary cancellation that does not meet a covered reason. Check official notices, supplier options, and the policy before acting.</p>\n<p><strong>Discarding booking terms after purchase.</strong> The consequence is weak proof of what was nonrefundable and when. Preserve the terms, payment record, policy version, notices, and all refund decisions.</p>\n\n<h2>FAQ</h2>\n<h3>Should I buy travel insurance before hurricane season starts?</h3>\n<p>The calendar is less important than your booking date. Compare coverage as soon as you make the first nonrefundable payment, and buy before a storm that could affect the trip becomes a known or named event.</p>\n<h3>Will a policy cover a hurricane that has already been named?</h3>\n<p>Often not for losses connected to that storm. NAIC warns that buying after a tropical storm is named typically will not cover claims related to that event. Read the policy definition of a foreseeable or known event.</p>\n<h3>Does trip cancellation coverage apply whenever rain ruins a vacation?</h3>\n<p>No. Standard coverage generally requires a listed covered reason, such as a qualifying carrier cancellation, destination evacuation, or severe weather condition defined by the contract. Disappointment or a poor forecast alone is usually insufficient.</p>\n<h3>Do I need insurance if the airline must refund a canceled flight?</h3>\n<p>Possibly. A DOT refund may return the unused airfare when you decline rebooking, but it does not automatically reimburse a separate prepaid hotel, cruise, rental, tour, extra meals, or an interruption after departure.</p>\n<h3>Is Cancel For Any Reason coverage the same as regular trip cancellation?</h3>\n<p>No. CFAR is an optional, time-sensitive benefit with its own purchase window, cancellation deadline, eligibility rules, and partial-reimbursement terms. The exact contract controls, so compare it separately from standard named-reason coverage.</p>\n\n<h2>Sources &amp; References</h2>\n<ul>\n  <li><a href=\"https://content.naic.org/article/consumer-insight-taking-trip-information-about-travel-insurance-you-should-know-you-hit-road\">National Association of Insurance Commissioners — Taking a Trip? What to Know About Travel Insurance</a></li>\n  <li><a href=\"https://www.noaa.gov/prepare-before-hurricane-season\">NOAA — Prepare Before Hurricane Season</a></li>\n  <li><a href=\"https://www.transportation.gov/individuals/aviation-consumer-protection/refunds\">U.S. Department of Transportation — Refunds</a></li>\n  <li><a href=\"https://travel.state.gov/en/international-travel/planning/guidance/insurance.html\">U.S. Department of State — Travel Insurance</a></li>\n  <li><a href=\"https://www.nhc.noaa.gov/\">National Hurricane Center — Tropical Weather Outlooks</a></li>\n</ul>\n\n<h2>Related ATLAS Guides</h2>\n<ul></ul>\n\n<section class=\"atlas-related\">\n  <h2>Related ATLAS Guides</h2>\n  <ul>\n    <li><a href=\"https://atlas-money-2026.blogspot.com/2026/07/best-travel-insurance-for-international.html\">Travel Insurance for International Trips: What to Compare First</a></li>\n    <li><a href=\"https://atlas-money-2026.blogspot.com/2026/07/travel-medical-insurance-vs-trip-insurance.html\">Travel Medical Insurance vs. Trip Insurance: Which Coverage Fits an International Trip?</a></li>\n    <li><a href=\"https://atlas-money-2026.blogspot.com/2026/07/travel-insurance-pre-existing-condition.html\">Travel Insurance Pre-Existing Condition Waiver: How to Qualify</a></li>\n    <li><a href=\"https://atlas-money-2026.blogspot.com/2026/07/cruise-travel-insurance-how-to-compare.html\">Cruise Travel Insurance: How to Compare Medical Evacuation Coverage</a></li>\n  </ul>\n</section>\n",
+      "faq": [
+        {
+          "question": "Should I buy travel insurance before hurricane season starts?",
+          "answer": "The calendar is less important than your booking date. Compare coverage as soon as you make the first nonrefundable payment, and buy before a storm that could affect the trip becomes a known or named event."
+        },
+        {
+          "question": "Will a policy cover a hurricane that has already been named?",
+          "answer": "Often not for losses connected to that storm. NAIC warns that buying after a tropical storm is named typically will not cover claims related to that event. Read the policy definition of a foreseeable or known event."
+        },
+        {
+          "question": "Does trip cancellation coverage apply whenever rain ruins a vacation?",
+          "answer": "No. Standard coverage generally requires a listed covered reason, such as a qualifying carrier cancellation, destination evacuation, or severe weather condition defined by the contract. Disappointment or a poor forecast alone is usually insufficient."
+        },
+        {
+          "question": "Do I need insurance if the airline must refund a canceled flight?",
+          "answer": "Possibly. A DOT refund may return the unused airfare when you decline rebooking, but it does not automatically reimburse a separate prepaid hotel, cruise, rental, tour, extra meals, or an interruption after departure."
+        },
+        {
+          "question": "Is Cancel For Any Reason coverage the same as regular trip cancellation?",
+          "answer": "No. CFAR is an optional, time-sensitive benefit with its own purchase window, cancellation deadline, eligibility rules, and partial-reimbursement terms. The exact contract controls, so compare it separately from standard named-reason coverage."
+        }
+      ],
+      "qualityChecklist": {
+        "hasDisclaimer": true
+      },
+      "koreanReview": "",
+      "status": "published",
+      "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/08/when-to-buy-travel-insurance-for.html",
+      "blogId": "blog_001",
+      "moneyHunterId": "kw_023",
+      "researchQuery": "Official U.S. guidance on hurricane season dates, named-storm travel insurance timing, airline refunds, and international travel insurance",
+      "researchedAt": "2026-08-14",
+      "trendEvidence": "NOAA identifies June 1 through November 30 as the official Atlantic and central Pacific hurricane seasons, while NAIC warns that storm-related coverage is typically unavailable when a policy is bought after a tropical storm is named.",
+      "purchaseIntent": "High planning intent among travelers with new nonrefundable coastal, island, cruise, or Caribbean bookings who need to compare storm-related cancellation and interruption terms.",
+      "affiliatePotential": "Potential future fit for appropriately licensed travel-insurance comparison services after partner approval; no product ranking, quote, price, or commercial placement is included.",
+      "contentGap": "A timing-first guide that separates the first nonrefundable payment, named-storm foreseeability, supplier refunds, airline refund rights, standard covered reasons, and optional CFAR rules.",
+      "createdAt": "2026-08-14T13:59:45.838Z",
+      "updatedAt": "2026-08-14T14:15:29.070Z",
+      "publishState": "published",
+      "approvedAt": "2026-08-14T14:15:20.266Z",
+      "publishError": "",
+      "publishErrorCode": "",
+      "publishingStartedAt": "",
+      "bloggerBlogId": "3095933984698455887",
+      "bloggerPostId": "6374467558839736992",
+      "bloggerUrl": "https://atlas-money-2026.blogspot.com/2026/08/when-to-buy-travel-insurance-for.html",
+      "bloggerStatus": "LIVE",
+      "bloggerSyncedAt": "2026-08-14T14:15:29.062Z",
+      "publishedAt": "2026-08-14T14:15:29.062Z"
     }
   ]
 }

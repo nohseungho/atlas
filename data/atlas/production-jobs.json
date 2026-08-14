@@ -838,6 +838,375 @@
         "updatedAt": "2026-08-13T13:02:57.466Z",
         "adopted": "기존 job에서 승계됨"
       }
+    },
+    {
+      "id": "pjob_009",
+      "idempotencyKey": "handoff:blog_001:rec_choosing-travel-medical-insurance-for-senior-travelers",
+      "topic": "Choosing Travel Medical Insurance for Senior Travelers",
+      "searchIntent": "Find age-appropriate travel medical coverage and pre-existing condition rules",
+      "axis": "traveler-segment-coverage",
+      "recommendation": {
+        "title": "Choosing Travel Medical Insurance for Senior Travelers",
+        "searchIntent": "Find age-appropriate travel medical coverage and pre-existing condition rules",
+        "type": "segment-guide",
+        "contentAxis": {
+          "id": "traveler-segment-coverage",
+          "label": "Family, Senior, Student and Frequent Traveler Coverage"
+        },
+        "reason": "Segment-specific guidance that differentiates from the general comparison posts.",
+        "origin": "editorial-seed",
+        "sourceMode": "EDITORIAL_FALLBACK",
+        "liveData": false,
+        "trend": {
+          "sevenDay": "UNKNOWN",
+          "thirtyDay": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+        },
+        "competition": {
+          "live": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+        },
+        "relation": {
+          "duplicationRisk": "LOW",
+          "overlappingArticleIds": [],
+          "relatedArticleIds": [
+            "art_003"
+          ],
+          "differentiatedIntent": "Find age-appropriate travel medical coverage and pre-existing condition rules",
+          "clusterRole": "기존 art_003 클러스터 보완"
+        },
+        "officialSource": {
+          "availability": "AVAILABLE",
+          "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+          "collectedAt": null
+        },
+        "monetization": {
+          "potential": "높음",
+          "futureProductCategories": [
+            "senior travel medical insurance"
+          ],
+          "activeAffiliateLinks": 0,
+          "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+          "salesCtaAllowed": false
+        },
+        "score": 90,
+        "scoreBreakdown": {
+          "contentFit": 30,
+          "intentUsefulness": 20,
+          "clusterConnection": 15,
+          "sourceAvailability": 15,
+          "monetizationReadiness": 10
+        },
+        "excludedComponents": [
+          {
+            "component": "timeliness",
+            "max": 10,
+            "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+          }
+        ],
+        "maxAvailableScore": 90,
+        "hardGate": {
+          "pass": true,
+          "failures": []
+        },
+        "eligibility": {
+          "canGenerate": true,
+          "blockedReason": null
+        },
+        "priority": 1
+      },
+      "articleId": "",
+      "status": "FAILED",
+      "step": "CHATGPT_REQUEST_READY",
+      "progress": {
+        "index": 0,
+        "total": 8,
+        "percent": 0
+      },
+      "steps": {},
+      "blocked": null,
+      "error": {
+        "userMessage": "중복 주제로 판정 — 이미 발행된 art_011(Travel Medical Insurance for Seniors Over 65)과 동일한 독자층·보험 유형입니다. 콘텐츠 패키지로 진행하지 않습니다."
+      },
+      "review": null,
+      "preview": null,
+      "bloggerDraft": null,
+      "createdAt": "2026-08-14T05:38:37.891Z",
+      "startedAt": null,
+      "updatedAt": "2026-08-14T07:11:16.351Z",
+      "blogId": "blog_001",
+      "moneyHunterId": "rec_choosing-travel-medical-insurance-for-senior-travelers",
+      "mode": "CHATGPT_HANDOFF",
+      "letters": {
+        "series": "ATLAS Letters",
+        "seriesId": "atlas-letters",
+        "weekStart": "2026-08-10",
+        "weekEnd": "2026-08-16",
+        "timezone": "Asia/Seoul",
+        "requester": "miji",
+        "responder": "suo",
+        "heroCharacterId": "miji",
+        "masterFileName": "ATLAS-MIJI-MASTER.png",
+        "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "label": "미지 → 스오"
+      },
+      "duplicateOf": "art_011",
+      "unusedReason": "R2 추천 중복 차단 이전에 생성된 잘못된 작업. 기록은 보존하되 미사용 처리합니다."
+    },
+    {
+      "id": "pjob_010",
+      "idempotencyKey": "when-to-buy-travel-insurance-for-hurricane-season",
+      "topic": "When To Buy Travel Insurance For Hurricane Season",
+      "searchIntent": "hurricane-season-travel-insurance-purchase-timing",
+      "moneyHunterId": "kw_023",
+      "axis": "international-travel-insurance",
+      "recommendation": {
+        "title": "When To Buy Travel Insurance For Hurricane Season",
+        "searchIntent": "hurricane-season-travel-insurance-purchase-timing",
+        "type": "guide",
+        "contentAxis": {
+          "id": "international-travel-insurance",
+          "label": "International Travel Insurance"
+        },
+        "reason": "미사용 Money Hunter 후보(kw_023). 중복으로 제외된 추천 슬롯을 채웠습니다 — 트렌드·검색량은 확인되지 않았습니다.",
+        "origin": "money-hunter-unused",
+        "moneyHunterId": "kw_023",
+        "keyword": "when to buy travel insurance for hurricane season",
+        "sourceMode": "EDITORIAL_FALLBACK",
+        "liveData": false,
+        "trend": {
+          "sevenDay": "UNKNOWN",
+          "thirtyDay": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+        },
+        "competition": {
+          "live": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+        },
+        "relation": {
+          "duplicationRisk": "LOW",
+          "overlappingArticleIds": [],
+          "relatedArticleIds": [],
+          "differentiatedIntent": "hurricane-season-travel-insurance-purchase-timing",
+          "clusterRole": "신규 클러스터 시드"
+        },
+        "officialSource": {
+          "availability": "AVAILABLE",
+          "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+          "collectedAt": null
+        },
+        "monetization": {
+          "potential": "낮음",
+          "futureProductCategories": [],
+          "activeAffiliateLinks": 0,
+          "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+          "salesCtaAllowed": false
+        },
+        "score": 71,
+        "scoreBreakdown": {
+          "contentFit": 30,
+          "intentUsefulness": 20,
+          "clusterConnection": 0,
+          "sourceAvailability": 15,
+          "monetizationReadiness": 6
+        },
+        "excludedComponents": [
+          {
+            "component": "timeliness",
+            "max": 10,
+            "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+          }
+        ],
+        "maxAvailableScore": 90,
+        "hardGate": {
+          "pass": true,
+          "failures": []
+        },
+        "eligibility": {
+          "canGenerate": true,
+          "blockedReason": null
+        },
+        "priority": 9
+      },
+      "articleId": "",
+      "status": "FAILED",
+      "step": "QUEUED",
+      "progress": {
+        "index": 0,
+        "total": 8,
+        "percent": 0
+      },
+      "steps": {},
+      "blocked": null,
+      "error": {
+        "userMessage": "중복 작업으로 종료 — 같은 후보(kw_023)로 만든 글이 art_014로 이미 발행되었습니다. 새 글 제작 대상이 아닙니다."
+      },
+      "review": null,
+      "preview": null,
+      "bloggerDraft": null,
+      "createdAt": "2026-08-14T07:11:44.582Z",
+      "startedAt": null,
+      "updatedAt": "2026-08-14T14:36:54.239Z",
+      "duplicateOf": "art_014",
+      "unusedReason": "pjob_011과 동일한 kw_023 작업. 기록은 보존하되 제작 대상에서 제외합니다."
+    },
+    {
+      "id": "pjob_011",
+      "idempotencyKey": "handoff:blog_001:kw_023",
+      "topic": "When To Buy Travel Insurance For Hurricane Season",
+      "searchIntent": "hurricane-season-travel-insurance-purchase-timing",
+      "moneyHunterId": "kw_023",
+      "axis": "international-travel-insurance",
+      "recommendation": {
+        "title": "When To Buy Travel Insurance For Hurricane Season",
+        "searchIntent": "hurricane-season-travel-insurance-purchase-timing",
+        "type": "guide",
+        "contentAxis": {
+          "id": "international-travel-insurance",
+          "label": "International Travel Insurance"
+        },
+        "reason": "미사용 Money Hunter 후보(kw_023). 중복으로 제외된 추천 슬롯을 채웠습니다 — 트렌드·검색량은 확인되지 않았습니다.",
+        "origin": "money-hunter-unused",
+        "moneyHunterId": "kw_023",
+        "keyword": "when to buy travel insurance for hurricane season",
+        "sourceMode": "EDITORIAL_FALLBACK",
+        "liveData": false,
+        "trend": {
+          "sevenDay": "UNKNOWN",
+          "thirtyDay": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+        },
+        "competition": {
+          "live": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+        },
+        "relation": {
+          "duplicationRisk": "LOW",
+          "overlappingArticleIds": [],
+          "relatedArticleIds": [],
+          "differentiatedIntent": "hurricane-season-travel-insurance-purchase-timing",
+          "clusterRole": "신규 클러스터 시드"
+        },
+        "officialSource": {
+          "availability": "AVAILABLE",
+          "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+          "collectedAt": null
+        },
+        "monetization": {
+          "potential": "낮음",
+          "futureProductCategories": [],
+          "activeAffiliateLinks": 0,
+          "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+          "salesCtaAllowed": false
+        },
+        "score": 71,
+        "scoreBreakdown": {
+          "contentFit": 30,
+          "intentUsefulness": 20,
+          "clusterConnection": 0,
+          "sourceAvailability": 15,
+          "monetizationReadiness": 6
+        },
+        "excludedComponents": [
+          {
+            "component": "timeliness",
+            "max": 10,
+            "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+          }
+        ],
+        "maxAvailableScore": 90,
+        "hardGate": {
+          "pass": true,
+          "failures": []
+        },
+        "eligibility": {
+          "canGenerate": true,
+          "blockedReason": null
+        },
+        "priority": 9
+      },
+      "articleId": "art_014",
+      "status": "READY_TO_PUBLISH",
+      "step": "QA",
+      "progress": {
+        "index": 0,
+        "total": 8,
+        "percent": 0
+      },
+      "steps": {
+        "PACKAGE_IMPORTED": {
+          "status": "done",
+          "at": "2026-08-14T13:59:45.838Z",
+          "detail": "이미지 5장 Cloudinary 업로드·구조 QA 통과 (art_014)"
+        },
+        "CONTENT_QA": {
+          "status": "done",
+          "at": "2026-08-14T13:59:45.838Z",
+          "detail": "자동 검수 통과 (사람 확인 필요 1건) — 승인·예약 가능",
+          "data": {
+            "blocking": [],
+            "needsHumanReview": [
+              {
+                "id": "fabrication",
+                "label": "통계·기관·인용문 실재 여부",
+                "reason": "수치 주장 0건. 사실 여부는 자동 검증이 불가능합니다 — 출처 3개와 대조해 사람이 확인해야 합니다."
+              }
+            ]
+          }
+        }
+      },
+      "blocked": null,
+      "error": null,
+      "review": null,
+      "preview": null,
+      "bloggerDraft": null,
+      "createdAt": "2026-08-14T07:11:44.738Z",
+      "startedAt": null,
+      "updatedAt": "2026-08-14T13:59:45.855Z",
+      "blogId": "blog_001",
+      "mode": "CHATGPT_HANDOFF",
+      "letters": {
+        "series": "ATLAS Letters",
+        "seriesId": "atlas-letters",
+        "weekStart": "2026-08-10",
+        "weekEnd": "2026-08-16",
+        "timezone": "Asia/Seoul",
+        "requester": "miji",
+        "responder": "suo",
+        "heroCharacterId": "miji",
+        "masterFileName": "ATLAS-MIJI-MASTER.png",
+        "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "label": "미지 → 스오"
+      },
+      "contentEntry": {
+        "id": "cp_pjob_011",
+        "blogId": "blog_001",
+        "keywordId": "kw_023",
+        "keyword": "When To Buy Travel Insurance For Hurricane Season",
+        "state": "QA_PASSED",
+        "failedFrom": "",
+        "failure": null,
+        "articleId": "art_014",
+        "jobId": "pjob_011",
+        "brief": null,
+        "scheduledAt": "",
+        "publishedUrl": "",
+        "history": [
+          {
+            "state": "IDEA",
+            "at": "2026-08-14T07:11:44.738Z",
+            "note": "파이프라인 등록"
+          },
+          {
+            "state": "QA_PASSED",
+            "at": "2026-08-14T13:59:45.854Z",
+            "note": "자동 검수 통과 (사람 확인 필요 1건) — 승인·예약 가능"
+          }
+        ],
+        "createdAt": "2026-08-14T07:11:44.738Z",
+        "updatedAt": "2026-08-14T13:59:45.854Z",
+        "adopted": "기존 job에서 승계됨"
+      }
     }
   ]
 }

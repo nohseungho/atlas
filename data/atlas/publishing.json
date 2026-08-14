@@ -349,6 +349,21 @@
       "updatedAt": "2026-08-13T13:06:21.195Z",
       "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/08/what-trip-cancellation-insurance.html",
       "externalId": "2131174677883722164"
+    },
+    {
+      "id": "job_024",
+      "articleId": "art_014",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "attemptCount": 1,
+      "maxAttempts": 3,
+      "lastError": null,
+      "nextRetryAt": null,
+      "createdAt": "2026-08-14T14:15:25.860Z",
+      "updatedAt": "2026-08-14T14:15:29.063Z",
+      "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/08/when-to-buy-travel-insurance-for.html",
+      "externalId": "6374467558839736992"
     }
   ],
   "history": [
@@ -1176,6 +1191,39 @@
       "message": "Blogger 자동 발행 성공",
       "error": null,
       "createdAt": "2026-08-13T13:06:21.198Z"
+    },
+    {
+      "id": "hist_076",
+      "jobId": "job_024",
+      "articleId": "art_014",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "queued",
+      "message": "Job 생성",
+      "error": null,
+      "createdAt": "2026-08-14T14:15:25.863Z"
+    },
+    {
+      "id": "hist_077",
+      "jobId": "job_024",
+      "articleId": "art_014",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "running",
+      "message": "자동 발행 시작",
+      "error": null,
+      "createdAt": "2026-08-14T14:15:25.867Z"
+    },
+    {
+      "id": "hist_078",
+      "jobId": "job_024",
+      "articleId": "art_014",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "message": "Blogger 자동 발행 성공",
+      "error": null,
+      "createdAt": "2026-08-14T14:15:29.066Z"
     }
   ]
 }

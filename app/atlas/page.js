@@ -3,9 +3,9 @@ import Link from "next/link";
 const CARDS = [
   {
     href: "/atlas/revenue",
-    title: "수익 자동화 R2",
+    title: "블로그 글 만들기",
     description:
-      "이번 주 자동추천 → 원고·QA → 승인·발행 → 쇼핑 쇼츠 → 캠페인 → 실제 성과 (한 화면 흐름)",
+      "1. 글 주제 선택 → 2. 제작 요청 파일 받기 → 3. 완성 글 파일 등록 → 4. 미리보기·검수 → 5. 블로그 발행 (한 화면 순서 진행)",
   },
   {
     href: "/atlas/blog-studio",
@@ -32,8 +32,8 @@ const CARDS = [
   },
   {
     href: "/atlas/publishing",
-    title: "Publishing Center",
-    description: "승인된 블로그·영상 패키지 확인 및 발행 준비",
+    title: "블로그 발행",
+    description: "승인된 블로그·영상 콘텐츠 확인 및 발행 준비",
   },
   {
     href: "/atlas/product-center",
