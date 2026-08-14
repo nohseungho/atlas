@@ -55,6 +55,11 @@ function num(v) {
   return v === null || v === undefined || v === "" ? "" : String(v);
 }
 
+async function fetchState(articleId) {
+  const res = await fetch(`/api/atlas/traffic?articleId=${encodeURIComponent(articleId)}`, { cache: "no-store" });
+  return res.json().catch(() => ({}));
+}
+
 export default function TrafficStep({ articleId }) {
   const [state, setState] = useState(null);
   const [note, setNote] = useState("");
@@ -62,14 +67,12 @@ export default function TrafficStep({ articleId }) {
   const [search, setSearch] = useState({ status: "unchecked", checkedAt: "", note: "" });
   const [metrics, setMetrics] = useState({ day7: null, day30: null });
   const [postForm, setPostForm] = useState({}); // { [variantId]: { postedAt, pinUrl } }
-  const [reload, setReload] = useState(0);
 
   // 저장된 기록은 서버에서 읽어온다 — 새로고침해도 확인 결과와 성과가 남는다.
   useEffect(() => {
     let alive = true;
     async function load() {
-      const res = await fetch(`/api/atlas/traffic?articleId=${encodeURIComponent(articleId)}`, { cache: "no-store" });
-      const data = await res.json().catch(() => ({}));
+      const data = await fetchState(articleId);
       if (!alive) return;
       setState(data);
       if (data.record) {
@@ -81,49 +84,51 @@ export default function TrafficStep({ articleId }) {
     return () => {
       alive = false;
     };
-  }, [articleId, reload]);
+  }, [articleId]);
 
-  // Pinterest 등록 완료 표시는 사람이 누른 것만 저장한다. 저장 후 다음 등록할
-  // 핀 안내가 바뀌므로 자료를 다시 읽는다.
-  async function savePosted(variantId, state) {
-    setBusy(`post-${variantId}`);
-    setNote("");
-    const res = await fetch("/api/atlas/traffic", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ articleId, action: "posted", variantId, state }),
-    });
-    const data = await res.json().catch(() => ({}));
-    setNote(
-      data.status === "ok"
-        ? state
-          ? "Pinterest 등록 완료로 표시했습니다."
-          : "등록 완료 표시를 취소했습니다. 기록은 남아 있습니다."
-        : `저장하지 못했습니다: ${(data.errors || []).join(" · ") || data.errorCode || "알 수 없는 이유"}`,
-    );
-    setBusy("");
-    if (data.status === "ok") setReload((n) => n + 1);
-  }
-
-  async function save(payload, key) {
+  // 저장 → 서버에서 되읽기 → 화면 갱신. 되읽은 값이 방금 보낸 값과 다르면
+  // 성공 메시지를 띄우지 않는다. "저장했습니다"는 파일에 남았을 때만 하는 말이다.
+  async function saveAndReload(payload, key, { verify, okText }) {
     setBusy(key);
     setNote("");
-    const res = await fetch("/api/atlas/traffic", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ articleId, ...payload }),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (data.status === "ok") {
-      setNote("저장했습니다. 새로고침해도 남아 있습니다.");
-      if (data.record) {
-        setSearch(data.record.search);
-        setMetrics(data.record.metrics);
-      }
-    } else {
-      setNote(`저장하지 못했습니다: ${(data.errors || []).join(" · ") || data.errorCode || "알 수 없는 이유"}`);
+    let data;
+    try {
+      const res = await fetch("/api/atlas/traffic", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ articleId, ...payload }),
+      });
+      data = await res.json().catch(() => ({}));
+    } catch {
+      setNote("저장하지 못했습니다: 서버에 연결하지 못했습니다.");
+      setBusy("");
+      return;
     }
+    if (data?.status !== "ok") {
+      setNote(`저장하지 못했습니다: ${(data?.errors || []).join(" · ") || data?.errorCode || "알 수 없는 이유"}`);
+      setBusy("");
+      return;
+    }
+
+    const fresh = await fetchState(articleId);
+    if (fresh?.status !== "ok" || !fresh.record) {
+      setNote("저장 결과를 다시 읽지 못했습니다. 화면을 새로고침해 상태를 확인하세요.");
+      setBusy("");
+      return;
+    }
+    setState(fresh);
+    setSearch(fresh.record.search || { status: "unchecked", checkedAt: "", note: "" });
+    setMetrics(fresh.record.metrics || { day7: null, day30: null });
+    setNote(verify(fresh) ? okText : "저장한 값이 다시 읽은 결과와 달라 저장에 실패했습니다. 다시 시도해 주세요.");
     setBusy("");
+  }
+
+  // Pinterest 등록 완료 표시는 사람이 누른 것만 저장한다.
+  function savePosted(variantId, state) {
+    return saveAndReload({ action: "posted", variantId, state }, `post-${variantId}`, {
+      verify: (fresh) => Boolean(fresh.record.posted?.[variantId]?.posted) === Boolean(state),
+      okText: state ? "Pinterest 등록 완료로 표시했습니다." : "등록 완료 표시를 취소했습니다. 기록은 남아 있습니다.",
+    });
   }
 
   function setMetricValue(period, group, field, value) {
@@ -372,7 +377,12 @@ export default function TrafficStep({ articleId }) {
         </div>
         <button
           type="button"
-          onClick={() => save({ action: "search", search }, "search")}
+          onClick={() =>
+            saveAndReload({ action: "search", search }, "search", {
+              verify: (fresh) => fresh.record.search?.status === (search.status || "unchecked"),
+              okText: "저장했습니다. 새로고침해도 남아 있습니다.",
+            })
+          }
           disabled={!!busy}
           className="mt-2 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-500 disabled:opacity-40"
         >
@@ -438,7 +448,29 @@ export default function TrafficStep({ articleId }) {
             </div>
             <button
               type="button"
-              onClick={() => save({ action: "metrics", period, metrics: metrics[period] || {} }, period)}
+              onClick={() =>
+                saveAndReload({ action: "metrics", period, metrics: metrics[period] || {} }, period, {
+                  verify: (fresh) => {
+                    const sent = metrics[period] || {};
+                    const got = fresh.record.metrics?.[period];
+                    if (!got) return false;
+                    for (const v of kit.variants) {
+                      for (const [f] of PIN_FIELDS) {
+                        const raw = sent.pins?.[v.id]?.[f];
+                        if (raw === "" || raw === null || raw === undefined) continue;
+                        if (Number(raw) !== got.pins?.[v.id]?.[f]) return false;
+                      }
+                    }
+                    for (const [f] of GOOGLE_FIELDS) {
+                      const raw = sent.google?.[f];
+                      if (raw === "" || raw === null || raw === undefined) continue;
+                      if (Number(raw) !== got.google?.[f]) return false;
+                    }
+                    return true;
+                  },
+                  okText: "저장했습니다. 새로고침해도 남아 있습니다.",
+                })
+              }
               disabled={!!busy}
               className="mt-2 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-500 disabled:opacity-40"
             >

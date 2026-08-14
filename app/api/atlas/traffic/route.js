@@ -13,6 +13,7 @@ import {
   normalizeMetrics,
   normalizePostState,
   normalizeSearchCheck,
+  upsertRecord,
   withPostingDefaults,
   VARIANTS,
 } from "@/lib/atlas/traffic-kit";
@@ -105,8 +106,15 @@ export async function POST(request) {
   }
 
   record.updatedAt = new Date().toISOString();
-  if (!recordFor(data, articleId)) data.records.push(record);
+  // withPostingDefaults()는 사본을 돌려주므로 목록에 다시 넣어야 파일에 남는다.
+  data.records = upsertRecord(data.records, record);
   writeJson(FILE, data);
 
-  return NextResponse.json({ status: "ok", record });
+  // 저장했다고 말하기 전에 파일에서 되읽어 확인한다 — 쓰기가 반영되지 않았는데
+  // 화면에 "저장했습니다"가 뜨는 일이 없어야 한다.
+  const saved = recordFor(readTraffic(), articleId);
+  if (!saved) {
+    return NextResponse.json({ status: "error", errorCode: "SAVE_NOT_PERSISTED" }, { status: 500 });
+  }
+  return NextResponse.json({ status: "ok", record: withPostingDefaults(saved) });
 }

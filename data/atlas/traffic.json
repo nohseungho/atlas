@@ -25,7 +25,25 @@
           "google": null
         }
       },
-      "updatedAt": "2026-08-14T15:10:22.900Z"
+      "updatedAt": "2026-08-14T15:37:55.399Z",
+      "posted": {
+        "question": {
+          "posted": true,
+          "postedAt": "2026-08-15",
+          "pinUrl": "https://kr.pinterest.com/pin/1087830485023271689/"
+        },
+        "mistake": null,
+        "checklist": null
+      },
+      "postLog": [
+        {
+          "variantId": "question",
+          "action": "posted",
+          "at": "2026-08-14T15:37:55.399Z",
+          "pinUrl": "https://kr.pinterest.com/pin/1087830485023271689/",
+          "postedAt": "2026-08-15"
+        }
+      ]
     }
   ]
 }
