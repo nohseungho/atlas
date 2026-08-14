@@ -25,15 +25,10 @@ const CARDS = [
   },
   {
     href: "/publisher",
-    title: "Publisher",
-    subtitle: "Blogger 실제 발행 관제",
+    title: "블로그 발행",
+    subtitle: "Blogger 실제 발행 · 기존 글 업데이트 · Pinterest 홍보 준비",
     description:
       "Blogger 실제 공개 상태 동기화 → 미리보기 → 승인 → 자동 발행 (postId·URL·발행시각 서버 저장, 중복 발행 차단)",
-  },
-  {
-    href: "/atlas/publishing",
-    title: "블로그 발행",
-    description: "승인된 블로그·영상 콘텐츠 확인 및 발행 준비",
   },
   {
     href: "/atlas/product-center",

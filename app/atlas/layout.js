@@ -11,7 +11,10 @@ const NAV_ITEMS = [
   { href: "/atlas/blog-studio", label: "Blog Studio" },
   { href: "/atlas/shorts-studio", label: "Shorts Studio" },
   { href: "/atlas/video-library", label: "Video Library" },
-  { href: "/atlas/publishing", label: "블로그 발행" },
+  // 반자동 제작의 실제 발행 화면은 /publisher다. /atlas/publishing은 Blog Studio
+  // 수동 MASTER 전용 레거시 화면이라 일반 메뉴에서는 노출하지 않고,
+  // "블로그 글 만들기 → 고급 설정"에만 남긴다.
+  { href: "/publisher", label: "블로그 발행" },
   { href: "/atlas/product-center", label: "Product Center" },
 ];
 

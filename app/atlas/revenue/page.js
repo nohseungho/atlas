@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import TrafficStep from "./TrafficStep";
 
 // ─── 블로그 글 만들기 — 1번부터 5번까지 한 화면 ─────────────────────────────
 // 사용자는 설명 없이 위에서 아래로 따라가기만 하면 된다. 화면에는 "지금 눌러야
@@ -16,6 +17,7 @@ const STEPS = [
   { n: 3, title: "완성 글 파일 등록", hint: "ChatGPT가 준 파일을 이 화면에 등록합니다." },
   { n: 4, title: "미리보기·검수", hint: "본문을 확인하고 발행을 승인합니다." },
   { n: 5, title: "블로그 발행", hint: "블로그에 실제로 올립니다." },
+  { n: 6, title: "트래픽 배포", hint: "발행한 글을 사람들이 찾아오게 만듭니다." },
 ];
 
 const STATE_STYLE = {
@@ -54,7 +56,8 @@ function currentStepOf(job, row) {
   const requestReady = job.mode === "CHATGPT_HANDOFF" || Boolean(job.articleId);
   if (!requestReady) return 2;
   if (!job.articleId) return 3;
-  if (row?.publishState === "published") return 5;
+  // 발행이 끝나야 트래픽 배포가 열린다 — 공개 URL이 없으면 홍보할 대상이 없다.
+  if (row?.publishState === "published") return 6;
   if (row?.publishState === "approved" || row?.canPublish) return 5;
   return 4;
 }
@@ -121,7 +124,7 @@ export default function RevenuePage() {
   const published = Boolean(job) && isPublished(job);
   const open = openStep ?? cur;
 
-  const statusOf = (n) => (published || n < cur ? "done" : n === cur ? "active" : "wait");
+  const statusOf = (n) => (n < cur ? "done" : n === cur ? "active" : "wait");
   const goto = (n) => {
     setMsg(null);
     setOpenStep(n);
@@ -307,7 +310,7 @@ export default function RevenuePage() {
         </header>
 
         {/* ── 진행 표시 ── */}
-        <ol className="grid gap-2 sm:grid-cols-5">
+        <ol className="grid gap-2 sm:grid-cols-3 lg:grid-cols-6">
           {STEPS.map((s) => {
             const st = statusOf(s.n);
             return (
@@ -350,7 +353,7 @@ export default function RevenuePage() {
                     w.id === job?.id ? "border-sky-500 bg-sky-950/40 text-sky-200" : "border-zinc-700 text-zinc-400 hover:text-zinc-100"
                   }`}
                 >
-                  {w.topic} · {isPublished(w) ? "발행 완료" : `${currentStepOf(w, rowFor(w))}단계`}
+                  {w.topic} · {currentStepOf(w, rowFor(w))}단계
                 </button>
               ))}
             </div>
@@ -499,7 +502,7 @@ export default function RevenuePage() {
         </StepCard>
 
         {/* ── 5. 블로그 발행 ── */}
-        <StepCard step={STEPS[4]} status={statusOf(5)} open={open === 5} nextEnabled={false}>
+        <StepCard step={STEPS[4]} status={statusOf(5)} open={open === 5} onNext={() => goto(6)} nextEnabled={cur > 5}>
           {statusOf(5) === "wait" ? (
             <p className="text-sm text-zinc-500">4번에서 발행 승인을 먼저 하세요.</p>
           ) : published ? (
@@ -526,9 +529,18 @@ export default function RevenuePage() {
           )}
         </StepCard>
 
+        {/* ── 6. 트래픽 배포 ── */}
+        <StepCard step={STEPS[5]} status={statusOf(6)} open={open === 6} nextEnabled={false}>
+          {statusOf(6) === "wait" ? (
+            <p className="text-sm text-zinc-500">블로그 발행 후 사용할 수 있습니다.</p>
+          ) : (
+            <TrafficStep articleId={job?.articleId} />
+          )}
+        </StepCard>
+
         {published && (
           <p className="rounded-lg border border-emerald-900 bg-emerald-950/30 px-3 py-2 text-xs text-emerald-300">
-            이 글은 5단계까지 모두 끝났습니다. 새 글을 시작하려면 1번에서 “다른 주제로 새 글 시작”을 누르세요.
+            이 글은 발행까지 끝났습니다. 새 글을 시작하려면 1번에서 “다른 주제로 새 글 시작”을 누르세요.
           </p>
         )}
 
@@ -622,8 +634,8 @@ export default function RevenuePage() {
 
             <section className="flex flex-wrap gap-3 text-xs text-zinc-500">
               <Link href="/money-hunter" className="underline hover:text-zinc-200">키워드 DB · 영문 키워드 발굴</Link>
-              <Link href="/atlas/publishing" className="underline hover:text-zinc-200">발행 준비 확인</Link>
-              <Link href="/publisher" className="underline hover:text-zinc-200">Blogger 발행 관제</Link>
+              <Link href="/atlas/publishing" className="underline hover:text-zinc-200">기존 수동 원고 발행</Link>
+              <Link href="/publisher" className="underline hover:text-zinc-200">블로그 발행 화면</Link>
             </section>
           </div>
         </details>
