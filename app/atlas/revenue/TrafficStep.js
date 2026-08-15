@@ -18,22 +18,82 @@ const GOOGLE_FIELDS = [
 ];
 const SEARCH_LABEL = { unchecked: "확인 전", indexed: "색인됨", not_indexed: "색인 안 됨" };
 
+// 화면에 보이는 문자열을 그대로 클립보드에 넣는다. 이 화면의 모든 복사 버튼이
+// 이 함수 하나만 쓴다.
+//
+// navigator.clipboard 는 보안 컨텍스트에서만 존재하고, 있어도 문서가 포커스를
+// 잃은 상태 등에서는 거부한다. 그래서 실패하면 textarea + execCommand('copy')로
+// 한 번 더 시도한다. 성공을 확인했을 때만 true를 돌려준다 — 실패를 "복사됨"으로
+// 표시하지 않기 위해서다.
+export async function copyText(value) {
+  const text = String(value ?? "");
+  if (!text) return false;
+
+  if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      // 아래 fallback으로 넘어간다.
+    }
+  }
+
+  if (typeof document === "undefined" || typeof document.execCommand !== "function") return false;
+
+  const active = document.activeElement;
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.setAttribute("readonly", "");
+  // 화면에 보이지 않으면서도 선택은 가능해야 한다. display:none 이면 선택이 안 된다.
+  ta.style.position = "fixed";
+  ta.style.top = "0";
+  ta.style.left = "0";
+  ta.style.opacity = "0";
+  ta.style.pointerEvents = "none";
+  document.body.appendChild(ta);
+  try {
+    ta.focus();
+    ta.select();
+    ta.setSelectionRange(0, text.length);
+    return document.execCommand("copy") === true;
+  } catch {
+    return false;
+  } finally {
+    ta.remove();
+    if (active && typeof active.focus === "function") active.focus();
+  }
+}
+
 function CopyButton({ value, label = "복사", onCopied }) {
+  // { ok, at } — 누를 때마다 새 객체라서 연속으로 눌러도 안내가 다시 뜬다.
+  const [feedback, setFeedback] = useState(null);
+
+  useEffect(() => {
+    if (!feedback) return undefined;
+    const timer = setTimeout(() => setFeedback(null), 2500);
+    return () => clearTimeout(timer);
+  }, [feedback]);
+
   return (
-    <button
-      type="button"
-      onClick={async () => {
-        try {
-          await navigator.clipboard.writeText(String(value ?? ""));
-          onCopied?.("복사했습니다.");
-        } catch {
-          onCopied?.("복사하지 못했습니다 — 아래 상자에서 직접 선택해 복사하세요.");
-        }
-      }}
-      className="shrink-0 rounded border border-zinc-700 px-2 py-0.5 text-[11px] text-zinc-300 hover:bg-zinc-800"
-    >
-      {label}
-    </button>
+    <span className="inline-flex shrink-0 items-center gap-1">
+      <button
+        type="button"
+        onClick={async () => {
+          const ok = await copyText(value);
+          setFeedback({ ok, at: Date.now() });
+          onCopied?.(ok ? "복사했습니다." : "복사하지 못했습니다. 다시 눌러주세요.");
+        }}
+        className="shrink-0 rounded border border-zinc-700 px-2 py-0.5 text-[11px] text-zinc-300 hover:bg-zinc-800"
+      >
+        {label}
+      </button>
+      {/* 버튼 바로 옆에서 결과를 알린다. 화면 맨 위 안내만으로는 눌러도 아무
+          반응이 없는 것처럼 보였다. */}
+      {feedback?.ok === true && <span className="text-[11px] font-semibold text-emerald-400">복사됨</span>}
+      {feedback?.ok === false && (
+        <span className="text-[11px] font-semibold text-rose-400">복사하지 못했습니다. 다시 눌러주세요.</span>
+      )}
+    </span>
   );
 }
 
@@ -166,7 +226,15 @@ export default function TrafficStep({ articleId }) {
         발행된 글을 사람들이 찾아오게 만드는 단계입니다. 아래 자료를 복사해 Pinterest와 기존 글에 직접 붙여넣고, 확인한 결과만 여기에
         적어 두면 됩니다. ATLAS가 대신 올리거나 클릭을 만들지 않습니다.
       </p>
-      {note && <p className="rounded-lg bg-emerald-950/40 px-3 py-2 text-xs text-emerald-300">{note}</p>}
+      {note && (
+        <p
+          className={`rounded-lg px-3 py-2 text-xs ${
+            /하지 못했|실패/.test(note) ? "bg-rose-950/40 text-rose-300" : "bg-emerald-950/40 text-emerald-300"
+          }`}
+        >
+          {note}
+        </p>
+      )}
 
       {/* ── A. Pinterest 홍보자료 3종 ── */}
       <section>
