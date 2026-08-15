@@ -136,7 +136,9 @@ function PublisherContent() {
 
     if (data.status === "succeeded") {
       clearAuthIssue(blogId);
-      setPublishResult({ publishedUrl: data.publishedUrl, postId: data.postId, verified: data.verified });
+      // articleId를 함께 들고 있어야 발행 성공 카드에서 방금 발행한 글의
+      // 6단계(트래픽 배포)로 정확히 이어갈 수 있다.
+      setPublishResult({ articleId, publishedUrl: data.publishedUrl, postId: data.postId, verified: data.verified });
     } else if (data.status === "linked_existing") {
       setMessage(`기존 글 연결됨 (${data.matchedBy} 일치) — 새 게시물을 만들지 않았습니다. postId: ${data.postId}`);
     } else if (data.status === "duplicate") {
@@ -278,19 +280,30 @@ function PublisherContent() {
               >
                 게시글 보기
               </a>
+              {/* 발행 다음 순서는 이 글의 6단계 트래픽 배포다. 방금 발행한 글을
+                  그대로 열도록 articleId를 붙여 보낸다. */}
+              <Link
+                href={
+                  publishResult.articleId
+                    ? `/atlas/revenue?articleId=${encodeURIComponent(publishResult.articleId)}`
+                    : "/atlas/revenue"
+                }
+                className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500"
+              >
+                6단계 트래픽 배포로 이동
+              </Link>
               <Link
                 href="/blog-manager"
                 className="rounded-lg bg-zinc-700 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-600"
               >
                 Blog Manager로 이동
               </Link>
-              <Link
-                href="/"
-                className="rounded-lg bg-zinc-700 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-600"
-              >
-                Dashboard로 이동
-              </Link>
             </div>
+            {/* 운영 대시보드는 다음 단계가 아니라 참고용이므로 버튼이 아닌
+                보조 링크로만 남긴다. */}
+            <Link href="/" className="inline-block text-xs text-zinc-400 underline hover:text-zinc-200">
+              운영 대시보드
+            </Link>
           </section>
         )}
 

@@ -364,6 +364,21 @@
       "updatedAt": "2026-08-14T14:15:29.063Z",
       "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/08/when-to-buy-travel-insurance-for.html",
       "externalId": "6374467558839736992"
+    },
+    {
+      "id": "job_025",
+      "articleId": "art_015",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "attemptCount": 1,
+      "maxAttempts": 3,
+      "lastError": null,
+      "nextRetryAt": null,
+      "createdAt": "2026-08-15T07:04:06.257Z",
+      "updatedAt": "2026-08-15T07:04:09.591Z",
+      "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/08/annual-multi-trip-travel-insurance-is.html",
+      "externalId": "8039688117432630210"
     }
   ],
   "history": [
@@ -1224,6 +1239,39 @@
       "message": "Blogger 자동 발행 성공",
       "error": null,
       "createdAt": "2026-08-14T14:15:29.066Z"
+    },
+    {
+      "id": "hist_079",
+      "jobId": "job_025",
+      "articleId": "art_015",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "queued",
+      "message": "Job 생성",
+      "error": null,
+      "createdAt": "2026-08-15T07:04:06.259Z"
+    },
+    {
+      "id": "hist_080",
+      "jobId": "job_025",
+      "articleId": "art_015",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "running",
+      "message": "자동 발행 시작",
+      "error": null,
+      "createdAt": "2026-08-15T07:04:06.264Z"
+    },
+    {
+      "id": "hist_081",
+      "jobId": "job_025",
+      "articleId": "art_015",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "message": "Blogger 자동 발행 성공",
+      "error": null,
+      "createdAt": "2026-08-15T07:04:09.596Z"
     }
   ]
 }

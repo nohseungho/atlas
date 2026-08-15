@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import TrafficStep from "./TrafficStep";
 
@@ -63,6 +64,16 @@ function currentStepOf(job, row) {
 }
 
 export default function RevenuePage() {
+  // useSearchParams는 Suspense 안에서만 쓸 수 있다 (발행 화면과 같은 방식).
+  return (
+    <Suspense fallback={null}>
+      <RevenueScreen />
+    </Suspense>
+  );
+}
+
+function RevenueScreen() {
+  const searchParams = useSearchParams();
   const [rec, setRec] = useState(null);
   const [jobs, setJobs] = useState([]);
   const [rows, setRows] = useState([]);
@@ -116,6 +127,27 @@ export default function RevenuePage() {
         .sort((a, b) => b.id.localeCompare(a.id)),
     [jobs],
   );
+
+  // 발행 화면에서 "6단계 트래픽 배포로 이동"으로 넘어오면 그 글을 그대로 연다.
+  // 주소에 남아 있으므로 새로고침해도 같은 글이 다시 선택된다. 없는 id면 아무것도
+  // 하지 않고 평소 기본 선택(가장 최근 작업)으로 둔다.
+  const focusArticleId = searchParams.get("articleId") || "";
+  const focusJobId = searchParams.get("jobId") || "";
+  const focusApplied = useRef("");
+
+  useEffect(() => {
+    const key = `${focusJobId}|${focusArticleId}`;
+    if (!focusJobId && !focusArticleId) return;
+    if (focusApplied.current === key || flow.length === 0) return;
+    const match = flow.find(
+      (j) => (focusJobId && j.id === focusJobId) || (focusArticleId && j.articleId === focusArticleId),
+    );
+    focusApplied.current = key;
+    if (match) {
+      setCurrentJobId(match.id);
+      setOpenStep(null);
+    }
+  }, [flow, focusArticleId, focusJobId]);
 
   // "__new__" = 사용자가 새 글을 시작한 상태 (아직 작업 기록이 없다).
   const job = currentJobId === "__new__" ? null : flow.find((j) => j.id === currentJobId) || flow[0] || null;
