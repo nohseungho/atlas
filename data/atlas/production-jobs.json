@@ -1207,6 +1207,144 @@
         "updatedAt": "2026-08-14T13:59:45.854Z",
         "adopted": "기존 job에서 승계됨"
       }
+    },
+    {
+      "id": "pjob_012",
+      "idempotencyKey": "handoff:blog_001:rec_annual-multi-trip-travel-insurance-is-it-worth-it",
+      "topic": "Annual Multi-Trip Travel Insurance: Is It Worth It?",
+      "searchIntent": "Decide between single-trip and annual multi-trip policies for frequent travelers",
+      "moneyHunterId": "rec_annual-multi-trip-travel-insurance-is-it-worth-it",
+      "axis": "traveler-segment-coverage",
+      "recommendation": {
+        "title": "Annual Multi-Trip Travel Insurance: Is It Worth It?",
+        "searchIntent": "Decide between single-trip and annual multi-trip policies for frequent travelers",
+        "type": "comparison",
+        "contentAxis": {
+          "id": "traveler-segment-coverage",
+          "label": "Family, Senior, Student and Frequent Traveler Coverage"
+        },
+        "reason": "Frequent-traveler comparison with clear commercial intent.",
+        "origin": "editorial-seed",
+        "sourceMode": "EDITORIAL_FALLBACK",
+        "liveData": false,
+        "trend": {
+          "sevenDay": "UNKNOWN",
+          "thirtyDay": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: 실시간 트렌드 API 미연동"
+        },
+        "competition": {
+          "live": "UNKNOWN",
+          "source": "NEEDS_CONFIGURATION: SERP 경쟁도 API 미연동"
+        },
+        "relation": {
+          "duplicationRisk": "LOW",
+          "overlappingArticleIds": [],
+          "relatedArticleIds": [
+            "art_002",
+            "art_003"
+          ],
+          "differentiatedIntent": "Decide between single-trip and annual multi-trip policies for frequent travelers",
+          "clusterRole": "기존 art_002, art_003 클러스터 보완"
+        },
+        "officialSource": {
+          "availability": "AVAILABLE",
+          "status": "공식 출처 존재(예: US State Dept·CDC·보험 약관) — 원고 생성 단계에서 실제 URL 수집",
+          "collectedAt": null
+        },
+        "monetization": {
+          "potential": "높음",
+          "futureProductCategories": [
+            "annual multi-trip insurance"
+          ],
+          "activeAffiliateLinks": 0,
+          "affiliateReadiness": "BLOCKED_AFFILIATE_APPROVAL",
+          "salesCtaAllowed": false
+        },
+        "score": 90,
+        "scoreBreakdown": {
+          "contentFit": 30,
+          "intentUsefulness": 20,
+          "clusterConnection": 15,
+          "sourceAvailability": 15,
+          "monetizationReadiness": 10
+        },
+        "excludedComponents": [
+          {
+            "component": "timeliness",
+            "max": 10,
+            "reason": "실시간 트렌드/계절성 데이터 미확인 → 점수에서 제외"
+          }
+        ],
+        "maxAvailableScore": 90,
+        "hardGate": {
+          "pass": true,
+          "failures": []
+        },
+        "eligibility": {
+          "canGenerate": true,
+          "blockedReason": null
+        },
+        "priority": 1
+      },
+      "articleId": "art_015",
+      "status": "REVIEW_REQUIRED",
+      "step": "QA",
+      "progress": {
+        "index": 0,
+        "total": 8,
+        "percent": 0
+      },
+      "steps": {
+        "PACKAGE_IMPORTED": {
+          "status": "done",
+          "at": "2026-08-15T06:25:15.462Z",
+          "detail": "이미지 5장 Cloudinary 업로드·구조 QA 통과 (art_015)"
+        },
+        "CONTENT_QA": {
+          "status": "review",
+          "at": "2026-08-15T06:25:15.462Z",
+          "detail": "검수 실패 1건 — 발행 차단",
+          "data": {
+            "blocking": [
+              {
+                "id": "mobile",
+                "label": "모바일 레이아웃(고정폭·표 오버플로)",
+                "reason": "가로 스크롤 래퍼가 없는 표 1개"
+              }
+            ],
+            "needsHumanReview": [
+              {
+                "id": "fabrication",
+                "label": "통계·기관·인용문 실재 여부",
+                "reason": "수치 주장 4건. 사실 여부는 자동 검증이 불가능합니다 — 출처 4개와 대조해 사람이 확인해야 합니다."
+              }
+            ]
+          }
+        }
+      },
+      "blocked": null,
+      "error": null,
+      "review": null,
+      "preview": null,
+      "bloggerDraft": null,
+      "createdAt": "2026-08-15T04:19:58.998Z",
+      "startedAt": null,
+      "updatedAt": "2026-08-15T06:25:15.470Z",
+      "blogId": "blog_001",
+      "mode": "CHATGPT_HANDOFF",
+      "letters": {
+        "series": "ATLAS Letters",
+        "seriesId": "atlas-letters",
+        "weekStart": "2026-08-10",
+        "weekEnd": "2026-08-16",
+        "timezone": "Asia/Seoul",
+        "requester": "miji",
+        "responder": "suo",
+        "heroCharacterId": "miji",
+        "masterFileName": "ATLAS-MIJI-MASTER.png",
+        "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "label": "미지 → 스오"
+      }
     }
   ]
 }

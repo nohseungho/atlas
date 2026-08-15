@@ -124,6 +124,13 @@ export default function RevenuePage() {
   const published = Boolean(job) && isPublished(job);
   const open = openStep ?? cur;
 
+  // 진행 단계가 바뀌면 손으로 펼쳐 둔 고정을 푼다. 이게 없으면 1번을 펼쳐 둔 채
+  // 주제를 고른 순간 2번이 "진행 중"으로 표시만 되고 접힌 채 남아, 눌러야 할
+  // "제작 요청 파일 받기" 버튼이 화면 어디에도 보이지 않는다.
+  useEffect(() => {
+    setOpenStep(null);
+  }, [cur]);
+
   const statusOf = (n) => (n < cur ? "done" : n === cur ? "active" : "wait");
   const goto = (n) => {
     setMsg(null);
@@ -361,7 +368,7 @@ export default function RevenuePage() {
         )}
 
         {/* ── 1. 글 주제 선택 ── */}
-        <StepCard step={STEPS[0]} status={statusOf(1)} open={open === 1} onNext={() => goto(2)} nextEnabled={cur > 1}>
+        <StepCard step={STEPS[0]} status={statusOf(1)} open={open === 1} onOpen={() => goto(1)} onNext={() => goto(2)} nextEnabled={cur > 1}>
           {statusOf(1) === "done" && (job || pickedTopic) ? (
             <>
               <p className="text-sm text-zinc-300">
@@ -415,7 +422,7 @@ export default function RevenuePage() {
         </StepCard>
 
         {/* ── 2. 제작 요청 파일 받기 ── */}
-        <StepCard step={STEPS[1]} status={statusOf(2)} open={open === 2} onNext={() => goto(3)} nextEnabled={cur > 2}>
+        <StepCard step={STEPS[1]} status={statusOf(2)} open={open === 2} onOpen={() => goto(2)} onNext={() => goto(3)} nextEnabled={cur > 2}>
           {statusOf(2) === "wait" ? (
             <p className="text-sm text-zinc-500">1번에서 주제를 먼저 고르세요.</p>
           ) : (
@@ -435,7 +442,7 @@ export default function RevenuePage() {
         </StepCard>
 
         {/* ── 3. 완성 글 파일 등록 ── */}
-        <StepCard step={STEPS[2]} status={statusOf(3)} open={open === 3} onNext={() => goto(4)} nextEnabled={cur > 3}>
+        <StepCard step={STEPS[2]} status={statusOf(3)} open={open === 3} onOpen={() => goto(3)} onNext={() => goto(4)} nextEnabled={cur > 3}>
           {statusOf(3) === "wait" ? (
             <p className="text-sm text-zinc-500">2번에서 요청 파일을 먼저 받으세요.</p>
           ) : statusOf(3) === "done" ? (
@@ -465,7 +472,7 @@ export default function RevenuePage() {
         </StepCard>
 
         {/* ── 4. 미리보기·검수 ── */}
-        <StepCard step={STEPS[3]} status={statusOf(4)} open={open === 4} onNext={() => goto(5)} nextEnabled={cur > 4}>
+        <StepCard step={STEPS[3]} status={statusOf(4)} open={open === 4} onOpen={() => goto(4)} onNext={() => goto(5)} nextEnabled={cur > 4}>
           {statusOf(4) === "wait" ? (
             <p className="text-sm text-zinc-500">3번에서 완성 글을 먼저 등록하세요.</p>
           ) : (
@@ -482,12 +489,22 @@ export default function RevenuePage() {
                 <p key={r.id} className="mt-1 text-xs text-amber-300">● {r.reason}</p>
               ))}
               {job?.articleId && (
-                <Link
-                  href={`/writer/${job.articleId}`}
-                  className="mt-3 inline-block rounded-lg border border-zinc-700 px-3 py-1.5 text-xs text-zinc-300 hover:text-zinc-100"
-                >
-                  본문 미리보기 열기
-                </Link>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Link
+                    href={`/writer/${job.articleId}`}
+                    className="inline-block rounded-lg border border-zinc-700 px-3 py-1.5 text-xs text-zinc-300 hover:text-zinc-100"
+                  >
+                    본문 미리보기 열기
+                  </Link>
+                  {/* 글자만 보이는 편집기와 달리, 표·이미지 5장까지 실제로 그려진
+                      화면으로 확인한다. 발행 화면의 Local Preview를 그대로 쓴다. */}
+                  <Link
+                    href={`/publisher?id=${job.articleId}`}
+                    className="inline-block rounded-lg border border-zinc-700 px-3 py-1.5 text-xs text-zinc-300 hover:text-zinc-100"
+                  >
+                    이미지 포함 미리보기
+                  </Link>
+                </div>
               )}
               {statusOf(4) === "done" ? (
                 <p className="mt-3 text-sm text-emerald-300">검수와 발행 승인이 끝났습니다.</p>
@@ -502,7 +519,7 @@ export default function RevenuePage() {
         </StepCard>
 
         {/* ── 5. 블로그 발행 ── */}
-        <StepCard step={STEPS[4]} status={statusOf(5)} open={open === 5} onNext={() => goto(6)} nextEnabled={cur > 5}>
+        <StepCard step={STEPS[4]} status={statusOf(5)} open={open === 5} onOpen={() => goto(5)} onNext={() => goto(6)} nextEnabled={cur > 5}>
           {statusOf(5) === "wait" ? (
             <p className="text-sm text-zinc-500">4번에서 발행 승인을 먼저 하세요.</p>
           ) : published ? (
@@ -530,7 +547,7 @@ export default function RevenuePage() {
         </StepCard>
 
         {/* ── 6. 트래픽 배포 ── */}
-        <StepCard step={STEPS[5]} status={statusOf(6)} open={open === 6} nextEnabled={false}>
+        <StepCard step={STEPS[5]} status={statusOf(6)} open={open === 6} onOpen={() => goto(6)} nextEnabled={false}>
           {statusOf(6) === "wait" ? (
             <p className="text-sm text-zinc-500">블로그 발행 후 사용할 수 있습니다.</p>
           ) : (
@@ -644,15 +661,25 @@ export default function RevenuePage() {
   );
 }
 
-function StepCard({ step, status, open, children, onNext, nextEnabled }) {
+function StepCard({ step, status, open, children, onNext, nextEnabled, onOpen }) {
   if (!open) {
+    // 접힌 줄도 눌러서 펼 수 있어야 한다. 예전에는 클릭 대상이 위쪽 진행 표시줄
+    // 뿐이라, 파란 "진행 중" 줄을 눌러도 아무 반응이 없는 것처럼 보였다.
+    const canOpen = status !== "wait" && typeof onOpen === "function";
     return (
-      <section className={`rounded-xl border px-4 py-3 ${STATE_STYLE[status]}`}>
-        <div className="flex flex-wrap items-center gap-2">
+      <section className={`rounded-xl border ${STATE_STYLE[status]}`}>
+        <button
+          type="button"
+          onClick={canOpen ? onOpen : undefined}
+          disabled={!canOpen}
+          className={`flex w-full flex-wrap items-center gap-2 px-4 py-3 text-left ${
+            canOpen ? "hover:brightness-125" : "cursor-not-allowed"
+          }`}
+        >
           <span className="font-mono text-xs">{step.n}</span>
           <h2 className="text-sm font-semibold">{step.title}</h2>
           <span className="ml-auto text-xs">{STATE_LABEL[status]}</span>
-        </div>
+        </button>
       </section>
     );
   }

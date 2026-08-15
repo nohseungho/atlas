@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { readMasterBody, masterBodyPatch } from "@/lib/atlas/master-body";
 
 export default function ArticleEditorPage() {
   const { id } = useParams();
@@ -33,7 +34,10 @@ export default function ArticleEditorPage() {
       setArticle(found);
       setSeoTitle(found.title || "");
       setHookTitle(found.hookTitle || "");
-      setEnglishMaster(found.bodyMarkdown || "");
+      // ChatGPT 패키지로 등록된 글은 본문이 bodyHtml에만 있다. bodyMarkdown만
+      // 읽으면 English MASTER가 빈 칸으로 보이고, 그 상태로 저장하면 본문이
+      // 통째로 지워진다.
+      setEnglishMaster(readMasterBody(found));
       setKoreanReview(found.koreanReview || "");
     }
     load();
@@ -67,7 +71,8 @@ export default function ArticleEditorPage() {
         id,
         title: seoTitle,
         hookTitle,
-        bodyMarkdown: englishMaster,
+        // 본문이 실제로 들어 있던 필드로 되돌려 쓴다.
+        ...masterBodyPatch(article, englishMaster),
         koreanReview,
       }),
     });

@@ -63,9 +63,18 @@ export async function PATCH(request) {
   if (typeof body.title === "string") article.title = body.title;
   if (typeof body.hookTitle === "string") article.hookTitle = body.hookTitle;
   if (typeof body.koreanReview === "string") article.koreanReview = body.koreanReview;
-  if (typeof body.bodyMarkdown === "string") {
+  // 본문 저장. 빈 값으로 이미 저장된 본문을 지우지 않는다 — CHATGPT_HANDOFF 글은
+  // bodyMarkdown 없이 bodyHtml만 갖고 있어서, 빈 bodyMarkdown이 한 번 들어오면
+  // 여기서 파생되는 bodyHtml까지 통째로 날아간다.
+  const hasStoredBody = Boolean(String(article.bodyMarkdown || "").trim() || String(article.bodyHtml || "").trim());
+  if (typeof body.bodyMarkdown === "string" && (body.bodyMarkdown.trim() || !hasStoredBody)) {
     article.bodyMarkdown = body.bodyMarkdown;
     article.bodyHtml = markdownToHtml(body.bodyMarkdown);
+  }
+  // 패키지로 들어온 글은 bodyHtml이 canonical MASTER다. 마크다운에서 파생하지
+  // 않고 그대로 저장한다.
+  if (typeof body.bodyHtml === "string" && (body.bodyHtml.trim() || !hasStoredBody)) {
+    article.bodyHtml = body.bodyHtml;
   }
   article.updatedAt = now;
   writeJson(FILE, data);
