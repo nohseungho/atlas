@@ -83,7 +83,7 @@ Product Tie-in: ${productLine}`;
 // 새 화면을 만들지 않고 여기에 모드 탭으로 붙인다.
 const MODES = [
   { id: "prompt", label: "MagicLight 프롬프트" },
-  { id: "photo", label: "상품 사진형 판매카드" },
+  { id: "photo", label: "쇼핑쇼츠 · 상품 사진형 판매카드" },
 ];
 
 export default function ShortsStudioPage() {

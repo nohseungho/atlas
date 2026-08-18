@@ -10,7 +10,9 @@ import {
   buildCaptionText,
   buildCards,
   buildPackageJson,
+  priceEvidence,
 } from "@/lib/atlas/photo-card/copy-engine";
+import { affiliateState } from "@/lib/atlas/product-link";
 import { getPreset, PRESETS } from "@/lib/atlas/photo-card/presets";
 import {
   canvasToPngBlob,
@@ -276,9 +278,23 @@ export default function PhotoCardStudio() {
               >
                 {product ? linkStatusLabel(product) : "상품 미선택"}
               </span>
+              {/* 제휴 링크가 없으면 대기 상태를 분명히 보여 준다. 가짜 링크는 만들지 않는다. */}
+              {product ? (
+                <span
+                  className={`rounded px-2 py-1 ${
+                    affiliateState(product).mayRenderBuyButton
+                      ? "bg-emerald-500/20 text-emerald-300"
+                      : "bg-amber-500/15 text-amber-300"
+                  }`}
+                >
+                  {affiliateState(product).label}
+                </span>
+              ) : null}
               <span className="rounded bg-zinc-800 px-2 py-1 text-zinc-400">이미지 {images.length}장</span>
               <span className="rounded bg-zinc-800 px-2 py-1 text-zinc-400">출력 1080×1920 PNG</span>
             </div>
+            {/* 카드 안에도 들어가지만, 제작 화면에서 먼저 눈으로 확인할 수 있게 둔다. */}
+            {product ? <p className="mt-2 text-[11px] text-zinc-500">{priceEvidence(product)}</p> : null}
           </div>
         </div>
 

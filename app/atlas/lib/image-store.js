@@ -116,6 +116,33 @@ export async function addImages(productId, fileList) {
   return { saved, errors };
 }
 
+/**
+ * 사용자가 사용 권한을 확인한 외부 이미지 1장을 저장한다.
+ * 이미지 바이트는 서버 /api/atlas/product-import가 대신 받아 dataURL로 돌려준 것만
+ * 들어온다 — 확인 전에는 호출되지 않는다(호출부에서 보장).
+ */
+export async function addImageFromDataUrl(productId, { dataUrl, name, sourceUrl, contentType }) {
+  if (!ACCEPTED_TYPES.includes(contentType)) {
+    throw new Error(`${name}: JPG·PNG·WebP만 등록할 수 있습니다.`);
+  }
+  const img = await loadImageElement(dataUrl);
+  const record = {
+    id: `img_${Date.now()}_${Math.random().toString(16).slice(2, 8)}`,
+    productId,
+    name: name || "product-image",
+    type: contentType,
+    size: Math.round((String(dataUrl).length * 3) / 4),
+    width: img.naturalWidth,
+    height: img.naturalHeight,
+    dataUrl,
+    // 이미지 출처를 레코드에 남긴다. 나중에 어디서 온 사진인지 되짚을 수 있어야 한다.
+    sourceUrl: sourceUrl || "",
+    createdAt: new Date().toISOString(),
+  };
+  await runTx("readwrite", (store) => store.put(record));
+  return record;
+}
+
 export async function listImages(productId) {
   const rows = await runTx("readonly", (store) => {
     const out = [];

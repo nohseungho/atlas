@@ -4,6 +4,11 @@ import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import TrafficStep from "./TrafficStep";
+import { KEYS, readList } from "@/app/atlas/lib/storage";
+import { listImages } from "@/app/atlas/lib/image-store";
+import { affiliateState, buildProductSnapshot } from "@/lib/atlas/product-link";
+import { castDisplayLabel, characterDisplayName } from "@/lib/atlas/letters-cast";
+import { formatAmount } from "@/lib/atlas/photo-card/product-model";
 
 // ─── 블로그 글 만들기 — 1번부터 5번까지 한 화면 ─────────────────────────────
 // 사용자는 설명 없이 위에서 아래로 따라가기만 하면 된다. 화면에는 "지금 눌러야
@@ -86,6 +91,10 @@ function RevenueScreen() {
   const [pickedTopic, setPickedTopic] = useState(null);
   const [currentJobId, setCurrentJobId] = useState("");
   const [openStep, setOpenStep] = useState(null);
+  // Product Center 상품(브라우저 localStorage). 새 글을 시작할 때 여기서 고른
+  // 상품이 제작 요청 파일에 스냅샷으로 실린다.
+  const [products, setProducts] = useState([]);
+  const [linkedProductIds, setLinkedProductIds] = useState([]);
 
   async function loadWork() {
     const [pj, pub] = await Promise.all([api("/api/atlas/production-jobs"), api("/api/atlas/publisher-status")]);
@@ -133,7 +142,27 @@ function RevenueScreen() {
   // 하지 않고 평소 기본 선택(가장 최근 작업)으로 둔다.
   const focusArticleId = searchParams.get("articleId") || "";
   const focusJobId = searchParams.get("jobId") || "";
+  const focusProductId = searchParams.get("productId") || "";
   const focusApplied = useRef("");
+
+  // Product Center 상품은 브라우저 localStorage에 있으므로 마운트 후에 읽는다.
+  // "블로그에 연결"로 넘어오면 그 상품이 미리 선택된 채 열린다. 렌더 중 연쇄
+  // setState가 되지 않도록 다른 화면과 같은 방식으로 한 틱 뒤에 반영한다.
+  useEffect(() => {
+    let cancelled = false;
+    Promise.resolve().then(() => {
+      if (cancelled) return;
+      const list = readList(KEYS.products);
+      setProducts(list);
+      if (focusProductId && list.some((p) => p.id === focusProductId)) {
+        setLinkedProductIds([focusProductId]);
+        setCurrentJobId("__new__");
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [focusProductId]);
 
   useEffect(() => {
     const key = `${focusJobId}|${focusArticleId}`;
@@ -174,22 +203,47 @@ function RevenueScreen() {
   const topicForRequest = job?.recommendation || pickedTopic;
 
   // ── 2. 제작 요청 파일 받기 (기존 /api/atlas/chatgpt-request 그대로) ──
+  // 연결된 상품을 "그때 확인된 값" 그대로 스냅샷으로 만든다. 이미지 본체는
+  // 싣지 않고 어떤 이미지가 붙어 있는지만 가리킨다(요청 파일이 커지지 않게).
+  async function buildLinkedSnapshots() {
+    const chosen = products.filter((p) => linkedProductIds.includes(p.id));
+    const out = [];
+    for (const product of chosen) {
+      let images = [];
+      try {
+        images = await listImages(product.id);
+      } catch {
+        images = [];
+      }
+      out.push(buildProductSnapshot(product, { images }));
+    }
+    return out;
+  }
+
   async function getRequestFile() {
     if (!topicForRequest) return;
     setBusy("step2");
     setMsg(null);
     try {
+      const linkedProducts = await buildLinkedSnapshots();
       const res = await fetch("/api/atlas/chatgpt-request", {
         method: "POST",
         cache: "no-store",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ blogId: "blog_001", recommendation: topicForRequest }),
+        body: JSON.stringify({ blogId: "blog_001", recommendation: topicForRequest, linkedProducts }),
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.status === "ok" && data.request) {
         downloadJson(data.filename, data.request);
         setCurrentJobId(data.jobId);
-        setMsg({ step: 2, ok: true, text: "요청 파일을 내려받았습니다. 이 파일을 ChatGPT에 올리고, 돌려받은 파일을 3번에서 등록하세요." });
+        const linkedCount = data.linkedProductIds?.length ?? 0;
+        setMsg({
+          step: 2,
+          ok: true,
+          text:
+            "요청 파일을 내려받았습니다. 이 파일을 ChatGPT에 올리고, 돌려받은 파일을 3번에서 등록하세요." +
+            (linkedCount ? ` 연결 상품 ${linkedCount}건이 요청 파일에 포함되었습니다.` : ""),
+        });
         await loadWork();
         advance();
       } else {
@@ -462,7 +516,15 @@ function RevenueScreen() {
               <p className="text-sm text-zinc-300">
                 주제: <b className="text-zinc-100">{job?.topic || pickedTopic?.title}</b>
               </p>
-              <p className="mt-2 text-sm text-zinc-400">
+              <ProductLinkPicker
+                products={products}
+                selected={linkedProductIds}
+                onToggle={(id) =>
+                  setLinkedProductIds((prev) => (prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]))
+                }
+                alreadyLinked={job?.linkedProducts || []}
+              />
+              <p className="mt-3 text-sm text-zinc-400">
                 버튼을 누르면 요청 파일이 내려받아집니다. 그 파일을 ChatGPT 대화창에 올리고, ChatGPT가 돌려준 파일을 3번에서 등록하세요.
               </p>
               <PrimaryButton disabled={!!busy || !topicForRequest} onClick={getRequestFile}>
@@ -610,8 +672,9 @@ function RevenueScreen() {
               <p className="mt-2 text-[11px] text-zinc-600">{rec?.scopeNote}</p>
               {job?.letters && (
                 <p className="mt-2 text-[11px] text-fuchsia-300">
-                  이 글의 ATLAS Letters {job.letters.label} ({job.letters.weekStart}~{job.letters.weekEnd}) · 대표 인물 {job.letters.heroCharacterId} ·
-                  마스터 {job.letters.masterFileName}
+                  {/* 저장된 옛 라벨/내부 id 대신 항상 현재 표시 이름으로 보여 준다. */}
+                  이 글의 ATLAS Letters {castDisplayLabel(job.letters)} ({job.letters.weekStart}~{job.letters.weekEnd}) · 대표 인물{" "}
+                  {characterDisplayName(job.letters.heroCharacterId)}
                 </p>
               )}
               {rec?.rejected?.length > 0 && (
@@ -934,6 +997,70 @@ function TrackingPanel({ tracking, csv, setCsv, onImport, busy }) {
           </p>
         )}
       </details>
+    </div>
+  );
+}
+
+
+// ── 블로그에 연결할 Product Center 상품 고르기 ──────────────────────────────
+// 상품이 있어도 반드시 골라야 실린다. 제휴 링크가 없으면 "제휴 링크 대기"를 그대로
+// 보여 주고, 가짜 링크는 어디서도 만들지 않는다.
+function ProductLinkPicker({ products, selected, onToggle, alreadyLinked }) {
+  return (
+    <div className="mt-3 rounded-lg border border-zinc-800 bg-zinc-950 p-3">
+      <p className="text-xs font-semibold text-zinc-300">이 글에 연결할 상품 (Product Center)</p>
+      <p className="mt-1 text-[11px] text-zinc-500">
+        고른 상품은 이름·카테고리·상품 URL·가격 근거·확인 시각·핵심 효용·주요 특징·이미지 참조가 요청 파일에
+        스냅샷으로 들어갑니다. 글은 상품 광고문이 아니라 독자의 질문을 먼저 해결한 뒤 제품을 잇는 형식이어야 합니다.
+      </p>
+
+      {alreadyLinked.length ? (
+        <p className="mt-2 text-[11px] text-emerald-400">
+          이미 이 글에 연결된 상품: {alreadyLinked.map((p) => p.name).join(", ")}
+        </p>
+      ) : null}
+
+      <ul className="mt-2 space-y-1">
+        {products.map((p) => {
+          const affiliate = affiliateState(p);
+          return (
+            <li key={p.id}>
+              <label className="flex cursor-pointer items-start gap-2 text-xs text-zinc-300">
+                <input
+                  type="checkbox"
+                  checked={selected.includes(p.id)}
+                  onChange={() => onToggle(p.id)}
+                  className="mt-0.5"
+                />
+                <span>
+                  <b className="text-zinc-100">{p.name}</b>
+                  <span className="text-zinc-500">
+                    {p.category ? ` · ${p.category}` : ""}
+                    {p.currentPrice === null || p.currentPrice === undefined
+                      ? " · 가격 미확인"
+                      : ` · ${formatAmount(p.currentPrice, p.currency)}`}
+                  </span>
+                  <span
+                    className={`ml-1 rounded px-1 py-0.5 ${
+                      affiliate.mayRenderBuyButton ? "bg-emerald-500/20 text-emerald-300" : "bg-amber-500/15 text-amber-300"
+                    }`}
+                  >
+                    {affiliate.label}
+                  </span>
+                </span>
+              </label>
+            </li>
+          );
+        })}
+        {products.length === 0 && (
+          <li className="text-xs text-zinc-500">
+            Product Center에 등록된 상품이 없습니다.{" "}
+            <Link href="/atlas/product-center" className="text-emerald-400 hover:underline">
+              상품 등록하러 가기
+            </Link>
+          </li>
+        )}
+      </ul>
     </div>
   );
 }

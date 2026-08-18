@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { castForWeek } from "@/lib/atlas/letters-cast";
+import { castDisplayLabel, castForWeek, characterDisplayName } from "@/lib/atlas/letters-cast";
 
 const CATEGORY_OPTIONS = [
   "자동차 보험",
@@ -280,7 +280,9 @@ export default function MoneyHunterPage() {
         downloadJson(data.filename, data.request);
         setHandoffMsg(
           `요청 파일 내보냄: ${data.filename} — ChatGPT에 업로드하세요.` +
-            (data.letters ? ` · ATLAS Letters ${data.letters.label} · 대표 인물 ${data.letters.heroCharacterId} (${data.letters.masterFileName})` : ""),
+            (data.letters
+              ? ` · ATLAS Letters ${castDisplayLabel(data.letters)} · 대표 인물 ${characterDisplayName(data.letters.heroCharacterId)}`
+              : ""),
         );
       } else {
         setHandoffMsg(`내보내기 실패: ${data.errorCode || data.message || "오류"}`);
@@ -712,8 +714,8 @@ export default function MoneyHunterPage() {
           </p>
           {week && (
             <p className="mt-2 rounded-lg border border-fuchsia-900 bg-fuchsia-950/30 px-3 py-2 text-xs text-fuchsia-200">
-              ATLAS Letters · <b>이번 주: {week.label}</b> (부탁 → 답변) · {week.weekStart} ~ {week.weekEnd} (Asia/Seoul) ·
-              대표 이미지 인물: <b>{week.heroCharacterId}</b> · 마스터 {week.masterFileName} · 얼굴 고정(의상·표정·장소만 변경).
+              ATLAS Letters · <b>이번 주: {castDisplayLabel(week)}</b> (부탁 → 답변) · {week.weekStart} ~ {week.weekEnd} (Asia/Seoul) ·
+              대표 이미지 인물: <b>{characterDisplayName(week.heroCharacterId)}</b> · 마스터 얼굴 고정(의상·표정·장소만 변경).
               매주 월요일 00:00에 역할이 교대됩니다.
             </p>
           )}

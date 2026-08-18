@@ -34,7 +34,7 @@ const CARDS = [
     href: "/atlas/product-center",
     title: "Product Center",
     description:
-      "상품 마스터 DB · 가격/근거/이미지 등록 → 블로그·쇼츠·판매카드에서 같은 ID로 재사용",
+      "상품 URL 1개로 가져오기(검수 필요) · 가격/근거/이미지 등록 → 블로그·쇼츠·판매카드에서 같은 ID로 재사용",
   },
   {
     href: "/deal-hunter",
@@ -43,6 +43,16 @@ const CARDS = [
     description:
       "국내외 판매처의 할인 상품을 검수하고 제휴 링크와 쇼핑쇼츠 후보를 관리합니다.",
   },
+];
+
+// 실제 운영 순서. 화면을 새로 만들지 않고 대시보드 맨 위에 한 줄로만 둔다.
+const FLOW = [
+  { label: "상품 찾기", href: "/deal-hunter" },
+  { label: "Product Center 검수", href: "/atlas/product-center" },
+  { label: "쇼핑쇼츠 제작", href: "/atlas/shorts-studio?mode=photo" },
+  { label: "상품 연결 블로그 제작", href: "/atlas/revenue" },
+  { label: "발행", href: "/publisher" },
+  { label: "Pinterest 배포", href: "/atlas/revenue" },
 ];
 
 export default function AtlasPage() {
@@ -62,6 +72,27 @@ export default function AtlasPage() {
             저장됩니다.
           </p>
         </header>
+
+        <section className="rounded-xl border border-sky-900 bg-zinc-900 p-4">
+          <h2 className="text-sm font-semibold text-sky-200">운영 순서</h2>
+          <ol className="mt-2 flex flex-wrap items-center gap-x-1 gap-y-2 text-sm">
+            {FLOW.map((step, i) => (
+              <li key={step.label} className="flex items-center gap-1">
+                <Link
+                  href={step.href}
+                  className="rounded-lg border border-zinc-700 px-2.5 py-1 text-zinc-300 hover:border-emerald-600 hover:text-zinc-100"
+                >
+                  {i + 1}. {step.label}
+                </Link>
+                {i < FLOW.length - 1 ? <span className="text-zinc-600">→</span> : null}
+              </li>
+            ))}
+          </ol>
+          <p className="mt-2 text-xs text-zinc-500">
+            반자동입니다. 가격·판매 상태·이미지 사용 권한·제휴 링크·최종 발행은 사용자가 확인해야 하고, 그 밖의
+            반복 입력만 자동으로 채워집니다.
+          </p>
+        </section>
 
         <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {CARDS.map((card) => (

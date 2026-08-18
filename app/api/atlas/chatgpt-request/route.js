@@ -8,6 +8,7 @@ import { castForWeek, castFromRecord } from "@/lib/atlas/letters-cast";
 import { nicheMatches } from "@/lib/atlas/money-hunter-select";
 import { assertProductionEligible } from "@/lib/atlas/recommendation-engine";
 import { handoffRequestKey } from "@/lib/atlas/job-identity";
+import { sanitizeSnapshots } from "@/lib/atlas/product-link";
 import { listProductionJobs, createProductionJob, updateProductionJob } from "@/lib/atlas/repositories/production-job-repository";
 
 export const runtime = "nodejs";
@@ -53,7 +54,7 @@ function claimHandoffJob({ blogId, candidateId, recommendation }) {
 }
 
 // ATLAS Letters — the requester/responder pair for this job, frozen on first
-// export. The rotation (미지 ↔ 스오, every Monday 00:00 Asia/Seoul) decides who
+// export. The rotation (미지 ↔ 수호, every Monday 00:00 Asia/Seoul) decides who
 // asks in a NEW job's week; once that is written onto the job it is what every
 // later export of the same request returns. Without the freeze, re-downloading
 // a request file after Monday would hand back the other person's face for an
@@ -135,6 +136,19 @@ export async function POST(request) {
 
   const cast = resolveJobCast(job);
 
+  // Product Center에서 이 글에 연결한 상품. 클라이언트가 보낸 값을 그대로 믿지
+  // 않고 서버에서 다시 정규화한다 — 여기서도 제휴 링크는 만들어내지 않는다.
+  // 상품을 다시 보내지 않고 요청 파일을 재발급하면, 처음 연결한 상품이 그대로
+  // 유지된다(작업에 얼려 둔 스냅샷을 쓴다).
+  const sent = sanitizeSnapshots(body.linkedProducts);
+  const linkedProducts = sent.length ? sent : job.linkedProducts || [];
+  if (sent.length) {
+    updateProductionJob(job.id, (j) => {
+      j.linkedProductIds = sent.map((p) => p.productId);
+      j.linkedProducts = sent;
+    });
+  }
+
   const req = buildHandoffRequest({
     jobId: job.id,
     blog,
@@ -144,6 +158,7 @@ export async function POST(request) {
     persona: PERSONA,
     template: TEMPLATE,
     cast,
+    linkedProducts,
   });
 
   return NextResponse.json({
@@ -155,6 +170,7 @@ export async function POST(request) {
     // Surfaced separately so the screen can state this week's pair without
     // re-deriving it from the downloaded file.
     letters: cast,
+    linkedProductIds: req.linkedProductIds,
     request: req,
   });
 }

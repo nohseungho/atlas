@@ -20,6 +20,8 @@ import {
   resolveDiscount,
   parseAmount,
 } from "@/lib/atlas/photo-card/product-model";
+import { affiliateState } from "@/lib/atlas/product-link";
+import UrlImportPanel, { findDuplicate } from "./UrlImportPanel";
 
 const CATEGORY_SUGGESTIONS = ["생활가전", "주방", "캠핑·아웃도어", "홈오피스", "반려동물", "뷰티"];
 
@@ -46,6 +48,10 @@ const emptyForm = {
   imageRightsConfirmed: false,
   imageNote: "",
   note: "",
+  // URL 가져오기가 채우는 근거 필드. 수동 등록에서는 비어 있어도 된다.
+  sku: "",
+  availability: "",
+  sourceUrl: "",
 };
 
 function toLocalInput(iso) {
@@ -168,13 +174,21 @@ export default function ProductCenterPage() {
       return;
     }
 
-    // 같은 상품을 두 번 등록하지 않도록 URL/상품명으로 기존 레코드를 찾아준다.
-    const dupe = products.find((p) => {
-      if (p.id === targetId) return false;
-      const sameUrl = urlKey(p.productUrl) && urlKey(p.productUrl) === urlKey(result.product.productUrl);
-      const sameName = p.name?.trim() === result.product.name && (p.vendor || "") === result.product.vendor;
-      return sameUrl || sameName;
-    });
+    // 같은 상품을 두 번 등록하지 않도록 canonical URL · 판매처+모델번호 ·
+    // 판매처+상품명으로 기존 레코드를 찾아준다.
+    const others = products.filter((p) => p.id !== targetId);
+    const dupe =
+      findDuplicate(others, {
+        canonicalUrl: result.product.productUrl,
+        vendor: result.product.vendor,
+        sku: result.product.sku,
+      }) ||
+      others.find(
+        (p) => p.name?.trim() === result.product.name && (p.vendor || "") === result.product.vendor,
+      ) ||
+      others.find(
+        (p) => urlKey(p.productUrl) && urlKey(p.productUrl) === urlKey(result.product.productUrl),
+      );
     if (dupe && !editingId) {
       setDuplicate(dupe);
       setErrors([`이미 등록된 상품입니다 (${dupe.id}). 새로 만들지 말고 기존 상품을 이어서 편집하세요.`]);
@@ -229,6 +243,24 @@ export default function ProductCenterPage() {
     setMessage("JSON을 폼에 적용했습니다. 확인 후 저장하세요.");
   }
 
+  // URL 분석 결과를 폼에 채운다. 저장은 하지 않는다 — 등록은 사용자가 저장
+  // 버튼을 눌러야 일어나고, 이미지 사용 확인 체크도 자동으로 켜지 않는다.
+  function handleUrlDraft(draft, result) {
+    const normalized = normalizeProductInput({ ...draft, imageRightsConfirmed: false });
+    if (!normalized.ok) {
+      setErrors(normalized.errors);
+      return;
+    }
+    setForm({ ...productToForm(normalized.product), imageRightsConfirmed: false });
+    setErrors([]);
+    setWarnings([
+      ...normalized.warnings,
+      ...(result?.review?.length ? [`확인 필요(REVIEW): ${result.review.join(", ")}`] : []),
+    ]);
+    setDuplicate(null);
+    setMessage("URL에서 읽은 값을 폼에 채웠습니다. 가격·판매 상태를 확인한 뒤 저장하세요.");
+  }
+
   async function handleFiles(fileList) {
     if (!fileList?.length) return;
     const { saved, errors: fileErrors } = await addImages(targetId, fileList);
@@ -258,7 +290,9 @@ export default function ProductCenterPage() {
           <h1 className="text-2xl font-bold">Product Center</h1>
           <p className="mt-1 max-w-3xl text-sm text-zinc-400">
             상품 마스터 DB. 여기 한 번 등록하면 Shorts Studio의 판매카드 제작과 블로그·쇼츠에서
-            같은 상품 ID로 재사용합니다. 쇼핑몰 자동 수집은 하지 않으며, 입력된 근거만 표시합니다.
+            같은 상품 ID로 재사용합니다. 상품 URL을 넣으면 공개 페이지에서 확인되는 값만 자동으로
+            채워지고, 확인되지 않은 값은 REVIEW로 남습니다 — 가격·판매 상태·이미지 사용 권한·제휴
+            링크는 사용자가 검수해야 합니다.
           </p>
           <p className="mt-2 text-xs text-zinc-600">
             상품 정보는 브라우저 localStorage, 이미지는 IndexedDB에 저장됩니다(새로고침 후에도 유지).
@@ -295,6 +329,17 @@ export default function ProductCenterPage() {
             ))}
           </ul>
         ) : null}
+
+        <UrlImportPanel
+          products={products}
+          targetId={targetId}
+          onApply={handleUrlDraft}
+          onEditExisting={handleEdit}
+          onImagesSaved={async () => {
+            await loadImages(targetId);
+            refreshCounts(products);
+          }}
+        />
 
         <section className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
           {/* ── 등록 폼 ─────────────────────────────────────────── */}
@@ -349,6 +394,11 @@ export default function ProductCenterPage() {
                   value={form.shippingNote}
                   onChange={(v) => updateField("shippingNote", v)}
                   placeholder="예: 로켓배송"
+                />
+                <Field
+                  label="모델번호 (SKU·MPN, 중복 판정에 사용)"
+                  value={form.sku}
+                  onChange={(v) => updateField("sku", v)}
                 />
               </div>
 
@@ -478,12 +528,20 @@ export default function ProductCenterPage() {
                   새 상품
                 </button>
                 {editingId ? (
-                  <Link
-                    href={`/atlas/shorts-studio?mode=photo&productId=${editingId}`}
-                    className="rounded-lg border border-emerald-700 px-4 py-2 text-sm font-semibold text-emerald-300 hover:bg-emerald-950"
-                  >
-                    판매카드 제작 →
-                  </Link>
+                  <>
+                    <Link
+                      href={`/atlas/shorts-studio?mode=photo&productId=${editingId}`}
+                      className="rounded-lg border border-emerald-700 px-4 py-2 text-sm font-semibold text-emerald-300 hover:bg-emerald-950"
+                    >
+                      쇼핑쇼츠 만들기 →
+                    </Link>
+                    <Link
+                      href={`/atlas/revenue?productId=${editingId}`}
+                      className="rounded-lg border border-sky-700 px-4 py-2 text-sm font-semibold text-sky-300 hover:bg-sky-950"
+                    >
+                      블로그에 연결 →
+                    </Link>
+                  </>
                 ) : null}
               </div>
             </div>
@@ -591,6 +649,13 @@ export default function ProductCenterPage() {
                             ? "가격 미확인"
                             : `현재 확인가 ${formatAmount(p.currentPrice, p.currency)}`}
                         </p>
+                        {p.priceSource || p.priceCheckedAt ? (
+                          <p className="text-[11px] text-zinc-600">
+                            {[p.priceSource, p.priceCheckedAt ? `${new Date(p.priceCheckedAt).toLocaleString("ko-KR")} 확인` : ""]
+                              .filter(Boolean)
+                              .join(" · ")}
+                          </p>
+                        ) : null}
                         <div className="mt-1 flex flex-wrap gap-2 text-[11px]">
                           <span
                             className={`rounded px-1.5 py-0.5 ${
@@ -601,6 +666,15 @@ export default function ProductCenterPage() {
                           >
                             {linkStatusLabel(p)}
                           </span>
+                          <span
+                            className={`rounded px-1.5 py-0.5 ${
+                              affiliateState(p).mayRenderBuyButton
+                                ? "bg-emerald-500/20 text-emerald-300"
+                                : "bg-amber-500/15 text-amber-300"
+                            }`}
+                          >
+                            {affiliateState(p).label}
+                          </span>
                           <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-zinc-400">
                             이미지 {imageCounts[p.id] ?? 0}장
                           </span>
@@ -610,11 +684,15 @@ export default function ProductCenterPage() {
                         <button onClick={() => handleEdit(p)} className="text-xs text-emerald-400 hover:underline">
                           수정
                         </button>
+                        {/* 상품 우선 흐름의 두 갈래. 같은 productId를 그대로 넘긴다. */}
                         <Link
                           href={`/atlas/shorts-studio?mode=photo&productId=${p.id}`}
                           className="text-xs text-sky-400 hover:underline"
                         >
-                          판매카드
+                          쇼핑쇼츠 만들기
+                        </Link>
+                        <Link href={`/atlas/revenue?productId=${p.id}`} className="text-xs text-sky-400 hover:underline">
+                          블로그에 연결
                         </Link>
                         <button onClick={() => handleDelete(p.id)} className="text-xs text-red-400 hover:underline">
                           삭제
