@@ -80,6 +80,15 @@
       "targetMarket": "us",
       "adSenseCategory": "Luxury",
       "exampleKeywords": ["best luxury credit cards", "cheap business class flights", "luxury hotels worth the price"]
+    },
+    {
+      "id": "cat_travel_wellness",
+      "slug": "travel-wellness-fitness",
+      "label": "Travel Wellness & Everyday Fitness",
+      "description": "Everyday movement, posture relief and travel-friendly fitness routines for desk workers and frequent travelers — general wellness information, never medical diagnosis or treatment.",
+      "targetMarket": "us",
+      "adSenseCategory": "Health",
+      "exampleKeywords": ["how to relieve neck and shoulder stiffness at home", "hotel room workout for travelers with no gym", "resistance band exercises for desk workers"]
     }
   ]
 }

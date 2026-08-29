@@ -9,6 +9,7 @@ import { listImages } from "@/app/atlas/lib/image-store";
 import { affiliateState, buildProductSnapshot } from "@/lib/atlas/product-link";
 import { castDisplayLabel, characterDisplayName } from "@/lib/atlas/letters-cast";
 import { formatAmount } from "@/lib/atlas/photo-card/product-model";
+import { suggestProductsForTopic, suggestProductCategories, isWellnessText } from "@/lib/atlas/wellness-scope";
 
 // ─── 블로그 글 만들기 — 1번부터 5번까지 한 화면 ─────────────────────────────
 // 사용자는 설명 없이 위에서 아래로 따라가기만 하면 된다. 화면에는 "지금 눌러야
@@ -523,6 +524,7 @@ function RevenueScreen() {
                   setLinkedProductIds((prev) => (prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]))
                 }
                 alreadyLinked={job?.linkedProducts || []}
+                topic={job?.topic || pickedTopic?.title || ""}
               />
               <p className="mt-3 text-sm text-zinc-400">
                 버튼을 누르면 요청 파일이 내려받아집니다. 그 파일을 ChatGPT 대화창에 올리고, ChatGPT가 돌려준 파일을 3번에서 등록하세요.
@@ -1005,10 +1007,25 @@ function TrackingPanel({ tracking, csv, setCsv, onImport, busy }) {
 // ── 블로그에 연결할 Product Center 상품 고르기 ──────────────────────────────
 // 상품이 있어도 반드시 골라야 실린다. 제휴 링크가 없으면 "제휴 링크 대기"를 그대로
 // 보여 주고, 가짜 링크는 어디서도 만들지 않는다.
-function ProductLinkPicker({ products, selected, onToggle, alreadyLinked }) {
+function ProductLinkPicker({ products, selected, onToggle, alreadyLinked, topic = "" }) {
+  // Travel Wellness & Everyday Fitness 글이면, 이 주제에 실제로 맞는 상품만
+  // 골라 "추천"으로 표시한다. 목록을 자르거나 자동 선택하지는 않는다 — 무엇을
+  // 실을지는 끝까지 사람이 정한다.
+  const wellness = isWellnessText(topic);
+  const recommendedIds = useMemo(() => {
+    if (!wellness) return new Set();
+    return new Set(suggestProductsForTopic(topic, products).filter((m) => m.recommended).map((m) => m.productId));
+  }, [wellness, topic, products]);
+  const hints = wellness ? suggestProductCategories(topic) : [];
+
   return (
     <div className="mt-3 rounded-lg border border-zinc-800 bg-zinc-950 p-3">
       <p className="text-xs font-semibold text-zinc-300">이 글에 연결할 상품 (Product Center)</p>
+      {wellness && (
+        <p className="mt-1 text-[11px] text-sky-300">
+          이 주제와 어울리는 제품군: {hints.join(", ")} — 정보를 먼저 주고 마지막에 자연스럽게 잇습니다.
+        </p>
+      )}
       <p className="mt-1 text-[11px] text-zinc-500">
         고른 상품은 이름·카테고리·상품 URL·가격 근거·확인 시각·핵심 효용·주요 특징·이미지 참조가 요청 파일에
         스냅샷으로 들어갑니다. 글은 상품 광고문이 아니라 독자의 질문을 먼저 해결한 뒤 제품을 잇는 형식이어야 합니다.
@@ -1034,6 +1051,9 @@ function ProductLinkPicker({ products, selected, onToggle, alreadyLinked }) {
                 />
                 <span>
                   <b className="text-zinc-100">{p.name}</b>
+                  {recommendedIds.has(p.id) && (
+                    <span className="ml-1 rounded bg-sky-500/20 px-1 py-0.5 text-sky-300">이 주제에 추천</span>
+                  )}
                   <span className="text-zinc-500">
                     {p.category ? ` · ${p.category}` : ""}
                     {p.currentPrice === null || p.currentPrice === undefined
