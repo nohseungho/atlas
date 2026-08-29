@@ -10,6 +10,11 @@ import { affiliateState, buildProductSnapshot } from "@/lib/atlas/product-link";
 import { castDisplayLabel, characterDisplayName } from "@/lib/atlas/letters-cast";
 import { formatAmount } from "@/lib/atlas/photo-card/product-model";
 import { suggestProductsForTopic, suggestProductCategories, isWellnessText } from "@/lib/atlas/wellness-scope";
+import {
+  suggestProductsForTopic as suggestDisasterProducts,
+  suggestProductCategories as suggestDisasterCategories,
+  isDisasterText,
+} from "@/lib/atlas/disaster-scope";
 
 // ─── 블로그 글 만들기 — 1번부터 5번까지 한 화면 ─────────────────────────────
 // 사용자는 설명 없이 위에서 아래로 따라가기만 하면 된다. 화면에는 "지금 눌러야
@@ -1008,22 +1013,35 @@ function TrackingPanel({ tracking, csv, setCsv, onImport, busy }) {
 // 상품이 있어도 반드시 골라야 실린다. 제휴 링크가 없으면 "제휴 링크 대기"를 그대로
 // 보여 주고, 가짜 링크는 어디서도 만들지 않는다.
 function ProductLinkPicker({ products, selected, onToggle, alreadyLinked, topic = "" }) {
-  // Travel Wellness & Everyday Fitness 글이면, 이 주제에 실제로 맞는 상품만
-  // 골라 "추천"으로 표시한다. 목록을 자르거나 자동 선택하지는 않는다 — 무엇을
-  // 실을지는 끝까지 사람이 정한다.
-  const wellness = isWellnessText(topic);
+  // 웰니스·재난 대비 글이면, 이 주제에 실제로 맞는 상품만 골라 "추천"으로
+  // 표시한다. 목록을 자르거나 자동 선택하지는 않는다 — 무엇을 실을지는 끝까지
+  // 사람이 정한다.
+  const disaster = isDisasterText(topic);
+  const wellness = !disaster && isWellnessText(topic);
+  const matched = disaster || wellness;
   const recommendedIds = useMemo(() => {
-    if (!wellness) return new Set();
-    return new Set(suggestProductsForTopic(topic, products).filter((m) => m.recommended).map((m) => m.productId));
-  }, [wellness, topic, products]);
-  const hints = wellness ? suggestProductCategories(topic) : [];
+    if (!matched) return new Set();
+    const rank = disaster ? suggestDisasterProducts(topic, products) : suggestProductsForTopic(topic, products);
+    return new Set(rank.filter((m) => m.recommended).map((m) => m.productId));
+  }, [matched, disaster, topic, products]);
+  const hints = disaster
+    ? suggestDisasterCategories(topic)
+    : wellness
+    ? suggestProductCategories(topic)
+    : [];
 
   return (
     <div className="mt-3 rounded-lg border border-zinc-800 bg-zinc-950 p-3">
       <p className="text-xs font-semibold text-zinc-300">이 글에 연결할 상품 (Product Center)</p>
-      {wellness && (
+      {matched && (
         <p className="mt-1 text-[11px] text-sky-300">
           이 주제와 어울리는 제품군: {hints.join(", ")} — 정보를 먼저 주고 마지막에 자연스럽게 잇습니다.
+        </p>
+      )}
+      {disaster && (
+        <p className="mt-1 text-[11px] text-amber-300">
+          재난 글에서는 상품이 6번 “Emergency Products” 절에만 들어갑니다. 애도·현황·기부·필요물품 절(1~4번)에는
+          제휴 링크와 구매 문구를 넣지 않으며, 구매가 기부로 이어진다는 표현은 금지입니다.
         </p>
       )}
       <p className="mt-1 text-[11px] text-zinc-500">

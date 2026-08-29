@@ -89,6 +89,15 @@
       "targetMarket": "us",
       "adSenseCategory": "Health",
       "exampleKeywords": ["how to relieve neck and shoulder stiffness at home", "hotel room workout for travelers with no gym", "resistance band exercises for desk workers"]
+    },
+    {
+      "id": "cat_disaster_prep",
+      "slug": "disaster-preparedness",
+      "label": "Disaster Preparedness & Emergency Essentials",
+      "description": "Public-interest disaster information and household emergency preparedness — floods, landslides, storms, earthquakes, wildfires and power outages. Relief information first, preparedness second, products last and strictly separated from donations.",
+      "targetMarket": "us",
+      "adSenseCategory": "News",
+      "exampleKeywords": ["what to put in a home emergency kit", "how to prepare your home for a flood warning", "how to prepare for a multi-day power outage"]
     }
   ]
 }
