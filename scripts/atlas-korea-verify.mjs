@@ -59,7 +59,10 @@ if (!failures.length) {
   if (!pipeline.includes("canPublishKoreaDraft")) failures.push("approval gate helper missing");
   if (!publishRoute.includes("APPROVAL_REQUIRED")) failures.push("server-side approval gate missing");
   const draftsRoute = read("app/api/atlas/korea-drafts/route.js");
+  const koreaPage = read("app/atlas/korea/page.js");
   if (!draftsRoute.includes("defaultKoreaProductImages")) failures.push("repeatable Korea product intake missing");
+  if (!koreaPage.includes('/api/atlas/product-import')) failures.push("one-link Korea product import missing");
+  if (!koreaPage.includes("링크 하나로 추천 글 만들기")) failures.push("one-link Korea intake UI missing");
   if (!worker.includes('role === "product_reasons"')) failures.push("generic product image renderer missing");
 
   // Browser control is intentionally isolated from Next.js/Turbopack in a worker process.

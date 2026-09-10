@@ -35,7 +35,7 @@ export default function KoreaPublisherPage() {
   const [message, setMessage] = useState("");
   const [doctor, setDoctor] = useState(null);
   const [showNew, setShowNew] = useState(false);
-  const [newProduct, setNewProduct] = useState({ productName: "", title: "", affiliateUrl: "", productUrl: "", character: "suho" });
+  const [newProduct, setNewProduct] = useState({ url: "", productName: "", title: "", affiliateUrl: "", productUrl: "", strengths: [], facts: [], character: "suho" });
 
   async function load() {
     const data = await draftsApi();
@@ -126,24 +126,59 @@ export default function KoreaPublisherPage() {
     setBusy("");
   }
 
+  function isCoupangUrl(value) {
+    try { return /(^|\.)coupang\.com$/i.test(new URL(value).hostname); } catch { return false; }
+  }
+
+  async function readProductUrl() {
+    const url = newProduct.url.trim();
+    if (!url) throw new Error("상품 주소 하나를 붙여넣어 주세요.");
+    setMessage("상품 페이지에서 공개된 제품 정보를 확인 중입니다.");
+    const imported = await postJson("/api/atlas/product-import", { url });
+    if (!imported.ok) throw new Error(imported.data.message || imported.data.error || "상품 정보를 자동으로 읽지 못했습니다.");
+    const product = imported.data.draft || {};
+    const facts = [
+      product.vendor ? `판매처 또는 브랜드: ${product.vendor}` : "",
+      product.currentPrice !== null && product.currentPrice !== undefined
+        ? `확인 시점 판매가: ${product.currency || ""} ${Number(product.currentPrice).toLocaleString("ko-KR")}`.trim()
+        : "",
+      product.sku ? `모델 또는 상품 번호: ${product.sku}` : "",
+    ].filter(Boolean);
+    const next = {
+      ...newProduct,
+      productName: product.name || newProduct.productName,
+      productUrl: imported.data.canonicalUrl || product.productUrl || url,
+      affiliateUrl: isCoupangUrl(url) ? url : newProduct.affiliateUrl,
+      strengths: Array.isArray(product.features) ? product.features : [],
+      facts,
+    };
+    setNewProduct(next);
+    setMessage(`제품 정보를 확인했습니다: ${next.productName}`);
+    return next;
+  }
+
   async function createProductDraft(event) {
     event.preventDefault();
-    if (!newProduct.productName.trim()) {
-      setMessage("제품명을 입력해주세요.");
-      return;
-    }
     setBusy("create");
-    setMessage("추천 본문과 이미지 구성 3개를 자동 제작 중입니다.");
+    setMessage("상품 확인부터 추천 본문과 이미지 구성까지 자동 제작 중입니다.");
     try {
+      const prepared = newProduct.productName.trim()
+        ? {
+            ...newProduct,
+            productUrl: newProduct.productUrl || newProduct.url,
+            affiliateUrl: newProduct.affiliateUrl || (isCoupangUrl(newProduct.url) ? newProduct.url : ""),
+          }
+        : await readProductUrl();
+      if (!prepared.productName.trim()) throw new Error("상품명을 확인하지 못했습니다. 아래 제품명만 직접 입력해주세요.");
       const res = await draftsApi({
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...newProduct, contentType: "new_product_review", blogId: "who-ami" }),
+        body: JSON.stringify({ ...prepared, contentType: "new_product_review", blogId: "who-ami" }),
       });
       if (res.status !== "ok") throw new Error(res.error || (res.issues || []).join(", ") || "제품 글 생성 실패");
       await load();
       setSelectedId(res.draft.id);
-      setNewProduct({ productName: "", title: "", affiliateUrl: "", productUrl: "", character: "suho" });
+      setNewProduct({ url: "", productName: "", title: "", affiliateUrl: "", productUrl: "", strengths: [], facts: [], character: "suho" });
       setShowNew(false);
       setMessage("새 제품 추천 글과 이미지 구성 3개를 만들었습니다. 내용을 확인한 뒤 자동 반영을 누르세요.");
     } catch (e) { setMessage(e.message); }
@@ -250,11 +285,15 @@ export default function KoreaPublisherPage() {
           </button>
           {showNew ? (
             <form onSubmit={createProductDraft} className="space-y-3 rounded-xl border border-emerald-800 bg-zinc-950 p-4">
-              <label className="block text-xs">제품명 *<input autoFocus className="mt-1 w-full rounded border border-zinc-700 bg-zinc-900 p-2 text-sm" value={newProduct.productName} onChange={(e) => setNewProduct({ ...newProduct, productName: e.target.value })} placeholder="예: 필립스 전기주전자" /></label>
-              <label className="block text-xs">제목 (비우면 자동)<input className="mt-1 w-full rounded border border-zinc-700 bg-zinc-900 p-2 text-sm" value={newProduct.title} onChange={(e) => setNewProduct({ ...newProduct, title: e.target.value })} /></label>
-              <label className="block text-xs">쿠팡 파트너스 링크<input className="mt-1 w-full rounded border border-zinc-700 bg-zinc-900 p-2 text-sm" value={newProduct.affiliateUrl} onChange={(e) => setNewProduct({ ...newProduct, affiliateUrl: e.target.value })} placeholder="없으면 나중에 입력" /></label>
-              <label className="block text-xs">상품 원본 주소<input className="mt-1 w-full rounded border border-zinc-700 bg-zinc-900 p-2 text-sm" value={newProduct.productUrl} onChange={(e) => setNewProduct({ ...newProduct, productUrl: e.target.value })} placeholder="선택 사항" /></label>
-              <button disabled={Boolean(busy)} className="w-full rounded bg-emerald-700 px-3 py-2 text-sm font-bold disabled:opacity-40">추천 글 자동 만들기</button>
+              <div className="rounded-lg bg-emerald-950/40 p-3 text-xs text-emerald-200">상품 주소 하나만 넣으면 제품명·공개 사양·추천 본문·수호 이미지 구성을 자동으로 준비합니다.</div>
+              <label className="block text-xs">상품 또는 쿠팡 파트너스 주소 *<input autoFocus type="url" className="mt-1 w-full rounded border border-zinc-700 bg-zinc-900 p-2 text-sm" value={newProduct.url} onChange={(e) => setNewProduct({ ...newProduct, url: e.target.value, productName: "", productUrl: "", strengths: [], facts: [] })} placeholder="https://..." /></label>
+              <details className="rounded border border-zinc-800 p-2 text-xs">
+                <summary className="cursor-pointer text-zinc-400">자동 인식이 안 될 때만 열기</summary>
+                <label className="mt-3 block">제품명<input className="mt-1 w-full rounded border border-zinc-700 bg-zinc-900 p-2 text-sm" value={newProduct.productName} onChange={(e) => setNewProduct({ ...newProduct, productName: e.target.value })} placeholder="자동으로 안 읽힐 때만 입력" /></label>
+                <label className="mt-3 block">제목<input className="mt-1 w-full rounded border border-zinc-700 bg-zinc-900 p-2 text-sm" value={newProduct.title} onChange={(e) => setNewProduct({ ...newProduct, title: e.target.value })} placeholder="비우면 자동" /></label>
+                {!isCoupangUrl(newProduct.url) ? <label className="mt-3 block">쿠팡 파트너스 링크<input className="mt-1 w-full rounded border border-zinc-700 bg-zinc-900 p-2 text-sm" value={newProduct.affiliateUrl} onChange={(e) => setNewProduct({ ...newProduct, affiliateUrl: e.target.value })} placeholder="있으면 입력" /></label> : null}
+              </details>
+              <button disabled={Boolean(busy) || !newProduct.url.trim()} className="w-full rounded bg-emerald-700 px-3 py-2 text-sm font-bold disabled:opacity-40">링크 하나로 추천 글 만들기</button>
             </form>
           ) : null}
           {items.map((item) => (
