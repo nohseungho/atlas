@@ -3,9 +3,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { naverEditorTarget } from "@/lib/atlas/korea-product-pipeline";
 
-async function api(options = {}) {
+async function draftsApi(options = {}) {
   const res = await fetch("/api/atlas/korea-drafts", { cache: "no-store", ...options });
   return res.json().catch(() => ({}));
+}
+
+async function postJson(url, body) {
+  const res = await fetch(url, {
+    method: "POST",
+    cache: "no-store",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json().catch(() => ({}));
+  return { ok: res.ok, data };
 }
 
 const STATE_LABEL = {
@@ -20,19 +31,17 @@ const STATE_LABEL = {
 export default function KoreaPublisherPage() {
   const [items, setItems] = useState([]);
   const [selectedId, setSelectedId] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState("");
   const [message, setMessage] = useState("");
 
   async function load() {
-    const data = await api();
+    const data = await draftsApi();
     const next = data.items || [];
     setItems(next);
     if (!selectedId && next[0]) setSelectedId(next[0].id);
   }
 
-  useEffect(() => {
-    load();
-  }, []);
+  useEffect(() => { load(); }, []);
 
   const selected = useMemo(
     () => items.find((item) => item.id === selectedId) || items[0] || null,
@@ -40,51 +49,97 @@ export default function KoreaPublisherPage() {
   );
 
   async function patch(action, patch = {}) {
-    if (!selected) return;
-    setBusy(true);
-    setMessage("");
-    const data = await api({
+    if (!selected) return null;
+    const res = await fetch("/api/atlas/korea-drafts", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: selected.id, action, patch }),
     });
-    if (data.status === "ok") {
-      setMessage(action === "approve" ? "발행 승인되었습니다. 실제 발행은 아직 하지 않았습니다." : "저장되었습니다.");
-      await load();
-    } else {
-      setMessage(data.error || (data.issues || []).join(", ") || "처리하지 못했습니다.");
-    }
-    setBusy(false);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || data.status !== "ok") throw new Error(data.error || (data.issues || []).join(", ") || "처리하지 못했습니다.");
+    await load();
+    return data.draft;
   }
 
   function updateLocal(key, value) {
     setItems((prev) => prev.map((item) => (item.id === selected.id ? { ...item, [key]: value } : item)));
   }
 
-  if (!selected) {
-    return <main className="p-8 text-zinc-200">국내용 글을 불러오는 중입니다.</main>;
+  async function save() {
+    setBusy("save");
+    setMessage("");
+    try {
+      await patch("save", selected);
+      setMessage("저장했습니다.");
+    } catch (e) { setMessage(e.message); }
+    setBusy("");
   }
+
+  async function autoBuildAndStage() {
+    if (!selected) return;
+    setBusy("auto");
+    setMessage("ATLAS가 국내용 글을 자동 준비하고 네이버 편집기에 반영 중입니다.");
+    try {
+      await patch("save", selected);
+      const generated = await postJson("/api/atlas/korea-generate", { id: selected.id });
+      if (!generated.ok && generated.data.status !== "skipped") throw new Error(generated.data.error || "자동 본문 제작 실패");
+      const staged = await postJson("/api/atlas/korea-publish", { id: selected.id, mode: "stage" });
+      if (!staged.ok) throw new Error(staged.data.error || "네이버 자동 반영 실패");
+      if (staged.data.status === "login_required") {
+        setMessage("ATLAS 전용 Edge가 열렸습니다. 네이버 로그인은 최초 1회만 필요하며 이후 세션을 재사용합니다.");
+      } else {
+        setMessage("자동 제작·네이버 반영 완료. 실제 발행은 최종 승인 전이라 멈춰 있습니다.");
+      }
+      await load();
+    } catch (e) {
+      setMessage(e.message);
+      await load();
+    }
+    setBusy("");
+  }
+
+  async function approveAndPublish() {
+    if (!selected) return;
+    setBusy("publish");
+    setMessage("최종 승인 처리 후 네이버에 실제 발행 중입니다.");
+    try {
+      if (selected.state !== "ready_for_review") await patch("review", selected);
+      await patch("approve", selected);
+      const published = await postJson("/api/atlas/korea-publish", { id: selected.id, mode: "publish" });
+      if (!published.ok) throw new Error(published.data.error || "네이버 발행 실패");
+      if (published.data.status === "login_required") {
+        setMessage("최초 네이버 로그인 필요. 로그인 후 같은 발행 버튼을 다시 누르면 승인 상태를 유지한 채 이어서 발행합니다.");
+      } else {
+        setMessage("네이버 발행 완료.");
+      }
+      await load();
+    } catch (e) {
+      setMessage(e.message);
+      await load();
+    }
+    setBusy("");
+  }
+
+  if (!selected) return <main className="p-8 text-zinc-200">국내용 글을 불러오는 중입니다.</main>;
 
   const targetUrl = naverEditorTarget(selected);
   const imageReady = selected.images?.filter((img) => img.src).length || 0;
+  const imageTotal = selected.images?.length || 0;
+  const stageBlocked = imageTotal > 0 && imageReady !== imageTotal;
 
   return (
     <main className="mx-auto max-w-6xl p-6 text-zinc-100">
       <div className="mb-6">
-        <div className="text-sm text-amber-300">ATLAS KOREA</div>
-        <h1 className="text-3xl font-bold">국내용 제품 블로그 운영판</h1>
-        <p className="mt-2 text-zinc-400">좋은 제품은 숨기지 않고 직접 추천합니다. 최종 승인 전에는 실제 발행하지 않습니다.</p>
+        <div className="text-sm text-amber-300">ATLAS KOREA · NAVER AUTOMATION</div>
+        <h1 className="text-3xl font-bold">국내용 제품 블로그 자동 운영판</h1>
+        <p className="mt-2 text-zinc-400">제품 선정 → 추천형 본문 → 이미지 → 제휴 링크 → 네이버 편집기 반영까지 자동. 실제 공개는 최종 승인 뒤에만 실행합니다.</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-[280px_1fr]">
         <aside className="space-y-2">
           {items.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setSelectedId(item.id)}
-              className={`w-full rounded-xl border p-4 text-left ${item.id === selected.id ? "border-amber-400 bg-zinc-900" : "border-zinc-800 bg-zinc-950"}`}
-            >
-              <div className="text-xs text-zinc-500">{STATE_LABEL[item.state] || item.state}</div>
+            <button key={item.id} onClick={() => setSelectedId(item.id)} className={`w-full rounded-xl border p-4 text-left ${item.id === selected.id ? "border-amber-400 bg-zinc-900" : "border-zinc-800 bg-zinc-950"}`}>
+              <div className="text-xs text-zinc-500">{STATE_LABEL[item.state] || item.state} · {item.automationStatus || "대기"}</div>
               <div className="mt-1 font-semibold">{item.title || item.productName || item.id}</div>
               <div className="mt-2 text-xs text-zinc-500">{item.contentType === "existing_post_update" ? `기존글 ${item.logNo}` : "신규 제품글"}</div>
             </button>
@@ -101,54 +156,41 @@ export default function KoreaPublisherPage() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <label className="text-sm">제목
-              <input className="mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-900 p-3" value={selected.title} onChange={(e) => updateLocal("title", e.target.value)} />
-            </label>
-            <label className="text-sm">제품명
-              <input className="mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-900 p-3" value={selected.productName || ""} onChange={(e) => updateLocal("productName", e.target.value)} />
-            </label>
-            <label className="text-sm md:col-span-2">쿠팡 파트너스 링크
-              <input className="mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-900 p-3" value={selected.affiliateUrl || ""} onChange={(e) => updateLocal("affiliateUrl", e.target.value)} placeholder="실제 제휴 링크를 넣으면 본문 CTA와 함께 관리" />
-            </label>
-            <label className="text-sm md:col-span-2">본문
-              <textarea className="mt-1 min-h-72 w-full rounded-lg border border-zinc-700 bg-zinc-900 p-3" value={selected.bodyText || ""} onChange={(e) => updateLocal("bodyText", e.target.value)} placeholder="국내용 직접 추천형 본문" />
-            </label>
+            <label className="text-sm">제목<input className="mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-900 p-3" value={selected.title} onChange={(e) => updateLocal("title", e.target.value)} /></label>
+            <label className="text-sm">제품명<input className="mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-900 p-3" value={selected.productName || ""} onChange={(e) => updateLocal("productName", e.target.value)} /></label>
+            <label className="text-sm md:col-span-2">쿠팡 파트너스 링크<input className="mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-900 p-3" value={selected.affiliateUrl || ""} onChange={(e) => updateLocal("affiliateUrl", e.target.value)} placeholder="실제 제휴 링크만 입력" /></label>
+            <label className="text-sm md:col-span-2">본문<textarea className="mt-1 min-h-72 w-full rounded-lg border border-zinc-700 bg-zinc-900 p-3" value={selected.bodyText || ""} onChange={(e) => updateLocal("bodyText", e.target.value)} placeholder={selected.updateMode === "images_only" ? "기존 네이버 본문 보존 모드" : "ATLAS 자동 생성 본문"} /></label>
           </div>
 
           <div className="mt-5 rounded-xl border border-zinc-800 p-4">
-            <div className="font-semibold">본문 이미지</div>
+            <div className="font-semibold">본문 이미지 자동 연결</div>
             <div className="mt-3 space-y-2">
               {(selected.images || []).map((img) => (
                 <div key={img.id} className="rounded-lg bg-zinc-900 p-3 text-sm">
                   <div className="font-medium">{img.alt}</div>
                   <div className="mt-1 text-zinc-500">배치: {img.placement || "미정"}</div>
-                  <input
-                    className="mt-2 w-full rounded border border-zinc-700 bg-zinc-950 p-2"
-                    value={img.src || ""}
-                    onChange={(e) => {
-                      const images = selected.images.map((row) => row.id === img.id ? { ...row, src: e.target.value } : row);
-                      updateLocal("images", images);
-                    }}
-                    placeholder="업로드된 이미지 URL 또는 로컬 연결 경로"
-                  />
+                  <input className="mt-2 w-full rounded border border-zinc-700 bg-zinc-950 p-2" value={img.src || ""} onChange={(e) => {
+                    const images = selected.images.map((row) => row.id === img.id ? { ...row, src: e.target.value } : row);
+                    updateLocal("images", images);
+                  }} placeholder="로컬 이미지 파일 경로" />
                 </div>
               ))}
             </div>
-            <div className="mt-3 text-xs text-zinc-500">연결 이미지 {imageReady}/{selected.images?.length || 0}</div>
+            <div className={`mt-3 text-xs ${stageBlocked ? "text-amber-300" : "text-zinc-500"}`}>연결 이미지 {imageReady}/{imageTotal}{stageBlocked ? " · 이미지가 모두 연결되어야 네이버 자동 반영합니다." : ""}</div>
           </div>
 
           <div className="mt-5 rounded-xl border border-zinc-800 p-4 text-sm">
-            <div className="font-semibold">네이버 대상</div>
+            <div className="font-semibold">네이버 자동화 대상</div>
             <div className="mt-1 break-all text-zinc-400">{targetUrl}</div>
-            <div className="mt-2 text-xs text-amber-300">이 주소는 편집 대상 계산용입니다. 승인 버튼은 네이버 발행 버튼을 누르지 않습니다.</div>
+            <div className="mt-2 text-xs text-zinc-500">ATLAS 전용 Edge 프로필을 사용하므로 로그인 세션을 재사용합니다. 비밀번호는 ATLAS 데이터에 저장하지 않습니다.</div>
           </div>
 
           {message ? <div className="mt-4 rounded-lg bg-zinc-900 p-3 text-sm">{message}</div> : null}
 
           <div className="mt-5 flex flex-wrap gap-3">
-            <button disabled={busy} onClick={() => patch("save", selected)} className="rounded-lg bg-zinc-800 px-4 py-3 font-semibold">저장</button>
-            <button disabled={busy} onClick={() => patch("review", selected)} className="rounded-lg bg-sky-700 px-4 py-3 font-semibold">검수 대기로 보내기</button>
-            <button disabled={busy || selected.state !== "ready_for_review"} onClick={() => patch("approve", selected)} className="rounded-lg bg-amber-600 px-4 py-3 font-semibold disabled:opacity-40">최종 발행 승인</button>
+            <button disabled={Boolean(busy)} onClick={save} className="rounded-lg bg-zinc-800 px-4 py-3 font-semibold disabled:opacity-40">저장</button>
+            <button disabled={Boolean(busy) || stageBlocked} onClick={autoBuildAndStage} className="rounded-lg bg-sky-700 px-4 py-3 font-semibold disabled:opacity-40">자동 제작 → 네이버 반영</button>
+            <button disabled={Boolean(busy) || stageBlocked || selected.state === "published"} onClick={approveAndPublish} className="rounded-lg bg-amber-600 px-4 py-3 font-semibold disabled:opacity-40">최종 승인 → 네이버 발행</button>
           </div>
         </section>
       </div>
