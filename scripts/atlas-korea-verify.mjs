@@ -8,12 +8,14 @@ const mustExist = [
   "app/api/atlas/korea-generate/route.js",
   "app/api/atlas/korea-publish/route.js",
   "app/api/atlas/korea-doctor/route.js",
+  "app/api/atlas/korea-assets/route.js",
   "lib/atlas/korea-product-pipeline.js",
   "lib/atlas/korea-content-generator.js",
   "lib/atlas/naver-browser-publisher.js",
   "data/atlas/korea-drafts.json",
   "scripts/naver-blog-automation.mjs",
   "scripts/naver-blog-doctor.mjs",
+  "scripts/naver-browser-worker.mjs",
   "scripts/ATLAS-KOREA-START.cmd",
 ];
 
@@ -31,11 +33,13 @@ if (!failures.length) {
   const drafts = JSON.parse(read("data/atlas/korea-drafts.json"));
   const pipeline = read("lib/atlas/korea-product-pipeline.js");
   const publisher = read("lib/atlas/naver-browser-publisher.js");
+  const worker = read("scripts/naver-browser-worker.mjs");
   const publishRoute = read("app/api/atlas/korea-publish/route.js");
 
   if (!packageJson.scripts?.["naver:stage"]) failures.push("package script naver:stage missing");
   if (!packageJson.scripts?.["naver:publish"]) failures.push("package script naver:publish missing");
   if (!packageJson.scripts?.["naver:doctor"]) failures.push("package script naver:doctor missing");
+  if (!packageJson.scripts?.["naver:verify"]) failures.push("package script naver:verify missing");
 
   const items = Array.isArray(drafts.items) ? drafts.items : [];
   const ids = new Set(items.map((item) => item.id));
@@ -53,9 +57,13 @@ if (!failures.length) {
 
   if (!pipeline.includes("canPublishKoreaDraft")) failures.push("approval gate helper missing");
   if (!publishRoute.includes("APPROVAL_REQUIRED")) failures.push("server-side approval gate missing");
-  if (!publisher.includes("launchPersistentContext")) failures.push("persistent Naver browser profile missing");
-  if (!publisher.includes("images_only")) failures.push("existing-post image-only protection missing");
+
+  // Browser control is intentionally isolated from Next.js/Turbopack in a worker process.
+  if (!publisher.includes("naver-browser-worker.mjs")) failures.push("isolated Naver browser worker wiring missing");
   if (!publisher.includes("ATLAS_NAVER_PROFILE_DIR")) failures.push("configurable Naver profile directory missing");
+  if (!worker.includes("launchPersistentContext")) failures.push("persistent Naver browser profile missing");
+  if (!worker.includes("images_only")) failures.push("existing-post image-only protection missing");
+  if (!worker.includes("playwright-core")) failures.push("worker browser control dependency missing");
 
   const forbidden = [
     /OPENAI_API_KEY/i,
@@ -66,6 +74,7 @@ if (!failures.length) {
     read("lib/atlas/korea-content-generator.js"),
     read("lib/atlas/korea-product-pipeline.js"),
     publisher,
+    worker,
   ].join("\n");
   if (forbidden.some((pattern) => pattern.test(koreaSources))) {
     failures.push("paid OpenAI dependency detected in ATLAS Korea path");
@@ -82,5 +91,5 @@ console.log("ATLAS KOREA VERIFY: PASS");
 console.log("- required files present");
 console.log("- existing Naver post target protected");
 console.log("- approval gate present");
-console.log("- persistent browser profile present");
+console.log("- persistent browser profile present in isolated worker");
 console.log("- paid OpenAI dependency absent from Korea automation path");
