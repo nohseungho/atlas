@@ -22,21 +22,24 @@
           "role": "body_usage",
           "src": "",
           "alt": "TV 주변, 책상, 충전 공간의 멀티탭 사용 예시",
-          "placement": "사용 공간별 추천 설명 뒤"
+          "placement": "사용 공간별 추천 설명 뒤",
+          "anchorKeywords": ["사용 공간", "TV", "책상", "충전"]
         },
         {
           "id": "img_multitap_switch",
           "role": "body_switch_compare",
           "src": "",
           "alt": "개별 스위치형과 통합 스위치형 멀티탭 비교",
-          "placement": "스위치 방식 비교 문단 뒤"
+          "placement": "스위치 방식 비교 문단 뒤",
+          "anchorKeywords": ["개별 스위치", "통합 스위치", "스위치"]
         },
         {
           "id": "img_multitap_safety",
           "role": "body_safety",
           "src": "",
           "alt": "멀티탭 발열, 먼지, 습기, 고출력 가전 점검 체크리스트",
-          "placement": "안전 점검 문단 뒤"
+          "placement": "안전 점검 문단 뒤",
+          "anchorKeywords": ["안전", "발열", "과부하", "먼지"]
         }
       ],
       "state": "draft",
