@@ -120,21 +120,30 @@ export default function KoreaPublisherPage() {
     }
   }
 
+  async function autoPlanAssets() {
+    if (!selected?.images?.length) return null;
+    const planned = await postJson("/api/atlas/korea-auto-assets", { id: selected.id });
+    if (!planned.ok) throw new Error(planned.data.error || "본문 이미지 자동 준비 실패");
+    return planned.data.draft;
+  }
+
   async function autoBuildAndStage() {
     if (!selected) return;
     setBusy("auto");
-    setMessage("ATLAS가 국내용 글을 자동 준비하고 네이버 편집기에 반영 중입니다.");
+    setMessage("ATLAS가 글과 필요한 이미지를 자동 준비한 뒤 네이버 편집기에 반영 중입니다.");
     try {
       await ensureAutomationReady();
       await patch("save", selected);
       const generated = await postJson("/api/atlas/korea-generate", { id: selected.id });
       if (!generated.ok && generated.data.status !== "skipped") throw new Error(generated.data.error || "자동 본문 제작 실패");
+      await autoPlanAssets();
       const staged = await postJson("/api/atlas/korea-publish", { id: selected.id, mode: "stage" });
       if (!staged.ok) throw new Error(staged.data.error || "네이버 자동 반영 실패");
       if (staged.data.status === "login_required") {
-        setMessage("ATLAS 전용 Edge가 열렸습니다. 네이버 로그인은 최초 1회만 필요하며 이후 세션을 재사용합니다.");
+        setMessage("ATLAS 전용 Edge가 열렸습니다. 네이버 로그인은 최초 1회만 필요합니다. 로그인 후 다시 자동 반영을 누르면 이어집니다.");
       } else {
-        setMessage("자동 제작·네이버 반영 완료. 실제 발행은 최종 승인 전이라 멈춰 있습니다.");
+        const misses = (staged.data.imageUpload?.placements || []).filter((row) => !row.matched).length;
+        setMessage(misses ? `네이버 반영 완료. 이미지 ${misses}개는 정확한 문단을 못 찾아 본문 끝에 안전하게 배치했습니다. 실제 발행은 하지 않았습니다.` : "자동 제작·이미지 생성·네이버 반영 완료. 실제 발행은 최종 승인 전이라 멈춰 있습니다.");
       }
       await load();
     } catch (e) {
@@ -151,6 +160,7 @@ export default function KoreaPublisherPage() {
     try {
       await ensureAutomationReady();
       await patch("save", selected);
+      await autoPlanAssets();
       let current = selected;
       if (current.state !== "ready_for_review") current = await patch("review", {});
       if (current?.state !== "approved") current = await patch("approve", {});
@@ -174,7 +184,7 @@ export default function KoreaPublisherPage() {
   const targetUrl = naverEditorTarget(selected);
   const imageReady = selected.images?.filter((img) => img.src).length || 0;
   const imageTotal = selected.images?.length || 0;
-  const stageBlocked = imageTotal > 0 && imageReady !== imageTotal;
+  const imagePending = imageTotal > 0 && imageReady !== imageTotal;
   const automationReady = Boolean(doctor?.ok);
 
   return (
@@ -182,7 +192,7 @@ export default function KoreaPublisherPage() {
       <div className="mb-6">
         <div className="text-sm text-amber-300">ATLAS KOREA · NAVER AUTOMATION</div>
         <h1 className="text-3xl font-bold">국내용 제품 블로그 자동 운영판</h1>
-        <p className="mt-2 text-zinc-400">제품 선정 → 추천형 본문 → 이미지 → 제휴 링크 → 네이버 편집기 반영까지 자동. 실제 공개는 최종 승인 뒤에만 실행합니다.</p>
+        <p className="mt-2 text-zinc-400">제품 선정 → 추천형 본문 → 이미지 자동 생성 → 제휴 링크 → 네이버 편집기 반영까지 자동. 실제 공개는 최종 승인 뒤에만 실행합니다.</p>
       </div>
 
       <div className={`mb-6 rounded-xl border p-4 ${automationReady ? "border-emerald-800 bg-emerald-950/20" : "border-amber-800 bg-amber-950/20"}`}>
@@ -224,25 +234,28 @@ export default function KoreaPublisherPage() {
 
           <div className="mt-5 rounded-xl border border-zinc-800 p-4">
             <div className="font-semibold">본문 이미지 자동 연결</div>
-            <div className="mt-1 text-xs text-zinc-500">파일을 선택하면 경로를 직접 입력하지 않아도 ATLAS가 로컬 자산 폴더에 저장하고 네이버용 경로를 연결합니다.</div>
+            <div className="mt-1 text-xs text-zinc-500">이미지가 비어 있어도 괜찮습니다. 자동 반영을 누르면 ATLAS가 무료 로컬 PNG를 생성해 지정 문단 뒤에 넣습니다. 직접 사진을 쓰고 싶을 때만 파일을 선택하세요.</div>
             <div className="mt-3 space-y-2">
-              {(selected.images || []).map((img) => (
-                <div key={img.id} className="rounded-lg bg-zinc-900 p-3 text-sm">
-                  <div className="font-medium">{img.alt}</div>
-                  <div className="mt-1 text-zinc-500">배치: {img.placement || "미정"}</div>
-                  <div className="mt-2 flex flex-wrap items-center gap-2">
-                    <label className="cursor-pointer rounded bg-zinc-800 px-3 py-2 font-semibold">
-                      {img.src ? "이미지 교체" : "이미지 선택"}
-                      <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" disabled={Boolean(busy)} onChange={(e) => uploadAsset(img.id, e.target.files?.[0])} />
-                    </label>
-                    <span className={img.src ? "text-emerald-300" : "text-amber-300"}>{img.src ? "연결 완료" : "미연결"}</span>
-                    {busy === `asset:${img.id}` ? <span className="text-zinc-400">업로드 중…</span> : null}
+              {(selected.images || []).map((img) => {
+                const auto = String(img.src || "").startsWith("atlas-generated://");
+                return (
+                  <div key={img.id} className="rounded-lg bg-zinc-900 p-3 text-sm">
+                    <div className="font-medium">{img.alt}</div>
+                    <div className="mt-1 text-zinc-500">배치: {img.placement || "미정"}</div>
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                      <label className="cursor-pointer rounded bg-zinc-800 px-3 py-2 font-semibold">
+                        {img.src && !auto ? "이미지 교체" : "직접 이미지 선택"}
+                        <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" disabled={Boolean(busy)} onChange={(e) => uploadAsset(img.id, e.target.files?.[0])} />
+                      </label>
+                      <span className={img.src ? "text-emerald-300" : "text-amber-300"}>{auto ? "자동 생성 예정" : img.src ? "직접 이미지 연결" : "자동 생성 대기"}</span>
+                      {busy === `asset:${img.id}` ? <span className="text-zinc-400">업로드 중…</span> : null}
+                    </div>
+                    {img.originalName ? <div className="mt-2 text-xs text-zinc-500">파일: {img.originalName}</div> : null}
                   </div>
-                  {img.originalName ? <div className="mt-2 text-xs text-zinc-500">파일: {img.originalName}</div> : null}
-                </div>
-              ))}
+                );
+              })}
             </div>
-            <div className={`mt-3 text-xs ${stageBlocked ? "text-amber-300" : "text-emerald-300"}`}>연결 이미지 {imageReady}/{imageTotal}{stageBlocked ? " · 이미지가 모두 연결되어야 네이버 자동 반영합니다." : imageTotal ? " · 네이버 반영 준비 완료" : ""}</div>
+            <div className={`mt-3 text-xs ${imagePending ? "text-amber-300" : "text-emerald-300"}`}>이미지 {imageReady}/{imageTotal}{imagePending ? " · 비어 있는 이미지는 자동 반영 시 ATLAS가 자동 생성합니다." : imageTotal ? " · 준비 완료" : ""}</div>
           </div>
 
           <div className="mt-5 rounded-xl border border-zinc-800 p-4 text-sm">
@@ -255,8 +268,8 @@ export default function KoreaPublisherPage() {
 
           <div className="mt-5 flex flex-wrap gap-3">
             <button disabled={Boolean(busy)} onClick={save} className="rounded-lg bg-zinc-800 px-4 py-3 font-semibold disabled:opacity-40">저장</button>
-            <button disabled={Boolean(busy) || stageBlocked || !automationReady} onClick={autoBuildAndStage} className="rounded-lg bg-sky-700 px-4 py-3 font-semibold disabled:opacity-40">자동 제작 → 네이버 반영</button>
-            <button disabled={Boolean(busy) || stageBlocked || !automationReady || selected.state === "published"} onClick={approveAndPublish} className="rounded-lg bg-amber-600 px-4 py-3 font-semibold disabled:opacity-40">최종 승인 → 네이버 발행</button>
+            <button disabled={Boolean(busy) || !automationReady} onClick={autoBuildAndStage} className="rounded-lg bg-sky-700 px-4 py-3 font-semibold disabled:opacity-40">자동 제작 → 이미지 생성 → 네이버 반영</button>
+            <button disabled={Boolean(busy) || !automationReady || selected.state === "published"} onClick={approveAndPublish} className="rounded-lg bg-amber-600 px-4 py-3 font-semibold disabled:opacity-40">최종 승인 → 네이버 발행</button>
           </div>
         </section>
       </div>
