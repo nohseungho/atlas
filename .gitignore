@@ -37,6 +37,9 @@ yarn-error.log*
 # ATLAS: 암호화된 OAuth 토큰이라도 저장소에 남기지 않는다
 /data/atlas/tokens.json
 
+# ATLAS KOREA: 네이버 발행용 로컬 이미지 자산은 저장소에 남기지 않는다
+/.atlas-data/
+
 # vercel
 .vercel
 
