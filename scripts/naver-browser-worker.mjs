@@ -6,6 +6,7 @@ import { naverEditorTarget } from "../lib/atlas/korea-product-pipeline.js";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright-core");
+const GENERATED_PREFIX = "atlas-generated://";
 
 const EDGE_PATHS = process.platform === "win32"
   ? [
@@ -29,12 +30,68 @@ function profileDir() {
   return configured || path.join(os.homedir(), ".atlas", "naver-profile");
 }
 
+function safeName(value) {
+  return String(value || "asset").replace(/[^a-zA-Z0-9._-]+/g, "-").replace(/^-+|-+$/g, "") || "asset";
+}
+
+function escapeHtml(value) {
+  return String(value || "").replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+}
+
+function assetCopy(image) {
+  const role = String(image.role || "");
+  if (role === "body_usage") return {
+    kicker: "멀티탭 사용 공간 체크",
+    title: "공간마다 필요한 멀티탭이 다릅니다",
+    columns: [["TV 주변", "대기전력 기기 수와 콘센트 간격 확인"], ["책상", "충전기·모니터 어댑터 간섭 확인"], ["충전 공간", "USB보다 정격 용량과 안전 인증 우선"]],
+    footer: "사용 기기 수보다 정격 용량과 배치가 먼저입니다.",
+  };
+  if (role === "body_switch_compare") return {
+    kicker: "스위치 방식 비교",
+    title: "개별 스위치형 vs 통합 스위치형",
+    columns: [["개별 스위치", "기기별 전원을 끄기 편함"], ["통합 스위치", "한 번에 전체 전원을 관리"], ["선택 기준", "자주 끄는 기기 수와 사용 습관"]],
+    footer: "편의성보다 실제 사용 패턴에 맞는 방식이 오래 갑니다.",
+  };
+  if (role === "body_safety") return {
+    kicker: "멀티탭 안전 점검",
+    title: "이 네 가지는 꼭 확인하세요",
+    columns: [["발열", "플러그와 본체가 뜨겁지 않은지"], ["먼지", "콘센트 주변 먼지와 이물질 제거"], ["습기", "물기 많은 장소와 젖은 손 피하기"], ["고출력 가전", "히터·전열기구 문어발 연결 금지"]],
+    footer: "이상 발열·변색·탄 냄새가 있으면 즉시 사용을 중단하세요.",
+  };
+  return {
+    kicker: "ATLAS 생활비연구소",
+    title: image.alt || "구매 전 체크 포인트",
+    columns: [["확인", image.placement || "본문 내용과 함께 확인하세요."]],
+    footer: "실제 제품 사양과 사용 환경을 함께 확인하세요.",
+  };
+}
+
+async function renderGeneratedAssets(context, draft) {
+  const images = Array.isArray(draft.images) ? draft.images : [];
+  const generated = images.filter((img) => String(img.src || "").startsWith(GENERATED_PREFIX));
+  if (!generated.length) return draft;
+  const dir = path.join(process.cwd(), ".atlas-data", "korea-assets", safeName(draft.id));
+  fs.mkdirSync(dir, { recursive: true });
+  const renderPage = await context.newPage();
+  await renderPage.setViewportSize({ width: 1200, height: 800 });
+  for (const image of generated) {
+    const copy = assetCopy(image);
+    const columns = copy.columns.map(([head, body]) => `<div class="box"><div class="head">${escapeHtml(head)}</div><div class="body">${escapeHtml(body)}</div></div>`).join("");
+    const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>*{box-sizing:border-box}body{margin:0;background:#f4f4f5;font-family:"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif;color:#18181b}.card{width:1200px;height:800px;padding:72px;background:linear-gradient(145deg,#fff,#f4f4f5);display:flex;flex-direction:column;justify-content:space-between}.kicker{font-size:26px;font-weight:700;color:#52525b}.title{font-size:58px;line-height:1.18;font-weight:900;letter-spacing:-2px;max-width:1000px;margin-top:18px}.grid{display:grid;grid-template-columns:repeat(${Math.min(copy.columns.length,4)},1fr);gap:18px;margin-top:44px}.box{border:2px solid #d4d4d8;border-radius:24px;background:white;padding:28px;min-height:190px}.head{font-size:30px;font-weight:900}.body{font-size:23px;line-height:1.55;margin-top:16px;color:#52525b}.footer{border-top:2px solid #e4e4e7;padding-top:24px;font-size:26px;font-weight:700;color:#3f3f46}</style></head><body><div class="card"><div><div class="kicker">${escapeHtml(copy.kicker)}</div><div class="title">${escapeHtml(copy.title)}</div><div class="grid">${columns}</div></div><div class="footer">${escapeHtml(copy.footer)}</div></div></body></html>`;
+    await renderPage.setContent(html, { waitUntil: "load" });
+    const output = path.join(dir, `${safeName(image.id || image.role)}.png`);
+    await renderPage.locator(".card").screenshot({ path: output, type: "png" });
+    image.src = output;
+    image.generatedLocalPath = output;
+  }
+  await renderPage.close();
+  return draft;
+}
+
 async function firstVisible(scope, selectors) {
   for (const selector of selectors) {
     const locator = scope.locator(selector).first();
-    try {
-      if (await locator.count() && await locator.isVisible({ timeout: 600 })) return locator;
-    } catch {}
+    try { if (await locator.count() && await locator.isVisible({ timeout: 600 })) return locator; } catch {}
   }
   return null;
 }
@@ -51,37 +108,24 @@ async function editorScope(page) {
 
 async function ensureLoggedIn(page) {
   const url = page.url();
-  const loginVisible = /nidlogin\.login\.naver\.com|nid\.naver\.com/i.test(url)
-    || await page.locator("input#id, input[name='id']").count().catch(() => 0);
+  const loginVisible = /nidlogin\.login\.naver\.com|nid\.naver\.com/i.test(url) || await page.locator("input#id, input[name='id']").count().catch(() => 0);
   if (loginVisible) throw Object.assign(new Error("네이버 로그인 1회가 필요합니다. 열린 Edge에서 로그인한 뒤 같은 작업을 다시 실행하세요."), { code: "NAVER_LOGIN_REQUIRED" });
 }
 
 async function replaceText(locator, text) {
   await locator.click();
   await locator.press(process.platform === "darwin" ? "Meta+A" : "Control+A");
-  try { await locator.fill(text); }
-  catch { await locator.press("Backspace"); await locator.type(text, { delay: 1 }); }
+  try { await locator.fill(text); } catch { await locator.press("Backspace"); await locator.type(text, { delay: 1 }); }
 }
 
 async function setTitle(scope, title) {
-  const el = await firstVisible(scope, [
-    ".se-documentTitle .se-text-paragraph",
-    ".se-documentTitle [contenteditable='true']",
-    "textarea[name='title']",
-    "input[name='title']",
-    "[data-placeholder*='제목'][contenteditable='true']",
-  ]);
+  const el = await firstVisible(scope, [".se-documentTitle .se-text-paragraph", ".se-documentTitle [contenteditable='true']", "textarea[name='title']", "input[name='title']", "[data-placeholder*='제목'][contenteditable='true']"]);
   if (!el) throw Object.assign(new Error("네이버 제목 입력 영역을 찾지 못했습니다."), { code: "NAVER_TITLE_EDITOR_NOT_FOUND" });
   await replaceText(el, title);
 }
 
 async function setBody(scope, draft) {
-  const el = await firstVisible(scope, [
-    ".se-component-content [contenteditable='true']",
-    ".se-section-text .se-text-paragraph",
-    ".se-main-container [contenteditable='true']",
-    "[contenteditable='true'][data-placeholder*='내용']",
-  ]);
+  const el = await firstVisible(scope, [".se-component-content [contenteditable='true']", ".se-section-text .se-text-paragraph", ".se-main-container [contenteditable='true']", "[contenteditable='true'][data-placeholder*='내용']"]);
   if (!el) throw Object.assign(new Error("네이버 본문 입력 영역을 찾지 못했습니다."), { code: "NAVER_BODY_EDITOR_NOT_FOUND" });
   if (draft.contentType === "existing_post_update" && draft.updateMode === "images_only") return el;
   const text = [draft.affiliateUrl ? draft.affiliateDisclosure : "", draft.bodyText || "", draft.affiliateUrl ? `제품 확인하기: ${draft.affiliateUrl}` : ""].filter(Boolean).join("\n\n");
@@ -89,46 +133,13 @@ async function setBody(scope, draft) {
   return el;
 }
 
-function imageItems(draft) {
-  return (draft.images || []).map((img) => ({ ...img, src: String(img.src || "").trim() })).filter((img) => img.src && !/^https?:\/\//i.test(img.src) && fs.existsSync(img.src));
-}
-
-async function findAnchor(scope, image) {
-  const keywords = (image.anchorKeywords || []).map((v) => String(v || "").trim()).filter(Boolean);
-  if (!keywords.length) return null;
-  const blocks = scope.locator(".se-text-paragraph, .se-component-content p, [contenteditable='true'] p");
-  const count = await blocks.count().catch(() => 0);
-  let best = null;
-  let bestScore = 0;
-  for (let i = 0; i < Math.min(count, 250); i += 1) {
-    const block = blocks.nth(i);
-    let text = "";
-    try { text = String(await block.innerText({ timeout: 300 })).trim(); } catch { continue; }
-    if (!text) continue;
-    const score = keywords.reduce((n, keyword) => n + (text.includes(keyword) ? 1 : 0), 0);
-    if (score > bestScore) {
-      best = block;
-      bestScore = score;
-      if (score === keywords.length) break;
-    }
-  }
-  return bestScore > 0 ? { locator: best, score: bestScore, keywords } : null;
-}
-
-async function moveCaretAfterAnchor(anchor, bodyEl) {
-  const target = anchor?.locator || bodyEl;
-  await target.click();
-  try { await target.press("End"); } catch {}
-  try { await target.press("Enter"); } catch {}
+function usableImages(draft) {
+  return (draft.images || []).filter((img) => { const src = String(img.src || "").trim(); return src && !/^https?:\/\//i.test(src) && fs.existsSync(src); });
 }
 
 async function uploadOne(page, scope, file) {
-  const directInput = scope.locator("input[type='file']").first();
-  if (await directInput.count().catch(() => 0)) {
-    await directInput.setInputFiles(file);
-    await page.waitForTimeout(1200);
-    return;
-  }
+  const directInputs = scope.locator("input[type='file']");
+  if (await directInputs.count().catch(() => 0)) { await directInputs.first().setInputFiles(file); await page.waitForTimeout(1200); return; }
   const photoButton = await firstVisible(scope, ["button:has-text('사진')", "button[aria-label*='사진']", "button:has-text('이미지')", "[role='button']:has-text('사진')"]);
   if (!photoButton) throw Object.assign(new Error("네이버 사진 업로드 버튼을 찾지 못했습니다."), { code: "NAVER_IMAGE_BUTTON_NOT_FOUND" });
   const chooserPromise = page.waitForEvent("filechooser", { timeout: 5000 });
@@ -138,22 +149,39 @@ async function uploadOne(page, scope, file) {
   await page.waitForTimeout(1500);
 }
 
-async function uploadImages(page, scope, draft, bodyEl) {
-  const images = imageItems(draft);
-  const placements = [];
-  if (!images.length) return { uploaded: 0, requested: (draft.images || []).length, placements };
+async function findAnchor(scope, keywords = []) {
+  const cleaned = keywords.map((v) => String(v || "").trim()).filter(Boolean);
+  if (!cleaned.length) return null;
+  const blocks = scope.locator(".se-text-paragraph, .se-component-content p, [contenteditable='true'] p");
+  const count = Math.min(await blocks.count().catch(() => 0), 300);
+  let best = null; let bestScore = 0;
+  for (let i = 0; i < count; i += 1) {
+    const block = blocks.nth(i);
+    const text = String(await block.innerText().catch(() => ""));
+    const score = cleaned.reduce((sum, keyword) => sum + (text.includes(keyword) ? 1 : 0), 0);
+    if (score > bestScore) { bestScore = score; best = block; }
+  }
+  return best;
+}
 
-  const anchored = draft.contentType === "existing_post_update" && draft.updateMode === "images_only";
+async function moveCursorAfter(locator) {
+  if (!locator) return false;
+  try { await locator.click(); await locator.press("End"); await locator.press("Enter"); return true; } catch { return false; }
+}
+
+async function uploadImages(page, scope, draft) {
+  const images = usableImages(draft);
+  if (!images.length) return { uploaded: 0, requested: (draft.images || []).length, placements: [] };
+  const placements = [];
   for (const image of images) {
-    const anchor = anchored ? await findAnchor(scope, image) : null;
-    await moveCaretAfterAnchor(anchor, bodyEl);
+    const anchor = await findAnchor(scope, image.anchorKeywords || []);
+    const matched = await moveCursorAfter(anchor);
+    if (!matched) {
+      const body = await firstVisible(scope, [".se-main-container [contenteditable='true']", ".se-section-text .se-text-paragraph", "[contenteditable='true']"]);
+      if (body) { await body.click(); await body.press("End").catch(() => {}); await body.press("Enter").catch(() => {}); }
+    }
     await uploadOne(page, scope, image.src);
-    placements.push({
-      id: image.id,
-      placement: image.placement || "",
-      matched: Boolean(anchor),
-      matchedKeywords: anchor ? anchor.keywords.filter((keyword) => true).slice(0, anchor.score) : [],
-    });
+    placements.push({ id: image.id || image.role, matched, keywords: image.anchorKeywords || [] });
   }
   return { uploaded: images.length, requested: (draft.images || []).length, placements };
 }
@@ -178,26 +206,19 @@ async function main() {
   const page = context.pages()[0] || await context.newPage();
   let result;
   try {
+    await renderGeneratedAssets(context, draft);
     await page.goto(naverEditorTarget(draft), { waitUntil: "domcontentloaded", timeout: 45000 });
     await page.waitForTimeout(1200);
     await ensureLoggedIn(page);
     const scope = await editorScope(page);
     if (draft.contentType !== "existing_post_update" || draft.updateMode !== "images_only") await setTitle(scope, draft.title || "");
-    const bodyEl = await setBody(scope, draft);
-    const images = await uploadImages(page, scope, draft, bodyEl);
-    if (!publish) {
-      result = { status: "staged", editorUrl: page.url(), imageUpload: images, message: "네이버 편집기에 자동 반영했습니다. 발행은 승인 전이라 실행하지 않았습니다." };
-    } else {
-      await clickPublish(page, scope);
-      result = { status: "published", editorUrl: page.url(), publishedUrl: page.url(), imageUpload: images, message: "네이버 발행 동작을 완료했습니다." };
-    }
+    await setBody(scope, draft);
+    const images = await uploadImages(page, scope, draft);
+    if (!publish) result = { status: "staged", editorUrl: page.url(), imageUpload: images, message: "네이버 편집기에 자동 반영했습니다. 발행은 승인 전이라 실행하지 않았습니다." };
+    else { await clickPublish(page, scope); result = { status: "published", editorUrl: page.url(), publishedUrl: page.url(), imageUpload: images, message: "네이버 발행 동작을 완료했습니다." }; }
   } catch (error) {
-    if (error?.code === "NAVER_LOGIN_REQUIRED") {
-      result = { status: "login_required", errorCode: error.code, message: error.message, editorUrl: page.url(), keepOpen: true };
-    } else {
-      result = { status: "error", errorCode: error?.code || "NAVER_AUTOMATION_FAILED", message: error?.message || String(error) };
-      await context.close().catch(() => {});
-    }
+    if (error?.code === "NAVER_LOGIN_REQUIRED") result = { status: "login_required", errorCode: error.code, message: error.message, editorUrl: page.url(), keepOpen: true };
+    else { result = { status: "error", errorCode: error?.code || "NAVER_AUTOMATION_FAILED", message: error?.message || String(error) }; await context.close().catch(() => {}); }
   }
   fs.writeFileSync(outputPath, JSON.stringify(result), "utf8");
   if (result.status !== "login_required") await context.close().catch(() => {});
