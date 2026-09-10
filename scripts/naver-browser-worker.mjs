@@ -89,26 +89,73 @@ async function setBody(scope, draft) {
   return el;
 }
 
-function usableImagePaths(draft) {
-  return (draft.images || []).map((img) => String(img.src || "").trim()).filter((src) => src && !/^https?:\/\//i.test(src) && fs.existsSync(src));
+function imageItems(draft) {
+  return (draft.images || []).map((img) => ({ ...img, src: String(img.src || "").trim() })).filter((img) => img.src && !/^https?:\/\//i.test(img.src) && fs.existsSync(img.src));
 }
 
-async function uploadImages(page, scope, draft) {
-  const files = usableImagePaths(draft);
-  if (!files.length) return { uploaded: 0, requested: (draft.images || []).length };
+async function findAnchor(scope, image) {
+  const keywords = (image.anchorKeywords || []).map((v) => String(v || "").trim()).filter(Boolean);
+  if (!keywords.length) return null;
+  const blocks = scope.locator(".se-text-paragraph, .se-component-content p, [contenteditable='true'] p");
+  const count = await blocks.count().catch(() => 0);
+  let best = null;
+  let bestScore = 0;
+  for (let i = 0; i < Math.min(count, 250); i += 1) {
+    const block = blocks.nth(i);
+    let text = "";
+    try { text = String(await block.innerText({ timeout: 300 })).trim(); } catch { continue; }
+    if (!text) continue;
+    const score = keywords.reduce((n, keyword) => n + (text.includes(keyword) ? 1 : 0), 0);
+    if (score > bestScore) {
+      best = block;
+      bestScore = score;
+      if (score === keywords.length) break;
+    }
+  }
+  return bestScore > 0 ? { locator: best, score: bestScore, keywords } : null;
+}
+
+async function moveCaretAfterAnchor(anchor, bodyEl) {
+  const target = anchor?.locator || bodyEl;
+  await target.click();
+  try { await target.press("End"); } catch {}
+  try { await target.press("Enter"); } catch {}
+}
+
+async function uploadOne(page, scope, file) {
   const directInput = scope.locator("input[type='file']").first();
   if (await directInput.count().catch(() => 0)) {
-    await directInput.setInputFiles(files); await page.waitForTimeout(1200);
-    return { uploaded: files.length, requested: (draft.images || []).length };
+    await directInput.setInputFiles(file);
+    await page.waitForTimeout(1200);
+    return;
   }
   const photoButton = await firstVisible(scope, ["button:has-text('사진')", "button[aria-label*='사진']", "button:has-text('이미지')", "[role='button']:has-text('사진')"]);
   if (!photoButton) throw Object.assign(new Error("네이버 사진 업로드 버튼을 찾지 못했습니다."), { code: "NAVER_IMAGE_BUTTON_NOT_FOUND" });
   const chooserPromise = page.waitForEvent("filechooser", { timeout: 5000 });
   await photoButton.click();
   const chooser = await chooserPromise;
-  await chooser.setFiles(files);
+  await chooser.setFiles(file);
   await page.waitForTimeout(1500);
-  return { uploaded: files.length, requested: (draft.images || []).length };
+}
+
+async function uploadImages(page, scope, draft, bodyEl) {
+  const images = imageItems(draft);
+  const placements = [];
+  if (!images.length) return { uploaded: 0, requested: (draft.images || []).length, placements };
+
+  const anchored = draft.contentType === "existing_post_update" && draft.updateMode === "images_only";
+  for (const image of images) {
+    const anchor = anchored ? await findAnchor(scope, image) : null;
+    await moveCaretAfterAnchor(anchor, bodyEl);
+    await uploadOne(page, scope, image.src);
+    placements.push({
+      id: image.id,
+      placement: image.placement || "",
+      matched: Boolean(anchor),
+      matchedKeywords: anchor ? anchor.keywords.filter((keyword) => true).slice(0, anchor.score) : [],
+    });
+  }
+  return { uploaded: images.length, requested: (draft.images || []).length, placements };
 }
 
 async function clickPublish(page, scope) {
@@ -136,8 +183,8 @@ async function main() {
     await ensureLoggedIn(page);
     const scope = await editorScope(page);
     if (draft.contentType !== "existing_post_update" || draft.updateMode !== "images_only") await setTitle(scope, draft.title || "");
-    await setBody(scope, draft);
-    const images = await uploadImages(page, scope, draft);
+    const bodyEl = await setBody(scope, draft);
+    const images = await uploadImages(page, scope, draft, bodyEl);
     if (!publish) {
       result = { status: "staged", editorUrl: page.url(), imageUpload: images, message: "네이버 편집기에 자동 반영했습니다. 발행은 승인 전이라 실행하지 않았습니다." };
     } else {
