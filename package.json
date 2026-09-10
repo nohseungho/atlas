@@ -9,7 +9,8 @@
     "lint": "eslint",
     "naver:stage": "node scripts/naver-blog-automation.mjs stage",
     "naver:publish": "node scripts/naver-blog-automation.mjs publish",
-    "naver:doctor": "node scripts/naver-blog-doctor.mjs"
+    "naver:doctor": "node scripts/naver-blog-doctor.mjs",
+    "naver:verify": "node scripts/atlas-korea-verify.mjs"
   },
   "dependencies": {
     "cloudinary": "^2.10.0",
