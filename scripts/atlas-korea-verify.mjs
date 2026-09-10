@@ -1,0 +1,86 @@
+import fs from "fs";
+import path from "path";
+
+const root = process.cwd();
+const mustExist = [
+  "app/atlas/korea/page.js",
+  "app/api/atlas/korea-drafts/route.js",
+  "app/api/atlas/korea-generate/route.js",
+  "app/api/atlas/korea-publish/route.js",
+  "app/api/atlas/korea-doctor/route.js",
+  "lib/atlas/korea-product-pipeline.js",
+  "lib/atlas/korea-content-generator.js",
+  "lib/atlas/naver-browser-publisher.js",
+  "data/atlas/korea-drafts.json",
+  "scripts/naver-blog-automation.mjs",
+  "scripts/naver-blog-doctor.mjs",
+  "scripts/ATLAS-KOREA-START.cmd",
+];
+
+const failures = [];
+for (const rel of mustExist) {
+  if (!fs.existsSync(path.join(root, rel))) failures.push(`missing: ${rel}`);
+}
+
+function read(rel) {
+  return fs.readFileSync(path.join(root, rel), "utf8");
+}
+
+if (!failures.length) {
+  const packageJson = JSON.parse(read("package.json"));
+  const drafts = JSON.parse(read("data/atlas/korea-drafts.json"));
+  const pipeline = read("lib/atlas/korea-product-pipeline.js");
+  const publisher = read("lib/atlas/naver-browser-publisher.js");
+  const publishRoute = read("app/api/atlas/korea-publish/route.js");
+
+  if (!packageJson.scripts?.["naver:stage"]) failures.push("package script naver:stage missing");
+  if (!packageJson.scripts?.["naver:publish"]) failures.push("package script naver:publish missing");
+  if (!packageJson.scripts?.["naver:doctor"]) failures.push("package script naver:doctor missing");
+
+  const items = Array.isArray(drafts.items) ? drafts.items : [];
+  const ids = new Set(items.map((item) => item.id));
+  if (!ids.has("kr_multitap_224407589323")) failures.push("multitap update target missing");
+  if (!ids.has("kr_philips_3000_kettle")) failures.push("Philips kettle draft missing");
+
+  const multitap = items.find((item) => item.id === "kr_multitap_224407589323");
+  if (multitap) {
+    if (String(multitap.blogId) !== "who-ami") failures.push("multitap blogId changed");
+    if (String(multitap.logNo) !== "224407589323") failures.push("multitap logNo changed");
+    if (multitap.contentType !== "existing_post_update") failures.push("multitap must stay existing_post_update");
+    if (multitap.updateMode !== "images_only") failures.push("multitap must stay images_only to protect existing text");
+    if ((multitap.images || []).length !== 3) failures.push("multitap must keep exactly 3 planned body images");
+  }
+
+  if (!pipeline.includes("canPublishKoreaDraft")) failures.push("approval gate helper missing");
+  if (!publishRoute.includes("APPROVAL_REQUIRED")) failures.push("server-side approval gate missing");
+  if (!publisher.includes("launchPersistentContext")) failures.push("persistent Naver browser profile missing");
+  if (!publisher.includes("images_only")) failures.push("existing-post image-only protection missing");
+  if (!publisher.includes("ATLAS_NAVER_PROFILE_DIR")) failures.push("configurable Naver profile directory missing");
+
+  const forbidden = [
+    /OPENAI_API_KEY/i,
+    /new\s+OpenAI\s*\(/i,
+    /api\.openai\.com/i,
+  ];
+  const koreaSources = [
+    read("lib/atlas/korea-content-generator.js"),
+    read("lib/atlas/korea-product-pipeline.js"),
+    publisher,
+  ].join("\n");
+  if (forbidden.some((pattern) => pattern.test(koreaSources))) {
+    failures.push("paid OpenAI dependency detected in ATLAS Korea path");
+  }
+}
+
+if (failures.length) {
+  console.error("ATLAS KOREA VERIFY: FAIL");
+  for (const failure of failures) console.error(`- ${failure}`);
+  process.exit(1);
+}
+
+console.log("ATLAS KOREA VERIFY: PASS");
+console.log("- required files present");
+console.log("- existing Naver post target protected");
+console.log("- approval gate present");
+console.log("- persistent browser profile present");
+console.log("- paid OpenAI dependency absent from Korea automation path");
