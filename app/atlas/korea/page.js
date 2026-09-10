@@ -33,6 +33,7 @@ export default function KoreaPublisherPage() {
   const [selectedId, setSelectedId] = useState("");
   const [busy, setBusy] = useState("");
   const [message, setMessage] = useState("");
+  const [doctor, setDoctor] = useState(null);
 
   async function load() {
     const data = await draftsApi();
@@ -41,7 +42,23 @@ export default function KoreaPublisherPage() {
     if (!selectedId && next[0]) setSelectedId(next[0].id);
   }
 
-  useEffect(() => { load(); }, []);
+  async function checkDoctor() {
+    try {
+      const res = await fetch("/api/atlas/korea-doctor", { cache: "no-store" });
+      const data = await res.json().catch(() => ({}));
+      setDoctor(data);
+      return data;
+    } catch (error) {
+      const data = { ok: false, error: String(error?.message || error) };
+      setDoctor(data);
+      return data;
+    }
+  }
+
+  useEffect(() => {
+    load();
+    checkDoctor();
+  }, []);
 
   const selected = useMemo(
     () => items.find((item) => item.id === selectedId) || items[0] || null,
@@ -75,11 +92,20 @@ export default function KoreaPublisherPage() {
     setBusy("");
   }
 
+  async function ensureAutomationReady() {
+    const health = await checkDoctor();
+    if (!health?.ok) {
+      const details = health?.issues?.join(", ") || health?.error || "네이버 자동화 환경 점검 실패";
+      throw new Error(`자동화 준비가 필요합니다: ${details}`);
+    }
+  }
+
   async function autoBuildAndStage() {
     if (!selected) return;
     setBusy("auto");
     setMessage("ATLAS가 국내용 글을 자동 준비하고 네이버 편집기에 반영 중입니다.");
     try {
+      await ensureAutomationReady();
       await patch("save", selected);
       const generated = await postJson("/api/atlas/korea-generate", { id: selected.id });
       if (!generated.ok && generated.data.status !== "skipped") throw new Error(generated.data.error || "자동 본문 제작 실패");
@@ -103,6 +129,7 @@ export default function KoreaPublisherPage() {
     setBusy("publish");
     setMessage("최종 승인 처리 후 네이버에 실제 발행 중입니다.");
     try {
+      await ensureAutomationReady();
       if (selected.state !== "ready_for_review") await patch("review", selected);
       await patch("approve", selected);
       const published = await postJson("/api/atlas/korea-publish", { id: selected.id, mode: "publish" });
@@ -126,6 +153,7 @@ export default function KoreaPublisherPage() {
   const imageReady = selected.images?.filter((img) => img.src).length || 0;
   const imageTotal = selected.images?.length || 0;
   const stageBlocked = imageTotal > 0 && imageReady !== imageTotal;
+  const automationReady = Boolean(doctor?.ok);
 
   return (
     <main className="mx-auto max-w-6xl p-6 text-zinc-100">
@@ -133,6 +161,18 @@ export default function KoreaPublisherPage() {
         <div className="text-sm text-amber-300">ATLAS KOREA · NAVER AUTOMATION</div>
         <h1 className="text-3xl font-bold">국내용 제품 블로그 자동 운영판</h1>
         <p className="mt-2 text-zinc-400">제품 선정 → 추천형 본문 → 이미지 → 제휴 링크 → 네이버 편집기 반영까지 자동. 실제 공개는 최종 승인 뒤에만 실행합니다.</p>
+      </div>
+
+      <div className={`mb-6 rounded-xl border p-4 ${automationReady ? "border-emerald-800 bg-emerald-950/20" : "border-amber-800 bg-amber-950/20"}`}>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <div className="font-semibold">네이버 자동화 상태: {doctor === null ? "점검 중" : automationReady ? "준비 완료" : "점검 필요"}</div>
+            <div className="mt-1 text-sm text-zinc-400">
+              {doctor?.browserPath ? `브라우저: ${doctor.browserPath}` : doctor?.issues?.join(" · ") || doctor?.error || "Edge와 전용 로그인 프로필을 확인합니다."}
+            </div>
+          </div>
+          <button disabled={Boolean(busy)} onClick={checkDoctor} className="rounded-lg bg-zinc-800 px-4 py-2 text-sm font-semibold disabled:opacity-40">다시 점검</button>
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-[280px_1fr]">
@@ -189,8 +229,8 @@ export default function KoreaPublisherPage() {
 
           <div className="mt-5 flex flex-wrap gap-3">
             <button disabled={Boolean(busy)} onClick={save} className="rounded-lg bg-zinc-800 px-4 py-3 font-semibold disabled:opacity-40">저장</button>
-            <button disabled={Boolean(busy) || stageBlocked} onClick={autoBuildAndStage} className="rounded-lg bg-sky-700 px-4 py-3 font-semibold disabled:opacity-40">자동 제작 → 네이버 반영</button>
-            <button disabled={Boolean(busy) || stageBlocked || selected.state === "published"} onClick={approveAndPublish} className="rounded-lg bg-amber-600 px-4 py-3 font-semibold disabled:opacity-40">최종 승인 → 네이버 발행</button>
+            <button disabled={Boolean(busy) || stageBlocked || !automationReady} onClick={autoBuildAndStage} className="rounded-lg bg-sky-700 px-4 py-3 font-semibold disabled:opacity-40">자동 제작 → 네이버 반영</button>
+            <button disabled={Boolean(busy) || stageBlocked || !automationReady || selected.state === "published"} onClick={approveAndPublish} className="rounded-lg bg-amber-600 px-4 py-3 font-semibold disabled:opacity-40">최종 승인 → 네이버 발행</button>
           </div>
         </section>
       </div>
