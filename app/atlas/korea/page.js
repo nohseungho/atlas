@@ -65,12 +65,12 @@ export default function KoreaPublisherPage() {
     [items, selectedId],
   );
 
-  async function patch(action, patch = {}) {
+  async function patch(action, patchData = {}) {
     if (!selected) return null;
     const res = await fetch("/api/atlas/korea-drafts", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: selected.id, action, patch }),
+      body: JSON.stringify({ id: selected.id, action, patch: patchData }),
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok || data.status !== "ok") throw new Error(data.error || (data.issues || []).join(", ") || "처리하지 못했습니다.");
@@ -80,6 +80,26 @@ export default function KoreaPublisherPage() {
 
   function updateLocal(key, value) {
     setItems((prev) => prev.map((item) => (item.id === selected.id ? { ...item, [key]: value } : item)));
+  }
+
+  async function uploadAsset(imageId, file) {
+    if (!selected || !file) return;
+    setBusy(`asset:${imageId}`);
+    setMessage("이미지를 ATLAS 로컬 자산으로 연결 중입니다.");
+    try {
+      const form = new FormData();
+      form.append("draftId", selected.id);
+      form.append("imageId", imageId);
+      form.append("file", file);
+      const res = await fetch("/api/atlas/korea-assets", { method: "POST", body: form });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status !== "ok") throw new Error(data.error || "이미지 연결 실패");
+      await load();
+      setMessage("이미지 연결 완료.");
+    } catch (e) {
+      setMessage(e.message);
+    }
+    setBusy("");
   }
 
   async function save() {
@@ -130,8 +150,10 @@ export default function KoreaPublisherPage() {
     setMessage("최종 승인 처리 후 네이버에 실제 발행 중입니다.");
     try {
       await ensureAutomationReady();
-      if (selected.state !== "ready_for_review") await patch("review", selected);
-      await patch("approve", selected);
+      await patch("save", selected);
+      let current = selected;
+      if (current.state !== "ready_for_review") current = await patch("review", {});
+      if (current?.state !== "approved") current = await patch("approve", {});
       const published = await postJson("/api/atlas/korea-publish", { id: selected.id, mode: "publish" });
       if (!published.ok) throw new Error(published.data.error || "네이버 발행 실패");
       if (published.data.status === "login_required") {
@@ -167,9 +189,7 @@ export default function KoreaPublisherPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="font-semibold">네이버 자동화 상태: {doctor === null ? "점검 중" : automationReady ? "준비 완료" : "점검 필요"}</div>
-            <div className="mt-1 text-sm text-zinc-400">
-              {doctor?.browserPath ? `브라우저: ${doctor.browserPath}` : doctor?.issues?.join(" · ") || doctor?.error || "Edge와 전용 로그인 프로필을 확인합니다."}
-            </div>
+            <div className="mt-1 text-sm text-zinc-400">{doctor?.browserPath ? `브라우저: ${doctor.browserPath}` : doctor?.issues?.join(" · ") || doctor?.error || "Edge와 전용 로그인 프로필을 확인합니다."}</div>
           </div>
           <button disabled={Boolean(busy)} onClick={checkDoctor} className="rounded-lg bg-zinc-800 px-4 py-2 text-sm font-semibold disabled:opacity-40">다시 점검</button>
         </div>
@@ -204,19 +224,25 @@ export default function KoreaPublisherPage() {
 
           <div className="mt-5 rounded-xl border border-zinc-800 p-4">
             <div className="font-semibold">본문 이미지 자동 연결</div>
+            <div className="mt-1 text-xs text-zinc-500">파일을 선택하면 경로를 직접 입력하지 않아도 ATLAS가 로컬 자산 폴더에 저장하고 네이버용 경로를 연결합니다.</div>
             <div className="mt-3 space-y-2">
               {(selected.images || []).map((img) => (
                 <div key={img.id} className="rounded-lg bg-zinc-900 p-3 text-sm">
                   <div className="font-medium">{img.alt}</div>
                   <div className="mt-1 text-zinc-500">배치: {img.placement || "미정"}</div>
-                  <input className="mt-2 w-full rounded border border-zinc-700 bg-zinc-950 p-2" value={img.src || ""} onChange={(e) => {
-                    const images = selected.images.map((row) => row.id === img.id ? { ...row, src: e.target.value } : row);
-                    updateLocal("images", images);
-                  }} placeholder="로컬 이미지 파일 경로" />
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <label className="cursor-pointer rounded bg-zinc-800 px-3 py-2 font-semibold">
+                      {img.src ? "이미지 교체" : "이미지 선택"}
+                      <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" disabled={Boolean(busy)} onChange={(e) => uploadAsset(img.id, e.target.files?.[0])} />
+                    </label>
+                    <span className={img.src ? "text-emerald-300" : "text-amber-300"}>{img.src ? "연결 완료" : "미연결"}</span>
+                    {busy === `asset:${img.id}` ? <span className="text-zinc-400">업로드 중…</span> : null}
+                  </div>
+                  {img.originalName ? <div className="mt-2 text-xs text-zinc-500">파일: {img.originalName}</div> : null}
                 </div>
               ))}
             </div>
-            <div className={`mt-3 text-xs ${stageBlocked ? "text-amber-300" : "text-zinc-500"}`}>연결 이미지 {imageReady}/{imageTotal}{stageBlocked ? " · 이미지가 모두 연결되어야 네이버 자동 반영합니다." : ""}</div>
+            <div className={`mt-3 text-xs ${stageBlocked ? "text-amber-300" : "text-emerald-300"}`}>연결 이미지 {imageReady}/{imageTotal}{stageBlocked ? " · 이미지가 모두 연결되어야 네이버 자동 반영합니다." : imageTotal ? " · 네이버 반영 준비 완료" : ""}</div>
           </div>
 
           <div className="mt-5 rounded-xl border border-zinc-800 p-4 text-sm">
