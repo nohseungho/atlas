@@ -6,6 +6,7 @@ import {
   normalizeKoreaDraft,
   validateKoreaDraft,
 } from "@/lib/atlas/korea-product-pipeline";
+import { defaultKoreaProductImages, generateKoreaProductArticle } from "@/lib/atlas/korea-content-generator";
 
 export const runtime = "nodejs";
 
@@ -43,7 +44,25 @@ export async function GET() {
 
 export async function POST(request) {
   const body = await request.json().catch(() => ({}));
-  const draft = normalizeKoreaDraft(body);
+  let draft = normalizeKoreaDraft({
+    ...body,
+    images: Array.isArray(body.images) && body.images.length ? body.images : defaultKoreaProductImages(body),
+  });
+  if (draft.contentType === "new_product_review" && !draft.bodyHtml && !draft.bodyText) {
+    draft = {
+      ...draft,
+      ...generateKoreaProductArticle({
+        ...draft,
+        strengths: body.strengths,
+        weaknesses: body.weaknesses,
+        bestFor: body.bestFor,
+        notFor: body.notFor,
+        facts: body.facts,
+      }),
+      state: KOREA_DRAFT_STATE.READY_FOR_REVIEW,
+      automationStatus: "content_ready",
+    };
+  }
   const validation = validateKoreaDraft(draft);
   if (!validation.ok) {
     return NextResponse.json({ status: "rejected", issues: validation.issues }, { status: 400 });

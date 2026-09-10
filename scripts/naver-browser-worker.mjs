@@ -58,12 +58,36 @@ function assetCopy(image) {
     columns: [["발열", "플러그와 본체가 뜨겁지 않은지"], ["먼지", "콘센트 주변 먼지와 이물질 제거"], ["습기", "물기 많은 장소와 젖은 손 피하기"], ["고출력 가전", "히터·전열기구 문어발 연결 금지"]],
     footer: "이상 발열·변색·탄 냄새가 있으면 즉시 사용을 중단하세요.",
   };
+  if (role === "product_reasons") return {
+    kicker: "수호의 제품 추천",
+    title: image.alt || "이 제품을 추천하는 이유",
+    columns: [["사용성", "매일 편하게 쓸 수 있는지"], ["기본기", "핵심 기능이 충실한지"], ["선택", "가격과 옵션이 내게 맞는지"]],
+    footer: "좋은 제품은 필요한 기능을 쉽고 편하게 해줍니다.",
+  };
+  if (role === "product_fit") return {
+    kicker: "이런 분께 추천합니다",
+    title: image.alt || "나에게 잘 맞는 제품인지 확인하세요",
+    columns: [["간편함", "복잡한 설정보다 쉬운 사용을 원하는 분"], ["실용성", "자주 쓰는 기능을 중요하게 보는 분"], ["합리적 선택", "필요한 만큼 제대로 사고 싶은 분"]],
+    footer: "사용 목적이 분명하면 제품 선택도 쉬워집니다.",
+  };
+  if (role === "product_check") return {
+    kicker: "구매 전 마지막 확인",
+    title: image.alt || "결제 전에 이것만 확인하세요",
+    columns: [["모델명", "원하는 옵션과 정확히 같은지"], ["가격", "쿠폰과 배송비를 포함한 금액인지"], ["배송", "도착 예정일과 반품 조건은 어떤지"]],
+    footer: "판매 페이지의 최신 정보가 최종 기준입니다.",
+  };
   return {
     kicker: "ATLAS 생활비연구소",
     title: image.alt || "구매 전 체크 포인트",
     columns: [["확인", image.placement || "본문 내용과 함께 확인하세요."]],
     footer: "실제 제품 사양과 사용 환경을 함께 확인하세요.",
   };
+}
+
+function characterDataUri(character) {
+  const file = character === "miji" ? "ATLAS-MIJI-MASTER.png" : "ATLAS-SUO-MASTER.png";
+  const source = path.join(process.cwd(), "public", "atlas", "characters", file);
+  return fs.existsSync(source) ? `data:image/png;base64,${fs.readFileSync(source).toString("base64")}` : "";
 }
 
 async function renderGeneratedAssets(context, draft) {
@@ -74,10 +98,13 @@ async function renderGeneratedAssets(context, draft) {
   fs.mkdirSync(dir, { recursive: true });
   const renderPage = await context.newPage();
   await renderPage.setViewportSize({ width: 1200, height: 800 });
+  const characterImage = characterDataUri(draft.character);
   for (const image of generated) {
     const copy = assetCopy(image);
+    const showCharacter = characterImage && String(image.role || "") === "product_reasons";
     const columns = copy.columns.map(([head, body]) => `<div class="box"><div class="head">${escapeHtml(head)}</div><div class="body">${escapeHtml(body)}</div></div>`).join("");
-    const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>*{box-sizing:border-box}body{margin:0;background:#f4f4f5;font-family:"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif;color:#18181b}.card{width:1200px;height:800px;padding:72px;background:linear-gradient(145deg,#fff,#f4f4f5);display:flex;flex-direction:column;justify-content:space-between}.kicker{font-size:26px;font-weight:700;color:#52525b}.title{font-size:58px;line-height:1.18;font-weight:900;letter-spacing:-2px;max-width:1000px;margin-top:18px}.grid{display:grid;grid-template-columns:repeat(${Math.min(copy.columns.length,4)},1fr);gap:18px;margin-top:44px}.box{border:2px solid #d4d4d8;border-radius:24px;background:white;padding:28px;min-height:190px}.head{font-size:30px;font-weight:900}.body{font-size:23px;line-height:1.55;margin-top:16px;color:#52525b}.footer{border-top:2px solid #e4e4e7;padding-top:24px;font-size:26px;font-weight:700;color:#3f3f46}</style></head><body><div class="card"><div><div class="kicker">${escapeHtml(copy.kicker)}</div><div class="title">${escapeHtml(copy.title)}</div><div class="grid">${columns}</div></div><div class="footer">${escapeHtml(copy.footer)}</div></div></body></html>`;
+    const character = showCharacter ? `<img class="character" src="${characterImage}" alt="${draft.character === "miji" ? "미지" : "수호"}">` : "";
+    const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>*{box-sizing:border-box}body{margin:0;background:#f4f4f5;font-family:"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif;color:#18181b}.card{position:relative;overflow:hidden;width:1200px;height:800px;padding:72px;background:linear-gradient(145deg,#fff,#f4f4f5);display:flex;flex-direction:column;justify-content:space-between}.kicker{font-size:26px;font-weight:700;color:#52525b}.title{font-size:58px;line-height:1.18;font-weight:900;letter-spacing:-2px;max-width:${showCharacter ? "780px" : "1000px"};margin-top:18px}.grid{position:relative;z-index:2;display:grid;grid-template-columns:repeat(${Math.min(copy.columns.length,4)},1fr);gap:18px;margin-top:44px;max-width:${showCharacter ? "820px" : "none"}.box{border:2px solid #d4d4d8;border-radius:24px;background:rgba(255,255,255,.94);padding:28px;min-height:190px}.head{font-size:30px;font-weight:900}.body{font-size:23px;line-height:1.55;margin-top:16px;color:#52525b}.footer{position:relative;z-index:2;border-top:2px solid #e4e4e7;padding-top:24px;font-size:26px;font-weight:700;color:#3f3f46}.character{position:absolute;right:-15px;bottom:-150px;width:390px;z-index:1}</style></head><body><div class="card">${character}<div><div class="kicker">${escapeHtml(copy.kicker)}</div><div class="title">${escapeHtml(copy.title)}</div><div class="grid">${columns}</div></div><div class="footer">${escapeHtml(copy.footer)}</div></div></body></html>`;
     await renderPage.setContent(html, { waitUntil: "load" });
     const output = path.join(dir, `${safeName(image.id || image.role)}.png`);
     await renderPage.locator(".card").screenshot({ path: output, type: "png" });

@@ -34,6 +34,8 @@ export default function KoreaPublisherPage() {
   const [busy, setBusy] = useState("");
   const [message, setMessage] = useState("");
   const [doctor, setDoctor] = useState(null);
+  const [showNew, setShowNew] = useState(false);
+  const [newProduct, setNewProduct] = useState({ productName: "", title: "", affiliateUrl: "", productUrl: "", character: "suho" });
 
   async function load() {
     const data = await draftsApi();
@@ -56,8 +58,20 @@ export default function KoreaPublisherPage() {
   }
 
   useEffect(() => {
-    load();
-    checkDoctor();
+    let cancelled = false;
+    Promise.all([
+      draftsApi(),
+      fetch("/api/atlas/korea-doctor", { cache: "no-store" }).then((res) => res.json().catch(() => ({}))),
+    ]).then(([drafts, health]) => {
+      if (cancelled) return;
+      const next = drafts.items || [];
+      setItems(next);
+      setSelectedId((current) => current || next[0]?.id || "");
+      setDoctor(health);
+    }).catch((error) => {
+      if (!cancelled) setDoctor({ ok: false, error: String(error?.message || error) });
+    });
+    return () => { cancelled = true; };
   }, []);
 
   const selected = useMemo(
@@ -108,6 +122,30 @@ export default function KoreaPublisherPage() {
     try {
       await patch("save", selected);
       setMessage("저장했습니다.");
+    } catch (e) { setMessage(e.message); }
+    setBusy("");
+  }
+
+  async function createProductDraft(event) {
+    event.preventDefault();
+    if (!newProduct.productName.trim()) {
+      setMessage("제품명을 입력해주세요.");
+      return;
+    }
+    setBusy("create");
+    setMessage("추천 본문과 이미지 구성 3개를 자동 제작 중입니다.");
+    try {
+      const res = await draftsApi({
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...newProduct, contentType: "new_product_review", blogId: "who-ami" }),
+      });
+      if (res.status !== "ok") throw new Error(res.error || (res.issues || []).join(", ") || "제품 글 생성 실패");
+      await load();
+      setSelectedId(res.draft.id);
+      setNewProduct({ productName: "", title: "", affiliateUrl: "", productUrl: "", character: "suho" });
+      setShowNew(false);
+      setMessage("새 제품 추천 글과 이미지 구성 3개를 만들었습니다. 내용을 확인한 뒤 자동 반영을 누르세요.");
     } catch (e) { setMessage(e.message); }
     setBusy("");
   }
@@ -207,6 +245,18 @@ export default function KoreaPublisherPage() {
 
       <div className="grid gap-6 md:grid-cols-[280px_1fr]">
         <aside className="space-y-2">
+          <button onClick={() => setShowNew((value) => !value)} className="w-full rounded-xl bg-emerald-700 p-4 text-left font-bold">
+            + 새 추천 제품 등록
+          </button>
+          {showNew ? (
+            <form onSubmit={createProductDraft} className="space-y-3 rounded-xl border border-emerald-800 bg-zinc-950 p-4">
+              <label className="block text-xs">제품명 *<input autoFocus className="mt-1 w-full rounded border border-zinc-700 bg-zinc-900 p-2 text-sm" value={newProduct.productName} onChange={(e) => setNewProduct({ ...newProduct, productName: e.target.value })} placeholder="예: 필립스 전기주전자" /></label>
+              <label className="block text-xs">제목 (비우면 자동)<input className="mt-1 w-full rounded border border-zinc-700 bg-zinc-900 p-2 text-sm" value={newProduct.title} onChange={(e) => setNewProduct({ ...newProduct, title: e.target.value })} /></label>
+              <label className="block text-xs">쿠팡 파트너스 링크<input className="mt-1 w-full rounded border border-zinc-700 bg-zinc-900 p-2 text-sm" value={newProduct.affiliateUrl} onChange={(e) => setNewProduct({ ...newProduct, affiliateUrl: e.target.value })} placeholder="없으면 나중에 입력" /></label>
+              <label className="block text-xs">상품 원본 주소<input className="mt-1 w-full rounded border border-zinc-700 bg-zinc-900 p-2 text-sm" value={newProduct.productUrl} onChange={(e) => setNewProduct({ ...newProduct, productUrl: e.target.value })} placeholder="선택 사항" /></label>
+              <button disabled={Boolean(busy)} className="w-full rounded bg-emerald-700 px-3 py-2 text-sm font-bold disabled:opacity-40">추천 글 자동 만들기</button>
+            </form>
+          ) : null}
           {items.map((item) => (
             <button key={item.id} onClick={() => setSelectedId(item.id)} className={`w-full rounded-xl border p-4 text-left ${item.id === selected.id ? "border-amber-400 bg-zinc-900" : "border-zinc-800 bg-zinc-950"}`}>
               <div className="text-xs text-zinc-500">{STATE_LABEL[item.state] || item.state} · {item.automationStatus || "대기"}</div>
