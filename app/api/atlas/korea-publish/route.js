@@ -26,6 +26,10 @@ function patch(items, id, values) {
   return items[index];
 }
 
+function missingRequiredImages(draft) {
+  return (draft.images || []).filter((img) => !String(img.src || "").trim()).map((img) => img.id || img.role || "image");
+}
+
 export async function POST(request) {
   const body = await request.json().catch(() => ({}));
   const id = String(body.id || "");
@@ -39,6 +43,16 @@ export async function POST(request) {
   const validation = validateKoreaDraft(draft);
   if (!validation.ok) {
     return NextResponse.json({ status: "rejected", issues: validation.issues }, { status: 400 });
+  }
+
+  const missingImages = missingRequiredImages(draft);
+  if (missingImages.length) {
+    return NextResponse.json({
+      status: "assets_required",
+      errorCode: "NAVER_IMAGE_ASSETS_REQUIRED",
+      missingImages,
+      error: `본문 이미지 ${missingImages.length}개가 아직 로컬 파일과 연결되지 않았습니다.`,
+    }, { status: 409 });
   }
 
   if (mode === "publish" && !canPublishKoreaDraft(draft)) {
