@@ -1,0 +1,74 @@
+{
+  "items": [
+    {
+      "id": "kr_multitap_224407589323",
+      "platform": "naver",
+      "contentType": "existing_post_update",
+      "blogId": "who-ami",
+      "logNo": "224407589323",
+      "title": "멀티탭, 아무거나 쓰면 안 되는 이유와 안전하게 고르는 법",
+      "productName": "",
+      "productUrl": "",
+      "affiliateUrl": "",
+      "affiliateDisclosure": "",
+      "character": "suho",
+      "recommendationMode": "DIRECT_RECOMMENDATION",
+      "bodyHtml": "",
+      "bodyText": "",
+      "images": [
+        {
+          "id": "img_multitap_usage",
+          "role": "body_usage",
+          "src": "",
+          "alt": "TV 주변, 책상, 충전 공간의 멀티탭 사용 예시",
+          "placement": "사용 공간별 추천 설명 뒤"
+        },
+        {
+          "id": "img_multitap_switch",
+          "role": "body_switch_compare",
+          "src": "",
+          "alt": "개별 스위치형과 통합 스위치형 멀티탭 비교",
+          "placement": "스위치 방식 비교 문단 뒤"
+        },
+        {
+          "id": "img_multitap_safety",
+          "role": "body_safety",
+          "src": "",
+          "alt": "멀티탭 발열, 먼지, 습기, 고출력 가전 점검 체크리스트",
+          "placement": "안전 점검 문단 뒤"
+        }
+      ],
+      "state": "draft",
+      "approvedAt": "",
+      "publishedAt": "",
+      "publishedUrl": "",
+      "lastError": "",
+      "createdAt": "2026-09-11T00:00:00.000Z",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "kr_philips_3000_kettle",
+      "platform": "naver",
+      "contentType": "new_product_review",
+      "blogId": "who-ami",
+      "logNo": "",
+      "title": "필립스 3000 시리즈 전기주전자, 매일 쓰기 좋은 이유",
+      "productName": "필립스 3000 시리즈 무선 전기주전자",
+      "productUrl": "",
+      "affiliateUrl": "",
+      "affiliateDisclosure": "이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받을 수 있습니다.",
+      "character": "suho",
+      "recommendationMode": "DIRECT_RECOMMENDATION",
+      "bodyHtml": "",
+      "bodyText": "",
+      "images": [],
+      "state": "draft",
+      "approvedAt": "",
+      "publishedAt": "",
+      "publishedUrl": "",
+      "lastError": "",
+      "createdAt": "2026-09-11T00:00:00.000Z",
+      "updatedAt": "2026-09-11T00:00:00.000Z"
+    }
+  ]
+}
