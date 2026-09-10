@@ -10,6 +10,18 @@ import {
 export const runtime = "nodejs";
 
 const FILE = "korea-drafts.json";
+const PROTECTED_FIELDS = new Set([
+  "id",
+  "state",
+  "approvedAt",
+  "publishingAt",
+  "publishedAt",
+  "publishedUrl",
+  "error",
+  "automationStatus",
+  "stagedAt",
+  "stagedEditorUrl",
+]);
 
 function readItems() {
   const data = readJson(FILE);
@@ -18,6 +30,11 @@ function readItems() {
 
 function writeItems(items) {
   writeJson(FILE, { items });
+}
+
+function editablePatch(input) {
+  const patch = input && typeof input === "object" ? input : {};
+  return Object.fromEntries(Object.entries(patch).filter(([key]) => !PROTECTED_FIELDS.has(key)));
 }
 
 export async function GET() {
@@ -50,7 +67,8 @@ export async function PATCH(request) {
   const index = items.findIndex((item) => item.id === id);
   if (index < 0) return NextResponse.json({ error: "draft not found" }, { status: 404 });
 
-  let next = { ...items[index], ...body.patch, id, updatedAt: new Date().toISOString() };
+  const safePatch = editablePatch(body.patch);
+  let next = { ...items[index], ...safePatch, id, updatedAt: new Date().toISOString() };
 
   if (action === "review") {
     const validation = validateKoreaDraft(next);
@@ -71,6 +89,10 @@ export async function PATCH(request) {
   if (action === "reset") {
     next.state = KOREA_DRAFT_STATE.DRAFT;
     next.approvedAt = "";
+    next.publishingAt = "";
+    next.publishedAt = "";
+    next.publishedUrl = "";
+    next.error = "";
   }
 
   items[index] = next;
