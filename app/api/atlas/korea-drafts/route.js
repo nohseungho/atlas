@@ -38,6 +38,18 @@ function editablePatch(input) {
   return Object.fromEntries(Object.entries(patch).filter(([key]) => !PROTECTED_FIELDS.has(key)));
 }
 
+function disclosureFor(url = "") {
+  const value = String(url || "").trim();
+  if (!value) return "";
+  try {
+    const host = new URL(value).hostname.toLowerCase();
+    if (host === "coupang.com" || host.endsWith(".coupang.com")) {
+      return "이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받을 수 있습니다.";
+    }
+  } catch {}
+  return "이 글에는 제휴 링크가 포함되어 있으며, 링크를 통한 구매 시 일정액의 수수료를 제공받을 수 있습니다.";
+}
+
 export async function GET() {
   return NextResponse.json({ items: readItems() });
 }
@@ -46,6 +58,7 @@ export async function POST(request) {
   const body = await request.json().catch(() => ({}));
   let draft = normalizeKoreaDraft({
     ...body,
+    affiliateDisclosure: body.affiliateDisclosure || disclosureFor(body.affiliateUrl),
     images: Array.isArray(body.images) && body.images.length ? body.images : defaultKoreaProductImages(body),
   });
   if (draft.contentType === "new_product_review" && !draft.bodyHtml && !draft.bodyText) {
@@ -88,6 +101,10 @@ export async function PATCH(request) {
 
   const safePatch = editablePatch(body.patch);
   let next = { ...items[index], ...safePatch, id, updatedAt: new Date().toISOString() };
+
+  if (next.affiliateUrl && !String(next.affiliateDisclosure || "").trim()) {
+    next.affiliateDisclosure = disclosureFor(next.affiliateUrl);
+  }
 
   if (action === "review") {
     const validation = validateKoreaDraft(next);
