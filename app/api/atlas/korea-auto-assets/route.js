@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { readJson, writeJson } from "@/lib/data-store";
-import { productPhotoSlots } from "@/lib/atlas/korea-product-auto";
+import { isCoupangUrl, productPhotoSlots } from "@/lib/atlas/korea-product-auto";
+import { findCoupangPartnersProduct } from "@/lib/atlas/coupang-partners";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -8,7 +9,7 @@ export const dynamic = "force-dynamic";
 const FILE = "korea-drafts.json";
 const GENERATED_PREFIX = "atlas-generated://";
 
-async function importProduct(draft) {
+async function importGenericProduct(draft) {
   const url = String(draft.productUrl || draft.affiliateUrl || "").trim();
   if (!url) return null;
   try {
@@ -27,6 +28,38 @@ async function importProduct(draft) {
   }
 }
 
+async function importProduct(draft) {
+  const sourceUrl = String(draft.affiliateUrl || draft.productUrl || "").trim();
+  const coupang = isCoupangUrl(sourceUrl);
+  let coupangResult = null;
+
+  if (coupang) {
+    coupangResult = await findCoupangPartnersProduct({ productName: draft.productName, limit: 10 });
+    if (coupangResult?.ok && coupangResult.imageCandidates?.length) {
+      return {
+        imported: coupangResult,
+        sourceStatus: "coupang_partners_open_api",
+        sourceError: null,
+      };
+    }
+  }
+
+  const generic = await importGenericProduct(draft);
+  if (generic) {
+    return {
+      imported: generic,
+      sourceStatus: coupang ? "generic_fallback" : "generic_product_page",
+      sourceError: coupangResult?.error || null,
+    };
+  }
+
+  return {
+    imported: null,
+    sourceStatus: coupang ? (coupangResult?.code || "coupang_product_unavailable") : "product_unavailable",
+    sourceError: coupangResult?.error || null,
+  };
+}
+
 export async function POST(request) {
   const body = await request.json().catch(() => ({}));
   const id = String(body.id || "").trim();
@@ -38,7 +71,8 @@ export async function POST(request) {
   if (index < 0) return NextResponse.json({ status: "error", error: "draft not found" }, { status: 404 });
 
   const draft = items[index];
-  const imported = await importProduct(draft);
+  const productResult = await importProduct(draft);
+  const imported = productResult.imported;
   const withProductPhotos = imported ? productPhotoSlots(draft, imported, { max: 2 }) : (draft.images || []);
   const images = withProductPhotos.map((img, position) => img.role === "product_photo" ? img : ({
     ...img,
@@ -55,6 +89,8 @@ export async function POST(request) {
     images,
     automationStatus: images.length ? "assets_planned" : draft.automationStatus,
     productImageStatus: productPhotosMissing ? "missing" : productPhotosLinked ? "linked" : draft.productImageStatus,
+    productImageSourceStatus: productResult.sourceStatus,
+    productImageSourceError: productResult.sourceError || "",
     updatedAt: new Date().toISOString(),
   };
   writeJson(FILE, { items });
@@ -64,6 +100,8 @@ export async function POST(request) {
     planned: images.filter((img) => String(img.src || "").startsWith(GENERATED_PREFIX)).length,
     productPhotosLinked,
     productPhotosMissing,
+    productImageSourceStatus: productResult.sourceStatus,
+    productImageSourceError: productResult.sourceError || null,
     source: imported?.source || null,
     draft: items[index],
   });
