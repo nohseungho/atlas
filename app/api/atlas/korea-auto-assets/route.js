@@ -18,7 +18,7 @@ export async function POST(request) {
   if (index < 0) return NextResponse.json({ status: "error", error: "draft not found" }, { status: 404 });
 
   const draft = items[index];
-  const images = (draft.images || []).map((img, position) => ({
+  const images = (draft.images || []).map((img, position) => img.role === "product_photo" ? img : ({
     ...img,
     src: String(img.src || "").trim() || `${GENERATED_PREFIX}${encodeURIComponent(draft.id)}/${encodeURIComponent(img.id || `image-${position + 1}`)}`,
     generatedLocally: true,

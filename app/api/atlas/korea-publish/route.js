@@ -27,7 +27,8 @@ function patch(items, id, values) {
 }
 
 function missingRequiredImages(draft) {
-  return (draft.images || []).filter((img) => !String(img.src || "").trim()).map((img) => img.id || img.role || "image");
+  // product_photo 슬롯은 실제 제품 사진이 연결될 때만 업로드하며, 비어 있어도 반영을 막지 않는다.
+  return (draft.images || []).filter((img) => img.role !== "product_photo" && !String(img.src || "").trim()).map((img) => img.id || img.role || "image");
 }
 
 export async function POST(request) {

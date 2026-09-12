@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { readJson, writeJson } from "@/lib/data-store";
-import { generateKoreaProductArticle, generatePhilips3000KettleArticle } from "@/lib/atlas/korea-content-generator";
+import { generateKoreaProductArticle, generateMultitapReviewArticle, generatePhilips3000KettleArticle } from "@/lib/atlas/korea-content-generator";
 
 export const runtime = "nodejs";
 const FILE = "korea-drafts.json";
@@ -20,9 +20,12 @@ export async function POST(request) {
     return NextResponse.json({ status: "skipped", draft: current, message: "기존 글 본문은 보존하고 이미지 자동 반영만 수행합니다." });
   }
 
-  const generated = /philips.*3000|필립스.*3000/i.test(`${current.id} ${current.productName} ${current.title}`)
+  const subject = `${current.id} ${current.productName} ${current.title}`;
+  const generated = /philips.*3000|필립스.*3000/i.test(subject)
     ? generatePhilips3000KettleArticle(current)
-    : generateKoreaProductArticle(current);
+    : /multitap|멀티탭/i.test(subject)
+      ? generateMultitapReviewArticle(current)
+      : generateKoreaProductArticle(current);
 
   const next = {
     ...current,

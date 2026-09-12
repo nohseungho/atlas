@@ -101,7 +101,7 @@ async function renderGeneratedAssets(context, draft) {
   const characterImage = characterDataUri(draft.character);
   for (const image of generated) {
     const copy = assetCopy(image);
-    const showCharacter = characterImage && String(image.role || "") === "product_reasons";
+    const showCharacter = Boolean(characterImage);
     const columns = copy.columns.map(([head, body]) => `<div class="box"><div class="head">${escapeHtml(head)}</div><div class="body">${escapeHtml(body)}</div></div>`).join("");
     const character = showCharacter ? `<img class="character" src="${characterImage}" alt="${draft.character === "miji" ? "미지" : "수호"}">` : "";
     const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>*{box-sizing:border-box}body{margin:0;background:#f4f4f5;font-family:"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif;color:#18181b}.card{position:relative;overflow:hidden;width:1200px;height:800px;padding:72px;background:linear-gradient(145deg,#fff,#f4f4f5);display:flex;flex-direction:column;justify-content:space-between}.kicker{font-size:26px;font-weight:700;color:#52525b}.title{font-size:58px;line-height:1.18;font-weight:900;letter-spacing:-2px;max-width:${showCharacter ? "780px" : "1000px"};margin-top:18px}.grid{position:relative;z-index:2;display:grid;grid-template-columns:repeat(${Math.min(copy.columns.length,4)},1fr);gap:18px;margin-top:44px;max-width:${showCharacter ? "820px" : "none"}.box{border:2px solid #d4d4d8;border-radius:24px;background:rgba(255,255,255,.94);padding:28px;min-height:190px}.head{font-size:30px;font-weight:900}.body{font-size:23px;line-height:1.55;margin-top:16px;color:#52525b}.footer{position:relative;z-index:2;border-top:2px solid #e4e4e7;padding-top:24px;font-size:26px;font-weight:700;color:#3f3f46}.character{position:absolute;right:-15px;bottom:-150px;width:390px;z-index:1}</style></head><body><div class="card">${character}<div><div class="kicker">${escapeHtml(copy.kicker)}</div><div class="title">${escapeHtml(copy.title)}</div><div class="grid">${columns}</div></div><div class="footer">${escapeHtml(copy.footer)}</div></div></body></html>`;
@@ -124,13 +124,27 @@ async function firstVisible(scope, selectors) {
 }
 
 async function editorScope(page) {
-  const scopes = [page, ...page.frames()];
-  for (const scope of scopes) {
-    for (const probe of [".se-documentTitle", ".se-component-content", "[contenteditable='true']", "textarea[name='title']"]) {
-      try { if (await scope.locator(probe).count()) return scope; } catch {}
+  // 에디터가 iframe(#mainFrame) 안에서 늦게 뜨는 경우가 있어 제목 영역 기준으로 먼저 기다린다.
+  const deadline = Date.now() + 20000;
+  const probes = [".se-documentTitle", ".se-title-text", ".se-component-content", "[contenteditable='true']", "textarea[name='title']"];
+  while (Date.now() < deadline) {
+    const scopes = [page, ...page.frames()];
+    for (const probe of probes) {
+      for (const scope of scopes) {
+        try { if (await scope.locator(probe).count()) return scope; } catch {}
+      }
     }
+    await page.waitForTimeout(500);
   }
   return page;
+}
+
+async function dismissEditorPopups(page, scope) {
+  // "작성 중인 글" 복구 안내, 도움말 패널 등이 제목 영역을 가리는 경우만 닫는다.
+  for (const selector of [".se-popup-button-cancel", "button.se-popup-button-cancel", ".se-help-panel-close-button", "button:has-text('취소')"]) {
+    const el = await firstVisible(scope, [selector]);
+    if (el) { await el.click().catch(() => {}); await page.waitForTimeout(400); }
+  }
 }
 
 async function ensureLoggedIn(page) {
@@ -146,18 +160,88 @@ async function replaceText(locator, text) {
 }
 
 async function setTitle(scope, title) {
-  const el = await firstVisible(scope, [".se-documentTitle .se-text-paragraph", ".se-documentTitle [contenteditable='true']", "textarea[name='title']", "input[name='title']", "[data-placeholder*='제목'][contenteditable='true']"]);
+  const selectors = [
+    ".se-documentTitle .se-text-paragraph", ".se-documentTitle [contenteditable='true']", "textarea[name='title']", "input[name='title']", "[data-placeholder*='제목'][contenteditable='true']",
+    // fallback: SmartEditor ONE 변형 마크업
+    ".se-title-text .se-text-paragraph", ".se-title-text", ".se-section-documentTitle .se-text-paragraph", ".se-documentTitle", ".se-placeholder-title", "[placeholder*='제목']",
+  ];
+  let el = await firstVisible(scope, selectors);
+  if (!el) {
+    // 제목 영역이 보이지 않으면 렌더 대기 후 1회 재시도
+    try { await scope.locator(".se-documentTitle, .se-title-text").first().waitFor({ state: "attached", timeout: 15000 }); } catch {}
+    el = await firstVisible(scope, selectors) || (await scope.locator(".se-documentTitle, .se-title-text").first().count() ? scope.locator(".se-documentTitle, .se-title-text").first() : null);
+  }
   if (!el) throw Object.assign(new Error("네이버 제목 입력 영역을 찾지 못했습니다."), { code: "NAVER_TITLE_EDITOR_NOT_FOUND" });
   await replaceText(el, title);
 }
 
-async function setBody(scope, draft) {
+async function setBody(page, scope, draft) {
   const el = await firstVisible(scope, [".se-component-content [contenteditable='true']", ".se-section-text .se-text-paragraph", ".se-main-container [contenteditable='true']", "[contenteditable='true'][data-placeholder*='내용']"]);
   if (!el) throw Object.assign(new Error("네이버 본문 입력 영역을 찾지 못했습니다."), { code: "NAVER_BODY_EDITOR_NOT_FOUND" });
   if (draft.contentType === "existing_post_update" && draft.updateMode === "images_only") return el;
   const text = [draft.affiliateUrl ? draft.affiliateDisclosure : "", draft.bodyText || "", draft.affiliateUrl ? `제품 확인하기: ${draft.affiliateUrl}` : ""].filter(Boolean).join("\n\n");
-  await replaceText(el, text);
+  const html = bodyHtmlFromDraft(draft);
+  const pasted = await pasteHtml(page, el, html, text);
+  if (!pasted) await replaceText(el, text);
   return el;
+}
+
+function isHeadingLine(line) {
+  return line.length <= 45 && !/[.]$/.test(line) && !/[다요죠]$/.test(line);
+}
+
+function bodyHtmlFromDraft(draft) {
+  const center = "text-align:center;";
+  const p = (inner, extra = "") => `<p style="${center}${extra}">${inner}</p>`;
+  const emphasize = (line) => {
+    let out = escapeHtml(line);
+    const name = String(draft.productName || "").trim();
+    if (name && line.includes(name)) out = out.replace(escapeHtml(name), `<b>${escapeHtml(name)}</b>`);
+    return out;
+  };
+  const spacer = "<p><br></p>";
+  const skip = new Set([String(draft.title || "").trim(), String(draft.affiliateDisclosure || "").trim()]);
+  const blocks = String(draft.bodyText || "").replace(/\r/g, "").split(/\n\s*\n/).map((b) => b.split("\n").map((l) => l.trim()).filter(Boolean)).filter((b) => b.length);
+  const parts = [];
+  if (draft.affiliateUrl && draft.affiliateDisclosure) parts.push(p(`<span style="font-size:13px;color:#6b7280;">${escapeHtml(draft.affiliateDisclosure)}</span>`), spacer);
+  const linkLine = draft.affiliateUrl ? p(`<a href="${escapeHtml(draft.affiliateUrl)}" target="_blank">${escapeHtml(draft.productName || draft.affiliateUrl)}</a>`) : "";
+  let linkPlaced = false;
+  for (const lines of blocks) {
+    if (lines.length === 1 && (skip.has(lines[0]) || /^이 포스팅은 쿠팡 파트너스/.test(lines[0]) || /^제품 확인하기:/.test(lines[0]))) continue;
+    if (lines.length === 1 && /^\d+\.\s/.test(lines[0])) { parts.push(p(`<b>${escapeHtml(lines[0])}</b>`)); continue; }
+    if (lines.length === 1 && isHeadingLine(lines[0])) { parts.push(spacer, p(`<b><span style="font-size:19px;">${escapeHtml(lines[0])}</span></b>`)); continue; }
+    parts.push(p(lines.map(emphasize).join("<br>")), spacer);
+    // 본문 중 "아래에서 확인" 안내 문단 바로 뒤에 링크를 자연스럽게 붙인다.
+    if (linkLine && !linkPlaced && lines.some((l) => /아래에서 확인/.test(l))) { parts.push(linkLine, spacer); linkPlaced = true; }
+  }
+  if (linkLine && !linkPlaced) parts.push(p(`제품 정보는 아래에서 확인할 수 있습니다.`), linkLine);
+  return parts.join("");
+}
+
+async function pasteHtml(page, locator, html, text) {
+  const probe = String(text || "").split("\n").map((l) => l.trim()).find((l) => l.length > 12) || "";
+  const hasProbe = async () => probe && (await locator.evaluate((el) => el.closest(".se-main-container, .se-component-content, body")?.innerText || "").catch(() => "")).includes(probe);
+  await locator.click();
+  await locator.press(process.platform === "darwin" ? "Meta+A" : "Control+A");
+  await locator.press("Backspace").catch(() => {});
+  await locator.evaluate((el, payload) => {
+    const dt = new DataTransfer();
+    dt.setData("text/html", payload.html);
+    dt.setData("text/plain", payload.text);
+    el.dispatchEvent(new ClipboardEvent("paste", { clipboardData: dt, bubbles: true, cancelable: true }));
+  }, { html, text }).catch(() => {});
+  await page.waitForTimeout(1500);
+  if (await hasProbe()) return true;
+  try {
+    await page.evaluate(async (payload) => {
+      await navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([payload.html], { type: "text/html" }), "text/plain": new Blob([payload.text], { type: "text/plain" }) })]);
+    }, { html, text });
+    await locator.click();
+    await locator.press(process.platform === "darwin" ? "Meta+V" : "Control+V");
+    await page.waitForTimeout(1500);
+    if (await hasProbe()) return true;
+  } catch {}
+  return false;
 }
 
 function usableImages(draft) {
@@ -229,7 +313,7 @@ async function main() {
   const draft = payload.draft;
   const publish = Boolean(payload.publish);
   fs.mkdirSync(profileDir(), { recursive: true });
-  const context = await chromium.launchPersistentContext(profileDir(), { executablePath: findBrowserExecutable(), headless: false, viewport: null, args: ["--start-maximized"] });
+  const context = await chromium.launchPersistentContext(profileDir(), { executablePath: findBrowserExecutable(), headless: false, viewport: null, args: ["--start-maximized"], permissions: ["clipboard-read", "clipboard-write"] });
   const page = context.pages()[0] || await context.newPage();
   let result;
   try {
@@ -238,8 +322,9 @@ async function main() {
     await page.waitForTimeout(1200);
     await ensureLoggedIn(page);
     const scope = await editorScope(page);
+    await dismissEditorPopups(page, scope);
     if (draft.contentType !== "existing_post_update" || draft.updateMode !== "images_only") await setTitle(scope, draft.title || "");
-    await setBody(scope, draft);
+    await setBody(page, scope, draft);
     const images = await uploadImages(page, scope, draft);
     if (!publish) result = { status: "staged", editorUrl: page.url(), imageUpload: images, message: "네이버 편집기에 자동 반영했습니다. 발행은 승인 전이라 실행하지 않았습니다." };
     else { await clickPublish(page, scope); result = { status: "published", editorUrl: page.url(), publishedUrl: page.url(), imageUpload: images, message: "네이버 발행 동작을 완료했습니다." }; }

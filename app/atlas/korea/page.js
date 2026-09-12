@@ -221,9 +221,10 @@ export default function KoreaPublisherPage() {
       await load();
     } catch (e) {
       setMessage(e.message);
-      await load();
+      await load().catch(() => {});
+    } finally {
+      setBusy("");
     }
-    setBusy("");
   }
 
   async function approveAndPublish() {
@@ -247,9 +248,10 @@ export default function KoreaPublisherPage() {
       await load();
     } catch (e) {
       setMessage(e.message);
-      await load();
+      await load().catch(() => {});
+    } finally {
+      setBusy("");
     }
-    setBusy("");
   }
 
   if (!selected) return <main className="p-8 text-zinc-200">국내용 글을 불러오는 중입니다.</main>;
@@ -274,7 +276,7 @@ export default function KoreaPublisherPage() {
             <div className="font-semibold">네이버 자동화 상태: {doctor === null ? "점검 중" : automationReady ? "준비 완료" : "점검 필요"}</div>
             <div className="mt-1 text-sm text-zinc-400">{doctor?.browserPath ? `브라우저: ${doctor.browserPath}` : doctor?.issues?.join(" · ") || doctor?.error || "Edge와 전용 로그인 프로필을 확인합니다."}</div>
           </div>
-          <button disabled={Boolean(busy)} onClick={checkDoctor} className="rounded-lg bg-zinc-800 px-4 py-2 text-sm font-semibold disabled:opacity-40">다시 점검</button>
+          <button type="button" onClick={() => checkDoctor()} className="rounded-lg bg-zinc-800 px-4 py-2 text-sm font-semibold">다시 점검</button>
         </div>
       </div>
 
@@ -336,7 +338,7 @@ export default function KoreaPublisherPage() {
                         {img.src && !auto ? "이미지 교체" : "직접 이미지 선택"}
                         <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" disabled={Boolean(busy)} onChange={(e) => uploadAsset(img.id, e.target.files?.[0])} />
                       </label>
-                      <span className={img.src ? "text-emerald-300" : "text-amber-300"}>{auto ? "자동 생성 예정" : img.src ? "직접 이미지 연결" : "자동 생성 대기"}</span>
+                      <span className={img.src ? "text-emerald-300" : "text-amber-300"}>{auto ? "자동 생성 예정" : img.src ? "직접 이미지 연결" : img.role === "product_photo" ? "실제 제품 이미지 필요 (자동 생성 안 함)" : "자동 생성 대기"}</span>
                       {busy === `asset:${img.id}` ? <span className="text-zinc-400">업로드 중…</span> : null}
                     </div>
                     {img.originalName ? <div className="mt-2 text-xs text-zinc-500">파일: {img.originalName}</div> : null}
