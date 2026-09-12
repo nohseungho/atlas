@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { readJson, writeJson } from "@/lib/data-store";
 import { isCoupangUrl, productPhotoSlots } from "@/lib/atlas/korea-product-auto";
-import { findCoupangPartnersProduct } from "@/lib/atlas/coupang-partners";
+import { coupangPartnersConfigured, findCoupangPartnersProduct } from "@/lib/atlas/coupang-partners";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,7 +19,7 @@ async function importGenericProduct(draft) {
       cache: "no-store",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ url }),
-      signal: AbortSignal.timeout(15_000),
+      signal: AbortSignal.timeout(6_000),
     });
     if (!res.ok) return null;
     return await res.json().catch(() => null);
@@ -33,19 +33,21 @@ async function importProduct(draft) {
   const coupang = isCoupangUrl(sourceUrl);
   let coupangResult = null;
 
-  if (coupang) {
+  // Open API is optional. Accounts that are not finally approved must not block staging.
+  if (coupang && coupangPartnersConfigured()) {
     coupangResult = await findCoupangPartnersProduct({ productName: draft.productName, limit: 10 });
     if (coupangResult?.ok && coupangResult.imageCandidates?.length) {
-      return {
-        imported: coupangResult,
-        sourceStatus: "coupang_partners_open_api",
-        sourceError: null,
-      };
+      return { imported: coupangResult, sourceStatus: "coupang_partners_open_api", sourceError: null };
     }
+  } else if (coupang) {
+    coupangResult = {
+      code: "COUPANG_PARTNERS_NOT_CONFIGURED",
+      error: "쿠팡 파트너스 최종 승인 전이라 Open API는 건너뜁니다.",
+    };
   }
 
   const generic = await importGenericProduct(draft);
-  if (generic) {
+  if (generic?.imageCandidates?.length || generic?.images?.length || generic?.draft?.images?.length) {
     return {
       imported: generic,
       sourceStatus: coupang ? "generic_fallback" : "generic_product_page",
@@ -55,7 +57,7 @@ async function importProduct(draft) {
 
   return {
     imported: null,
-    sourceStatus: coupang ? (coupangResult?.code || "coupang_product_unavailable") : "product_unavailable",
+    sourceStatus: coupang ? (coupangResult?.code || "coupang_product_image_unavailable") : "product_unavailable",
     sourceError: coupangResult?.error || null,
   };
 }
