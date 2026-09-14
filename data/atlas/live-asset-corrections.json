@@ -9,7 +9,9 @@
       "character": "miji",
       "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
       "replacementAssetPath": "public/atlas/global/miji/travel-health-risks/featured.png",
-      "status": "ready_for_final_review"
+      "status": "approved",
+      "bloggerPostId": "8631951760942060447",
+      "approvedAt": "2026-09-14T14:17:55.220Z"
     }
   ]
 }
