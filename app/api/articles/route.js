@@ -76,6 +76,19 @@ export async function PATCH(request) {
   if (typeof body.bodyHtml === "string" && (body.bodyHtml.trim() || !hasStoredBody)) {
     article.bodyHtml = body.bodyHtml;
   }
+
+  // MASTER 원고: ChatGPT 검수를 거친 최종 영문을 별도 필드로 저장한다.
+  // draftMarkdown/bodyMarkdown(AI 초안)은 절대 덮어쓰지 않고 그대로 보존한다.
+  if (typeof body.masterMarkdown === "string" && body.masterMarkdown.trim()) {
+    article.masterMarkdown = body.masterMarkdown;
+    article.masterHtml = markdownToHtml(body.masterMarkdown);
+    article.masterApproved = true;
+  }
+
+  // 검수용 한국어 번역: 대표 검수 편의용이며 Blogger에는 절대 발행하지 않는다.
+  if (typeof body.koDraftReview === "string") {
+    article.koDraftReview = body.koDraftReview;
+  }
   article.updatedAt = now;
   writeJson(FILE, data);
 

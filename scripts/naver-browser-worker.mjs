@@ -3,6 +3,7 @@ import os from "os";
 import path from "path";
 import { createRequire } from "module";
 import { naverEditorTarget } from "../lib/atlas/korea-product-pipeline.js";
+import { assertNaverWriteTarget, getCharacterDefinition } from "../lib/atlas/character-channel-policy.js";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright-core");
@@ -85,7 +86,8 @@ function assetCopy(image) {
 }
 
 function characterDataUri(character) {
-  const file = character === "miji" ? "ATLAS-MIJI-MASTER.png" : "ATLAS-SUO-MASTER.png";
+  const definition = getCharacterDefinition(character);
+  const file = definition.masterFileName;
   const source = path.join(process.cwd(), "public", "atlas", "characters", file);
   return fs.existsSync(source) ? `data:image/png;base64,${fs.readFileSync(source).toString("base64")}` : "";
 }
@@ -312,6 +314,7 @@ async function main() {
   const payload = JSON.parse(fs.readFileSync(inputPath, "utf8"));
   const draft = payload.draft;
   const publish = Boolean(payload.publish);
+  assertNaverWriteTarget(draft);
   fs.mkdirSync(profileDir(), { recursive: true });
   const context = await chromium.launchPersistentContext(profileDir(), { executablePath: findBrowserExecutable(), headless: false, viewport: null, args: ["--start-maximized"], permissions: ["clipboard-read", "clipboard-write"] });
   const page = context.pages()[0] || await context.newPage();

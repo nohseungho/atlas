@@ -22,6 +22,17 @@ const PROTECTED_FIELDS = new Set([
   "automationStatus",
   "stagedAt",
   "stagedEditorUrl",
+  "channelId",
+  "assetScope",
+  "assetNamespace",
+  "character",
+  "heroCharacterId",
+  "masterFileName",
+  "masterAssetPath",
+  "characterPolicyVersion",
+  "blogId",
+  "contentType",
+  "logNo",
 ]);
 
 function readItems() {
@@ -100,7 +111,7 @@ export async function PATCH(request) {
   if (index < 0) return NextResponse.json({ error: "draft not found" }, { status: 404 });
 
   const safePatch = editablePatch(body.patch);
-  let next = { ...items[index], ...safePatch, id, updatedAt: new Date().toISOString() };
+  let next = normalizeKoreaDraft({ ...items[index], ...safePatch, id });
 
   if (next.affiliateUrl && !String(next.affiliateDisclosure || "").trim()) {
     next.affiliateDisclosure = disclosureFor(next.affiliateUrl);

@@ -5,12 +5,13 @@
   "scripts": {
     "dev": "next dev -p 3002",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3002",
     "lint": "eslint",
     "naver:stage": "node scripts/naver-blog-automation.mjs stage",
     "naver:publish": "node scripts/naver-blog-automation.mjs publish",
     "naver:doctor": "node scripts/naver-blog-doctor.mjs",
-    "naver:verify": "node scripts/atlas-korea-verify.mjs"
+    "naver:verify": "node scripts/atlas-korea-verify.mjs",
+    "character:verify": "node --test lib/atlas/character-channel-policy.test.mjs"
   },
   "dependencies": {
     "cloudinary": "^2.10.0",

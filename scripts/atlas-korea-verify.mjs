@@ -13,6 +13,7 @@ const mustExist = [
   "lib/atlas/korea-product-pipeline.js",
   "lib/atlas/korea-content-generator.js",
   "lib/atlas/naver-browser-publisher.js",
+  "lib/atlas/character-channel-policy.js",
   "data/atlas/korea-drafts.json",
   "scripts/naver-blog-automation.mjs",
   "scripts/naver-blog-doctor.mjs",
@@ -36,6 +37,7 @@ if (!failures.length) {
   const publisher = read("lib/atlas/naver-browser-publisher.js");
   const worker = read("scripts/naver-browser-worker.mjs");
   const publishRoute = read("app/api/atlas/korea-publish/route.js");
+  const characterPolicy = read("lib/atlas/character-channel-policy.js");
 
   if (!packageJson.scripts?.["naver:stage"]) failures.push("package script naver:stage missing");
   if (!packageJson.scripts?.["naver:publish"]) failures.push("package script naver:publish missing");
@@ -50,10 +52,11 @@ if (!failures.length) {
   const multitap = items.find((item) => item.id === "kr_multitap_224407589323");
   if (multitap) {
     if (String(multitap.blogId) !== "who-ami") failures.push("multitap blogId changed");
-    if (String(multitap.logNo) !== "224407589323") failures.push("multitap logNo changed");
-    if (multitap.contentType !== "existing_post_update") failures.push("multitap must stay existing_post_update");
-    if (multitap.updateMode !== "images_only") failures.push("multitap must stay images_only to protect existing text");
-    if ((multitap.images || []).length !== 3) failures.push("multitap must keep exactly 3 planned body images");
+    if (String(multitap.logNo) !== "") failures.push("new multitap post must not carry an existing logNo");
+    if (multitap.contentType !== "new_product_review") failures.push("multitap must stay a new product review");
+    if (multitap.character !== "suho") failures.push("Korea multitap character must stay Suho");
+    if (multitap.assetScope !== "korea") failures.push("Korea multitap asset scope changed");
+    if ((multitap.images || []).length !== 5) failures.push("multitap must keep 2 optional product slots plus 3 Suho body images");
   }
 
   if (!pipeline.includes("canPublishKoreaDraft")) failures.push("approval gate helper missing");
@@ -71,6 +74,9 @@ if (!failures.length) {
   if (!worker.includes("launchPersistentContext")) failures.push("persistent Naver browser profile missing");
   if (!worker.includes("images_only")) failures.push("existing-post image-only protection missing");
   if (!worker.includes("playwright-core")) failures.push("worker browser control dependency missing");
+  if (!characterPolicy.includes('PROTECTED_NAVER_POSTS = Object.freeze(["224407589323"])')) failures.push("protected Naver post lock missing");
+  if (!characterPolicy.includes('GLOBAL_BLOGGER: "global_blogger"')) failures.push("global Blogger channel policy missing");
+  if (!characterPolicy.includes('KOREA_NAVER: "korea_naver"')) failures.push("Korea Naver channel policy missing");
 
   const forbidden = [
     /OPENAI_API_KEY/i,

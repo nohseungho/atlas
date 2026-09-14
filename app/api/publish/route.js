@@ -22,6 +22,7 @@ import {
 import { buildBloggerHtml } from "@/lib/html-exporter";
 import { selectLabels } from "@/lib/atlas/seo-engine";
 import { PUBLISH_STATE, publishStateOf, matchLivePost } from "@/lib/atlas/publisher-sync";
+import { ATLAS_CHANNEL_ID, validateChannelIdentity } from "@/lib/atlas/character-channel-policy";
 
 export const runtime = "nodejs";
 
@@ -70,6 +71,14 @@ export async function POST(request) {
   const { article } = loadArticle(articleId);
   if (!article) {
     return NextResponse.json({ error: "article not found" }, { status: 404 });
+  }
+
+  const channelIdentity = validateChannelIdentity(article, ATLAS_CHANNEL_ID.GLOBAL_BLOGGER);
+  if (!channelIdentity.ok) {
+    return NextResponse.json(
+      { status: "rejected", errorCode: "ATLAS_CHANNEL_ASSET_MISMATCH", issues: channelIdentity.issues },
+      { status: 409 },
+    );
   }
 
   const state = publishStateOf(article);
@@ -189,6 +198,10 @@ export async function POST(request) {
 
     job = createPublishJob({ articleId, channelId: blogId, provider: "blogger" });
     updatePublishJobStatus(job.id, { status: "running", incrementAttempt: true, message: "자동 발행 시작" });
+    // MASTER 원고가 있으면 그것을 발행 본문으로 사용한다(Draft는 절대 발행하지 않는다).
+    const publishContent = article.masterApproved
+      ? { ...article, bodyMarkdown: article.masterMarkdown, bodyHtml: article.masterHtml }
+      : article;
 
     // Labels and the search description are part of the post from the first
     // publish now — backfilling them later means editing an already-indexed
@@ -196,7 +209,7 @@ export async function POST(request) {
     const content = {
       bloggerBlogId: session.bloggerBlogId,
       title: article.title || "",
-      html: buildBloggerHtml(article),
+      html: buildBloggerHtml(publishContent),
       labels: (article.seoLabels || []).length
         ? article.seoLabels
         : selectLabels({ title: article.title, keyword: article.keyword || article.title, tags: article.tags || [] }),
