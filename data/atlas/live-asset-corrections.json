@@ -1,0 +1,15 @@
+{
+  "items": [
+    {
+      "id": "global_travel_health_miji_featured",
+      "channelId": "global_blogger",
+      "platform": "blogger",
+      "articleUrl": "https://atlas-money-2026.blogspot.com/2026/08/how-to-prepare-for-travel-health-risks.html",
+      "assetRole": "featured",
+      "character": "miji",
+      "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+      "replacementAssetPath": "public/atlas/global/miji/travel-health-risks/featured.png",
+      "status": "ready_for_final_review"
+    }
+  ]
+}

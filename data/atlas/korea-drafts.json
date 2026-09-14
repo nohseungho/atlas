@@ -51,9 +51,9 @@
         {
           "id": "img_multitap_usage",
           "role": "body_usage",
-          "src": "atlas-generated://kr_multitap_224407589323/img_multitap_usage",
-          "alt": "TV 주변, 책상, 충전 공간의 멀티탭 사용 예시",
-          "placement": "오늘 소개할 제품 문단 뒤",
+          "src": "public/atlas/korea/suho/multitap/featured.png",
+          "alt": "수호가 개별 스위치형 멀티탭을 소개하는 일러스트",
+          "placement": "도입부 뒤 (수호 대표 일러스트)",
           "anchorKeywords": [
             "1.5m 케이블",
             "순동 일체형 단자",
@@ -65,9 +65,9 @@
         {
           "id": "img_multitap_switch",
           "role": "body_switch_compare",
-          "src": "atlas-generated://kr_multitap_224407589323/img_multitap_switch",
-          "alt": "개별 스위치형과 통합 스위치형 멀티탭 비교",
-          "placement": "특징과 좋은 점 마지막 문단 뒤 (수호 삽화)",
+          "src": "public/atlas/korea/suho/multitap/usage.png",
+          "alt": "수호가 거실에서 개별 스위치형 멀티탭을 사용하는 일러스트",
+          "placement": "특징과 좋은 점 마지막 문단 뒤",
           "anchorKeywords": [
             "무난한 구성",
             "벽 콘센트",
@@ -79,8 +79,8 @@
         {
           "id": "img_multitap_safety",
           "role": "body_safety",
-          "src": "atlas-generated://kr_multitap_224407589323/img_multitap_safety",
-          "alt": "멀티탭 발열, 먼지, 습기, 고출력 가전 점검 체크리스트",
+          "src": "public/atlas/korea/suho/multitap/safety.png",
+          "alt": "수호가 멀티탭 발열, 먼지, 습기와 고출력 가전 사용을 점검하는 일러스트",
           "placement": "아쉬운 점 마지막 문단 뒤",
           "anchorKeywords": [
             "좁은 틈",
