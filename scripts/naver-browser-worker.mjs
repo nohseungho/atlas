@@ -402,9 +402,16 @@ async function main() {
   let result;
   try {
     await renderGeneratedAssets(context, draft);
-    await page.goto(naverEditorTarget(draft), { waitUntil: "domcontentloaded", timeout: 45000 });
+    const editorTarget = naverEditorTarget(draft);
+    await page.goto(editorTarget, { waitUntil: "domcontentloaded", timeout: 45000 });
     await page.waitForTimeout(1200);
     await ensureLoggedIn(page);
+    // 네이버 로그인은 블로그 홈으로 돌려보낼 수 있으므로 로그인 완료 후 신규 글쓰기 주소를 다시 연다.
+    if (!/PostWriteForm\.naver/i.test(page.url())) {
+      await page.goto(editorTarget, { waitUntil: "domcontentloaded", timeout: 45000 });
+      await page.waitForTimeout(1200);
+      await ensureLoggedIn(page);
+    }
     const scope = await editorScope(page);
     await dismissEditorPopups(page, scope);
     if (draft.contentType !== "existing_post_update" || draft.updateMode !== "images_only") await setTitle(scope, draft.title || "");
