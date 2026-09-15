@@ -11,7 +11,8 @@
     "naver:publish": "node scripts/naver-blog-automation.mjs publish",
     "naver:doctor": "node scripts/naver-blog-doctor.mjs",
     "naver:verify": "node scripts/atlas-korea-verify.mjs",
-    "character:verify": "node --test lib/atlas/character-channel-policy.test.mjs"
+    "character:verify": "node --test lib/atlas/character-channel-policy.test.mjs",
+    "unified:verify": "node --test lib/atlas/unified-publish-plan.test.mjs lib/atlas/character-channel-policy.test.mjs"
   },
   "dependencies": {
     "cloudinary": "^2.10.0",
