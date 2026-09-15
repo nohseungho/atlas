@@ -142,10 +142,27 @@ async function editorScope(page) {
 }
 
 async function dismissEditorPopups(page, scope) {
-  // "작성 중인 글" 복구 안내, 도움말 패널 등이 제목 영역을 가리는 경우만 닫는다.
-  for (const selector of [".se-popup-button-cancel", "button.se-popup-button-cancel", ".se-help-panel-close-button", "button:has-text('취소')"]) {
-    const el = await firstVisible(scope, [selector]);
-    if (el) { await el.click().catch(() => {}); await page.waitForTimeout(400); }
+  // "작성 중인 글" 복구 안내와 도움말 패널만 닫는다. 본문/발행 버튼은 건드리지 않는다.
+  const selectors = [
+    "button.se-popup-button-cancel",
+    "button.se-help-panel-close-button",
+    ".se-help-panel button[aria-label*='닫기']",
+    ".se-help-panel button[title*='닫기']",
+    "[class*='help'] button[aria-label*='닫기']",
+    "[class*='help'] button[title*='닫기']",
+  ];
+  for (const candidate of [scope, page, ...page.frames()]) {
+    for (const selector of selectors) {
+      const buttons = candidate.locator(selector);
+      const count = Math.min(await buttons.count().catch(() => 0), 10);
+      for (let i = 0; i < count; i += 1) {
+        const button = buttons.nth(i);
+        if (await button.isVisible().catch(() => false)) {
+          await button.click({ force: true }).catch(() => {});
+          await page.waitForTimeout(250);
+        }
+      }
+    }
   }
 }
 
@@ -311,39 +328,50 @@ async function firstVisibleAcrossScopes(page, preferredScope, selectors) {
   return null;
 }
 
+async function exactButtonAcrossScopes(page, preferredScope, labels) {
+  const candidates = [preferredScope, page, ...page.frames()];
+  const seen = new Set();
+  const pattern = new RegExp(`^(?:${labels.join("|")})$`);
+  for (const candidate of candidates) {
+    if (!candidate || seen.has(candidate)) continue;
+    seen.add(candidate);
+    const buttons = candidate.locator("button").filter({ hasText: pattern });
+    const count = Math.min(await buttons.count().catch(() => 0), 20);
+    for (let i = 0; i < count; i += 1) {
+      const button = buttons.nth(i);
+      if (await button.isVisible().catch(() => false) && await button.isEnabled().catch(() => false)) return button;
+    }
+  }
+  return null;
+}
+
 async function clickPublish(page, scope) {
-  const publishSelectors = [
-    "button:has-text('발행')",
-    "button:has-text('발행하기')",
-    "button[aria-label*='발행']",
-    "[role='button']:has-text('발행')",
-    "[class*='publish_btn']",
-  ];
-  const openPublish = await firstVisibleAcrossScopes(page, scope, publishSelectors);
+  await dismissEditorPopups(page, scope);
+  const openPublish = await exactButtonAcrossScopes(page, scope, ["발행", "발행하기"]);
   if (!openPublish) {
-    throw Object.assign(new Error("네이버 발행 버튼을 찾지 못했습니다."), {
+    throw Object.assign(new Error("네이버 실제 발행 button을 찾지 못했습니다."), {
       code: "NAVER_PUBLISH_BUTTON_NOT_FOUND",
     });
   }
 
   await openPublish.click();
   await page.waitForTimeout(1200);
+  await dismissEditorPopups(page, scope);
 
-  const finalSelectors = [
-    "button:has-text('발행')",
-    "button:has-text('확인')",
-    "[role='button']:has-text('발행')",
-    "[class*='confirm_btn']",
-    "[class*='publish_btn']",
-  ];
-  const finalButton = await firstVisibleAcrossScopes(page, page, finalSelectors);
-  if (finalButton) await finalButton.click();
-  else if (/Post(?:Write|Update)Form\.naver/i.test(page.url())) {
-    throw Object.assign(new Error("네이버 최종 발행 확인 버튼을 찾지 못했습니다."), {
+  const finalButton = await exactButtonAcrossScopes(page, page, ["발행", "발행하기", "확인"]);
+  if (!finalButton) {
+    throw Object.assign(new Error("네이버 최종 발행 확인 button을 찾지 못했습니다."), {
       code: "NAVER_FINAL_PUBLISH_BUTTON_NOT_FOUND",
     });
   }
+  await finalButton.click();
   await page.waitForTimeout(2500);
+
+  if (/Post(?:Write|Update)Form\.naver/i.test(page.url())) {
+    throw Object.assign(new Error("발행 후에도 편집기 화면에 남아 있어 신규 글 발행을 확인하지 못했습니다."), {
+      code: "NAVER_PUBLISH_NOT_CONFIRMED",
+    });
+  }
 }
 
 async function main() {
@@ -370,11 +398,18 @@ async function main() {
     if (!publish) result = { status: "staged", editorUrl: page.url(), imageUpload: images, message: "네이버 편집기에 자동 반영했습니다. 발행은 승인 전이라 실행하지 않았습니다." };
     else { await clickPublish(page, scope); result = { status: "published", editorUrl: page.url(), publishedUrl: page.url(), imageUpload: images, message: "네이버 발행 동작을 완료했습니다." }; }
   } catch (error) {
-    if (error?.code === "NAVER_LOGIN_REQUIRED") result = { status: "login_required", errorCode: error.code, message: error.message, editorUrl: page.url(), keepOpen: true };
-    else { result = { status: "error", errorCode: error?.code || "NAVER_AUTOMATION_FAILED", message: error?.message || String(error) }; await context.close().catch(() => {}); }
+    const keepOpen = publish || error?.code === "NAVER_LOGIN_REQUIRED";
+    result = {
+      status: error?.code === "NAVER_LOGIN_REQUIRED" ? "login_required" : "error",
+      errorCode: error?.code || "NAVER_AUTOMATION_FAILED",
+      message: error?.message || String(error),
+      editorUrl: page.url(),
+      keepOpen,
+    };
+    if (!keepOpen) await context.close().catch(() => {});
   }
   fs.writeFileSync(outputPath, JSON.stringify(result), "utf8");
-  if (result.status !== "login_required") await context.close().catch(() => {});
+  if (!result.keepOpen) await context.close().catch(() => {});
 }
 
 main().catch((error) => {
