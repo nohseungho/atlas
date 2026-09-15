@@ -328,7 +328,7 @@ async function firstVisibleAcrossScopes(page, preferredScope, selectors) {
   return null;
 }
 
-async function exactButtonAcrossScopes(page, preferredScope, labels) {
+async function exactButtonAcrossScopes(page, preferredScope, labels, { last = false } = {}) {
   const candidates = [preferredScope, page, ...page.frames()];
   const seen = new Set();
   const pattern = new RegExp(`^(?:${labels.join("|")})$`);
@@ -337,7 +337,8 @@ async function exactButtonAcrossScopes(page, preferredScope, labels) {
     seen.add(candidate);
     const buttons = candidate.locator("button").filter({ hasText: pattern });
     const count = Math.min(await buttons.count().catch(() => 0), 20);
-    for (let i = 0; i < count; i += 1) {
+    for (let step = 0; step < count; step += 1) {
+      const i = last ? count - 1 - step : step;
       const button = buttons.nth(i);
       if (await button.isVisible().catch(() => false) && await button.isEnabled().catch(() => false)) return button;
     }
@@ -358,7 +359,7 @@ async function clickPublish(page, scope) {
   await page.waitForTimeout(1200);
   await dismissEditorPopups(page, scope);
 
-  const finalButton = await exactButtonAcrossScopes(page, page, ["발행", "발행하기", "확인"]);
+  const finalButton = await exactButtonAcrossScopes(page, page, ["발행", "발행하기", "확인"], { last: true });
   if (!finalButton) {
     throw Object.assign(new Error("네이버 최종 발행 확인 button을 찾지 못했습니다."), {
       code: "NAVER_FINAL_PUBLISH_BUTTON_NOT_FOUND",
