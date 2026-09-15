@@ -7,6 +7,7 @@ export const metadata = {
 
 const NAV_ITEMS = [
   { href: "/atlas", label: "Dashboard" },
+  { href: "/atlas/unified-publish", label: "국내·해외 통합 발행" },
   { href: "/atlas/revenue", label: "해외 Blogger" },
   { href: "/atlas/korea", label: "국내 Naver" },
   { href: "/atlas/blog-studio", label: "Blog Studio" },
