@@ -167,9 +167,23 @@ async function dismissEditorPopups(page, scope) {
 }
 
 async function ensureLoggedIn(page) {
-  const url = page.url();
-  const loginVisible = /nidlogin\.login\.naver\.com|nid\.naver\.com/i.test(url) || await page.locator("input#id, input[name='id']").count().catch(() => 0);
-  if (loginVisible) throw Object.assign(new Error("네이버 로그인 1회가 필요합니다. 열린 Edge에서 로그인한 뒤 같은 작업을 다시 실행하세요."), { code: "NAVER_LOGIN_REQUIRED" });
+  const isLoginPage = async () => {
+    const url = page.url();
+    return /nidlogin\.login\.naver\.com|nid\.naver\.com/i.test(url)
+      || Boolean(await page.locator("input#id, input[name='id']").count().catch(() => 0));
+  };
+  if (!await isLoginPage()) return;
+
+  console.log("네이버 로그인을 기다립니다. 열린 Edge에서 로그인하면 자동으로 계속 진행됩니다.");
+  const deadline = Date.now() + 5 * 60 * 1000;
+  while (Date.now() < deadline) {
+    await page.waitForTimeout(1000);
+    if (!await isLoginPage()) {
+      await page.waitForLoadState("domcontentloaded", { timeout: 15000 }).catch(() => {});
+      return;
+    }
+  }
+  throw Object.assign(new Error("5분 안에 네이버 로그인이 완료되지 않았습니다. Edge 창을 유지합니다."), { code: "NAVER_LOGIN_TIMEOUT" });
 }
 
 async function replaceText(locator, text) {
