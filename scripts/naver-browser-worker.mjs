@@ -299,13 +299,51 @@ async function uploadImages(page, scope, draft) {
   return { uploaded: images.length, requested: (draft.images || []).length, placements };
 }
 
+async function firstVisibleAcrossScopes(page, preferredScope, selectors) {
+  const candidates = [preferredScope, page, ...page.frames()];
+  const seen = new Set();
+  for (const candidate of candidates) {
+    if (!candidate || seen.has(candidate)) continue;
+    seen.add(candidate);
+    const found = await firstVisible(candidate, selectors);
+    if (found) return found;
+  }
+  return null;
+}
+
 async function clickPublish(page, scope) {
-  const openPublish = await firstVisible(scope, ["button:has-text('발행')", "button[aria-label*='발행']", "[role='button']:has-text('발행')"]);
-  if (!openPublish) throw Object.assign(new Error("네이버 발행 버튼을 찾지 못했습니다."), { code: "NAVER_PUBLISH_BUTTON_NOT_FOUND" });
-  await openPublish.click(); await page.waitForTimeout(700);
-  const finalButton = await firstVisible(page, ["button:has-text('발행')", "button:has-text('확인')", "[role='button']:has-text('발행')"]);
+  const publishSelectors = [
+    "button:has-text('발행')",
+    "button:has-text('발행하기')",
+    "button[aria-label*='발행']",
+    "[role='button']:has-text('발행')",
+    "[class*='publish_btn']",
+  ];
+  const openPublish = await firstVisibleAcrossScopes(page, scope, publishSelectors);
+  if (!openPublish) {
+    throw Object.assign(new Error("네이버 발행 버튼을 찾지 못했습니다."), {
+      code: "NAVER_PUBLISH_BUTTON_NOT_FOUND",
+    });
+  }
+
+  await openPublish.click();
+  await page.waitForTimeout(1200);
+
+  const finalSelectors = [
+    "button:has-text('발행')",
+    "button:has-text('확인')",
+    "[role='button']:has-text('발행')",
+    "[class*='confirm_btn']",
+    "[class*='publish_btn']",
+  ];
+  const finalButton = await firstVisibleAcrossScopes(page, page, finalSelectors);
   if (finalButton) await finalButton.click();
-  await page.waitForTimeout(1600);
+  else if (/Post(?:Write|Update)Form\.naver/i.test(page.url())) {
+    throw Object.assign(new Error("네이버 최종 발행 확인 버튼을 찾지 못했습니다."), {
+      code: "NAVER_FINAL_PUBLISH_BUTTON_NOT_FOUND",
+    });
+  }
+  await page.waitForTimeout(2500);
 }
 
 async function main() {
