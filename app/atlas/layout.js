@@ -6,6 +6,7 @@ export const metadata = {
 };
 
 const NAV_ITEMS = [
+  { href: "/atlas/unified-publish", label: "오늘의 상품 TOP5" },
   { href: "/atlas", label: "Dashboard" },
   { href: "/atlas/revenue", label: "해외 Blogger" },
   { href: "/atlas/korea", label: "국내 Naver" },
