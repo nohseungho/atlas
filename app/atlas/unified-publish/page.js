@@ -3,48 +3,95 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { KEYS, readList, writeList } from "@/app/atlas/lib/storage";
+import { addImageFromDataUrl, listImages } from "@/app/atlas/lib/image-store";
+import { validateChannelIdentity } from "@/lib/atlas/character-channel-policy";
 
 const channels = [["korea_naver", "국내 Naver", "수호"], ["global_blogger", "해외 Blogger", "미지"]];
-const labels = { title: "제목", body: "본문", images: "이미지·사용 권한·캐릭터", disclosure: "제휴 고지", links: "링크·가격 근거" };
-const button = "rounded-lg bg-emerald-700 px-4 py-2 text-white disabled:opacity-40 disabled:cursor-not-allowed";
-const input = "w-full rounded border border-zinc-600 bg-zinc-900 p-2";
+const button = "min-h-11 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-40";
+const secondary = "min-h-11 rounded-lg border border-zinc-600 px-3 py-2 text-sm disabled:opacity-40";
+const input = "mt-1 w-full min-w-0 rounded-lg border border-zinc-600 bg-zinc-950 p-2 text-base";
+function dateText(value) { return value ? new Date(value).toLocaleString("ko-KR", { timeZone: "Asia/Seoul" }) : "미확인"; }
 
-function Review({ draft, busy, act }) {
-  const [form, setForm] = useState({ title: draft.title, bodyText: draft.bodyText, disclosure: draft.disclosure, productUrl: draft.productUrl, useMaster: !!draft.images.length, imageUrl: draft.images[0]?.src || "" });
-  const [checks, setChecks] = useState({});
-  const [dirty, setDirty] = useState(false);
-  const locked = !["draft", "approved"].includes(draft.state);
-  const update = (key, value) => { setForm((p) => ({ ...p, [key]: value })); setDirty(true); setChecks({}); };
-  function shorts() {
-    const p = draft.product;
-    const product = draft.shorts.product;
-    writeList(KEYS.products, [...readList(KEYS.products).filter((row) => row.id !== p.id), product]);
-    window.location.assign(`/atlas/shorts-studio?productId=${encodeURIComponent(p.id)}`);
-  }
-  return <section className="mt-4 space-y-3 rounded-xl border border-zinc-700 p-4">
-    <h3 className="font-semibold">원고 최종 점검 · {draft.character === "suho" ? "수호" : "미지"}</h3>
-    <p className="text-sm">상태: {draft.state}</p>
-    {draft.publishedUrl && <a className="text-emerald-300 underline" href={draft.publishedUrl} target="_blank" rel="noreferrer">발행 결과 보기</a>}
-    {draft.error && <p role="alert" className="text-amber-300">{draft.error}</p>}
-    <fieldset disabled={locked || busy} className="space-y-3">
-      {[["title", "제목"], ["bodyText", "본문"], ["disclosure", "제휴 고지"], ["productUrl", "출처/상품 링크"]].map(([key, label]) => <label key={key} className="block text-sm">{label}{key === "bodyText" ? <textarea rows={10} className={input} value={form[key]} onChange={(e) => update(key, e.target.value)} /> : <input className={input} value={form[key]} onChange={(e) => update(key, e.target.value)} />}</label>)}
-      <Image src={`/${draft.masterAssetPath.replace(/^public\//, "")}`} alt={`${draft.character} 캐릭터 기준`} width={100} height={100} className="h-24 w-24 object-contain" />
-      {draft.channelId === "korea_naver" ? <label className="block"><input type="checkbox" checked={form.useMaster} onChange={(e) => update("useMaster", e.target.checked)} /> 수호 마스터 이미지를 본문에 사용</label> : <label className="block text-sm">기존 해외 미지 이미지 URL (atlas/articles)<input className={input} value={form.imageUrl} onChange={(e) => update("imageUrl", e.target.value)} /></label>}
-      {draft.channelId === "global_blogger" && form.imageUrl && <a href={form.imageUrl} target="_blank" rel="noreferrer" className="text-emerald-300 underline">발행 이미지 열어 확인</a>}
-      <button className={button} onClick={async () => { if (await act({ action: "save", id: draft.id, ...form })) setDirty(false); }}>원고 저장</button>
-      <p className="text-sm text-zinc-400">저장 후 아래 항목을 점검하세요. 수정하면 승인이 해제됩니다.</p>
-      {Object.entries(labels).map(([key, label]) => <label key={key} className="block text-sm"><input type="checkbox" disabled={dirty} checked={!!checks[key]} onChange={(e) => setChecks({ ...checks, [key]: e.target.checked })} /> {label} 확인</label>)}
-      <button className={button} disabled={dirty || !Object.keys(labels).every((key) => checks[key])} onClick={() => act({ action: "approve", id: draft.id, checks })}>최종 점검 승인</button>
-    </fieldset>
-    <div className="flex flex-wrap gap-2">
-      <button className={button} disabled={busy || dirty || draft.state !== "approved"} onClick={() => { if (window.confirm(`${draft.title}\n신규 글을 실제 발행합니다. 최종 점검한 내용으로 진행할까요?`)) act({ action: "publish", id: draft.id }); }}>신규 글 발행</button>
-      <button className={button} disabled={busy || dirty} onClick={shorts}>같은 상품으로 쇼핑쇼츠 제작</button>
+function Evidence({ product }) {
+  const signals = product.signals || {};
+  return <details className="min-w-0 text-xs text-zinc-400">
+    <summary className="flex min-h-11 cursor-pointer items-center text-zinc-300">상세보기</summary>
+    <div className="space-y-2 break-words pb-2">
+      <p>인기 근거: {signals.popularity?.quote || "확인되지 않음"}</p>
+      <p>할인 근거: {signals.discount?.quote || "정상가·할인율을 확인하지 못해 추정하지 않았습니다."}</p>
+      {signals.quality && <p>출처의 편집자 선정: {signals.quality.quote}</p>}
+      <p>제품 특징: {product.features.join(" · ")}</p>
+      <p>가격 표기 원문: {product.evidence}</p>
+      <a className="block text-emerald-300 underline" href={product.sourceUrl} target="_blank" rel="noreferrer">출처: {product.source}</a>
+      {signals.popularity?.kind === "popular_feed" && <a className="block text-emerald-300 underline" href={signals.popularity.sourceUrl} target="_blank" rel="noreferrer">출처의 인기 목록 확인</a>}
+      <p>확인 시각: {dateText(product.checkedAt)} (한국 시간)</p>
+      <p>{product.priceNotice}</p>
+      <p>공개 자료에서 선별한 후보이며, 시장 전체 판매량 순위나 품질 보증은 아닙니다.</p>
     </div>
+  </details>;
+}
+
+function BlogReview({ draft, busy, act }) {
+  const [form, setForm] = useState({ title: draft.title, bodyText: draft.bodyText, disclosure: draft.disclosure, productUrl: draft.productUrl });
+  const [saved, setSaved] = useState(false);
+  const editable = ["draft", "approved"].includes(draft.state);
+  return <details open className="rounded-lg border border-zinc-700 p-3">
+    <summary className="cursor-pointer font-medium">블로그 원고</summary>
+    <fieldset disabled={busy || !editable} className="mt-3 space-y-3">
+      {[["title", "제목"], ["bodyText", "본문"], ["disclosure", "제휴 고지"], ["productUrl", "상품·출처 링크"]].map(([key, label]) => <label key={key} className="block text-sm">{label}
+        {key === "bodyText" ? <textarea rows={8} className={input} value={form[key]} onChange={(e) => { setSaved(false); setForm({ ...form, [key]: e.target.value }); }} />
+          : <input className={input} value={form[key]} onChange={(e) => { setSaved(false); setForm({ ...form, [key]: e.target.value }); }} />}
+      </label>)}
+      <button className={button} onClick={async () => { if (await act({ action: "save", id: draft.id, ...form })) setSaved(true); }}>원고 저장</button>
+      {saved && <p role="status" className="text-sm text-emerald-300">원고를 저장했습니다.</p>}
+    </fieldset>
+  </details>;
+}
+
+function Materials({ product, draft, busy, act, onError }) {
+  const [opening, setOpening] = useState(false);
+  async function openShorts() {
+    setOpening(true);
+    try {
+      const p = draft.shorts.product;
+      const identity = validateChannelIdentity(p, p.channelId);
+      if (!identity.ok) throw new Error("상품과 이미지의 채널을 확인하세요.");
+      const sourceUrl = `/${p.masterAssetPath.replace(/^public\//, "")}`;
+      if (!(await listImages(p.id)).some((image) => image.sourceUrl === sourceUrl)) {
+        const res = await fetch(sourceUrl);
+        if (!res.ok) throw new Error("캐릭터 이미지를 불러오지 못했습니다.");
+        const blob = await res.blob();
+        const dataUrl = await new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(blob); });
+        await addImageFromDataUrl(p.id, { dataUrl, name: p.masterFileName, sourceUrl, contentType: "image/png" });
+      }
+      writeList(KEYS.products, [...readList(KEYS.products).filter((row) => row.id !== p.id), p]);
+      window.location.assign(`/atlas/shorts-studio?mode=photo&productId=${encodeURIComponent(p.id)}`);
+    } catch { onError("쇼츠 자료를 열지 못했습니다. 저장된 자료는 유지됩니다. 다시 시도해 주세요."); }
+    finally { setOpening(false); }
+  }
+  return <section aria-label={`${product.name} 제작자료`} className="space-y-3 rounded-xl bg-zinc-950 p-3">
+    <h3 className="text-sm font-semibold text-emerald-300">선택한 상품으로 준비하기</h3>
+    <div className="grid grid-cols-2 gap-2">
+      <button className={button} disabled={busy} onClick={() => act({ action: "prepareBlog", id: product.id })}>블로그 준비</button>
+      <button className={secondary} disabled={busy} onClick={() => act({ action: "prepareShorts", id: product.id })}>쇼핑쇼츠 준비</button>
+    </div>
+    {(draft?.prepared?.blog || draft?.prepared?.shorts) && <div className="flex items-center gap-3 text-xs text-zinc-300">
+      <Image src={`/${draft.masterAssetPath.replace(/^public\//, "")}`} alt={`${draft.character === "miji" ? "미지" : "수호"} 자동 연결 이미지`} width={64} height={64} className="h-16 w-16 rounded object-contain" />
+      <p>{draft.character === "miji" ? "미지" : "수호"} 이미지 자동 연결<br />진행자 이미지이며 제품 사진은 아닙니다.</p>
+    </div>}
+    {draft?.prepared?.blog && <BlogReview key={`${draft.id}:${draft.product.checkedAt}`} draft={draft} busy={busy} act={act} />}
+    {draft?.prepared?.shorts && <details className="rounded-lg border border-zinc-700 p-3" open>
+      <summary className="cursor-pointer font-medium">쇼핑쇼츠 제작자료</summary>
+      <p className="my-3 whitespace-pre-wrap break-words text-sm text-zinc-300">{draft.shorts.script}</p>
+      <button className={button} disabled={busy || opening} onClick={openShorts}>쇼츠 스튜디오 열기</button>
+    </details>}
   </section>;
 }
 
 export default function UnifiedPublish() {
-  const [data, setData] = useState({ channels: {}, drafts: {} });
+  const [data, setData] = useState({ channels: {}, drafts: {}, results: {} });
+  const [selected, setSelected] = useState({});
+  const [active, setActive] = useState("korea_naver");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   useEffect(() => { fetch("/api/atlas/unified-publish").then((r) => { if (!r.ok) throw new Error("자료 로드 실패"); return r.json(); }).then(setData).catch((e) => setMessage(e.message)); }, []);
@@ -56,27 +103,41 @@ export default function UnifiedPublish() {
       setData(value); return true;
     } catch (e) { setMessage(e.message); return false; } finally { setBusy(false); }
   }
-  return <main className="mx-auto max-w-6xl space-y-6 px-4 py-8">
-    <header className="space-y-3"><h1 className="text-3xl font-bold">오늘의 상품 TOP5 선택</h1>
-      <p className="text-zinc-300">국내 Naver와 해외 Blogger · 상품 선택 → 원고·쇼츠 준비 → 점검 승인 → 신규 발행</p>
-      <p className="text-sm text-zinc-400">무료 공개 할인정보의 최근 72시간 후보입니다. 판매량·최저가·인기 순위는 검증되지 않았으며, 출처 순서로 최대 5개를 표시합니다.</p>
-      <button className={button} disabled={busy} onClick={() => act({ action: "refresh" })}>{busy ? "처리 중…" : "오늘 자료 업데이트"}</button>
-      <p role="status" aria-live="polite">{message}</p>
+  return <main className="mx-auto max-w-6xl space-y-5 px-3 py-5 sm:px-6 sm:py-8">
+    <header className="flex flex-wrap items-center justify-between gap-3">
+      <div><h1 className="text-2xl font-bold sm:text-3xl">오늘의 상품 TOP5</h1><p className="mt-1 text-sm text-zinc-400">상품 선택 → 블로그·쇼츠 준비</p></div>
+      <button className={button} disabled={busy} onClick={() => act({ action: "refresh" })}>{busy ? "자료 준비 중…" : "오늘 자료 업데이트"}</button>
     </header>
-    <div className="grid gap-6 lg:grid-cols-2">{channels.map(([id, title, character]) => <section key={id} aria-label={title} className="space-y-3">
-      <h2 className="text-xl font-semibold">{title} TOP5 · {character}</h2>
-      <p className="text-sm text-amber-200">{data.channels[id]?.error}</p>
+    {message && <p role="alert" className="text-sm text-amber-300">{message}</p>}
+    <div className="sticky top-0 z-10 grid grid-cols-2 gap-2 bg-zinc-950 py-2 lg:hidden" aria-label="채널 선택">
+      {channels.map(([id, title]) => <button key={id} aria-pressed={active === id} className={active === id ? button : secondary} onClick={() => setActive(id)}>{title}</button>)}
+    </div>
+    <div className="grid items-start gap-5 lg:grid-cols-2">{channels.map(([id, title, character]) => <section key={id} aria-label={title} className={`${active === id ? "block" : "hidden lg:block"} min-w-0 space-y-3`}>
+      <h2 className="text-lg font-semibold">{title} TOP5 <span className="text-sm font-normal text-zinc-400">· {character}</span></h2>
+      {data.channels[id]?.error && <p className="text-sm text-amber-200">{data.channels[id].error}</p>}
       {Array.from({ length: 5 }, (_, i) => {
         const p = data.channels[id]?.slots[i];
-        return <article key={i} data-slot={id} className="space-y-2 rounded-xl border border-zinc-700 bg-zinc-900 p-4">
-          <h3 className="font-semibold">{i + 1}. {p?.name || "확인된 상품 대기"}</h3>
-          {p ? <><p>{p.features.join(" · ")}</p><p className="text-sm">선정 이유: {p.reason}</p><p>{p.priceText}</p><p className="text-xs text-zinc-400">{p.priceNotice}</p>
-            <a href={p.sourceUrl} target="_blank" rel="noreferrer" className="text-emerald-300 underline">출처: {p.source}</a><p className="text-xs">확인시각: {p.checkedAt}</p>
-            <button className={button} disabled={busy} onClick={() => act({ action: "prepare", id: p.id })}>선택 · 원고와 쇼츠 준비</button>
-          </> : <p className="text-sm text-zinc-400">실제 근거를 수집하면 이 슬롯에 표시됩니다.</p>}
+        return <article key={p?.id || i} data-slot={id} className="min-w-0 rounded-xl border border-zinc-800 bg-zinc-900 p-3 sm:p-4">
+          {p ? <>
+            <div className="flex items-start justify-between gap-2"><h3 className="line-clamp-2 min-w-0 text-sm font-semibold sm:text-base" title={p.name}>{p.name}</h3><span data-badge className="shrink-0 rounded bg-emerald-950 px-2 py-1 text-xs text-emerald-300">{p.badge}</span></div>
+            <p className="mt-2 font-semibold">{p.priceText}{p.discountPercent !== null && p.discountPercent !== undefined && <span className="ml-2 text-sm text-rose-300">{p.discountPercent}% 할인</span>}</p>
+            <p className="mt-1 truncate text-xs text-zinc-300 sm:text-sm" title={p.reason}>{p.reason}</p>
+            <div className="mt-1 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3"><Evidence product={p} /><button className={secondary} aria-pressed={selected[id] === p.id} disabled={busy} onClick={() => setSelected({ ...selected, [id]: selected[id] === p.id ? "" : p.id })}>선택</button></div>
+            {selected[id] === p.id && <Materials product={p} draft={data.drafts[p.id]} busy={busy} act={act} onError={setMessage} />}
+          </> : <div className="flex min-h-24 items-center justify-between gap-3"><h3 className="text-sm">{i + 1}. 근거를 확인하고 있어요</h3><span className="text-xs text-zinc-500">확인 후 표시</span></div>}
         </article>;
       })}
-      {Object.values(data.drafts).filter((d) => d.channelId === id).map((d) => <Review key={`${d.id}:${d.product.checkedAt}`} draft={d} busy={busy} act={act} />)}
+      <details className="rounded-xl border border-zinc-800 p-3 text-sm">
+        <summary className="cursor-pointer">저장한 자료·발행 결과</summary>
+        <div className="mt-3 space-y-3">
+          {Object.values(data.drafts).filter((d) => d.channelId === id && (d.prepared?.blog || d.prepared?.shorts)).map((draft) => <details key={draft.id}><summary className="cursor-pointer">{draft.product.name}</summary><Materials product={draft.product} draft={draft} busy={busy} act={act} onError={setMessage} /></details>)}
+          {Object.values(data.results?.[id] || {}).map((result) => <a className="block break-words text-emerald-300 underline" key={result.publishedUrl} href={result.publishedUrl} target="_blank" rel="noreferrer">{result.product.name} · 발행 글 보기</a>)}
+          {Object.values(data.archives || {}).flat().filter((draft) => draft.channelId === id).map((draft, index) => <details key={`${draft.id}:${index}`}><summary className="cursor-pointer">이전 원고 · {draft.title}</summary><p className="mt-2 whitespace-pre-wrap break-words text-xs text-zinc-400">{draft.bodyText}</p></details>)}
+          <button className={secondary} disabled={busy} onClick={() => act({ action: "reconcile", channel: id })}>발행 결과 다시 확인</button>
+          {data.recovery?.[id]?.message && <p>{data.recovery[id].message}</p>}
+          <p className="text-xs text-zinc-400">확인된 결과와 주소를 보존합니다. 여기서는 실제 발행하지 않습니다.</p>
+        </div>
+      </details>
     </section>)}</div>
   </main>;
 }

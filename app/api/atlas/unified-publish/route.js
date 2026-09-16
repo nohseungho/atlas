@@ -1,91 +1,84 @@
 import { readUnified, mutateUnified } from "@/lib/atlas/unified-store";
-import { SOURCES, CHECKS, collectChannel, prepareProduct, assertReady, assertApproved, publishedUrlFor, reviewHash, renderDraft, escapeHtml, shortsMaterial } from "@/lib/atlas/unified-products";
-import { runNaverBrowserJob } from "@/lib/atlas/naver-browser-publisher";
+import { SOURCES, collectChannel, assertIdentity, shortsMaterial } from "@/lib/atlas/unified-products";
+import { applyCollected, prepareMaterial, reconcileChannel } from "@/lib/atlas/unified-workflow";
+import { readPublicSource, xmlValue } from "@/lib/atlas/unified-evidence";
 import { createBloggerSession } from "@/lib/atlas/blogger-sync";
 import { bloggerProvider } from "@/lib/atlas/providers/blogger-provider";
-import { getCharacterDefinition } from "@/lib/atlas/character-channel-policy";
 import { readJson } from "@/lib/data-store";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export async function GET() { return Response.json(readUnified()); }
 
-async function publish(id) {
-  const draft = await mutateUnified((state) => {
-    const item = state.drafts[id];
-    if (!item) throw new Error("원고를 찾을 수 없습니다.");
-    assertApproved(item);
-    item.state = "publishing";
-    item.attemptedAt = new Date().toISOString();
-    return structuredClone(item);
-  });
-  let result;
-  try {
-    if (draft.channelId === "korea_naver") {
-      result = await runNaverBrowserJob({ ...draft, productName: draft.product.name, affiliateUrl: draft.productUrl, affiliateDisclosure: draft.disclosure, bodyHtml: renderDraft(draft) }, { publish: true });
-    } else {
-      const session = createBloggerSession();
-      if (!session) throw new Error("Blogger 기존 연결을 확인하세요.");
-      const live = await session.run((token) => bloggerProvider.listLivePosts(session.bloggerBlogId, token));
-      if (live.some((post) => post.title.trim() === draft.title.trim() || post.content.includes(draft.product.sourceUrl.replace(/&/g, "&amp;")))) throw new Error("같은 제목 또는 상품 근거가 있는 공개 글이 존재합니다.");
-      const html = `${renderDraft(draft)}${draft.images.map((img) => `<img src="${escapeHtml(img.src)}" alt="Miji">`).join("")}`;
-      // Never retry a non-idempotent insert, including when its response is lost.
-      await session.run((token) => bloggerProvider.validateAuth({ accessToken: token }));
-      result = await bloggerProvider.publish({}, { bloggerBlogId: session.bloggerBlogId, title: draft.title, html }, { accessToken: session.tokenState.accessToken });
-    }
-    const url = publishedUrlFor(draft, result);
-    await mutateUnified((state) => { Object.assign(state.drafts[id], { state: "published", publishedUrl: url, externalId: result.externalId || "", publishedAt: new Date().toISOString(), error: "" }); });
-  } catch {
-    await mutateUnified((state) => { Object.assign(state.drafts[id], { state: "needs_reconciliation", error: "발행 성공 여부 확인이 필요합니다. 중복 방지를 위해 재발행이 잠겼습니다. 채널의 실제 글 목록을 확인하세요." }); });
-  }
+function publishedRecords() {
+  const articles = readJson("articles.json").articles || [];
+  const jobs = readJson("publishing.json").jobs || [];
+  const publishedIds = new Set(jobs.filter((j) => j.publishedUrl || j.status === "succeeded").map((j) => j.articleId));
+  const records = [...articles.filter((a) => a.publishedUrl || a.status === "published" || publishedIds.has(a.id)),
+    ...(readJson("korea-drafts.json").items || []).filter((a) => a.publishedUrl || a.state === "published"),
+    ...(readJson("publisher-state.json").externalPosts || [])];
+  return records.flatMap((record) => [record, ...(record.products || []), ...(record.recommendedProducts || []), ...(record.affiliatePlan?.products || [])]);
 }
-
+function clientState(state) {
+  const view = structuredClone(state);
+  applyCollected(view, Object.fromEntries(Object.entries(view.channels).map(([channel, value]) => [channel, { ...value, candidates: value.candidates || value.slots.filter(Boolean) }])), publishedRecords());
+  for (const channel of Object.values(view.channels)) {
+    delete channel.candidates;
+    channel.slots.forEach((p) => { if (p) delete p.selection; });
+  }
+  return view;
+}
+export async function GET() {
+  try { return Response.json(clientState(readUnified())); }
+  catch { return Response.json({ error: "저장된 자료를 읽지 못했습니다." }, { status: 500 }); }
+}
+async function publicPosts(channel) {
+  if (channel === "global_blogger") {
+    const session = createBloggerSession();
+    if (!session) throw new Error("Blogger connection required");
+    return session.run((token) => bloggerProvider.listLivePosts(session.bloggerBlogId, token));
+  }
+  const xml = await readPublicSource("https://rss.blog.naver.com/who-ami.xml", "rss.blog.naver.com");
+  if (!/<rss\b/i.test(xml)) throw new Error("Invalid Naver feed");
+  return [...xml.matchAll(/<item\b[^>]*>([\s\S]*?)<\/item>/gi)].map(([, entry]) => ({
+    id: xmlValue(entry, "guid"), url: xmlValue(entry, "link").replace(/^http:/, "https:"), title: xmlValue(entry, "title"),
+    content: xmlValue(entry, "description"), published: xmlValue(entry, "pubDate"),
+  }));
+}
 export async function POST(request) {
   const origin = request.headers.get("origin");
   if (origin && origin !== new URL(request.url).origin) return Response.json({ error: "Origin rejected" }, { status: 403 });
   try {
     const body = await request.json();
+    // Preparation-only release: no route through this handler can invoke a publisher.
+    if (body.action === "publish") return Response.json({ error: "현재 화면에서는 자료만 준비합니다. 실제 발행은 비활성화되어 있습니다." }, { status: 403 });
     if (body.action === "refresh") {
       const entries = await Promise.all(Object.keys(SOURCES).map(async (channel) => [channel, await collectChannel(channel)]));
-      await mutateUnified((state) => { state.channels = Object.fromEntries(entries); });
-    } else if (body.action === "prepare") {
-      await mutateUnified((state) => {
-        const product = Object.values(state.channels).flatMap((c) => c.slots).find((p) => p?.id === body.id);
-        if (!product) throw new Error("확인된 상품을 선택하세요.");
-        const existing = state.drafts[product.id];
-        if (existing && !["draft", "approved"].includes(existing.state)) throw new Error("발행 이력이 있는 상품입니다.");
-        if (!existing || existing.product.checkedAt !== product.checkedAt) state.drafts[product.id] = prepareProduct(product);
-      });
-    } else if (body.action === "save" || body.action === "approve") {
+      await mutateUnified((state) => applyCollected(state, Object.fromEntries(entries), publishedRecords()));
+    } else if (body.action === "prepareBlog" || body.action === "prepareShorts") {
+      await mutateUnified((state) => prepareMaterial(state, String(body.id), body.action === "prepareBlog" ? "blog" : "shorts", publishedRecords()));
+    } else if (body.action === "save") {
       await mutateUnified((state) => {
         const draft = state.drafts[body.id];
-        if (!draft || !["draft", "approved"].includes(draft.state)) throw new Error("수정 가능한 초안이 아닙니다.");
-        if (body.action === "save") {
-          for (const key of ["title", "bodyText", "disclosure", "productUrl"]) {
-            if (typeof body[key] !== "string" || body[key].length > 30000) throw new Error("입력 내용을 확인하세요.");
-            draft[key] = body[key];
-          }
-          const character = getCharacterDefinition(draft.character);
-          if (draft.channelId === "korea_naver") draft.images = body.useMaster ? [{ id: "hero", role: "hero", src: character.masterAssetPath, alt: character.displayName }] : [];
-          else {
-            const src = String(body.imageUrl || "").trim();
-            if (src && !/^https:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\/(?:[^/]+\/)*atlas\/articles\/[^?#]+$/i.test(src)) throw new Error("기존 해외 Blogger atlas/articles 이미지 URL을 사용하세요.");
-            draft.images = src ? [{ id: "hero", role: "hero", src, alt: "Miji" }] : [];
-          }
-          draft.state = "draft"; draft.approvedHash = "";
-          draft.shorts = shortsMaterial(draft);
-        } else {
-          assertReady(draft);
-          if (!CHECKS.every((key) => body.checks?.[key] === true)) throw new Error("다섯 항목 모두 최종 점검하세요.");
-          // Check known local records as well as this workflow's durable ledger.
-          const file = draft.channelId === "korea_naver" ? "korea-drafts.json" : "articles.json";
-          const data = readJson(file);
-          if ((data.items || data.articles || []).some((p) => (p.publishedUrl || p.status === "published" || p.state === "published") && (p.title === draft.title || p.productUrl === draft.productUrl))) throw new Error("기존 공개 글과 중복됩니다.");
-          draft.state = "approved"; draft.approvedHash = reviewHash(draft);
+        if (!draft?.prepared?.blog || !["draft", "approved"].includes(draft.state)) throw new Error("수정 가능한 초안이 아닙니다.");
+        assertIdentity(draft);
+        for (const key of ["title", "bodyText", "disclosure", "productUrl"]) {
+          if (typeof body[key] !== "string" || !body[key].trim() || body[key].length > 30000) throw new Error("입력 내용을 확인하세요.");
+          draft[key] = body[key];
         }
+        const url = new URL(draft.productUrl);
+        if (!["https:", "http:"].includes(url.protocol) || url.username || url.password) throw new Error("상품 링크를 확인하세요.");
+        draft.state = "draft"; draft.approvedHash = "";
+        if (draft.prepared.shorts) draft.shorts = shortsMaterial(draft);
       });
-    } else if (body.action === "publish") await publish(String(body.id));
-    else throw new Error("지원하지 않는 작업입니다.");
-    return Response.json(readUnified());
-  } catch (error) { return Response.json({ error: error.message }, { status: 409 }); }
+    } else if (body.action === "reconcile") {
+      const channels = body.channel ? [body.channel] : Object.keys(SOURCES);
+      if (channels.some((c) => !SOURCES[c])) throw new Error("채널을 확인하세요.");
+      const outcomes = await Promise.allSettled(channels.map(publicPosts));
+      await mutateUnified((state) => {
+        outcomes.forEach((outcome, i) => reconcileChannel(state, channels[i], outcome.status === "fulfilled" ? outcome.value : [], { error: outcome.status === "rejected" ? "unavailable" : "" }));
+        applyCollected(state, state.channels, publishedRecords());
+      });
+    } else throw new Error("지원하지 않는 작업입니다.");
+    return Response.json(clientState(readUnified()));
+  } catch { return Response.json({ error: "작업을 완료하지 못했습니다. 상품 근거와 저장된 자료를 확인한 뒤 다시 시도해 주세요." }, { status: 409 }); }
 }
