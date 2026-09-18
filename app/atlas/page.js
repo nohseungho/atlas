@@ -74,14 +74,11 @@ export default function AtlasPage() {
         <header>
           <h1 className="text-2xl font-bold">ATLAS Platform</h1>
           <p className="mt-1 max-w-3xl text-sm text-zinc-400">
-            Topic → Blog Studio → SEO Blog → Affiliate Product Placement
-            (Product Center) → Shorts Studio → MagicLight Prompt → (사용자가
-            영상 수동 제작) → Video Library → Approval → Publishing Center
+            국내 Naver(수호)·해외 Blogger(미지) 운영은 통합 운영 화면에서 시작합니다. 아래 Studio·Product Center
+            카드는 원고·상품 자료를 다듬을 때만 사용하고, 실제 발행은 각 채널의 발행 화면에서만 진행합니다.
           </p>
           <p className="mt-2 text-xs text-zinc-600">
-            이 화면은 UI/데이터 흐름 뼈대이며, 실제 자동 발행·업로드·외부 API
-            연동은 포함하지 않습니다. 데이터는 브라우저 localStorage에만
-            저장됩니다.
+            쇼핑쇼츠는 연결자료(상품·이미지·링크·요약) export까지만 담당하며 영상 생성은 하지 않습니다.
           </p>
         </header>
 

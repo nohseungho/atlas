@@ -3195,7 +3195,13 @@
         "art_005",
         "art_015"
       ],
-      "heroImage": null,
+      "heroImage": {
+        "url": "https://res.cloudinary.com/dmfbj4tu/image/upload/v1789753145/atlas/articles/europe-ees-travel-checklist-2026/featured.png",
+        "alt": "Miji reviewing a passport and European travel checklist before departure",
+        "caption": "",
+        "source": "",
+        "aspectRatio": "16:9"
+      },
       "visualAssets": [
         {
           "key": "featured",
@@ -3214,7 +3220,12 @@
           "assetNamespace": "atlas/articles",
           "characterId": "miji",
           "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
-          "characterRequired": true
+          "characterRequired": true,
+          "identityReview": {
+            "level": "high",
+            "note": "마스터와 얼굴·헤어·귀걸이 일치.",
+            "reviewedAt": "2026-09-19"
+          }
         },
         {
           "key": "border",
@@ -3233,7 +3244,12 @@
           "assetNamespace": "atlas/articles",
           "characterId": "miji",
           "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
-          "characterRequired": true
+          "characterRequired": true,
+          "identityReview": {
+            "level": "low",
+            "note": "올림머리·턱선이 마스터보다 성숙해 보여 5장 중 얼굴 일관성이 가장 낮음. 재생성 후보(이번 범위 밖).",
+            "reviewedAt": "2026-09-19"
+          }
         },
         {
           "key": "comparison",
@@ -3252,7 +3268,12 @@
           "assetNamespace": "atlas/articles",
           "characterId": "miji",
           "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
-          "characterRequired": true
+          "characterRequired": true,
+          "identityReview": {
+            "level": "high",
+            "note": "마스터와 일치.",
+            "reviewedAt": "2026-09-19"
+          }
         },
         {
           "key": "offline",
@@ -3271,7 +3292,12 @@
           "assetNamespace": "atlas/articles",
           "characterId": "miji",
           "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
-          "characterRequired": true
+          "characterRequired": true,
+          "identityReview": {
+            "level": "medium",
+            "note": "모자 착용으로 헤어라인이 가려지고 얼굴이 약간 둥글게 보임.",
+            "reviewedAt": "2026-09-19"
+          }
         },
         {
           "key": "checklist",
@@ -3290,7 +3316,12 @@
           "assetNamespace": "atlas/articles",
           "characterId": "miji",
           "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
-          "characterRequired": true
+          "characterRequired": true,
+          "identityReview": {
+            "level": "high",
+            "note": "마스터와 일치.",
+            "reviewedAt": "2026-09-19"
+          }
         }
       ],
       "affiliatePlan": {

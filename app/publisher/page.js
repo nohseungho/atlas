@@ -8,6 +8,11 @@ import { flagAuthIssue, clearAuthIssue } from "@/lib/atlas/blog-auth-status";
 import { isPublicImageUrl } from "@/lib/atlas/revenue-layout-engine";
 
 const VISUAL_ASSET_LABELS = {
+  featured: "대표 이미지",
+  border: "국경 심사 이미지",
+  comparison: "비교 이미지",
+  offline: "오프라인 준비 이미지",
+  checklist: "체크리스트 이미지",
   leadEditorial: "대표 이미지",
   clinicEditorial: "의료 상담 이미지",
   delayEditorial: "공항 지연 이미지",
@@ -1110,8 +1115,18 @@ function VisualAssetsPanel({ article, onSaved }) {
           return (
             <div key={asset.key} className="rounded-lg border border-zinc-800 p-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="text-sm font-medium text-zinc-200">
+                <p className="flex flex-wrap items-center gap-2 text-sm font-medium text-zinc-200">
                   {VISUAL_ASSET_LABELS[asset.key] || asset.key}
+                  {asset.identityReview?.level && asset.identityReview.level !== "high" && (
+                    <span
+                      title={asset.identityReview.note || ""}
+                      className={`rounded px-1.5 py-0.5 text-[11px] font-normal ${
+                        asset.identityReview.level === "low" ? "bg-amber-950 text-amber-300" : "bg-zinc-800 text-zinc-300"
+                      }`}
+                    >
+                      캐릭터 일관성 {asset.identityReview.level === "low" ? "낮음" : "보통"}
+                    </span>
+                  )}
                 </p>
                 <div className="flex items-center gap-2 text-xs">
                   <span className={localReady ? "text-emerald-400" : "text-red-400"}>
@@ -1265,11 +1280,25 @@ function LocalPreviewPanel({ article }) {
   const [deviceId, setDeviceId] = useState("desktop");
   const device = PREVIEW_DEVICES.find((d) => d.id === deviceId) || PREVIEW_DEVICES[0];
   const previewHtml = buildLocalPreviewHtml(article);
-  const doc = `<!doctype html><html><head><meta charset="utf-8" />
+  // Blogger supplies the post title and its theme's body typography; the
+  // preview shell stands in for both so the on-device check reflects what a
+  // reader sees, without adding anything to the published HTML.
+  const titleHtml = article.title
+    ? `<h1 class="atlas-preview-title">${String(article.title).replace(/&/g, "&amp;").replace(/</g, "&lt;")}</h1>`
+    : "";
+  const doc = `<!doctype html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>*{box-sizing:border-box;}body{margin:0;padding:16px;background:#0b0b0f;}
-.atlas-preview-shell{max-width:720px;margin:0 auto;background:#ffffff;padding:24px;border-radius:8px;}
-img{max-width:100%;}</style>
-</head><body><div class="atlas-preview-shell">${previewHtml}</div></body></html>`;
+.atlas-preview-shell{max-width:720px;margin:0 auto;background:#ffffff;padding:24px;border-radius:8px;color:#1f2937;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.75;word-break:keep-all;overflow-wrap:anywhere;}
+.atlas-preview-title{margin:0 0 14px;font-size:28px;line-height:1.3;font-weight:800;letter-spacing:-.01em;color:#111827;}
+.atlas-preview-shell h2{margin:36px 0 12px;font-size:22px;line-height:1.35;font-weight:700;color:#111827;}
+.atlas-preview-shell h3{margin:24px 0 8px;font-size:18px;line-height:1.4;font-weight:700;color:#1f2937;}
+.atlas-preview-shell p{margin:0 0 16px;}
+.atlas-preview-shell ul,.atlas-preview-shell ol{margin:0 0 16px;padding-left:22px;}
+.atlas-preview-shell li{margin-bottom:6px;}
+.atlas-preview-shell a{color:#2563eb;}
+img{max-width:100%;}
+@media (max-width:480px){body{padding:8px;}.atlas-preview-shell{padding:18px 16px;font-size:16px;line-height:1.7;}.atlas-preview-title{font-size:23px;}.atlas-preview-shell h2{font-size:20px;margin-top:30px;}.atlas-preview-shell h3{font-size:17px;}}</style>
+</head><body><div class="atlas-preview-shell">${titleHtml}${previewHtml}</div></body></html>`;
 
   return (
     <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
