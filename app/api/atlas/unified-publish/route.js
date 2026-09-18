@@ -55,8 +55,15 @@ export async function POST(request) {
       const entries = await Promise.all(Object.keys(SOURCES).map(async (channel) => [channel, await collectChannel(channel)]));
       await mutateUnified((state) => {
         applyCollected(state, Object.fromEntries(entries), publishedRecords());
-        const product = state.channels.korea_naver?.slots?.find(Boolean);
-        if (product) prepareMaterial(state, product.id, "blog", publishedRecords());
+        const koreaSlots = state.channels.korea_naver?.slots?.filter(Boolean) || [];
+        const product = koreaSlots.find((p) => /(?:^|\[|\s)쿠팡(?:\]|\s|$)/i.test(String(p.evidence || "")));
+        state.recovery ||= {};
+        if (product) {
+          prepareMaterial(state, product.id, "blog", publishedRecords());
+          state.recovery.korea_naver = { checkedAt: new Date().toISOString(), message: "쿠팡 수익화 가능 후보를 우선 준비했습니다." };
+        } else {
+          state.recovery.korea_naver = { checkedAt: new Date().toISOString(), message: "오늘 TOP5에는 확인된 쿠팡 후보가 없습니다. 제휴 수익화가 확인되지 않은 상품은 자동 초안으로 만들지 않았습니다." };
+        }
         // Global Blogger stays editorial-first. Its next information article is
         // reviewed in Publisher; do not auto-create a random DealNews product post here.
       });
