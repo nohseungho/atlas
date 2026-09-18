@@ -82,15 +82,15 @@ export default function UnifiedPublish() {
   }
   return <main className="mx-auto max-w-6xl space-y-5 px-3 py-5 sm:px-6 sm:py-8">
     <header className="flex flex-wrap items-center justify-between gap-3">
-      <div><h1 className="text-2xl font-bold sm:text-3xl">오늘의 상품 TOP5</h1><p className="mt-1 text-sm text-zinc-400">상품 선택 → 국내·해외 블로그 준비 · 쇼핑 연결자료</p></div>
-      <div className="flex flex-wrap gap-2"><button className={button} disabled={busy} onClick={() => act({ action: "preparePair" })}>{busy ? "준비 중…" : "국내+해외 블로그 1세트 준비"}</button><button className={secondary} disabled={busy} onClick={() => act({ action: "refresh" })}>오늘 TOP5 업데이트</button></div>
+      <div><h1 className="text-2xl font-bold sm:text-3xl">ATLAS 국내·해외 운영</h1><p className="mt-1 text-sm text-zinc-400">국내는 TOP5 상품형 · 해외는 여행 정보형 Publisher 원고로 운영합니다.</p></div>
+      <div className="flex flex-wrap gap-2"><button className={button} disabled={busy} onClick={() => act({ action: "preparePair" })}>{busy ? "준비 중…" : "국내 다음글 준비"}</button><button className={secondary} disabled={busy} onClick={() => act({ action: "refresh" })}>오늘 TOP5 업데이트</button></div>
     </header>
     {message && <p role="alert" className="text-sm text-amber-300">{message}</p>}
     <div className="sticky top-0 z-10 grid grid-cols-2 gap-2 bg-zinc-950 py-2 lg:hidden" aria-label="채널 선택">
       {channels.map(([id, title]) => <button key={id} aria-pressed={active === id} className={active === id ? button : secondary} onClick={() => setActive(id)}>{title}</button>)}
     </div>
     <div className="grid items-start gap-5 lg:grid-cols-2">{channels.map(([id, title, character]) => <section key={id} aria-label={title} className={`${active === id ? "block" : "hidden lg:block"} min-w-0 space-y-3`}>
-      <h2 className="text-lg font-semibold">{title} TOP5 <span className="text-sm font-normal text-zinc-400">· {character}</span></h2>
+      <h2 className="text-lg font-semibold">{title} TOP5 <span className="text-sm font-normal text-zinc-400">· {character}</span></h2>{id === "global_blogger" && <div className="rounded-lg border border-amber-800 bg-amber-950/20 p-3 text-xs text-amber-100">해외 Blogger는 여행 정보형 원고를 우선합니다. <a className="font-semibold underline" href="/publisher">Publisher에서 다음 해외 원고 검수·발행</a></div>}
       {data.channels[id]?.error && <p className="text-sm text-amber-200">{data.channels[id].error}</p>}
       {Array.from({ length: 5 }, (_, i) => {
         const p = data.channels[id]?.slots[i];
