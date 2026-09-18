@@ -55,10 +55,10 @@ export async function POST(request) {
       const entries = await Promise.all(Object.keys(SOURCES).map(async (channel) => [channel, await collectChannel(channel)]));
       await mutateUnified((state) => {
         applyCollected(state, Object.fromEntries(entries), publishedRecords());
-        for (const channel of Object.keys(SOURCES)) {
-          const product = state.channels[channel]?.slots?.find(Boolean);
-          if (product) prepareMaterial(state, product.id, "blog", publishedRecords());
-        }
+        const product = state.channels.korea_naver?.slots?.find(Boolean);
+        if (product) prepareMaterial(state, product.id, "blog", publishedRecords());
+        // Global Blogger stays editorial-first. Its next information article is
+        // reviewed in Publisher; do not auto-create a random DealNews product post here.
       });
     } else if (body.action === "refresh") {
       const entries = await Promise.all(Object.keys(SOURCES).map(async (channel) => [channel, await collectChannel(channel)]));
