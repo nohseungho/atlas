@@ -90,7 +90,7 @@ export default function UnifiedPublish() {
       {channels.map(([id, title]) => <button key={id} aria-pressed={active === id} className={active === id ? button : secondary} onClick={() => setActive(id)}>{title}</button>)}
     </div>
     <div className="grid items-start gap-5 lg:grid-cols-2">{channels.map(([id, title, character]) => <section key={id} aria-label={title} className={`${active === id ? "block" : "hidden lg:block"} min-w-0 space-y-3`}>
-      <h2 className="text-lg font-semibold">{title} TOP5 <span className="text-sm font-normal text-zinc-400">· {character}</span></h2>{id === "global_blogger" && <div className="rounded-lg border border-amber-800 bg-amber-950/20 p-3 text-xs text-amber-100">해외 Blogger는 여행 정보형 원고를 우선합니다. <a className="font-semibold underline" href="/publisher">Publisher에서 다음 해외 원고 검수·발행</a></div>}
+      <h2 className="text-lg font-semibold">{title} TOP5 <span className="text-sm font-normal text-zinc-400">· {character}</span></h2>{id === "global_blogger" && <div className="rounded-lg border border-amber-800 bg-amber-950/20 p-3 text-xs text-amber-100">아래 해외 상품 TOP5는 참고용입니다. 실제 해외 다음 글은 여행 정보형 원고를 우선합니다. <a className="font-semibold underline" href="/publisher">Publisher에서 art_021 검수·발행</a></div>}
       {data.channels[id]?.error && <p className="text-sm text-amber-200">{data.channels[id].error}</p>}
       {Array.from({ length: 5 }, (_, i) => {
         const p = data.channels[id]?.slots[i];
@@ -104,6 +104,7 @@ export default function UnifiedPublish() {
           </> : <div className="flex min-h-24 items-center justify-between gap-3"><h3 className="text-sm">{i + 1}. 근거를 확인하고 있어요</h3><span className="text-xs text-zinc-500">확인 후 표시</span></div>}
         </article>;
       })}
+      {id === "korea_naver" && data.recovery?.korea_naver?.message && <p className="rounded-lg border border-zinc-800 bg-zinc-900 p-3 text-xs text-zinc-300">{data.recovery.korea_naver.message}</p>}
       <details className="rounded-xl border border-zinc-800 p-3 text-sm">
         <summary className="cursor-pointer">저장한 자료·발행 결과</summary>
         <div className="mt-3 space-y-3">
