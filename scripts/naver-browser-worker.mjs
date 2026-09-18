@@ -212,7 +212,8 @@ async function setBody(page, scope, draft) {
   const el = await firstVisible(scope, [".se-component-content [contenteditable='true']", ".se-section-text .se-text-paragraph", ".se-main-container [contenteditable='true']", "[contenteditable='true'][data-placeholder*='내용']"]);
   if (!el) throw Object.assign(new Error("네이버 본문 입력 영역을 찾지 못했습니다."), { code: "NAVER_BODY_EDITOR_NOT_FOUND" });
   if (draft.contentType === "existing_post_update" && draft.updateMode === "images_only") return el;
-  const text = [draft.affiliateUrl ? draft.affiliateDisclosure : "", draft.bodyText || "", draft.affiliateUrl ? `제품 확인하기: ${draft.affiliateUrl}` : ""].filter(Boolean).join("\n\n");
+  // 제휴 고지는 국내 확정 스타일에 따라 본문 최하단에 1회만 넣는다.
+  const text = [draft.bodyText || "", draft.affiliateUrl ? `제품 확인하기: ${draft.affiliateUrl}` : "", draft.affiliateUrl ? draft.affiliateDisclosure : ""].filter(Boolean).join("\n\n");
   const html = bodyHtmlFromDraft(draft);
   const pasted = await pasteHtml(page, el, html, text);
   if (!pasted) await replaceText(el, text);
@@ -236,7 +237,6 @@ function bodyHtmlFromDraft(draft) {
   const skip = new Set([String(draft.title || "").trim(), String(draft.affiliateDisclosure || "").trim()]);
   const blocks = String(draft.bodyText || "").replace(/\r/g, "").split(/\n\s*\n/).map((b) => b.split("\n").map((l) => l.trim()).filter(Boolean)).filter((b) => b.length);
   const parts = [];
-  if (draft.affiliateUrl && draft.affiliateDisclosure) parts.push(p(`<span style="font-size:13px;color:#6b7280;">${escapeHtml(draft.affiliateDisclosure)}</span>`), spacer);
   const linkLine = draft.affiliateUrl ? p(`<a href="${escapeHtml(draft.affiliateUrl)}" target="_blank">${escapeHtml(draft.productName || draft.affiliateUrl)}</a>`) : "";
   let linkPlaced = false;
   for (const lines of blocks) {
@@ -248,6 +248,8 @@ function bodyHtmlFromDraft(draft) {
     if (linkLine && !linkPlaced && lines.some((l) => /아래에서 확인/.test(l))) { parts.push(linkLine, spacer); linkPlaced = true; }
   }
   if (linkLine && !linkPlaced) parts.push(p(`제품 정보는 아래에서 확인할 수 있습니다.`), linkLine);
+  // 제휴 고지는 국내 확정 스타일에 따라 본문 최하단에 1회만 넣는다.
+  if (draft.affiliateUrl && draft.affiliateDisclosure) parts.push(spacer, p(`<span style="font-size:13px;color:#6b7280;">${escapeHtml(draft.affiliateDisclosure)}</span>`));
   return parts.join("");
 }
 
