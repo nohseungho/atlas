@@ -3099,6 +3099,255 @@
       "bloggerStatus": "LIVE",
       "bloggerSyncedAt": "2026-08-15T07:04:09.590Z",
       "publishedAt": "2026-08-15T07:04:09.590Z"
+    },
+    {
+      "id": "art_021",
+      "keywordId": "",
+      "keyword": "Europe EES travel checklist 2026",
+      "title": "Europe EES Travel Checklist 2026: What to Expect at the Border",
+      "hookTitle": "Europe EES Travel Checklist 2026: What to Expect at the Border",
+      "slug": "europe-ees-travel-checklist-2026",
+      "language": "en",
+      "searchIntent": "informational",
+      "excerpt": "A practical 2026 checklist for non-EU travelers entering the Schengen area under the Entry/Exit System, including biometrics, the 90/180-day rule, ETIAS timing, and offline travel prep.",
+      "metaDescription": "Use this 2026 Europe EES checklist to understand biometrics, short-stay rules, ETIAS timing, border steps, and what to save offline before travel.",
+      "category": "Travel",
+      "tags": [
+        "Europe Travel",
+        "EES",
+        "Schengen",
+        "ETIAS",
+        "Travel Planning"
+      ],
+      "template": "editorial-guide",
+      "outline": [
+        "Quick Answer",
+        "Who EES Applies To",
+        "What Happens at the Border",
+        "EES vs ETIAS",
+        "The 90/180-Day Rule",
+        "What to Save Offline",
+        "Common Mistakes",
+        "FAQ",
+        "Official Sources"
+      ],
+      "quickAnswer": "As of 10 April 2026, the EU Entry/Exit System is fully operational at external border crossing points of the 29 European countries using EES. It records entry and exit data for many non-EU short-stay travelers, including travel-document data and biometrics. EES is not ETIAS: ETIAS is scheduled for the last quarter of 2026, with the exact start date to be announced separately.",
+      "comparisonCriteria": [
+        "Who the system applies to",
+        "When action is required",
+        "Data or authorization involved",
+        "What travelers should prepare before departure"
+      ],
+      "keyTakeaways": [
+        "EES is already operational; ETIAS is a separate system scheduled for later in 2026.",
+        "Many non-EU short-stay travelers should expect digital entry/exit registration and biometric checks at external Schengen borders.",
+        "The 90-days-in-any-180-days short-stay rule still matters; EES helps authorities record entries and exits rather than changing that rule.",
+        "Save passport details, bookings, insurance, accommodation information, and official travel guidance offline before departure."
+      ],
+      "comparisonHeaders": [
+        "Topic",
+        "EES",
+        "ETIAS"
+      ],
+      "comparisonTable": [
+        [
+          "Purpose",
+          "Records border entry, exit and refusal data",
+          "Travel authorization for eligible visa-exempt travelers"
+        ],
+        [
+          "Status in 2026",
+          "Fully operational since 10 April 2026",
+          "Scheduled for the last quarter of 2026; exact date to be announced"
+        ],
+        [
+          "When it happens",
+          "At external border crossing points",
+          "Before travel, once the system begins"
+        ],
+        [
+          "Traveler action",
+          "Present travel documents and complete required border checks",
+          "Eligible travelers will need to obtain authorization before travel"
+        ]
+      ],
+      "sources": [
+        {
+          "title": "European Commission — Entry/Exit System (EES)",
+          "url": "https://home-affairs.ec.europa.eu/policies/schengen/smart-borders/entry-exit-system_en"
+        },
+        {
+          "title": "European Commission — Entry/Exit System is fully operational",
+          "url": "https://home-affairs.ec.europa.eu/news/entryexit-system-ees-fully-operational-2026-04-10_en"
+        },
+        {
+          "title": "European Commission — Main differences between EES and ETIAS",
+          "url": "https://home-affairs.ec.europa.eu/news/main-differences-between-ees-and-etias-what-travellers-need-know-2026-04-28_en"
+        }
+      ],
+      "trust": {
+        "methodology": "This guide uses European Commission sources for EES status, scope, biometric registration and ETIAS timing. It avoids predicting border wait times and tells travelers to re-check official rules before departure because implementation details and ETIAS timing can change."
+      },
+      "relatedArticles": [
+        "art_002",
+        "art_004",
+        "art_005",
+        "art_015"
+      ],
+      "heroImage": null,
+      "visualAssets": [
+        {
+          "key": "featured",
+          "role": "featured",
+          "placement": "after quick answer",
+          "alt": "Miji reviewing a passport and European travel checklist before departure",
+          "prompt": "Miji, the same Korean woman in her 30s from the ATLAS identity reference, at a bright travel-planning desk with passport, Europe map and phone, natural editorial travel photography, realistic, no text or logos.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": "",
+          "channelId": "global_blogger",
+          "assetScope": "global",
+          "assetNamespace": "atlas/articles",
+          "characterId": "miji",
+          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+          "characterRequired": true
+        },
+        {
+          "key": "border",
+          "role": "context",
+          "placement": "after What Happens at the Border",
+          "alt": "Miji at a European airport border-control area holding her passport",
+          "prompt": "Miji at a modern European airport border-control area holding her passport, calm documentary travel scene, natural light, realistic editorial photography, no readable signs, no logos.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": "",
+          "channelId": "global_blogger",
+          "assetScope": "global",
+          "assetNamespace": "atlas/articles",
+          "characterId": "miji",
+          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+          "characterRequired": true
+        },
+        {
+          "key": "comparison",
+          "role": "comparison",
+          "placement": "after EES vs ETIAS",
+          "alt": "Miji comparing two travel-preparation cards labeled conceptually as border check and pre-travel authorization",
+          "prompt": "Miji comparing two clean travel-planning cards beside passport and laptop, one representing border registration and one pre-travel authorization, no visible text, realistic editorial photography.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": "",
+          "channelId": "global_blogger",
+          "assetScope": "global",
+          "assetNamespace": "atlas/articles",
+          "characterId": "miji",
+          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+          "characterRequired": true
+        },
+        {
+          "key": "offline",
+          "role": "action",
+          "placement": "after What to Save Offline",
+          "alt": "Miji saving travel documents to her phone before a Europe trip",
+          "prompt": "Miji saving travel documents on her phone next to passport, hotel booking folder, charger and small travel wallet, realistic editorial photography, no visible personal data or logos.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": "",
+          "channelId": "global_blogger",
+          "assetScope": "global",
+          "assetNamespace": "atlas/articles",
+          "characterId": "miji",
+          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+          "characterRequired": true
+        },
+        {
+          "key": "checklist",
+          "role": "checklist",
+          "placement": "before FAQ",
+          "alt": "Miji completing a Europe entry checklist beside a packed carry-on",
+          "prompt": "Miji completing a travel checklist beside a packed carry-on suitcase, passport, power bank and Europe map, warm practical editorial travel photography, no text or logos.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "",
+          "publicUrl": "",
+          "channelId": "global_blogger",
+          "assetScope": "global",
+          "assetNamespace": "atlas/articles",
+          "characterId": "miji",
+          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+          "characterRequired": true
+        }
+      ],
+      "affiliatePlan": {
+        "providerId": "",
+        "providerName": "",
+        "network": "",
+        "status": "pending",
+        "url": "",
+        "disclosure": "",
+        "cta": {
+          "topLabel": "",
+          "decisionLabel": ""
+        },
+        "productSlots": []
+      },
+      "bodyMarkdown": "## Quick Answer\nThe Entry/Exit System (EES) is already in operation across the external borders of the 29 European countries using the system. Since 10 April 2026, it has replaced routine passport stamping for many non-EU nationals making short stays and records travel-document data, the date and place of entry and exit, and biometric data such as fingerprints and a facial image.\n\nEES does not replace your passport, visa requirements, or the Schengen short-stay limit. It is also different from ETIAS. The European Commission says ETIAS is scheduled to start in the last quarter of 2026, with the exact start date to be announced separately.\n\n## Who EES Applies To\nEES generally applies to non-EU nationals traveling for a short stay to the European countries using the system. The European Commission describes a short stay as up to 90 days in any 180-day period.\n\nNot every traveler is registered in EES. EU nationals are not registered, and the Commission also lists nationals of Iceland, Liechtenstein, Norway and Switzerland among those not registered. Other exemptions can apply, including some holders of residence documents or long-stay visas, so travelers with special status should check the official EES guidance rather than assuming the general rule fits them.\n\nThe practical point is simple: if you are a non-EU visitor planning a short trip to the Schengen area, expect EES to be part of the border process and check whether an exemption applies to your exact status.\n\n## What Happens at the Border\nAt an external border crossing point, border authorities can register or verify your travel-document data and biometric data. The system is designed to create a digital record of entries, exits and refusals of entry.\n\nFor a first trip under the fully operational system, allow extra time for the normal border process and follow the instructions of the officer or self-service equipment where available. Do not rely on a specific promised wait time: airports, ports, land borders, traveler volumes and local procedures differ.\n\nKeep your passport easy to reach and make sure the document is valid for your itinerary. Border systems can record your movement, but they do not fix an expired passport, an incorrect visa, a missing residence document or an itinerary that exceeds the allowed stay.\n\n## EES vs ETIAS\nThe names are easy to mix up, but they solve different problems.\n\nEES is a border-management system. It records when covered travelers enter and leave and supports digital checks at external borders.\n\nETIAS is a travel-authorization system for eligible visa-exempt travelers. The European Commission says ETIAS is scheduled to start in the last quarter of 2026, but the exact start date will be announced later.\n\nThat means a traveler in September 2026 should not assume an unofficial ETIAS website or advertisement reflects the live requirement. Use the European Union's official travel information before paying or submitting personal information.\n\nOnce ETIAS begins, some travelers may interact with both systems: authorization before travel and EES registration or verification at the border. They are complementary, not interchangeable.\n\n## The 90/180-Day Rule Still Matters\nEES changes how entries and exits are recorded. It does not create a new unlimited stay.\n\nFor short visits in the Schengen area, the familiar rule of up to 90 days in any 180-day period remains important for travelers who are subject to it. Keep your own travel history as well. A digital border system is not a reason to stop tracking arrival and departure dates, especially when trips are frequent or spread across several countries.\n\nBefore booking a long itinerary, count previous Schengen days inside the relevant 180-day window and check official guidance if the calculation is close to the limit.\n\n## What to Save Offline Before Departure\nA phone with no signal or a dead battery should not become a travel-document problem. Save the essentials before leaving home.\n\n- A clear offline copy of your passport information page, stored securely.\n- Flight, rail and ferry confirmations.\n- Accommodation addresses and booking references.\n- Travel-insurance policy number and assistance contact details.\n- Visa, residence or supporting documents that apply to your status.\n- A short itinerary with arrival and departure dates.\n- Emergency contacts and your airline's contact information.\n- The official EU page explaining EES and, when relevant, the official ETIAS page.\n\nAn offline copy is a backup, not a substitute for carrying the original document when required.\n\n## A Practical Pre-Trip Checklist\n### One week before travel\nCheck your passport validity, destination entry rules, visa status, travel-insurance details and the number of Schengen days you have already used.\n\n### Two or three days before travel\nReconfirm flights and accommodation. Download documents for offline access. Check official government or EU travel pages for changes.\n\n### At the airport or border\nKeep your passport and required supporting documents accessible. Follow official instructions for biometric registration or verification. Avoid sharing passport or biometric information with unofficial websites or people claiming they can speed up the border process.\n\n### After arrival\nRecord your arrival date in your own itinerary. Frequent travelers should continue tracking days spent in the Schengen area rather than relying only on memory.\n\n## Common Mistakes\n### Treating EES and ETIAS as the same thing\nThey are separate systems. EES is already operational; ETIAS is scheduled for later in 2026.\n\n### Assuming the end of passport stamps means the end of stay limits\nDigital records replace routine stamping for covered travelers, but immigration and short-stay rules still apply.\n\n### Using unofficial ETIAS sites too early\nThe exact ETIAS start date is not yet fixed in the Commission guidance cited here. Check the official EU site before paying or submitting data.\n\n### Arriving without offline backups\nA low battery, lost phone or roaming problem can make a simple question about accommodation or onward travel harder to answer.\n\n### Ignoring a special immigration status\nResidence permits, long-stay visas and other statuses can change how EES applies. Use the official exemption guidance for your situation.\n\n## FAQ\n### Is EES already active in 2026?\nYes. The European Commission states that EES became fully operational on 10 April 2026 across the external border crossing points of the countries using the system.\n\n### Does EES mean I no longer need a passport?\nNo. EES digitizes entry and exit records; it does not replace the travel document you are required to carry.\n\n### Is ETIAS already required?\nAccording to the European Commission guidance cited here, ETIAS is scheduled for the last quarter of 2026 and the exact start date will be announced separately.\n\n### Will everyone give fingerprints?\nEES includes biometric registration for covered travelers, but exemptions exist. Check the official EES rules for your nationality and immigration status.\n\n### Does EES change the 90-days-in-180 rule?\nNo. EES helps record entries and exits; travelers still need to comply with the short-stay rules that apply to them.\n\n## Official Sources\n- European Commission — Entry/Exit System (EES): https://home-affairs.ec.europa.eu/policies/schengen/smart-borders/entry-exit-system_en\n- European Commission — Entry/Exit System is fully operational: https://home-affairs.ec.europa.eu/news/entryexit-system-ees-fully-operational-2026-04-10_en\n- European Commission — Main differences between EES and ETIAS: https://home-affairs.ec.europa.eu/news/main-differences-between-ees-and-etias-what-travellers-need-know-2026-04-28_en\n\nDisclaimer: This article is general travel-planning information, not legal or immigration advice. Border, visa and authorization requirements depend on nationality, residence status and itinerary. Recheck official government and EU guidance before departure.",
+      "faq": [
+        {
+          "question": "Is EES already active in 2026?",
+          "answer": "Yes. The European Commission states that EES became fully operational on 10 April 2026 across the external border crossing points of the countries using the system."
+        },
+        {
+          "question": "Does EES mean I no longer need a passport?",
+          "answer": "No. EES digitizes entry and exit records; it does not replace the travel document you are required to carry."
+        },
+        {
+          "question": "Is ETIAS already required?",
+          "answer": "The European Commission says ETIAS is scheduled for the last quarter of 2026, with the exact start date to be announced separately."
+        },
+        {
+          "question": "Will everyone give fingerprints?",
+          "answer": "EES includes biometric registration for covered travelers, but exemptions exist. Check the official rules for your nationality and immigration status."
+        },
+        {
+          "question": "Does EES change the 90-days-in-180 rule?",
+          "answer": "No. EES records entries and exits; travelers still need to comply with the short-stay rules that apply to them."
+        }
+      ],
+      "qualityChecklist": {
+        "hasDisclaimer": true
+      },
+      "koreanReview": "2026년 4월 10일부터 전면 운영 중인 EU EES를 다루는 여행 준비 정보형 글. EES와 ETIAS를 명확히 구분하고, 90/180일 규칙·생체정보·오프라인 서류 준비를 공식 EU 자료만으로 설명한다. 미지 이미지 5개는 발행 전에 기존 마스터 얼굴 기준으로 준비해야 하며, 제휴링크 없이도 정보형 글로 발행 가능.",
+      "status": "written",
+      "publishState": "written",
+      "publishedUrl": "",
+      "blogId": "blog_001",
+      "channelId": "global_blogger",
+      "assetScope": "global",
+      "assetNamespace": "atlas/articles",
+      "character": "miji",
+      "heroCharacterId": "miji",
+      "masterFileName": "ATLAS-MIJI-MASTER.png",
+      "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+      "visualMode": "natural-review-photo",
+      "characterPolicyVersion": "ATLAS_CHARACTER_CHANNEL_V1",
+      "approvedAt": "",
+      "createdAt": "2026-09-19T00:45:00.000+09:00",
+      "updatedAt": "2026-09-19T00:45:00.000+09:00"
     }
   ]
 }
