@@ -3186,7 +3186,8 @@
         }
       ],
       "trust": {
-        "methodology": "This guide uses European Commission sources for EES status, scope, biometric registration and ETIAS timing. It avoids predicting border wait times and tells travelers to re-check official rules before departure because implementation details and ETIAS timing can change."
+        "methodology": "This guide uses European Commission sources for EES status, scope, biometric registration and ETIAS timing. It avoids predicting border wait times and tells travelers to re-check official rules before departure because implementation details and ETIAS timing can change.",
+        "independenceNote": "This guide is based on the official European Commission sources listed below. Recheck the latest EU and destination-specific entry rules before departure."
       },
       "relatedArticles": [
         "art_002",
@@ -3347,7 +3348,7 @@
       "characterPolicyVersion": "ATLAS_CHARACTER_CHANNEL_V1",
       "approvedAt": "",
       "createdAt": "2026-09-19T00:45:00.000+09:00",
-      "updatedAt": "2026-09-19T00:45:00.000+09:00"
+      "updatedAt": "2026-09-18T16:36:33.855Z"
     }
   ]
 }
