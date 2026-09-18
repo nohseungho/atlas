@@ -91,14 +91,14 @@
           "generatedFormat": "png"
         }
       ],
-      "state": "approved",
-      "automationStatus": "ready_to_publish",
+      "state": "published",
+      "automationStatus": "published",
       "approvedAt": "2026-09-11T23:30:45.186Z",
-      "publishedAt": "",
-      "publishedUrl": "",
+      "publishedAt": "2026-09-15T09:07:56.000Z",
+      "publishedUrl": "https://blog.naver.com/who-ami/224412747695",
       "lastError": "",
       "createdAt": "2026-09-11T00:00:00.000Z",
-      "updatedAt": "2026-09-14T14:16:04.583Z",
+      "updatedAt": "2026-09-18T11:52:14.613Z",
       "generatedBy": "ATLAS_KOREA_MULTITAP_REVIEW_V1",
       "generatedAt": "2026-09-12T07:10:00.000Z"
     },
