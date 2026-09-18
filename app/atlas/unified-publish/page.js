@@ -2,9 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { KEYS, readList, writeList } from "@/app/atlas/lib/storage";
-import { addImageFromDataUrl, listImages } from "@/app/atlas/lib/image-store";
-import { validateChannelIdentity } from "@/lib/atlas/character-channel-policy";
 
 const channels = [["korea_naver", "국내 Naver", "수호"], ["global_blogger", "해외 Blogger", "미지"]];
 const button = "min-h-11 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-40";
@@ -48,32 +45,12 @@ function BlogReview({ draft, busy, act }) {
   </details>;
 }
 
-function Materials({ product, draft, busy, act, onError }) {
-  const [opening, setOpening] = useState(false);
-  async function openShorts() {
-    setOpening(true);
-    try {
-      const p = draft.shorts.product;
-      const identity = validateChannelIdentity(p, p.channelId);
-      if (!identity.ok) throw new Error("상품과 이미지의 채널을 확인하세요.");
-      const sourceUrl = `/${p.masterAssetPath.replace(/^public\//, "")}`;
-      if (!(await listImages(p.id)).some((image) => image.sourceUrl === sourceUrl)) {
-        const res = await fetch(sourceUrl);
-        if (!res.ok) throw new Error("캐릭터 이미지를 불러오지 못했습니다.");
-        const blob = await res.blob();
-        const dataUrl = await new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(blob); });
-        await addImageFromDataUrl(p.id, { dataUrl, name: p.masterFileName, sourceUrl, contentType: "image/png" });
-      }
-      writeList(KEYS.products, [...readList(KEYS.products).filter((row) => row.id !== p.id), p]);
-      window.location.assign(`/atlas/shorts-studio?mode=photo&productId=${encodeURIComponent(p.id)}`);
-    } catch { onError("쇼츠 자료를 열지 못했습니다. 저장된 자료는 유지됩니다. 다시 시도해 주세요."); }
-    finally { setOpening(false); }
-  }
+function Materials({ product, draft, busy, act }) {
   return <section aria-label={`${product.name} 제작자료`} className="space-y-3 rounded-xl bg-zinc-950 p-3">
     <h3 className="text-sm font-semibold text-emerald-300">선택한 상품으로 준비하기</h3>
     <div className="grid grid-cols-2 gap-2">
       <button className={button} disabled={busy} onClick={() => act({ action: "prepareBlog", id: product.id })}>블로그 준비</button>
-      <button className={secondary} disabled={busy} onClick={() => act({ action: "prepareShorts", id: product.id })}>쇼핑쇼츠 준비</button>
+      <button className={secondary} disabled={busy} onClick={() => act({ action: "prepareShorts", id: product.id })}>쇼핑 연결자료 준비</button>
     </div>
     {(draft?.prepared?.blog || draft?.prepared?.shorts) && <div className="flex items-center gap-3 text-xs text-zinc-300">
       <Image src={`/${draft.masterAssetPath.replace(/^public\//, "")}`} alt={`${draft.character === "miji" ? "미지" : "수호"} 자동 연결 이미지`} width={64} height={64} className="h-16 w-16 rounded object-contain" />
@@ -81,9 +58,9 @@ function Materials({ product, draft, busy, act, onError }) {
     </div>}
     {draft?.prepared?.blog && <BlogReview key={`${draft.id}:${draft.product.checkedAt}`} draft={draft} busy={busy} act={act} />}
     {draft?.prepared?.shorts && <details className="rounded-lg border border-zinc-700 p-3" open>
-      <summary className="cursor-pointer font-medium">쇼핑쇼츠 제작자료</summary>
+      <summary className="cursor-pointer font-medium">쇼핑 연결자료</summary>
       <p className="my-3 whitespace-pre-wrap break-words text-sm text-zinc-300">{draft.shorts.script}</p>
-      <button className={button} disabled={busy || opening} onClick={openShorts}>쇼츠 스튜디오 열기</button>
+      <p className="text-xs text-zinc-400">영상 제작·렌더·업로드는 별도 쇼츠 프로젝트에서 처리합니다. ATLAS는 상품·이미지·링크·요약 연결자료만 준비합니다.</p>
     </details>}
   </section>;
 }
@@ -105,8 +82,8 @@ export default function UnifiedPublish() {
   }
   return <main className="mx-auto max-w-6xl space-y-5 px-3 py-5 sm:px-6 sm:py-8">
     <header className="flex flex-wrap items-center justify-between gap-3">
-      <div><h1 className="text-2xl font-bold sm:text-3xl">오늘의 상품 TOP5</h1><p className="mt-1 text-sm text-zinc-400">상품 선택 → 블로그·쇼츠 준비</p></div>
-      <button className={button} disabled={busy} onClick={() => act({ action: "refresh" })}>{busy ? "자료 준비 중…" : "오늘 자료 업데이트"}</button>
+      <div><h1 className="text-2xl font-bold sm:text-3xl">오늘의 상품 TOP5</h1><p className="mt-1 text-sm text-zinc-400">상품 선택 → 국내·해외 블로그 준비 · 쇼핑 연결자료</p></div>
+      <div className="flex flex-wrap gap-2"><button className={button} disabled={busy} onClick={() => act({ action: "preparePair" })}>{busy ? "준비 중…" : "국내+해외 블로그 1세트 준비"}</button><button className={secondary} disabled={busy} onClick={() => act({ action: "refresh" })}>오늘 TOP5 업데이트</button></div>
     </header>
     {message && <p role="alert" className="text-sm text-amber-300">{message}</p>}
     <div className="sticky top-0 z-10 grid grid-cols-2 gap-2 bg-zinc-950 py-2 lg:hidden" aria-label="채널 선택">
@@ -123,14 +100,14 @@ export default function UnifiedPublish() {
             <p className="mt-2 font-semibold">{p.priceText}{p.discountPercent !== null && p.discountPercent !== undefined && <span className="ml-2 text-sm text-rose-300">{p.discountPercent}% 할인</span>}</p>
             <p className="mt-1 truncate text-xs text-zinc-300 sm:text-sm" title={p.reason}>{p.reason}</p>
             <div className="mt-1 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3"><Evidence product={p} /><button className={secondary} aria-pressed={selected[id] === p.id} disabled={busy} onClick={() => setSelected({ ...selected, [id]: selected[id] === p.id ? "" : p.id })}>선택</button></div>
-            {selected[id] === p.id && <Materials product={p} draft={data.drafts[p.id]} busy={busy} act={act} onError={setMessage} />}
+            {selected[id] === p.id && <Materials product={p} draft={data.drafts[p.id]} busy={busy} act={act} />}
           </> : <div className="flex min-h-24 items-center justify-between gap-3"><h3 className="text-sm">{i + 1}. 근거를 확인하고 있어요</h3><span className="text-xs text-zinc-500">확인 후 표시</span></div>}
         </article>;
       })}
       <details className="rounded-xl border border-zinc-800 p-3 text-sm">
         <summary className="cursor-pointer">저장한 자료·발행 결과</summary>
         <div className="mt-3 space-y-3">
-          {Object.values(data.drafts).filter((d) => d.channelId === id && (d.prepared?.blog || d.prepared?.shorts)).map((draft) => <details key={draft.id}><summary className="cursor-pointer">{draft.product.name}</summary><Materials product={draft.product} draft={draft} busy={busy} act={act} onError={setMessage} /></details>)}
+          {Object.values(data.drafts).filter((d) => d.channelId === id && (d.prepared?.blog || d.prepared?.shorts)).map((draft) => <details key={draft.id}><summary className="cursor-pointer">{draft.product.name}</summary><Materials product={draft.product} draft={draft} busy={busy} act={act} /></details>)}
           {Object.values(data.results?.[id] || {}).map((result) => <a className="block break-words text-emerald-300 underline" key={result.publishedUrl} href={result.publishedUrl} target="_blank" rel="noreferrer">{result.product.name} · 발행 글 보기</a>)}
           {Object.values(data.archives || {}).flat().filter((draft) => draft.channelId === id).map((draft, index) => <details key={`${draft.id}:${index}`}><summary className="cursor-pointer">이전 원고 · {draft.title}</summary><p className="mt-2 whitespace-pre-wrap break-words text-xs text-zinc-400">{draft.bodyText}</p></details>)}
           <button className={secondary} disabled={busy} onClick={() => act({ action: "reconcile", channel: id })}>발행 결과 다시 확인</button>
