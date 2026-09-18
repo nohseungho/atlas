@@ -51,7 +51,16 @@ export async function POST(request) {
     const body = await request.json();
     // Preparation-only release: no route through this handler can invoke a publisher.
     if (body.action === "publish") return Response.json({ error: "현재 화면에서는 자료만 준비합니다. 실제 발행은 비활성화되어 있습니다." }, { status: 403 });
-    if (body.action === "refresh") {
+    if (body.action === "preparePair") {
+      const entries = await Promise.all(Object.keys(SOURCES).map(async (channel) => [channel, await collectChannel(channel)]));
+      await mutateUnified((state) => {
+        applyCollected(state, Object.fromEntries(entries), publishedRecords());
+        for (const channel of Object.keys(SOURCES)) {
+          const product = state.channels[channel]?.slots?.find(Boolean);
+          if (product) prepareMaterial(state, product.id, "blog", publishedRecords());
+        }
+      });
+    } else if (body.action === "refresh") {
       const entries = await Promise.all(Object.keys(SOURCES).map(async (channel) => [channel, await collectChannel(channel)]));
       await mutateUnified((state) => applyCollected(state, Object.fromEntries(entries), publishedRecords()));
     } else if (body.action === "prepareBlog" || body.action === "prepareShorts") {
