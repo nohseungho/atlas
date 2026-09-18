@@ -379,6 +379,21 @@
       "updatedAt": "2026-08-15T07:04:09.591Z",
       "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/08/annual-multi-trip-travel-insurance-is.html",
       "externalId": "8039688117432630210"
+    },
+    {
+      "id": "job_026",
+      "articleId": "art_021",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "attemptCount": 1,
+      "maxAttempts": 3,
+      "lastError": null,
+      "nextRetryAt": null,
+      "createdAt": "2026-09-18T17:39:31.801Z",
+      "updatedAt": "2026-09-18T17:39:34.572Z",
+      "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/09/europe-ees-travel-checklist-2026-what.html",
+      "externalId": "551494807489939526"
     }
   ],
   "history": [
@@ -1272,6 +1287,39 @@
       "message": "Blogger 자동 발행 성공",
       "error": null,
       "createdAt": "2026-08-15T07:04:09.596Z"
+    },
+    {
+      "id": "hist_082",
+      "jobId": "job_026",
+      "articleId": "art_021",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "queued",
+      "message": "Job 생성",
+      "error": null,
+      "createdAt": "2026-09-18T17:39:31.804Z"
+    },
+    {
+      "id": "hist_083",
+      "jobId": "job_026",
+      "articleId": "art_021",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "running",
+      "message": "자동 발행 시작",
+      "error": null,
+      "createdAt": "2026-09-18T17:39:31.808Z"
+    },
+    {
+      "id": "hist_084",
+      "jobId": "job_026",
+      "articleId": "art_021",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "message": "Blogger 자동 발행 성공",
+      "error": null,
+      "createdAt": "2026-09-18T17:39:34.574Z"
     }
   ]
 }

@@ -1,17 +1,43 @@
 {
   "blogId": "blog_001",
-  "lastSyncedAt": "2026-08-13T10:58:06.209Z",
+  "lastSyncedAt": "2026-09-18T17:32:01.218Z",
   "lastSyncStatus": "ok",
   "lastSyncMessage": "",
   "connection": "connected",
-  "bloggerLiveCount": 9,
-  "externalPosts": [],
+  "bloggerLiveCount": 16,
+  "externalPosts": [
+    {
+      "id": "8600511254087159006",
+      "title": "A Pre-Trip Safety Checklist for International Travelers",
+      "url": "https://atlas-money-2026.blogspot.com/2026/09/a-pre-trip-safety-checklist-for.html"
+    },
+    {
+      "id": "7464819806483273330",
+      "title": "Nepal Floods 2026: How to Help Now — and How Families Can Prepare for Flash Floods",
+      "url": "https://atlas-money-2026.blogspot.com/2026/09/nepal-floods-2026-how-to-help-now-and.html"
+    },
+    {
+      "id": "8631951760942060447",
+      "title": "How to Prepare for Travel Health Risks by Destination",
+      "url": "https://atlas-money-2026.blogspot.com/2026/08/how-to-prepare-for-travel-health-risks.html"
+    },
+    {
+      "id": "1036687334958659255",
+      "title": "Travel Insurance for Baggage Delay and Lost Luggage: What to Check",
+      "url": "https://atlas-money-2026.blogspot.com/2026/08/travel-insurance-for-baggage-delay-and.html"
+    },
+    {
+      "id": "8257964298533269720",
+      "title": "Adventure Travel Insurance: Are Hiking, Diving, and Skiing Covered?",
+      "url": "https://atlas-money-2026.blogspot.com/2026/08/adventure-travel-insurance-are-hiking.html"
+    }
+  ],
   "counts": {
-    "bloggerLive": 9,
-    "atlasLinked": 9,
-    "external": 0,
+    "bloggerLive": 16,
+    "atlasLinked": 11,
+    "external": 5,
     "pending": 3,
-    "missingLinks": 0,
+    "missingLinks": 2,
     "conflicts": 0
   }
 }
