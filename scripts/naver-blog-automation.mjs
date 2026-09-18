@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { runNaverBrowserJob } from "../lib/atlas/naver-browser-publisher.js";
-import { canPublishKoreaDraft, validateKoreaDraft } from "../lib/atlas/korea-product-pipeline.js";
+import { canPublishKoreaDraft, publishBlockers, validateKoreaDraft } from "../lib/atlas/korea-product-pipeline.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -117,6 +117,12 @@ if (!validation.ok) {
 if (mode === "publish" && !canPublishKoreaDraft(draft)) {
   console.error("최종 발행 승인 상태가 아니므로 실제 네이버 발행을 차단했습니다.");
   process.exit(4);
+}
+
+const blockers = mode === "publish" ? publishBlockers(draft) : [];
+if (blockers.length) {
+  console.error(`수익화 조건 미충족으로 실제 네이버 발행을 차단했습니다: ${blockers.join(", ")}`);
+  process.exit(5);
 }
 
 try {

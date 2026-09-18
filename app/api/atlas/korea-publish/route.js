@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { readJson, writeJson } from "@/lib/data-store";
-import { KOREA_DRAFT_STATE, canPublishKoreaDraft, validateKoreaDraft } from "@/lib/atlas/korea-product-pipeline";
+import { KOREA_DRAFT_STATE, canPublishKoreaDraft, publishBlockers, validateKoreaDraft } from "@/lib/atlas/korea-product-pipeline";
 import { runNaverBrowserJob } from "@/lib/atlas/naver-browser-publisher";
 
 export const runtime = "nodejs";
@@ -58,6 +58,11 @@ export async function POST(request) {
 
   if (mode === "publish" && !canPublishKoreaDraft(draft)) {
     return NextResponse.json({ status: "rejected", errorCode: "APPROVAL_REQUIRED", error: "최종 발행 승인 상태에서만 실제 네이버 발행을 실행합니다." }, { status: 409 });
+  }
+
+  const blockers = mode === "publish" ? publishBlockers(draft) : [];
+  if (blockers.length) {
+    return NextResponse.json({ status: "rejected", errorCode: "MONETIZATION_REQUIRED", blockers, error: `제휴링크와 연결된 이미지가 있어야 실제 발행합니다: ${blockers.join(", ")}` }, { status: 409 });
   }
 
   if (draft.state === KOREA_DRAFT_STATE.PUBLISHED) {
