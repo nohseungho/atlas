@@ -4,6 +4,7 @@ import path from "path";
 import { createRequire } from "module";
 import { naverEditorTarget } from "../lib/atlas/korea-product-pipeline.js";
 import { assertNaverWriteTarget, getCharacterDefinition } from "../lib/atlas/character-channel-policy.js";
+import { bodyHtmlFromDraft, bodyPlainTextFromDraft, caretToEndOfElement, escapeHtml, pickAnchorParagraphIndex, usableImages as filterUsableImages } from "../lib/atlas/naver-image-placement.js";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright-core");
@@ -33,10 +34,6 @@ function profileDir() {
 
 function safeName(value) {
   return String(value || "asset").replace(/[^a-zA-Z0-9._-]+/g, "-").replace(/^-+|-+$/g, "") || "asset";
-}
-
-function escapeHtml(value) {
-  return String(value || "").replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
 }
 
 function assetCopy(image) {
@@ -212,45 +209,11 @@ async function setBody(page, scope, draft) {
   const el = await firstVisible(scope, [".se-component-content [contenteditable='true']", ".se-section-text .se-text-paragraph", ".se-main-container [contenteditable='true']", "[contenteditable='true'][data-placeholder*='내용']"]);
   if (!el) throw Object.assign(new Error("네이버 본문 입력 영역을 찾지 못했습니다."), { code: "NAVER_BODY_EDITOR_NOT_FOUND" });
   if (draft.contentType === "existing_post_update" && draft.updateMode === "images_only") return el;
-  // 제휴 고지는 국내 확정 스타일에 따라 본문 최하단에 1회만 넣는다.
-  const text = [draft.bodyText || "", draft.affiliateUrl ? `제품 확인하기: ${draft.affiliateUrl}` : "", draft.affiliateUrl ? draft.affiliateDisclosure : ""].filter(Boolean).join("\n\n");
+  const text = bodyPlainTextFromDraft(draft);
   const html = bodyHtmlFromDraft(draft);
   const pasted = await pasteHtml(page, el, html, text);
   if (!pasted) await replaceText(el, text);
   return el;
-}
-
-function isHeadingLine(line) {
-  return line.length <= 45 && !/[.]$/.test(line) && !/[다요죠]$/.test(line);
-}
-
-function bodyHtmlFromDraft(draft) {
-  const center = "text-align:center;";
-  const p = (inner, extra = "") => `<p style="${center}${extra}">${inner}</p>`;
-  const emphasize = (line) => {
-    let out = escapeHtml(line);
-    const name = String(draft.productName || "").trim();
-    if (name && line.includes(name)) out = out.replace(escapeHtml(name), `<b>${escapeHtml(name)}</b>`);
-    return out;
-  };
-  const spacer = "<p><br></p>";
-  const skip = new Set([String(draft.title || "").trim(), String(draft.affiliateDisclosure || "").trim()]);
-  const blocks = String(draft.bodyText || "").replace(/\r/g, "").split(/\n\s*\n/).map((b) => b.split("\n").map((l) => l.trim()).filter(Boolean)).filter((b) => b.length);
-  const parts = [];
-  const linkLine = draft.affiliateUrl ? p(`<a href="${escapeHtml(draft.affiliateUrl)}" target="_blank">${escapeHtml(draft.productName || draft.affiliateUrl)}</a>`) : "";
-  let linkPlaced = false;
-  for (const lines of blocks) {
-    if (lines.length === 1 && (skip.has(lines[0]) || /^이 포스팅은 쿠팡 파트너스/.test(lines[0]) || /^제품 확인하기:/.test(lines[0]))) continue;
-    if (lines.length === 1 && /^\d+\.\s/.test(lines[0])) { parts.push(p(`<b>${escapeHtml(lines[0])}</b>`)); continue; }
-    if (lines.length === 1 && isHeadingLine(lines[0])) { parts.push(spacer, p(`<b><span style="font-size:19px;">${escapeHtml(lines[0])}</span></b>`)); continue; }
-    parts.push(p(lines.map(emphasize).join("<br>")), spacer);
-    // 본문 중 "아래에서 확인" 안내 문단 바로 뒤에 링크를 자연스럽게 붙인다.
-    if (linkLine && !linkPlaced && lines.some((l) => /아래에서 확인/.test(l))) { parts.push(linkLine, spacer); linkPlaced = true; }
-  }
-  if (linkLine && !linkPlaced) parts.push(p(`제품 정보는 아래에서 확인할 수 있습니다.`), linkLine);
-  // 제휴 고지는 국내 확정 스타일에 따라 본문 최하단에 1회만 넣는다.
-  if (draft.affiliateUrl && draft.affiliateDisclosure) parts.push(spacer, p(`<span style="font-size:13px;color:#6b7280;">${escapeHtml(draft.affiliateDisclosure)}</span>`));
-  return parts.join("");
 }
 
 async function pasteHtml(page, locator, html, text) {
@@ -280,7 +243,7 @@ async function pasteHtml(page, locator, html, text) {
 }
 
 function usableImages(draft) {
-  return (draft.images || []).filter((img) => { const src = String(img.src || "").trim(); return src && !/^https?:\/\//i.test(src) && fs.existsSync(src); });
+  return filterUsableImages(draft.images || [], (src) => fs.existsSync(src));
 }
 
 async function uploadOne(page, scope, file) {
@@ -295,41 +258,62 @@ async function uploadOne(page, scope, file) {
   await page.waitForTimeout(1500);
 }
 
-async function findAnchor(scope, keywords = []) {
-  const cleaned = keywords.map((v) => String(v || "").trim()).filter(Boolean);
-  if (!cleaned.length) return null;
-  const blocks = scope.locator(".se-text-paragraph, .se-component-content p, [contenteditable='true'] p");
+const PARAGRAPH_SELECTOR = ".se-text-paragraph, .se-component-content p, [contenteditable='true'] p";
+
+async function editorParagraphs(scope) {
+  const blocks = scope.locator(PARAGRAPH_SELECTOR);
   const count = Math.min(await blocks.count().catch(() => 0), 300);
-  let best = null; let bestScore = 0;
-  for (let i = 0; i < count; i += 1) {
-    const block = blocks.nth(i);
-    const text = String(await block.innerText().catch(() => ""));
-    const score = cleaned.reduce((sum, keyword) => sum + (text.includes(keyword) ? 1 : 0), 0);
-    if (score > bestScore) { bestScore = score; best = block; }
-  }
-  return best;
+  const texts = [];
+  for (let i = 0; i < count; i += 1) texts.push(String(await blocks.nth(i).innerText().catch(() => "")));
+  return { blocks, texts };
 }
 
-async function moveCursorAfter(locator) {
-  if (!locator) return false;
-  try { await locator.click(); await locator.press("End"); await locator.press("Enter"); return true; } catch { return false; }
+// anchorKeywords를 포함하는 "문단 전체"를 찾는다. 키워드 문자열은 자르거나 바꾸지 않는다.
+async function findAnchor(scope, keywords = []) {
+  const { blocks, texts } = await editorParagraphs(scope);
+  const index = pickAnchorParagraphIndex(texts, keywords);
+  return index >= 0 ? blocks.nth(index) : null;
+}
+
+// 마지막 문단(안전한 문단 끝). anchor를 못 찾았을 때만 쓴다.
+async function lastParagraph(scope) {
+  const { blocks, texts } = await editorParagraphs(scope);
+  for (let i = texts.length - 1; i >= 0; i -= 1) if (texts[i].trim()) return blocks.nth(i);
+  return null;
+}
+
+// 문단 끝에 커서를 놓고 새 줄을 연다. 커서가 문단 끝이 아니면 Enter를 누르지 않는다(문장/단어 분할 방지).
+async function openLineAfterParagraph(page, locator) {
+  if (!locator) return { ok: false, reason: "no_paragraph" };
+  const caret = await locator.evaluate(caretToEndOfElement).catch((error) => ({ ok: false, reason: String(error?.message || error) }));
+  if (!caret?.ok) return caret || { ok: false, reason: "caret_failed" };
+  await page.keyboard.press("Enter");
+  await page.waitForTimeout(200);
+  const after = String(await locator.innerText().catch(() => "")).trim();
+  if (after !== caret.text) return { ok: false, reason: "paragraph_changed", before: caret.text, after };
+  return { ok: true };
 }
 
 async function uploadImages(page, scope, draft) {
   const images = usableImages(draft);
   if (!images.length) return { uploaded: 0, requested: (draft.images || []).length, placements: [] };
   const placements = [];
+  let uploaded = 0;
   for (const image of images) {
     const anchor = await findAnchor(scope, image.anchorKeywords || []);
-    const matched = await moveCursorAfter(anchor);
-    if (!matched) {
-      const body = await firstVisible(scope, [".se-main-container [contenteditable='true']", ".se-section-text .se-text-paragraph", "[contenteditable='true']"]);
-      if (body) { await body.click(); await body.press("End").catch(() => {}); await body.press("Enter").catch(() => {}); }
+    const matched = Boolean(anchor);
+    let opened = await openLineAfterParagraph(page, anchor);
+    if (!opened.ok && !matched) opened = await openLineAfterParagraph(page, await lastParagraph(scope));
+    if (!opened.ok) {
+      // 안전한 삽입 위치를 만들지 못하면 본문을 건드리지 않고 이미지를 건너뛴다.
+      placements.push({ id: image.id || image.role, matched, skipped: true, reason: opened.reason, keywords: image.anchorKeywords || [] });
+      continue;
     }
     await uploadOne(page, scope, image.src);
-    placements.push({ id: image.id || image.role, matched, keywords: image.anchorKeywords || [] });
+    uploaded += 1;
+    placements.push({ id: image.id || image.role, matched, skipped: false, keywords: image.anchorKeywords || [] });
   }
-  return { uploaded: images.length, requested: (draft.images || []).length, placements };
+  return { uploaded, requested: (draft.images || []).length, placements };
 }
 
 async function firstVisibleAcrossScopes(page, preferredScope, selectors) {
