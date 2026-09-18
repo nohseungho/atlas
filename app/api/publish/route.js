@@ -81,6 +81,21 @@ export async function POST(request) {
     );
   }
 
+  const missingRequiredVisuals = (article.visualAssets || []).filter(
+    (asset) => asset?.required === true && !/^https:\/\//i.test(String(asset.publicUrl || "").trim())
+  );
+  if (missingRequiredVisuals.length) {
+    return NextResponse.json(
+      {
+        status: "assets_required",
+        errorCode: "GLOBAL_IMAGE_ASSETS_REQUIRED",
+        error: "필수 미지 이미지가 모두 연결되기 전에는 해외 글을 발행할 수 없습니다.",
+        missingImages: missingRequiredVisuals.map((asset) => asset.key || asset.role || "image"),
+      },
+      { status: 409 },
+    );
+  }
+
   const state = publishStateOf(article);
 
   // (1) Duplicate guard — already published.
