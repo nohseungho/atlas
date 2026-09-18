@@ -1,0 +1,66 @@
+{
+  "exportVersion": "ATLAS_SHOPPING_EXPORT_V1",
+  "draftId": "kr_hwanggeumhyang_chuseok_2kg",
+  "channelId": "korea_naver",
+  "productName": "황금향 초고당도 제주 추석명절과일세트 2kg",
+  "modelName": "",
+  "title": "추석 과일 선물, 제주 황금향 2kg 세트를 먼저 본 이유와 아쉬운 점",
+  "affiliateUrl": "https://link.coupang.com/a/g9e7Kq1YNU",
+  "productUrl": "https://www.coupang.com/vp/products/9727489457?vendorItemId=96034356973",
+  "coupang": {
+    "productId": "9727489457",
+    "vendorItemId": "96034356973",
+    "price": null,
+    "discountRate": null,
+    "priceCheckedAt": "2026-09-18T13:33:45.358Z"
+  },
+  "sourceImages": [],
+  "keyBenefits": [
+    "껍질이 얇고 과즙이 많은 만감류라 손질이 편함",
+    "2kg 단위라 한 집에 보내기 적당",
+    "쿠팡 판매 상품이라 도착 예정일을 주문 전에 확인 가능"
+  ],
+  "caveats": [
+    "직접 받아본 후기가 아니라 판매 정보·공개 반응 기준",
+    "과일은 개체 차이가 있어 알 크기가 다를 수 있음",
+    "명절 직전 배송 지연 가능 → 도착 예정일 확인",
+    "선물 포장 옵션은 추가 비용 가능",
+    "초고당도는 판매자 표기 (당도 수치 미확인)"
+  ],
+  "shortHook": "추석 일주일 전, 과일 선물 아직 못 고르셨죠?",
+  "shortSummary": "제주 황금향 2kg 추석 세트. 껍질이 얇고 손질이 편한 만감류라 어르신 선물로 무난한 구성.",
+  "disclosure": "이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받을 수 있습니다.",
+  "character": "suho",
+  "sourceBlog": {
+    "platform": "naver",
+    "blogId": "who-ami",
+    "draftState": "ready_for_review"
+  },
+  "publishedUrl": "",
+  "evidence": {
+    "source": "뽐뿌 할인정보",
+    "sourceUrl": "https://www.ppomppu.co.kr/zboard/view.php?id=ppomppu&no=735405",
+    "checkedAt": "2026-09-18T13:00:47.497Z",
+    "quote": "[쿠팡] 황금향 초고당도 제주 추석명절과일세트 2kg (23,900원/무배)",
+    "popularity": "뽐뿌 핫/인기 목록에 포함",
+    "views": 6489,
+    "priceText": "23,900원",
+    "priceVerifiedOnSeller": false,
+    "score": 60,
+    "weights": {
+      "popularity": 40,
+      "discount": 30,
+      "practicality": 20,
+      "trust": 10
+    },
+    "note": "가격·무배 표기는 커뮤니티 게시글 기준. 판매 페이지 직접 확인 전이라 본문에 숫자로 고정하지 않음."
+  },
+  "status": "pending_assets",
+  "exportedAt": "2026-09-18T13:34:06.726Z",
+  "media": {
+    "videoRendered": false,
+    "ttsGenerated": false,
+    "uploaded": false,
+    "note": "ATLAS는 데이터만 제공한다. 영상 제작은 별도 시스템 담당."
+  }
+}

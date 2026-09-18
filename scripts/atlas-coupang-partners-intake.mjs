@@ -16,7 +16,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { applyPartnersMaterial, imageExtensionFor, validatePartnersMaterial } from "../lib/atlas/coupang-partners-material.js";
 import { publishBlockers } from "../lib/atlas/korea-product-pipeline.js";
-import { buildStoryShortsExport } from "../lib/atlas/shorts-export.js";
+import { buildShoppingExport } from "../lib/atlas/shopping-export.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -49,7 +49,7 @@ function main() {
     ? { link: flag("--link"), productName: flag("--name"), price: flag("--price") ? Number(flag("--price")) : null, discountRate: flag("--discount") ? Number(flag("--discount")) : null, productId: flag("--product-id"), vendorItemId: flag("--vendor-item-id"), images: flag("--images").split(",").map((s) => s.trim()).filter(Boolean).map((p) => path.resolve(root, p)) }
     : inbox.material;
 
-  if (!material) {
+  if (!material || (!material.link && !material.images.length)) {
     out({
       id: draftId,
       status: "MANUAL_LOGIN_REQUIRED",
@@ -87,26 +87,18 @@ function main() {
   updated.coupangProduct = {
     ...(draft.coupangProduct || {}), source: "coupang_partners", productId, vendorItemId,
     officialName: material.productName || "", price: material.price ?? null, discountRate: material.discountRate ?? null,
-    partnersLink: material.link, partnersLinkStatus: "linked", partnersImageStatus: "linked", acquiredAt,
+    partnersLink: material.link, partnersLinkStatus: "linked", partnersImageStatus: saved.length ? "linked" : (draft.coupangProduct?.partnersImageStatus === "linked" ? "linked" : "pending"), acquiredAt,
   };
-  if (updated.shorts?.sourceImages) {
-    let cursor = 0;
-    updated.shorts.sourceImages = updated.shorts.sourceImages.map((img) => (img.role === "product" && !img.path && saved[cursor] ? { ...img, path: saved[cursor++], source: "coupang_partners", status: "ready", acquiredAt } : img));
-  }
   data.items = data.items.map((item) => (item.id === draftId ? updated : item));
   fs.writeFileSync(DRAFTS, `${JSON.stringify(data, null, 2)}\n`, "utf8");
 
-  // 쇼핑쇼츠 export도 같은 링크/공식 이미지로 갱신
-  let shortsExport = null;
-  if (updated.shorts) {
-    const exportDir = path.join(root, "data", "atlas", "shorts-exports");
-    fs.mkdirSync(exportDir, { recursive: true });
-    const built = buildStoryShortsExport(updated);
-    fs.writeFileSync(path.join(exportDir, `${draftId}.story-shorts.json`), `${JSON.stringify(built, null, 2)}\n`, "utf8");
-    shortsExport = { status: built.status, blockers: built.blockers };
-  }
+  // 쇼핑쇼츠용 데이터 export도 같은 링크/공식 이미지로 갱신 (데이터만, 미디어 생성 없음)
+  const exportDir = path.join(root, "data", "atlas", "shopping-exports");
+  fs.mkdirSync(exportDir, { recursive: true });
+  const built = buildShoppingExport(updated);
+  fs.writeFileSync(path.join(exportDir, `${draftId}.json`), `${JSON.stringify(built, null, 2)}\n`, "utf8");
 
-  out({ id: draftId, status: "linked", affiliateUrl: updated.affiliateUrl, images: saved, officialName: material.productName || "", price: material.price ?? null, publishBlockers: publishBlockers(updated), shortsExport, state: updated.state });
+  out({ id: draftId, status: saved.length ? "linked" : "link_only", affiliateUrl: updated.affiliateUrl, images: saved, officialName: material.productName || "", price: material.price ?? null, publishBlockers: publishBlockers(updated), shoppingExport: { status: built.status, sourceImages: built.sourceImages.length }, state: updated.state });
 }
 
 try { main(); } catch (error) { console.error(String(error?.stack || error)); process.exit(1); }
