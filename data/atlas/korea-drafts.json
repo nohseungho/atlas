@@ -168,7 +168,7 @@
       "publishedUrl": "",
       "lastError": "",
       "createdAt": "2026-09-18T13:02:38.339Z",
-      "updatedAt": "2026-09-18T13:04:23.424Z",
+      "updatedAt": "2026-09-18T13:16:42.648Z",
       "generatedBy": "ATLAS_KOREA_DAILY_PICK_V1",
       "generatedAt": "2026-09-18T13:02:38.339Z",
       "bodyHtml": "",
@@ -178,7 +178,15 @@
         "vendorItemId": "96034356973",
         "listingUrl": "https://www.coupang.com/vp/products/9727489457?vendorItemId=96034356973",
         "partnersLinkStatus": "pending",
-        "partnersImageStatus": "pending"
+        "partnersImageStatus": "pending",
+        "source": "coupang_partners",
+        "expectedNameTokens": [
+          "황금향",
+          "제주",
+          "2kg"
+        ],
+        "acquisition": "manual_partners_screen",
+        "loginAutomation": "forbidden"
       },
       "evidenceSnapshot": {
         "source": "뽐뿌 할인정보",

@@ -42,12 +42,13 @@ async function main() {
   if (!coupangPartnersConfigured()) {
     console.log(JSON.stringify({
       id,
-      status: "not_configured",
+      status: "MANUAL_LOGIN_REQUIRED",
+      blocking: false,
       code: "COUPANG_PARTNERS_NOT_CONFIGURED",
       message: "쿠팡 파트너스 Open API 키가 없어 공식 상품소재를 조회하지 않았습니다.",
       required: ["COUPANG_PARTNERS_ACCESS_KEY", "COUPANG_PARTNERS_SECRET_KEY"],
       howTo: "partners.coupang.com 로그인 → 링크 생성 → API 키 발급(최종 승인 계정 필요) 후 .env.local에 추가",
-      manualAlternative: "파트너스 화면에서 동일 상품의 링크 생성 + 배너/상품 이미지 저장 후 affiliateUrl과 img_product_photo_1.src에 직접 연결",
+      manualAlternative: "일반 Edge에서 파트너스 로그인 → 링크 생성 + 공식 상품 이미지 저장 → .atlas-data/coupang-partners/inbox/<draftId>/ 에 넣고 node scripts/atlas-coupang-partners-intake.mjs <draftId> 실행 (로그인 자동화 금지)",
     }, null, 2));
     return;
   }
