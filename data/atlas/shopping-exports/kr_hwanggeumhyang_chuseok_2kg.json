@@ -12,9 +12,30 @@
     "vendorItemId": "96034356973",
     "price": null,
     "discountRate": null,
-    "priceCheckedAt": "2026-09-18T13:33:45.358Z"
+    "priceCheckedAt": "2026-09-18T13:46:34.225Z"
   },
-  "sourceImages": [],
+  "sourceImages": [
+    {
+      "id": "img_product_photo_1",
+      "role": "product_photo",
+      "path": ".atlas-data/korea-assets/kr_hwanggeumhyang_chuseok_2kg/product_1.png",
+      "alt": "황금향 초고당도 제주 추석명절과일세트 2kg 쿠팡 파트너스 공식 상품 이미지",
+      "source": "coupang_partners",
+      "productId": "9727489457",
+      "vendorItemId": "96034356973",
+      "acquiredAt": "2026-09-18T13:46:34.225Z"
+    },
+    {
+      "id": "img_product_photo_2",
+      "role": "product_photo",
+      "path": ".atlas-data/korea-assets/kr_hwanggeumhyang_chuseok_2kg/product_2.png",
+      "alt": "황금향 세트 구성이 보이는 쿠팡 파트너스 공식 상품 이미지",
+      "source": "coupang_partners",
+      "productId": "9727489457",
+      "vendorItemId": "96034356973",
+      "acquiredAt": "2026-09-18T13:46:34.225Z"
+    }
+  ],
   "keyBenefits": [
     "껍질이 얇고 과즙이 많은 만감류라 손질이 편함",
     "2kg 단위라 한 집에 보내기 적당",
@@ -55,8 +76,8 @@
     },
     "note": "가격·무배 표기는 커뮤니티 게시글 기준. 판매 페이지 직접 확인 전이라 본문에 숫자로 고정하지 않음."
   },
-  "status": "pending_assets",
-  "exportedAt": "2026-09-18T13:34:06.726Z",
+  "status": "ready_for_review",
+  "exportedAt": "2026-09-18T13:46:34.227Z",
   "media": {
     "videoRendered": false,
     "ttsGenerated": false,

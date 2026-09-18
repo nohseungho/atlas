@@ -27,8 +27,8 @@ function patch(items, id, values) {
 }
 
 function missingRequiredImages(draft) {
-  // product_photo 슬롯은 실제 제품 사진이 연결될 때만 업로드하며, 비어 있어도 반영을 막지 않는다.
-  return (draft.images || []).filter((img) => img.role !== "product_photo" && !String(img.src || "").trim()).map((img) => img.id || img.role || "image");
+  // product_photo ?щ’? ?ㅼ젣 ?쒗뭹 ?ъ쭊???곌껐???뚮쭔 ?낅줈?쒗븯硫? 鍮꾩뼱 ?덉뼱??諛섏쁺??留됱? ?딅뒗??
+  return (draft.images || []).filter((img) => img.role !== "product_photo" && img.optional !== true && img.required !== false && !String(img.src || "").trim()).map((img) => img.id || img.role || "image");
 }
 
 export async function POST(request) {
@@ -52,17 +52,17 @@ export async function POST(request) {
       status: "assets_required",
       errorCode: "NAVER_IMAGE_ASSETS_REQUIRED",
       missingImages,
-      error: `본문 이미지 ${missingImages.length}개가 아직 로컬 파일과 연결되지 않았습니다.`,
+      error: `蹂몃Ц ?대?吏 ${missingImages.length}媛쒓? ?꾩쭅 濡쒖뺄 ?뚯씪怨??곌껐?섏? ?딆븯?듬땲??`,
     }, { status: 409 });
   }
 
   if (mode === "publish" && !canPublishKoreaDraft(draft)) {
-    return NextResponse.json({ status: "rejected", errorCode: "APPROVAL_REQUIRED", error: "최종 발행 승인 상태에서만 실제 네이버 발행을 실행합니다." }, { status: 409 });
+    return NextResponse.json({ status: "rejected", errorCode: "APPROVAL_REQUIRED", error: "理쒖쥌 諛쒗뻾 ?뱀씤 ?곹깭?먯꽌留??ㅼ젣 ?ㅼ씠踰?諛쒗뻾???ㅽ뻾?⑸땲??" }, { status: 409 });
   }
 
   const blockers = mode === "publish" ? publishBlockers(draft) : [];
   if (blockers.length) {
-    return NextResponse.json({ status: "rejected", errorCode: "MONETIZATION_REQUIRED", blockers, error: `제휴링크와 연결된 이미지가 있어야 실제 발행합니다: ${blockers.join(", ")}` }, { status: 409 });
+    return NextResponse.json({ status: "rejected", errorCode: "MONETIZATION_REQUIRED", blockers, error: `?쒗쑕留곹겕? ?곌껐???대?吏媛 ?덉뼱???ㅼ젣 諛쒗뻾?⑸땲?? ${blockers.join(", ")}` }, { status: 409 });
   }
 
   if (draft.state === KOREA_DRAFT_STATE.PUBLISHED) {
