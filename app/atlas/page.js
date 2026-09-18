@@ -45,7 +45,19 @@ const CARDS = [
   },
 ];
 
-// 실제 운영 순서. 화면을 새로 만들지 않고 대시보드 맨 위에 한 줄로만 둔다.
+// 현재 운영의 중심은 국내·해외 통합 운영 화면이다. 아래 카드/흐름은 그대로 두고,
+// 진입 시 어디로 가야 하는지만 맨 위에서 분명히 한다.
+const PRIMARY = {
+  href: "/atlas/unified-publish",
+  title: "국내·해외 통합 운영",
+  description: "국내 Naver(수호)와 해외 Blogger(미지)의 다음 글을 한 화면에서 준비·검수합니다. 여기서는 실제 발행하지 않습니다.",
+  lanes: [
+    { label: "국내 Naver · 수호", detail: "TOP5 상품형 → 수익화 확인된 후보만 자동 준비", href: "/atlas/korea" },
+    { label: "해외 Blogger · 미지", detail: "여행 정보형 원고 우선 → Publisher에서 검수·발행", href: "/publisher" },
+  ],
+};
+
+// 레거시 상품 제작 순서. 화면을 새로 만들지 않고 대시보드에 한 줄로만 둔다.
 const FLOW = [
   { label: "상품 찾기", href: "/deal-hunter" },
   { label: "Product Center 검수", href: "/atlas/product-center" },
@@ -73,8 +85,28 @@ export default function AtlasPage() {
           </p>
         </header>
 
+        <section className="rounded-xl border border-emerald-700 bg-zinc-900 p-5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-emerald-400">지금 운영 중심</p>
+          <Link href={PRIMARY.href} className="mt-1 block text-xl font-bold hover:text-emerald-300">
+            {PRIMARY.title} →
+          </Link>
+          <p className="mt-1 text-sm text-zinc-400">{PRIMARY.description}</p>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            {PRIMARY.lanes.map((lane) => (
+              <Link
+                key={lane.href}
+                href={lane.href}
+                className="rounded-lg border border-zinc-700 p-3 text-sm hover:border-emerald-600"
+              >
+                <span className="font-semibold text-zinc-100">{lane.label}</span>
+                <span className="mt-1 block text-xs text-zinc-400">{lane.detail}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
         <section className="rounded-xl border border-sky-900 bg-zinc-900 p-4">
-          <h2 className="text-sm font-semibold text-sky-200">운영 순서</h2>
+          <h2 className="text-sm font-semibold text-sky-200">상품 제작 순서 (레거시 · 필요할 때만)</h2>
           <ol className="mt-2 flex flex-wrap items-center gap-x-1 gap-y-2 text-sm">
             {FLOW.map((step, i) => (
               <li key={step.label} className="flex items-center gap-1">

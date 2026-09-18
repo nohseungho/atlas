@@ -3187,7 +3187,7 @@
       ],
       "trust": {
         "methodology": "This guide uses European Commission sources for EES status, scope, biometric registration and ETIAS timing. It avoids predicting border wait times and tells travelers to re-check official rules before departure because implementation details and ETIAS timing can change.",
-        "independenceNote": "This guide is based on the official European Commission sources listed below. Recheck the latest EU and destination-specific entry rules before departure."
+        "independenceNote": "This guide is based on official European Commission sources listed above. It contains no affiliate links or sponsored recommendations. Entry rules can change; recheck the official EU pages before you travel."
       },
       "relatedArticles": [
         "art_002",
@@ -3200,14 +3200,14 @@
         {
           "key": "featured",
           "role": "featured",
-          "placement": "after quick answer",
+          "placement": "afterSection:Quick Answer",
           "alt": "Miji reviewing a passport and European travel checklist before departure",
           "prompt": "Miji, the same Korean woman in her 30s from the ATLAS identity reference, at a bright travel-planning desk with passport, Europe map and phone, natural editorial travel photography, realistic, no text or logos.",
           "width": 1600,
           "height": 900,
           "fit": "cover",
           "required": true,
-          "localSrc": "",
+          "localSrc": "/images/articles/europe-ees-travel-checklist-2026/featured.png",
           "publicUrl": "",
           "channelId": "global_blogger",
           "assetScope": "global",
@@ -3219,14 +3219,14 @@
         {
           "key": "border",
           "role": "context",
-          "placement": "after What Happens at the Border",
+          "placement": "afterSection:What Happens at the Border",
           "alt": "Miji at a European airport border-control area holding her passport",
           "prompt": "Miji at a modern European airport border-control area holding her passport, calm documentary travel scene, natural light, realistic editorial photography, no readable signs, no logos.",
           "width": 1600,
           "height": 900,
           "fit": "cover",
           "required": true,
-          "localSrc": "",
+          "localSrc": "/images/articles/europe-ees-travel-checklist-2026/border.png",
           "publicUrl": "",
           "channelId": "global_blogger",
           "assetScope": "global",
@@ -3238,14 +3238,14 @@
         {
           "key": "comparison",
           "role": "comparison",
-          "placement": "after EES vs ETIAS",
+          "placement": "afterSection:EES vs ETIAS",
           "alt": "Miji comparing two travel-preparation cards labeled conceptually as border check and pre-travel authorization",
           "prompt": "Miji comparing two clean travel-planning cards beside passport and laptop, one representing border registration and one pre-travel authorization, no visible text, realistic editorial photography.",
           "width": 1600,
           "height": 900,
           "fit": "cover",
           "required": true,
-          "localSrc": "",
+          "localSrc": "/images/articles/europe-ees-travel-checklist-2026/comparison.png",
           "publicUrl": "",
           "channelId": "global_blogger",
           "assetScope": "global",
@@ -3257,14 +3257,14 @@
         {
           "key": "offline",
           "role": "action",
-          "placement": "after What to Save Offline",
+          "placement": "afterSection:What to Save Offline Before Departure",
           "alt": "Miji saving travel documents to her phone before a Europe trip",
           "prompt": "Miji saving travel documents on her phone next to passport, hotel booking folder, charger and small travel wallet, realistic editorial photography, no visible personal data or logos.",
           "width": 1600,
           "height": 900,
           "fit": "cover",
           "required": true,
-          "localSrc": "",
+          "localSrc": "/images/articles/europe-ees-travel-checklist-2026/offline.png",
           "publicUrl": "",
           "channelId": "global_blogger",
           "assetScope": "global",
@@ -3276,14 +3276,14 @@
         {
           "key": "checklist",
           "role": "checklist",
-          "placement": "before FAQ",
+          "placement": "afterSection:Common Mistakes",
           "alt": "Miji completing a Europe entry checklist beside a packed carry-on",
           "prompt": "Miji completing a travel checklist beside a packed carry-on suitcase, passport, power bank and Europe map, warm practical editorial travel photography, no text or logos.",
           "width": 1600,
           "height": 900,
           "fit": "cover",
           "required": true,
-          "localSrc": "",
+          "localSrc": "/images/articles/europe-ees-travel-checklist-2026/checklist.png",
           "publicUrl": "",
           "channelId": "global_blogger",
           "assetScope": "global",
@@ -3348,7 +3348,7 @@
       "characterPolicyVersion": "ATLAS_CHARACTER_CHANNEL_V1",
       "approvedAt": "",
       "createdAt": "2026-09-19T00:45:00.000+09:00",
-      "updatedAt": "2026-09-18T16:36:33.855Z"
+      "updatedAt": "2026-09-18T17:16:31.232Z"
     }
   ]
 }

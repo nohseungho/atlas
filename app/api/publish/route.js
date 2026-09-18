@@ -23,6 +23,7 @@ import { buildBloggerHtml } from "@/lib/html-exporter";
 import { selectLabels } from "@/lib/atlas/seo-engine";
 import { PUBLISH_STATE, publishStateOf, matchLivePost } from "@/lib/atlas/publisher-sync";
 import { ATLAS_CHANNEL_ID, validateChannelIdentity } from "@/lib/atlas/character-channel-policy";
+import { isPublicImageUrl } from "@/lib/atlas/revenue-layout-engine";
 
 export const runtime = "nodejs";
 
@@ -81,15 +82,18 @@ export async function POST(request) {
     );
   }
 
-  const missingRequiredVisuals = (article.visualAssets || []).filter(
-    (asset) => asset?.required === true && !/^https:\/\//i.test(String(asset.publicUrl || "").trim())
+  // Every required Miji asset must already carry a public https URL. Publish
+  // mode silently drops images without one, so a post would otherwise go live
+  // text-only. Mirrors NAVER_IMAGE_ASSETS_REQUIRED on the Korea side.
+  const missingRequiredVisuals = (Array.isArray(article.visualAssets) ? article.visualAssets : []).filter(
+    (asset) => asset?.required === true && !isPublicImageUrl(asset?.publicUrl)
   );
   if (missingRequiredVisuals.length) {
     return NextResponse.json(
       {
         status: "assets_required",
         errorCode: "GLOBAL_IMAGE_ASSETS_REQUIRED",
-        error: "필수 미지 이미지가 모두 연결되기 전에는 해외 글을 발행할 수 없습니다.",
+        error: "필수 미지 이미지가 모두 연결되기 전에는 해외 글을 발행할 수 없습니다. Publisher에서 이미지 공개 준비를 먼저 실행하세요.",
         missingImages: missingRequiredVisuals.map((asset) => asset.key || asset.role || "image"),
       },
       { status: 409 },
