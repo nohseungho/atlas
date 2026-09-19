@@ -77,3 +77,19 @@ Naver는 AdSense 대상이 아니지만 쿠팡 파트너스 고지 위치가 글
 - AdSense 콘솔 거절 사유·정책 위반 알림
 - Search Console 색인/소유권
 - 403을 반환한 정부·기관 링크 23개의 실제 작동 여부(브라우저에서 수동 클릭 확인 필요)
+
+## 6. LIVE 수정 결과 (2026-09-19, 감사 후 실행)
+
+경로: `POST /api/atlas/live-refresh` (신규, posts.patch / pages.patch 전용, `confirm:true` 필수, postId+publishedUrl 검증, 운영정책 게이트 통과 후 전송).
+
+| 대상 | 조치 | 결과 |
+|---|---|---|
+| art_021 (EES) | 최신 어셈블러 HTML 재반영(Quick Answer 선두, Sources 3개 `<a target=_blank rel=noopener>`), 라벨 5개, 검색설명 146자 | LIVE 확인: Sources 링크 3개, 이미지 5장, og:description이 답변 문장으로 시작 |
+| art_002 (Featured 대상) | 라이브 본문 유지 + 준비된 Cloudinary 이미지 3장 삽입(top / Step 4 앞 / FAQ 앞), 깨진 라벨 7개 → `Travel Insurance, International Travel, Trip Cost`, 검색설명 156자 | LIVE 확인: 이미지 3장, 라벨 3개, 문장조각 라벨 0 |
+| art_011 (Seniors) | 라벨 4개 + 검색설명 154자 (본문 무변경) | API 200 |
+| Privacy Policy 페이지 | "Advertising and Google AdSense" 단락(광고 쿠키·Ads Settings 해제·aboutads.info) 을 "External and Affiliate Links" 앞에 삽입 | LIVE 확인: 문구·링크 존재, 중복 0 |
+
+미수정(API로 불가, Blogger UI 수동):
+- 가로 스크롤 32px — 테마 → 맞춤설정 → 고급 → CSS 추가: `.centered-top-container{box-sizing:border-box!important}`
+- 홈 Featured 교체 — 테마 HTML `atlas-featured` 블록의 제목/설명/링크 교체(후보: art_021 또는 art_011). 현 Featured(art_002)는 이미지·라벨이 정리되어 임시로는 볼 만한 상태.
+- 검색 설명 노출 — 설정 → 메타 태그 → "검색 설명 사용" ON. customMetaData는 API로 저장됐으나 이 설정이 꺼져 있어 `<meta name="description">`이 아직 출력되지 않음.
