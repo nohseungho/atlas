@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { readJson, writeJson } from "@/lib/data-store";
 import { KOREA_DRAFT_STATE, canPublishKoreaDraft, publishBlockers, validateKoreaDraft } from "@/lib/atlas/korea-product-pipeline";
 import { runNaverBrowserJob } from "@/lib/atlas/naver-browser-publisher";
+import { evaluateKoreaDraft } from "@/lib/atlas/policy-validator";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -26,11 +27,6 @@ function patch(items, id, values) {
   return items[index];
 }
 
-function missingRequiredImages(draft) {
-  // product_photo 슬롯은 실제 제품 사진이 연결될 때만 업로드하며, 비어 있어도 반영을 막지 않는다. optional/required:false 슬롯도 발행을 막지 않는다.
-  return (draft.images || []).filter((img) => img.role !== "product_photo" && img.optional !== true && img.required !== false && !String(img.src || "").trim()).map((img) => img.id || img.role || "image");
-}
-
 export async function POST(request) {
   const body = await request.json().catch(() => ({}));
   const id = String(body.id || "");
@@ -46,13 +42,22 @@ export async function POST(request) {
     return NextResponse.json({ status: "rejected", issues: validation.issues }, { status: 400 });
   }
 
-  const missingImages = missingRequiredImages(draft);
-  if (missingImages.length) {
+  // Operating-policy gate (lib/atlas/operating-policy.js): 수호 캐릭터 고정,
+  // 보호글 logNo, 기발행 중복, 필수 수호 이미지. 첫 위반 코드로 차단한다.
+  // 발행(publish)뿐 아니라 편집기 스테이징(stage)에도 같은 규칙을 적용한다.
+  const policy = evaluateKoreaDraft(draft);
+  if (!policy.ok) {
+    const first = policy.blocking[0];
+    const missingImages = first.code === "NAVER_IMAGE_ASSETS_REQUIRED" ? first.detail.replace(/^missing:\s*/, "").split(", ") : undefined;
     return NextResponse.json({
-      status: "assets_required",
-      errorCode: "NAVER_IMAGE_ASSETS_REQUIRED",
+      status: first.code === "NAVER_IMAGE_ASSETS_REQUIRED" ? "assets_required" : first.code === "ALREADY_PUBLISHED" ? "duplicate" : "rejected",
+      errorCode: first.code,
       missingImages,
-      error: `본문 이미지 ${missingImages.length}개가 아직 로컬 파일과 연결되지 않았습니다.`,
+      publishedUrl: first.code === "ALREADY_PUBLISHED" ? draft.publishedUrl || "" : undefined,
+      policy: policy.results,
+      error: missingImages
+        ? `본문 이미지 ${missingImages.length}개가 아직 로컬 파일과 연결되지 않았습니다.`
+        : `운영 정책 위반으로 중단했습니다: ${first.id}${first.detail ? ` (${first.detail})` : ""}`,
     }, { status: 409 });
   }
 
@@ -63,10 +68,6 @@ export async function POST(request) {
   const blockers = mode === "publish" ? publishBlockers(draft) : [];
   if (blockers.length) {
     return NextResponse.json({ status: "rejected", errorCode: "MONETIZATION_REQUIRED", blockers, error: `제휴링크와 연결된 이미지가 있어야 실제 발행합니다: ${blockers.join(", ")}` }, { status: 409 });
-  }
-
-  if (draft.state === KOREA_DRAFT_STATE.PUBLISHED) {
-    return NextResponse.json({ status: "duplicate", errorCode: "ALREADY_PUBLISHED", publishedUrl: draft.publishedUrl || "" }, { status: 409 });
   }
 
   if (inFlight.has(id)) {

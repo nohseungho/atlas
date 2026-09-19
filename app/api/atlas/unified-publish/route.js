@@ -5,6 +5,8 @@ import { readPublicSource, xmlValue } from "@/lib/atlas/unified-evidence";
 import { createBloggerSession } from "@/lib/atlas/blogger-sync";
 import { bloggerProvider } from "@/lib/atlas/providers/blogger-provider";
 import { readJson } from "@/lib/data-store";
+import { evaluateUnifiedDraft } from "@/lib/atlas/policy-validator";
+import { summarizePolicies } from "@/lib/atlas/operating-policy";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -25,6 +27,13 @@ function clientState(state) {
     delete channel.candidates;
     channel.slots.forEach((p) => { if (p) delete p.selection; });
   }
+  // Operating-policy view (never persisted): each prepared draft carries its
+  // PASS/FAIL results, and each channel lists the rules that gate it.
+  for (const draft of Object.values(view.drafts || {})) {
+    try { draft.policy = evaluateUnifiedDraft(draft); }
+    catch (e) { draft.policy = { ok: false, errorCode: "POLICY_EVALUATION_FAILED", results: [], blocking: [], warnings: [], error: String(e?.message || e) }; }
+  }
+  view.policies = Object.fromEntries(Object.keys(view.channels).map((channel) => [channel, summarizePolicies(channel)]));
   return view;
 }
 export async function GET() {

@@ -23,7 +23,7 @@ import { buildBloggerHtml } from "@/lib/html-exporter";
 import { selectLabels } from "@/lib/atlas/seo-engine";
 import { PUBLISH_STATE, publishStateOf, matchLivePost } from "@/lib/atlas/publisher-sync";
 import { ATLAS_CHANNEL_ID, validateChannelIdentity } from "@/lib/atlas/character-channel-policy";
-import { isPublicImageUrl } from "@/lib/atlas/revenue-layout-engine";
+import { evaluateGlobalArticle } from "@/lib/atlas/policy-validator";
 
 export const runtime = "nodejs";
 
@@ -82,24 +82,6 @@ export async function POST(request) {
     );
   }
 
-  // Every required Miji asset must already carry a public https URL. Publish
-  // mode silently drops images without one, so a post would otherwise go live
-  // text-only. Mirrors NAVER_IMAGE_ASSETS_REQUIRED on the Korea side.
-  const missingRequiredVisuals = (Array.isArray(article.visualAssets) ? article.visualAssets : []).filter(
-    (asset) => asset?.required === true && !isPublicImageUrl(asset?.publicUrl)
-  );
-  if (missingRequiredVisuals.length) {
-    return NextResponse.json(
-      {
-        status: "assets_required",
-        errorCode: "GLOBAL_IMAGE_ASSETS_REQUIRED",
-        error: "필수 미지 이미지가 모두 연결되기 전에는 해외 글을 발행할 수 없습니다. Publisher에서 이미지 공개 준비를 먼저 실행하세요.",
-        missingImages: missingRequiredVisuals.map((asset) => asset.key || asset.role || "image"),
-      },
-      { status: 409 },
-    );
-  }
-
   const state = publishStateOf(article);
 
   // (1) Duplicate guard — already published.
@@ -138,6 +120,31 @@ export async function POST(request) {
     return NextResponse.json(
       { status: "duplicate", errorCode: "ALREADY_PUBLISHED", error: "이미 이 블로그에 발행된 글입니다. 중복 발행이 차단되었습니다." },
       { status: 409 }
+    );
+  }
+
+  // (3b) Operating-policy gate — every settled rule in lib/atlas/operating-policy.js
+  // is evaluated against the exact HTML that would be sent (required public
+  // images, single render per image, no duplicate FAQ/Sources/Disclaimer, no CTA
+  // without an active affiliate plan, clickable sources, layout container,
+  // neutral trust note). The first failing rule's code is returned; nothing is
+  // written and Blogger is never contacted.
+  // Same body selection as the insert below: MASTER when approved, else draft.
+  const gateContent = article.masterApproved
+    ? { ...article, bodyMarkdown: article.masterMarkdown, bodyHtml: article.masterHtml }
+    : article;
+  const policy = evaluateGlobalArticle(article, { html: buildBloggerHtml(gateContent), succeededJobCount: 0 });
+  if (!policy.ok) {
+    const first = policy.blocking[0];
+    return NextResponse.json(
+      {
+        status: first.code === "GLOBAL_IMAGE_ASSETS_REQUIRED" ? "assets_required" : "policy_rejected",
+        errorCode: first.code,
+        error: `운영 정책 위반으로 발행을 중단했습니다: ${first.id}${first.detail ? ` (${first.detail})` : ""}`,
+        missingImages: first.code === "GLOBAL_IMAGE_ASSETS_REQUIRED" ? first.detail.replace(/^missing:\s*/, "").split(", ") : undefined,
+        policy: policy.results,
+      },
+      { status: 409 },
     );
   }
 

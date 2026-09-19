@@ -6,6 +6,8 @@ import Link from "next/link";
 import { buildBloggerHtml, buildLocalPreviewHtml, getBloggerChecklist } from "@/lib/html-exporter";
 import { flagAuthIssue, clearAuthIssue } from "@/lib/atlas/blog-auth-status";
 import { isPublicImageUrl } from "@/lib/atlas/revenue-layout-engine";
+import { evaluateGlobalArticle } from "@/lib/atlas/policy-validator";
+import { getPolicy } from "@/lib/atlas/operating-policy";
 
 const VISUAL_ASSET_LABELS = {
   featured: "대표 이미지",
@@ -327,6 +329,8 @@ function PublisherContent() {
             <BloggerDraftPanel article={selected} blogs={blogs} />
 
             <BloggerChecklist article={selected} />
+
+            <PolicyPanel key={`${selected.id}-policy`} article={selected} />
 
             <VisualAssetsPanel key={`${selected.id}-assets`} article={selected} onSaved={refreshAll} />
 
@@ -974,6 +978,56 @@ function BloggerChecklist({ article }) {
             <span className="text-xs text-zinc-500">{item.detail}</span>
           </li>
         ))}
+      </ul>
+    </div>
+  );
+}
+
+// Operating-policy check: the same evaluator /api/publish runs right before
+// posts.insert, applied to the same HTML, so what this panel shows is what the
+// gate will do. "차단" on no_duplicate_publish for a LIVE article is expected —
+// that is the rule doing its job.
+const POLICY_STATUS = {
+  pass: { label: "PASS", cls: "bg-emerald-950 text-emerald-300" },
+  fail: { label: "차단", cls: "bg-red-950 text-red-300" },
+  warn: { label: "검토", cls: "bg-amber-950 text-amber-300" },
+  skip: { label: "—", cls: "bg-zinc-800 text-zinc-400" },
+};
+
+function PolicyPanel({ article }) {
+  let evaluation;
+  try {
+    evaluation = evaluateGlobalArticle(article, { html: buildBloggerHtml(article) });
+  } catch (err) {
+    evaluation = { ok: false, results: [], errorCode: "POLICY_EVALUATION_FAILED", blocking: [], warnings: [], error: String(err?.message || err) };
+  }
+  const failing = evaluation.results.filter((r) => r.status === "fail").length;
+  const warning = evaluation.results.filter((r) => r.status === "warn").length;
+  return (
+    <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h3 className="text-sm font-semibold text-zinc-300">운영 정책 검사</h3>
+        <span className={`rounded px-2 py-0.5 text-xs ${failing ? "bg-red-950 text-red-300" : warning ? "bg-amber-950 text-amber-300" : "bg-emerald-950 text-emerald-300"}`}>
+          {failing ? `${failing}개 차단` : warning ? `${warning}개 검토` : "전체 PASS"}
+        </span>
+      </div>
+      <p className="mt-1 text-xs text-zinc-500">
+        발행 직전 /api/publish 가 같은 검사를 다시 실행합니다. 차단 항목이 있으면 그 errorCode로 발행이 중단됩니다.
+      </p>
+      {evaluation.error && <p className="mt-2 text-xs text-red-400">{evaluation.error}</p>}
+      <ul className="mt-3 space-y-1.5">
+        {evaluation.results.map((r) => {
+          const status = POLICY_STATUS[r.status] || POLICY_STATUS.skip;
+          const policy = getPolicy(r.id);
+          return (
+            <li key={r.id} className="flex flex-wrap items-baseline gap-2 text-xs">
+              <span className={`shrink-0 rounded px-1.5 py-0.5 font-semibold ${status.cls}`}>{status.label}</span>
+              <span className="text-zinc-200">{policy?.title || r.id}</span>
+              <span className="font-mono text-[11px] text-zinc-500">{r.code}</span>
+              {r.detail && <span className="basis-full text-zinc-500 sm:basis-auto">{r.detail}</span>}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

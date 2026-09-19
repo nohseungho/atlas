@@ -45,6 +45,17 @@ function BlogReview({ draft, busy, act }) {
   </details>;
 }
 
+const POLICY_BADGE = { pass: "bg-emerald-950 text-emerald-300", fail: "bg-red-950 text-red-300", warn: "bg-amber-950 text-amber-300", skip: "bg-zinc-800 text-zinc-400" };
+const POLICY_LABEL = { pass: "PASS", fail: "차단", warn: "검토", skip: "—" };
+
+// Per-draft operating-policy results computed by the API (lib/atlas/policy-validator.js).
+function PolicyResults({ policy }) {
+  if (!policy?.results?.length) return null;
+  return <ul aria-label="운영 정책 검사" className="flex flex-wrap gap-1.5 text-[11px]">
+    {policy.results.map((r) => <li key={r.id} title={r.detail || r.code} className={`rounded px-1.5 py-0.5 ${POLICY_BADGE[r.status] || POLICY_BADGE.skip}`}>{POLICY_LABEL[r.status] || "—"} · {r.code}</li>)}
+  </ul>;
+}
+
 function Materials({ product, draft, busy, act }) {
   return <section aria-label={`${product.name} 제작자료`} className="space-y-3 rounded-xl bg-zinc-950 p-3">
     <h3 className="text-sm font-semibold text-emerald-300">선택한 상품으로 준비하기</h3>
@@ -56,6 +67,7 @@ function Materials({ product, draft, busy, act }) {
       <Image src={`/${draft.masterAssetPath.replace(/^public\//, "")}`} alt={`${draft.character === "miji" ? "미지" : "수호"} 자동 연결 이미지`} width={64} height={64} className="h-16 w-16 rounded object-contain" />
       <p>{draft.character === "miji" ? "미지" : "수호"} 이미지 자동 연결<br />진행자 이미지이며 제품 사진은 아닙니다.</p>
     </div>}
+    {(draft?.prepared?.blog || draft?.prepared?.shorts) && <PolicyResults policy={draft.policy} />}
     {draft?.prepared?.blog && <BlogReview key={`${draft.id}:${draft.product.checkedAt}`} draft={draft} busy={busy} act={act} />}
     {draft?.prepared?.shorts && <details className="rounded-lg border border-zinc-700 p-3" open>
       <summary className="cursor-pointer font-medium">쇼핑 연결자료</summary>
@@ -105,6 +117,13 @@ export default function UnifiedPublish() {
         </article>;
       })}
       {id === "korea_naver" && data.recovery?.korea_naver?.message && <p className="rounded-lg border border-zinc-800 bg-zinc-900 p-3 text-xs text-zinc-300">{data.recovery.korea_naver.message}</p>}
+      {data.policies?.[id]?.length > 0 && <details className="rounded-xl border border-zinc-800 p-3 text-sm">
+        <summary className="cursor-pointer">적용 중인 운영 정책 {data.policies[id].length}개</summary>
+        <ul className="mt-2 space-y-1 text-xs text-zinc-300">
+          {data.policies[id].map((p) => <li key={p.id} className="flex flex-wrap gap-2"><span className="rounded bg-zinc-800 px-1.5 py-0.5 text-[11px] text-zinc-400">{p.enforcement === "gate" ? "발행 차단" : p.enforcement === "warn" ? "검토 표시" : p.enforcement === "env" ? "환경 잠금" : "렌더 기본값"}</span><span>{p.title}</span><span className="font-mono text-[11px] text-zinc-500">{p.code}</span></li>)}
+        </ul>
+        <p className="mt-2 text-xs text-zinc-500">규칙 원본: lib/atlas/operating-policy.js · 위반 시 해당 errorCode로 발행이 중단됩니다.</p>
+      </details>}
       <details className="rounded-xl border border-zinc-800 p-3 text-sm">
         <summary className="cursor-pointer">저장한 자료·발행 결과</summary>
         <div className="mt-3 space-y-3">
