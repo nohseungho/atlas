@@ -391,9 +391,14 @@
       "lastError": null,
       "nextRetryAt": null,
       "createdAt": "2026-09-18T17:39:31.801Z",
-      "updatedAt": "2026-09-18T17:39:34.572Z",
+      "updatedAt": "2026-09-19T01:00:58.897Z",
       "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/09/europe-ees-travel-checklist-2026-what.html",
-      "externalId": "551494807489939526"
+      "externalId": "551494807489939526",
+      "imageSync": {
+        "status": "success",
+        "message": "Cloudinary 이미지 반영 완료",
+        "syncedAt": "2026-09-19T01:00:58.897Z"
+      }
     }
   ],
   "history": [
