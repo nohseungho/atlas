@@ -399,6 +399,21 @@
         "message": "Cloudinary 이미지 반영 완료",
         "syncedAt": "2026-09-19T01:00:58.897Z"
       }
+    },
+    {
+      "id": "job_027",
+      "articleId": "art_022",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "attemptCount": 1,
+      "maxAttempts": 3,
+      "lastError": null,
+      "nextRetryAt": null,
+      "createdAt": "2026-09-20T09:21:59.907Z",
+      "updatedAt": "2026-09-20T09:22:03.410Z",
+      "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/09/credit-card-travel-insurance-is-it.html",
+      "externalId": "3325899877125386472"
     }
   ],
   "history": [
@@ -1325,6 +1340,39 @@
       "message": "Blogger 자동 발행 성공",
       "error": null,
       "createdAt": "2026-09-18T17:39:34.574Z"
+    },
+    {
+      "id": "hist_085",
+      "jobId": "job_027",
+      "articleId": "art_022",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "queued",
+      "message": "Job 생성",
+      "error": null,
+      "createdAt": "2026-09-20T09:21:59.910Z"
+    },
+    {
+      "id": "hist_086",
+      "jobId": "job_027",
+      "articleId": "art_022",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "running",
+      "message": "자동 발행 시작",
+      "error": null,
+      "createdAt": "2026-09-20T09:21:59.914Z"
+    },
+    {
+      "id": "hist_087",
+      "jobId": "job_027",
+      "articleId": "art_022",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "message": "Blogger 자동 발행 성공",
+      "error": null,
+      "createdAt": "2026-09-20T09:22:03.412Z"
     }
   ]
 }
