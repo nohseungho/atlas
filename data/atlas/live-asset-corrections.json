@@ -12,6 +12,28 @@
       "status": "approved",
       "bloggerPostId": "8631951760942060447",
       "approvedAt": "2026-09-14T14:17:55.220Z"
+    },
+    {
+      "id": "global_featured-miji_8257964298533269720",
+      "channelId": "global_blogger",
+      "platform": "blogger",
+      "articleUrl": "https://atlas-money-2026.blogspot.com/2026/08/adventure-travel-insurance-are-hiking.html",
+      "bloggerPostId": "8257964298533269720",
+      "assetRole": "featured",
+      "character": "miji",
+      "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+      "replacementAssetPath": "public/images/articles/adventure-travel-insurance-hiking-diving-skiing/featured-miji.png",
+      "replacementPublicUrl": "https://res.cloudinary.com/dmfbj4tu/image/upload/v1789911252/atlas/articles/adventure-travel-insurance-hiking-diving-skiing/featured-miji.png",
+      "before": {
+        "src": "https://res.cloudinary.com/dmfbj4tu/image/upload/c_fill,f_webp,h_900,q_auto,w_1600/v1787142792/atlas/articles/adventure-travel-insurance-hiking-diving-skiing/featured?_a=BAMAAAX00",
+        "alt": "Suho checks a paper trail map and backpack straps at a misty alpine trailhead before hiking abroad."
+      },
+      "after": {
+        "src": "https://res.cloudinary.com/dmfbj4tu/image/upload/v1789911252/atlas/articles/adventure-travel-insurance-hiking-diving-skiing/featured-miji.png",
+        "alt": "Miji, the ATLAS travel guide presenter, reviewing adventure travel insurance before a hiking, diving, or skiing trip abroad"
+      },
+      "status": "applied",
+      "appliedAt": "2026-09-20T13:34:17.233Z"
     }
   ]
 }

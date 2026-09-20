@@ -22,7 +22,9 @@ import { buildBloggerHtml } from "@/lib/html-exporter";
 import { bloggerProvider } from "@/lib/atlas/providers/blogger-provider";
 import { createBloggerSession, isAuthError, RECONNECT_CODE } from "@/lib/atlas/blogger-sync";
 import { evaluateGlobalArticle } from "@/lib/atlas/policy-validator";
-import { insertFiguresIntoLiveHtml, insertIntoPageHtml } from "@/lib/atlas/live-refresh";
+import { insertFiguresIntoLiveHtml, insertIntoPageHtml, replaceLiveImage } from "@/lib/atlas/live-refresh";
+import { resolveLocalAssetFile, uploadArticleImage } from "@/lib/atlas/providers/cloudinary-provider";
+import { ATLAS_CHANNEL_ID, validateChannelIdentity } from "@/lib/atlas/character-channel-policy";
 import { getPolicy, ENFORCEMENT } from "@/lib/atlas/operating-policy";
 
 export const runtime = "nodejs";
@@ -62,6 +64,52 @@ export async function POST(request) {
       if (!next.applied) return NextResponse.json({ status: "noop", ...plan });
       await session.run((at) => bloggerProvider.updatePage(session.bloggerBlogId, pageId, { html: next.html }, { accessToken: at }));
       return NextResponse.json({ status: "ok", ...plan });
+    }
+
+    // ── Single-image asset correction on a live post (by postId) ──────────
+    // For posts that exist only on Blogger (no local article record): swap one
+    // <img> for a Miji-namespace replacement. The live body is kept byte-for-byte
+    // otherwise. The replacement must pass the global character lock, and the
+    // correction is recorded in data/atlas/live-asset-corrections.json.
+    if (body.kind === "asset-correction") {
+      const postId = String(body.postId || "");
+      const matchSrc = String(body.matchSrc || "").trim();
+      const replacementLocalSrc = String(body.replacementLocalSrc || "").trim();
+      const newAlt = String(body.newAlt || "").trim();
+      if (!postId || !matchSrc || !replacementLocalSrc || !newAlt) return NextResponse.json({ errorCode: "POST_ID_MATCH_SRC_REPLACEMENT_ALT_REQUIRED" }, { status: 400 });
+
+      const identity = validateChannelIdentity(
+        { channelId: ATLAS_CHANNEL_ID.GLOBAL_BLOGGER, character: "miji", visualAssets: [{ key: "replacement", localSrc: replacementLocalSrc, alt: newAlt }] },
+        ATLAS_CHANNEL_ID.GLOBAL_BLOGGER,
+      );
+      if (!identity.ok) return NextResponse.json({ status: "rejected", errorCode: "ATLAS_CHANNEL_ASSET_MISMATCH", issues: identity.issues }, { status: 409 });
+      const filePath = resolveLocalAssetFile(replacementLocalSrc);
+      if (!filePath) return NextResponse.json({ errorCode: "REPLACEMENT_FILE_NOT_FOUND" }, { status: 400 });
+
+      const live = await session.run((at) => bloggerProvider.getPostAdmin(session.bloggerBlogId, postId, at));
+      if (!live) return NextResponse.json({ errorCode: "POST_NOT_FOUND" }, { status: 404 });
+      const dry = replaceLiveImage(live.content, { matchSrc, newSrc: "https://res.cloudinary.com/dry-run/plan.png", newAlt });
+      const plan = { kind: "asset-correction", postId: live.id, url: live.url, liveTitle: live.title, matchSrc, replacementLocalSrc, applied: dry.applied, reason: dry.reason, before: dry.before, imagesBefore: (live.content.match(/<img\b/gi) || []).length };
+      if (!dry.applied) return NextResponse.json({ status: "noop", ...plan });
+      if (!confirm) return NextResponse.json({ status: "plan", ...plan });
+
+      const slug = String(body.slug || "").trim() || "live-asset-corrections";
+      const key = String(body.key || "").trim() || `correction-${postId}`;
+      const uploaded = await uploadArticleImage({ slug, key, filePath });
+      const next = replaceLiveImage(live.content, { matchSrc, newSrc: uploaded.secureUrl, newAlt });
+      if (!next.applied) return NextResponse.json({ status: "noop", ...plan, reason: next.reason });
+      await session.run((at) => bloggerProvider.updatePost(session.bloggerBlogId, live.id, { html: next.html }, { accessToken: at }));
+
+      const corrections = readJson("live-asset-corrections.json");
+      corrections.items = Array.isArray(corrections.items) ? corrections.items : [];
+      corrections.items.push({
+        id: `global_${key}_${postId}`, channelId: ATLAS_CHANNEL_ID.GLOBAL_BLOGGER, platform: "blogger", articleUrl: live.url, bloggerPostId: live.id,
+        assetRole: "featured", character: "miji", masterAssetPath: "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        replacementAssetPath: `public${replacementLocalSrc}`, replacementPublicUrl: uploaded.secureUrl,
+        before: next.before, after: next.after, status: "applied", appliedAt: new Date().toISOString(),
+      });
+      writeJson("live-asset-corrections.json", corrections);
+      return NextResponse.json({ status: "ok", ...plan, after: next.after, publicUrl: uploaded.secureUrl, imagesAfter: (next.html.match(/<img\b/gi) || []).length });
     }
 
     // ── Post edit ─────────────────────────────────────────────────────────
