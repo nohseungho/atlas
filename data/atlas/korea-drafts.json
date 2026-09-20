@@ -300,13 +300,13 @@
           "blockedReason": "파트너스 승인 전: 공식 상품 이미지 미확보."
         }
       ],
-      "state": "approved",
+      "state": "published",
       "approvedAt": "2026-09-20T09:50:07.478Z",
-      "publishedAt": "",
-      "publishedUrl": "",
-      "lastError": "NAVER_TITLE_EDITOR_NOT_FOUND (editor page stayed about:blank after the Edge new-tab race; worker navigation fixed in scripts/naver-browser-worker.mjs). Naver session in ~/.atlas/naver-profile also expired earlier (NAVER_LOGIN_TIMEOUT). Re-run publish after logging in.",
+      "publishedAt": "2026-09-20T13:19:40.342Z",
+      "publishedUrl": "https://blog.naver.com/who-ami/224418047839",
+      "lastError": "",
       "createdAt": "2026-09-11T00:00:00.000Z",
-      "updatedAt": "2026-09-20T10:10:49.717Z",
+      "updatedAt": "2026-09-20T13:19:40.342Z",
       "channelId": "korea_naver",
       "assetScope": "korea",
       "assetNamespace": ".atlas-data/korea-assets",
@@ -316,7 +316,8 @@
       "visualMode": "warm-practical-illustration",
       "styleReferenceAssetPath": "public/atlas/korea/suho/multitap/featured.png",
       "characterPolicyVersion": "ATLAS_CHARACTER_CHANNEL_V1",
-      "automationStatus": "failed"
+      "automationStatus": "published",
+      "logNoPublished": "224418047839"
     }
   ]
 }
