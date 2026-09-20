@@ -306,7 +306,7 @@
       "publishedUrl": "https://blog.naver.com/who-ami/224418047839",
       "lastError": "",
       "createdAt": "2026-09-11T00:00:00.000Z",
-      "updatedAt": "2026-09-20T13:19:40.342Z",
+      "updatedAt": "2026-09-20T13:48:00.358Z",
       "channelId": "korea_naver",
       "assetScope": "korea",
       "assetNamespace": ".atlas-data/korea-assets",
@@ -317,7 +317,162 @@
       "styleReferenceAssetPath": "public/atlas/korea/suho/multitap/featured.png",
       "characterPolicyVersion": "ATLAS_CHARACTER_CHANNEL_V1",
       "automationStatus": "published",
-      "logNoPublished": "224418047839"
+      "logNoPublished": "224418047839",
+      "correctedBy": "kr_philips_3000_kettle_fix_224418047839"
+    },
+    {
+      "id": "kr_philips_3000_kettle_fix_224418047839",
+      "platform": "naver",
+      "contentType": "existing_post_update",
+      "blogId": "who-ami",
+      "logNo": "224418047839",
+      "title": "필립스 3000 시리즈 전기주전자, 매일 쓰기 좋은 이유와 아쉬운 점",
+      "productName": "필립스 3000 시리즈 무선 전기주전자",
+      "productUrl": "https://www.philips.co.kr/c-p/HD9318_20/series-3000-plastic-kettle",
+      "affiliateUrl": "",
+      "productLinkLabel": "필립스 3000 시리즈 공식 제품 페이지(HD9318/20) 보기",
+      "productInfo": {
+        "source": "manufacturer_official",
+        "sourceName": "필립스 코리아 공식 사이트",
+        "sourceUrls": [
+          "https://www.philips.co.kr/c-p/HD9318_20/series-3000-plastic-kettle",
+          "https://www.philips.co.kr/c-p/HD9411_00/philips-kettle-3000-series"
+        ],
+        "collectedAt": "2026-09-20T09:39:39.955Z",
+        "models": [
+          {
+            "model": "HD9318/20",
+            "capacity": "1.7L",
+            "body": "플라스틱",
+            "heating": "스테인리스 스틸 평면 열판",
+            "features": [
+              "스프링 뚜껑(자동 열림)",
+              "작동 표시등",
+              "물이 끓으면 자동 전원 차단",
+              "물 없이 가열 방지(다중 안전 시스템)"
+            ],
+            "color": "블랙"
+          },
+          {
+            "model": "HD9411/00",
+            "capacity": "1.7L",
+            "heating": "평면 스테인리스 스틸 열판(숨김형)",
+            "features": [
+              "수위 확인창",
+              "가족용 사이즈"
+            ]
+          }
+        ],
+        "price": {
+          "status": "unverified",
+          "note": "쿠팡 판매가는 자동 조회가 차단(HTTP 403)되어 확인하지 않음. 본문에 가격 숫자를 넣지 않는다."
+        },
+        "coupang": {
+          "status": "blocked",
+          "reason": "쿠팡 상품 페이지·검색은 자동 조회를 거부(403)하며 우회하지 않는다. 파트너스 Open API 키 없음(최종 승인 전)."
+        }
+      },
+      "monetization": {
+        "partnersStage": "pending",
+        "linkSource": "none",
+        "linkMode": "product_page",
+        "partnersLinkPending": true,
+        "decidedAt": "2026-09-20T09:41:57.481Z"
+      },
+      "productImageCandidates": [
+        "https://images.philips.com/is/image/philipsconsumer/vrs_f98ad82b_73b6_49d0_9d0070454b5e9d82",
+        "https://images.philips.com/is/image/philipsconsumer/vrs_f98ad82b_73b6_49d0_9d0070454b5e9d82?$png$&wid=1200&hei=630"
+      ],
+      "affiliateDisclosure": "이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받을 수 있습니다.",
+      "character": "suho",
+      "recommendationMode": "DIRECT_RECOMMENDATION",
+      "bodyHtml": "",
+      "bodyText": "집에서 전기주전자를 바꾸게 되는 계기는 대부분 비슷합니다.\n아침마다 물 끓이는 데 시간이 오래 걸리거나,\n끓고 나서 자동으로 꺼지지 않아 신경이 쓰이거나,\n주둥이 안쪽에 낀 물때가 잘 닦이지 않을 때입니다.\n\n전기주전자는 매일 쓰는 물건인데도 고를 때는 용량과 가격만 보고 사기 쉽습니다.\n그런데 물을 끓이는 전열 기구라\n자동 전원 차단, 내부 소재, 청소 편의 같은 기본기를 같이 보는 편이 마음이 편합니다.\n\n오늘 소개할 제품\n\n필립스 3000 시리즈 무선 전기주전자입니다.\n복잡한 기능 대신 물을 끓이고 자동으로 꺼지는 기본에 집중한 무선 방식 제품입니다.\n본체를 받침대에서 분리해 쓰는 구조라 주방 어디서든 따르기 편한 형태입니다.\n\n필립스 공식 사이트 기준으로 3000 시리즈 주전자는 1.7L 용량에 스테인리스 스틸 평면 열판을 쓰고,\n물이 끓으면 자동으로 전원이 꺼지는 기능과 물 없이 가열되는 것을 막는 안전 기능이 들어 있습니다.\nHD9318 같은 플라스틱 본체 모델은 스프링 뚜껑과 작동 표시등이 있고, 모델에 따라 수위 확인창 구성이 다릅니다.\n\n왜 이 제품을 골랐는지\n\n전기주전자 후보를 추릴 때 세 가지를 기준으로 봤습니다.\n첫째, 물이 끓으면 알아서 꺼지는 자동 전원 차단이 있는지.\n둘째, 입구가 넓어 안쪽까지 손이 닿고 물때 청소가 편한지.\n셋째, 브랜드 기본기 대비 가격이 부담스럽지 않은지.\n이 제품은 세 가지를 무난하게 갖춘 편이라 후보에서 먼저 눈에 들어왔습니다.\n\n특징과 좋은 점\n\n물을 붓고 버튼 하나만 누르면 끝이라 설정할 것이 없습니다.\n아침에 커피나 차 한 잔 준비하는 정도라면 이 단순함이 오히려 장점입니다.\n\n물이 끓으면 자동으로 전원이 꺼지는 기능처럼 기본 안전 기능이 갖춰져 있는지 중심으로 보기 좋습니다.\n전열 기구라 이 부분이 있는지 없는지가 매일 쓰는 안심 정도를 꽤 바꿉니다.\n\n무선 방식이라 본체만 들어 올려 따를 수 있고, 받침대에 다시 올려 두면 바로 가열되는 구조입니다.\n입구와 내부 구조가 단순해 청소하기 편한지 확인하기 좋은 생활가전입니다.\n\n아쉬운 점\n\n솔직히 말하면 저는 이 제품을 직접 오래 써본 것은 아니라서, 제품 정보와 구성 기준으로 정리한 내용입니다.\n실제 소음이나 물 끓는 속도는 구매 후기를 함께 참고하시는 편이 좋습니다.\n\n온도를 1도 단위로 설정하는 기능이나 보온 기능은 없어서\n차나 드립 커피처럼 정밀한 온도가 필요한 분은 온도 설정형 제품이 더 맞을 수 있습니다.\n그리고 3000 시리즈는 세부 모델별로 용량과 내부 소재가 다를 수 있어서\n플라스틱 소재 접촉을 민감하게 보는 분은 실제 모델의 내부 소재를 반드시 확인해야 합니다.\n\n어떤 사람에게 잘 맞는지\n\n아침마다 물을 빠르게 끓이는 가정,\n복잡한 기능보다 단순한 사용성과 자동 차단을 중요하게 보는 분,\n가격 대비 브랜드 기본기를 원하는 분께 잘 맞습니다.\n\n반대로 온도 설정이나 보온, 앱 연동 같은 부가기능이 꼭 필요한 분은 다른 모델을 함께 비교하는 편이 낫습니다.\n\n제품 정보는 아래에서 확인할 수 있습니다.\n필립스 3000 시리즈는 모델명에 따라 용량과 소재가 다르니 가격과 옵션, 정확한 모델명은 판매 페이지 기준으로 한 번 더 확인해 주세요.\n\n마무리\n\n전기주전자는 한 번 사면 몇 년을 매일 쓰는 물건이라\n용량과 가격보다 자동 차단과 청소 편의를 먼저 보는 것을 권합니다.\n필요한 기능만 어렵지 않게 쓰고 싶은 분이라면 기분 좋게 추천할 수 있는 제품입니다.",
+      "images": [
+        {
+          "id": "img_product_photo_1",
+          "role": "product_photo",
+          "src": "",
+          "alt": "필립스 3000 시리즈 무선 전기주전자 공식 상품 이미지",
+          "placement": "오늘 소개할 제품 문단 뒤 (쿠팡 파트너스 공식 상품 이미지 1)",
+          "anchorKeywords": [
+            "본체를 받침대에서 분리해",
+            "따르기 편한 형태"
+          ],
+          "optional": true,
+          "required": false,
+          "blockedReason": "파트너스 승인 전: Open API·파트너스 화면 소재 없음. 쿠팡 상품 페이지·제조사 사이트 이미지는 사용 권한이 없어 가져오지 않음."
+        },
+        {
+          "id": "img_kettle_suho_usage",
+          "role": "body_usage",
+          "src": "atlas-generated://kr_philips_3000_kettle_fix_224418047839/img_kettle_suho_usage",
+          "alt": "수호가 전기주전자 고를 때 확인할 기본기를 정리한 카드",
+          "placement": "특징과 좋은 점 마지막 문단 뒤 (수호 마스터 무료 카드)",
+          "anchorKeywords": [
+            "입구와 내부 구조가 단순해",
+            "청소하기 편한지 확인하기 좋은"
+          ],
+          "card": {
+            "kicker": "전기주전자 기본기 체크",
+            "title": "용량보다 이 세 가지를 먼저 보세요",
+            "columns": [
+              [
+                "자동 전원 차단",
+                "물이 끓으면 알아서 꺼지는지"
+              ],
+              [
+                "빈 가열 방지",
+                "물 없이 켜졌을 때 스스로 멈추는지"
+              ],
+              [
+                "청소 편의",
+                "입구가 넓고 열판이 평면인지"
+              ]
+            ],
+            "footer": "필립스 공식 사양 기준. 세부 모델별 소재·구성은 판매 페이지에서 확인하세요."
+          }
+        },
+        {
+          "id": "img_product_photo_2",
+          "role": "product_photo",
+          "src": "",
+          "alt": "받침대와 주둥이 구조가 보이는 공식 상품 이미지",
+          "placement": "어떤 사람에게 잘 맞는지 문단 뒤 (쿠팡 파트너스 공식 상품 이미지 2)",
+          "anchorKeywords": [
+            "부가기능이 꼭 필요한 분",
+            "다른 모델을 함께 비교하는"
+          ],
+          "optional": true,
+          "required": false,
+          "blockedReason": "파트너스 승인 전: 공식 상품 이미지 미확보."
+        }
+      ],
+      "state": "published",
+      "approvedAt": "2026-09-20T13:45:20.162Z",
+      "publishedAt": "2026-09-20T13:47:21.764Z",
+      "publishedUrl": "https://blog.naver.com/who-ami/224418047839",
+      "lastError": "",
+      "createdAt": "2026-09-20T13:44:35.781Z",
+      "updatedAt": "2026-09-20T13:47:21.764Z",
+      "channelId": "korea_naver",
+      "assetScope": "korea",
+      "assetNamespace": ".atlas-data/korea-assets",
+      "heroCharacterId": "suho",
+      "masterFileName": "ATLAS-SUO-MASTER.png",
+      "masterAssetPath": "public/atlas/characters/ATLAS-SUO-MASTER.png",
+      "visualMode": "warm-practical-illustration",
+      "styleReferenceAssetPath": "public/atlas/korea/suho/multitap/featured.png",
+      "characterPolicyVersion": "ATLAS_CHARACTER_CHANNEL_V1",
+      "automationStatus": "published",
+      "updateMode": "replace_body",
+      "correctionOf": {
+        "draftId": "kr_philips_3000_kettle",
+        "logNo": "224418047839",
+        "reason": "수호 카드가 실사 마스터(아카이브된 ATLAS Letters 사진)로 렌더됨 → 확정 애니메이션 수호(멀티탭 원본 crop)로 교체. 본문·제목·링크 동일.",
+        "before": "postfiles.pstatic.net/MjAyNjA5MjBfMTI4/MDAxNzg5OTEwMzc0MTEw.../img_kettle_suho_usage.png (realistic photo)",
+        "after": "postfiles.pstatic.net/MjAyNjA5MjBfNjYg/MDAxNzg5OTEyMDM1MTUz.../img_kettle_suho_usage.png (anime Suho)"
+      }
     }
   ]
 }
