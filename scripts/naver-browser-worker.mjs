@@ -38,6 +38,17 @@ function safeName(value) {
 
 function assetCopy(image) {
   const role = String(image.role || "");
+  // 초안이 슬롯별 카드 문구(image.card)를 직접 들고 있으면 그것을 우선한다. 역할 기본 문구는
+  // 멀티탭 글 기준이라 다른 제품 초안에서는 맞지 않는다.
+  const own = image.card && typeof image.card === "object" ? image.card : null;
+  if (own && String(own.title || "").trim() && Array.isArray(own.columns) && own.columns.length) {
+    return {
+      kicker: String(own.kicker || "ATLAS 생활비연구소"),
+      title: String(own.title),
+      columns: own.columns.filter((c) => Array.isArray(c) && c.length === 2).slice(0, 4).map(([h, b]) => [String(h), String(b)]),
+      footer: String(own.footer || "실제 제품 사양과 사용 환경을 함께 확인하세요."),
+    };
+  }
   if (role === "body_usage") return {
     kicker: "멀티탭 사용 공간 체크",
     title: "공간마다 필요한 멀티탭이 다릅니다",
@@ -103,7 +114,7 @@ async function renderGeneratedAssets(context, draft) {
     const showCharacter = Boolean(characterImage);
     const columns = copy.columns.map(([head, body]) => `<div class="box"><div class="head">${escapeHtml(head)}</div><div class="body">${escapeHtml(body)}</div></div>`).join("");
     const character = showCharacter ? `<img class="character" src="${characterImage}" alt="${draft.character === "miji" ? "미지" : "수호"}">` : "";
-    const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>*{box-sizing:border-box}body{margin:0;background:#f4f4f5;font-family:"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif;color:#18181b}.card{position:relative;overflow:hidden;width:1200px;height:800px;padding:72px;background:linear-gradient(145deg,#fff,#f4f4f5);display:flex;flex-direction:column;justify-content:space-between}.kicker{font-size:26px;font-weight:700;color:#52525b}.title{font-size:58px;line-height:1.18;font-weight:900;letter-spacing:-2px;max-width:${showCharacter ? "780px" : "1000px"};margin-top:18px}.grid{position:relative;z-index:2;display:grid;grid-template-columns:repeat(${Math.min(copy.columns.length,4)},1fr);gap:18px;margin-top:44px;max-width:${showCharacter ? "820px" : "none"}.box{border:2px solid #d4d4d8;border-radius:24px;background:rgba(255,255,255,.94);padding:28px;min-height:190px}.head{font-size:30px;font-weight:900}.body{font-size:23px;line-height:1.55;margin-top:16px;color:#52525b}.footer{position:relative;z-index:2;border-top:2px solid #e4e4e7;padding-top:24px;font-size:26px;font-weight:700;color:#3f3f46}.character{position:absolute;right:-15px;bottom:-150px;width:390px;z-index:1}</style></head><body><div class="card">${character}<div><div class="kicker">${escapeHtml(copy.kicker)}</div><div class="title">${escapeHtml(copy.title)}</div><div class="grid">${columns}</div></div><div class="footer">${escapeHtml(copy.footer)}</div></div></body></html>`;
+    const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><style>*{box-sizing:border-box}body{margin:0;background:#f4f4f5;font-family:"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif;color:#18181b}.card{position:relative;overflow:hidden;width:1200px;height:800px;padding:72px;background:linear-gradient(145deg,#fff,#f4f4f5);display:flex;flex-direction:column;justify-content:space-between}.kicker{position:relative;z-index:2;font-size:26px;font-weight:700;color:#52525b}.title{position:relative;z-index:2;font-size:58px;line-height:1.18;font-weight:900;letter-spacing:-2px;max-width:${showCharacter ? "780px" : "1000px"};margin-top:18px}.grid{position:relative;z-index:2;display:grid;grid-template-columns:repeat(${Math.min(copy.columns.length,4)},1fr);gap:18px;margin-top:44px;max-width:${showCharacter ? "820px" : "none"}}.box{border:2px solid #d4d4d8;border-radius:24px;background:rgba(255,255,255,.94);padding:28px;min-height:190px}.head{font-size:30px;font-weight:900}.body{font-size:23px;line-height:1.55;margin-top:16px;color:#52525b}.footer{position:relative;z-index:2;border-top:2px solid #e4e4e7;padding-top:24px;font-size:26px;font-weight:700;color:#3f3f46;max-width:${showCharacter ? "760px" : "none"}}.character{position:absolute;right:-15px;bottom:-150px;width:390px;height:auto;z-index:1;pointer-events:none;-webkit-mask-image:linear-gradient(to right,transparent 0,#000 22%),linear-gradient(to bottom,transparent 0,#000 18%);-webkit-mask-composite:source-in;mask-image:linear-gradient(to right,transparent 0,#000 22%),linear-gradient(to bottom,transparent 0,#000 18%);mask-composite:intersect}</style></head><body><div class="card">${character}<div><div class="kicker">${escapeHtml(copy.kicker)}</div><div class="title">${escapeHtml(copy.title)}</div><div class="grid">${columns}</div></div><div class="footer">${escapeHtml(copy.footer)}</div></div></body></html>`;
     await renderPage.setContent(html, { waitUntil: "load" });
     const output = path.join(dir, `${safeName(image.id || image.role)}.png`);
     await renderPage.locator(".card").screenshot({ path: output, type: "png" });

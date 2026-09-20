@@ -42,3 +42,29 @@ The first Naver automation run may require one Naver login in the dedicated Edge
 - Philips Series 3000 kettle: `kr_philips_3000_kettle`
 
 Real SmartEditor selector validation must be performed once on the user's local Windows machine because GitHub CI cannot access the authenticated Naver browser session.
+
+## Coupang Partners approval vs. content production (separated)
+
+The approval state lives in `lib/atlas/coupang-partners-status.js` and is read by the publish gate
+(`publishBlockers`), the body renderer (`bodyHtmlFromDraft`), the policy panel (`evaluateKoreaDraft`) and
+the auto-asset route (`/api/atlas/korea-auto-assets`).
+
+| Stage | How it is detected | Links in new posts | Product images | Publish gate |
+| --- | --- | --- | --- | --- |
+| `pending` (default) | no Open API keys, no `COUPANG_PARTNERS_STATUS` | general product link (`productUrl`, e.g. manufacturer page) or no link; **no affiliate disclosure** | only rights-verified sources (none automatically) | linked images required; affiliate link **not** required |
+| `approved` + Open API keys | `COUPANG_PARTNERS_ACCESS_KEY` + `COUPANG_PARTNERS_SECRET_KEY` | new drafts get the official tracking link automatically from `products/search` | official partner material auto-linked into `product_photo` slots | linked images + affiliate link required |
+| `approved` without keys | `COUPANG_PARTNERS_STATUS=approved` | partner link from the manual inbox (`scripts/atlas-coupang-partners-intake.mjs`) | inbox images | linked images + affiliate link required |
+
+Rules that do not change with the stage:
+
+- Product photos (`role: product_photo`) and Suho cards are separate slots. Product slots are optional for the
+  gate; Suho slots are required and are rendered from the Suho master at stage time (no paid API).
+- Product-page or manufacturer images are recorded as `productImageCandidates` with
+  `productImageSourceStatus: "rights_unverified"` and are never linked unless the draft says
+  `productImageRights: "granted"`.
+- Coupang blocks automated reads (HTTP 403). ATLAS does not bypass it; price is left out of the body unless
+  confirmed through partner material.
+- Posts published while `pending` carry `monetization.partnersLinkPending: true`. After approval, nothing is
+  rewritten automatically; the affiliate flow applies to new drafts only.
+- Each slot may carry its own free card copy in `images[].card` (`kicker/title/columns/footer`); the worker
+  prefers it over the role defaults.

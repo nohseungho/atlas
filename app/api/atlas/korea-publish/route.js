@@ -67,7 +67,7 @@ export async function POST(request) {
 
   const blockers = mode === "publish" ? publishBlockers(draft) : [];
   if (blockers.length) {
-    return NextResponse.json({ status: "rejected", errorCode: "MONETIZATION_REQUIRED", blockers, error: `제휴링크와 연결된 이미지가 있어야 실제 발행합니다: ${blockers.join(", ")}` }, { status: 409 });
+    return NextResponse.json({ status: "rejected", errorCode: "MONETIZATION_REQUIRED", blockers, error: `실제 발행 조건이 부족합니다(연결된 이미지 필수, 파트너스 승인 후에는 제휴 링크 필수): ${blockers.join(", ")}` }, { status: 409 });
   }
 
   if (inFlight.has(id)) {
