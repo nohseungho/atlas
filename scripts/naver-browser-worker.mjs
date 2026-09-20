@@ -395,17 +395,36 @@ async function main() {
   assertNaverWriteTarget(draft);
   fs.mkdirSync(profileDir(), { recursive: true });
   const context = await chromium.launchPersistentContext(profileDir(), { executablePath: findBrowserExecutable(), headless: false, viewport: null, args: ["--start-maximized"], permissions: ["clipboard-read", "clipboard-write"] });
-  const page = context.pages()[0] || await context.newPage();
+  // Edge의 첫 탭은 새 탭 페이지(ntp.msn.com)로 자동 이동하며 그 사이에 goto가 "interrupted by another
+  // navigation"으로 끊긴다. 첫 탭은 그대로 두고 항상 새 탭에서 작업하며, 이동 후 실제 주소를 확인해 재시도한다.
+  await context.waitForEvent("page", { timeout: 1500 }).catch(() => {});
+  const page = await context.newPage();
+  const gotoEditor = async (target) => {
+    let lastError = null;
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      try {
+        await page.goto(target, { waitUntil: "domcontentloaded", timeout: 45000 });
+        await page.waitForTimeout(600);
+        if (/naver\.com/i.test(page.url())) return;
+        lastError = new Error(`편집기 이동 결과가 예상과 다릅니다: ${page.url()}`);
+      } catch (error) {
+        lastError = error;
+        if (!/interrupted by another navigation/i.test(String(error?.message))) throw error;
+      }
+      await page.waitForTimeout(800);
+    }
+    throw Object.assign(lastError || new Error("편집기 이동 실패"), { code: "NAVER_EDITOR_NAVIGATION_FAILED" });
+  };
   let result;
   try {
     await renderGeneratedAssets(context, draft);
     const editorTarget = naverEditorTarget(draft);
-    await page.goto(editorTarget, { waitUntil: "domcontentloaded", timeout: 45000 });
+    await gotoEditor(editorTarget);
     await page.waitForTimeout(1200);
     await ensureLoggedIn(page);
     // 네이버 로그인은 블로그 홈으로 돌려보낼 수 있으므로 로그인 완료 후 신규 글쓰기 주소를 다시 연다.
     if (!/PostWriteForm\.naver/i.test(page.url())) {
-      await page.goto(editorTarget, { waitUntil: "domcontentloaded", timeout: 45000 });
+      await gotoEditor(editorTarget);
       await page.waitForTimeout(1200);
       await ensureLoggedIn(page);
     }
