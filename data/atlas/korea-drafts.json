@@ -1,6 +1,257 @@
 {
   "items": [
     {
+      "id": "kr_glasslock_classic_white_10set",
+      "platform": "naver",
+      "contentType": "new_product_review",
+      "blogId": "who-ami",
+      "logNo": "",
+      "title": "추석 지나고 남은 전과 나물, 글라스락 클래식 화이트에디션 10종 세트로 정리한 이유와 아쉬운 점",
+      "productName": "글라스락 클래식 화이트에디션 10종 세트",
+      "productUrl": "https://www.glasslockmall.co.kr/goods/goods_view.php?goodsNo=1000001070",
+      "affiliateUrl": "",
+      "productLinkLabel": "글라스락 공식몰 제품 페이지(클래식 화이트에디션 10종 세트) 보기",
+      "productInfo": {
+        "source": "manufacturer_official",
+        "sourceName": "글라스락몰(SGC솔루션 본사 직영 공식 쇼핑몰)",
+        "sourceUrls": [
+          "https://www.glasslockmall.co.kr/goods/goods_view.php?goodsNo=1000001070",
+          "https://www.glasslockmall.co.kr/"
+        ],
+        "collectedAt": "2026-09-21T03:01:00.000Z",
+        "model": "FTRR-NO-00008",
+        "composition": [
+          "직사각 400ml x 2 (157 x 108 x 51mm)",
+          "직사각 715ml x 4 (173 x 123 x 66mm)",
+          "정사각 900ml x 2 (156.2 x 156.2 x 65.5mm)",
+          "직사각 1,100ml x 2 (186 x 139 x 77mm)"
+        ],
+        "materials": {
+          "body": "소다석회 유리(전자레인지용, 열탕용)",
+          "lid": "폴리프로필렌(PP)",
+          "gasket": "고무제(실리콘)"
+        },
+        "temperature": {
+          "body": "-20~120°C (열충격온도 130°C 이하)",
+          "lid": "-20~90°C",
+          "gasket": "-30~210°C"
+        },
+        "usage": {
+          "microwave": true,
+          "freezer": true,
+          "dishwasher": true,
+          "oven": false
+        },
+        "manufacturer": "SGC솔루션(주), 대한민국",
+        "onlineOnly": true,
+        "reviewCount": 205,
+        "price": {
+          "status": "verified",
+          "amount": 53350,
+          "listPrice": 97000,
+          "discountPercent": 45,
+          "shipping": "무료배송(공식몰 표기)",
+          "checkedAt": "2026-09-21T03:01:00.000Z",
+          "sourceUrl": "https://www.glasslockmall.co.kr/goods/goods_view.php?goodsNo=1000001070",
+          "note": "글라스락몰 공식 판매가 기준. 오픈마켓·쿠팡 가격은 자동 조회가 차단되어 비교하지 않음."
+        },
+        "coupang": {
+          "status": "blocked",
+          "reason": "쿠팡 상품 페이지·검색은 자동 조회를 거부(403)하며 우회하지 않는다. 파트너스 Open API 키 없음(승인 대기)."
+        }
+      },
+      "monetization": {
+        "partnersStage": "pending",
+        "linkSource": "none",
+        "linkMode": "product_page",
+        "partnersLinkPending": true,
+        "decidedAt": "2026-09-21T03:01:00.000Z"
+      },
+      "productImageCandidates": [
+        "https://cdn-pro-web-211-225.cdn-nhncommerce.com/glasslock1_godomall_com/data/goods/20/01/02/1000001070/1000001070_detail_099.jpg"
+      ],
+      "photoLicenses": [
+        {
+          "file": ".atlas-data/korea-assets/kr_glasslock_classic_white_10set/photo_jeon_gwangjang.jpg",
+          "title": "Korean pancakes and pan-fried foods at Gwangjang Market",
+          "author": "Pfc. Bo Park, 2ID PAO, US Army",
+          "license": "Public domain (US federal government work)",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Korean_pancakes_and_pan-fried_foods_at_Gwangjang_Market.jpg"
+        },
+        {
+          "file": ".atlas-data/korea-assets/kr_glasslock_classic_white_10set/photo_songpyeon.jpg",
+          "title": "Songpyeon",
+          "author": "wizdata",
+          "license": "CC0 1.0",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Songpyeon.jpg"
+        },
+        {
+          "file": ".atlas-data/korea-assets/kr_glasslock_classic_white_10set/photo_glass_container_mealprep.jpg",
+          "title": "Meal prep glass container",
+          "author": "Ella Olsson (Stockholm, Sweden)",
+          "license": "CC BY 2.0",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Meal_prep_glass_container_(45165270525).jpg"
+        },
+        {
+          "file": ".atlas-data/korea-assets/kr_glasslock_classic_white_10set/photo_fridge_containers.jpg",
+          "title": "Food Safety - Cut Waste in Refrigerators (20200608-FSIS-LSC-0093)",
+          "author": "USDA (U.S. Department of Agriculture)",
+          "license": "Public domain (US federal government work)",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Food_Safety_-_Cut_Waste_in_Refrigerators_(20200608-FSIS-LSC-0093).jpg"
+        }
+      ],
+      "affiliateDisclosure": "이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받을 수 있습니다.",
+      "character": "suho",
+      "recommendationMode": "DIRECT_RECOMMENDATION",
+      "bodyHtml": "",
+      "bodyText": "올해 추석은 9월 25일 금요일입니다.\n연휴 첫날 아침에 전을 부치기 시작하면\n동그랑땡, 동태전, 호박전이 접시 위로 쌓이고,\n나물은 세 가지만 무쳐도 냉장고 한 칸이 금방 찹니다.\n\n문제는 연휴가 끝난 뒤입니다.\n랩을 씌운 접시가 냉장고 위 칸에 층층이 쌓이고,\n비닐봉지에 넣어 둔 나물은 어디에 뭐가 있는지 잊어버리고,\n일주일 뒤에 냄새가 배어 결국 버리게 되는 일이 매년 반복됩니다.\n\n수호네 집도 작년 추석에 똑같은 일을 겪었습니다.\n그래서 올해는 전 부치기 전에 보관 용기부터 먼저 챙기기로 했습니다.\n\n오늘 소개할 제품\n\n글라스락 클래식 화이트에디션 10종 세트입니다.\n글라스락몰(SGC솔루션 본사 직영 공식 쇼핑몰) 기준으로\n직사각 400ml 2개, 직사각 715ml 4개, 정사각 900ml 2개, 직사각 1,100ml 2개로 구성된 유리 밀폐용기 10개 세트입니다.\n뚜껑과 패킹이 흰색인 온라인 전용 제품이라 냉장고를 열었을 때 어수선하지 않은 것도 장점입니다.\n\n공식 판매 페이지 기준으로 몸체는 전자레인지용·열탕용 소다석회 유리,\n뚜껑은 폴리프로필렌(PP), 패킹은 실리콘입니다.\n몸체 내열 온도는 -20~120°C(열충격온도 130°C 이하), 뚜껑은 -20~90°C, 패킹은 -30~210°C로 표기되어 있고,\n전자레인지, 냉동실, 식기세척기 사용이 가능하지만 오븐 사용은 금지입니다.\n제조원은 SGC솔루션(주), 제조국은 대한민국입니다.\n\n왜 이 제품을 골랐는지\n\n명절 음식 보관용 용기를 고르면서 세 가지를 기준으로 봤습니다.\n첫째, 전과 나물처럼 기름지고 냄새가 배는 음식을 담아도 색과 냄새가 남지 않는 유리인지.\n둘째, 냉장고에서 꺼내 뚜껑만 열고 그대로 전자레인지에 데울 수 있는지.\n셋째, 크기가 섞여 있어서 전 한 접시 분량부터 갈비찜 국물까지 한 세트로 해결되는지.\n이 제품은 세 가지를 모두 갖추고 있어서 후보 중에서 가장 먼저 눈에 들어왔습니다.\n\n특징과 좋은 점\n\n1,100ml 직사각 2개는 전을 겹쳐 담기에 딱 맞는 크기입니다.\n동그랑땡과 동태전을 종류별로 나눠 담으면 랩 씌운 접시 네 개가 용기 두 개로 줄어듭니다.\n정사각 900ml는 갈비찜이나 잡채처럼 국물이나 기름이 있는 음식을 넣기 좋은 깊이입니다.\n\n715ml 4개는 나물 전용으로 쓰기 좋습니다.\n고사리, 도라지, 시금치, 콩나물을 하나씩 담으면 냉장고 문을 열자마자 뭐가 남았는지 한눈에 보입니다.\n400ml 2개는 남은 양념장이나 송편 몇 개를 담아 두기에 알맞은 크기입니다.\n\n유리 용기의 가장 큰 장점은 냉장고에서 꺼내 뚜껑을 열고 그대로 전자레인지에 넣을 수 있다는 점입니다.\n접시에 옮겨 담고 랩을 씌우는 과정이 사라지니 설거지도 같이 줄어듭니다.\n뚜껑 내열 온도가 90°C로 표기되어 있으니 데울 때는 뚜껑을 벗기고 몸체만 넣는 편이 안전합니다.\n\n같은 라인 제품이라 뚜껑 규격이 크기별로 맞춰져 있고,\n안 쓸 때는 작은 용기를 큰 용기 안에 포개서 넣을 수 있어 수납 공간도 덜 차지합니다.\n\n아쉬운 점\n\n솔직히 말하면 저는 이 세트를 직접 오래 써본 것은 아니라서, 공식 판매 페이지의 제품 정보와 구성 기준으로 정리한 내용입니다.\n실제 뚜껑 잠금감이나 밀폐력은 구매 후기를 함께 참고하시는 편이 좋습니다.\n\n유리 용기는 같은 크기의 플라스틱 용기보다 무겁고, 떨어뜨리면 깨질 수 있습니다.\n어린아이가 직접 꺼내 쓰는 집이라면 낮은 칸에 두는 등 동선을 한 번 생각해 두는 편이 좋습니다.\n\n오븐 사용은 공식적으로 금지되어 있습니다.\n남은 전을 오븐에 데워 먹는 습관이 있는 분은 오븐용 유리 그릇을 따로 두거나 다른 라인을 봐야 합니다.\n그리고 이 세트는 온라인 전용 구성이라 오프라인 매장에서 실물을 먼저 보고 살 수는 없습니다.\n\n가격과 구매 판단\n\n2026년 9월 21일 글라스락몰 공식 판매가는 53,350원이고, 정가 97,000원에서 45% 할인된 금액으로 표기되어 있습니다.\n무료배송이라 용기 10개를 개당 5,300원 정도에 받는 셈입니다.\n같은 공식몰에서 개별 2개 세트가 크기에 따라 1만 원 안팎인 것을 감안하면\n크기가 섞인 10개를 한 번에 맞추는 데는 세트 구매가 더 편하고 부담도 적었습니다.\n\n다만 할인율과 가격은 판매처와 시기에 따라 자주 바뀝니다.\n오픈마켓 가격은 이 글에서 확인하지 않았으니 구매 직전에 여러 판매처를 한 번 더 비교해 보세요.\n\n어떤 사람에게 잘 맞는지\n\n명절 음식이 많이 남아 냉장고 정리가 고민인 가정,\n랩과 비닐봉지 대신 오래 쓰는 용기로 바꾸고 싶은 분,\n데울 때 접시에 옮겨 담는 과정을 없애고 싶은 분께 잘 맞습니다.\n\n반대로 오븐 조리까지 한 용기로 해결하고 싶은 분,\n가벼운 용기를 원하거나 도시락 휴대용으로 쓰려는 분은 다른 라인이나 플라스틱 제품을 함께 비교하는 편이 낫습니다.\n\n제품 정보는 아래에서 확인할 수 있습니다.\n구성과 가격, 할인 조건은 공식 판매 페이지의 최신 정보가 기준이니 결제 전에 한 번 더 확인해 주세요.\n\n마무리\n\n추석 음식은 만드는 날보다 정리하는 날이 더 힘듭니다.\n전 부치기 전에 용기부터 준비해 두면 연휴 끝 냉장고 정리가 반나절 일이 아니라 십 분 일이 됩니다.\n유리 용기 세트를 한 번 제대로 갖추고 싶은 분이라면 기분 좋게 추천할 수 있는 제품입니다.\n\n사진 출처\n\n이 글의 실사 사진은 제품 공식 이미지가 아니라 저작권 확인이 끝난 공개 사진입니다.\n전 사진: Korean pancakes and pan-fried foods at Gwangjang Market, Pfc. Bo Park(US Army), 퍼블릭 도메인, 위키미디어 공용.\n송편 사진: Songpyeon, wizdata, CC0 1.0, 위키미디어 공용.\n유리 용기 사진: Meal prep glass container, Ella Olsson, CC BY 2.0, 위키미디어 공용.\n냉장고 사진: Food Safety - Cut Waste in Refrigerators, USDA, 퍼블릭 도메인, 위키미디어 공용.\n수호 카드는 ATLAS가 직접 제작했습니다.",
+      "images": [
+        {
+          "id": "img_photo_jeon",
+          "role": "life_photo_jeon",
+          "src": ".atlas-data/korea-assets/kr_glasslock_classic_white_10set/photo_jeon_gwangjang.jpg",
+          "alt": "명절 전과 부침 음식이 쟁반에 가득 담긴 실사 사진 (퍼블릭 도메인, 위키미디어 공용)",
+          "placement": "전 부치는 첫 문단 뒤 (공개 라이선스 실사 사진)",
+          "anchorKeywords": [
+            "동그랑땡, 동태전, 호박전이 접시 위로 쌓이고",
+            "냉장고 한 칸이 금방 찹니다"
+          ],
+          "license": "Public domain",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Korean_pancakes_and_pan-fried_foods_at_Gwangjang_Market.jpg"
+        },
+        {
+          "id": "img_photo_songpyeon",
+          "role": "life_photo_songpyeon",
+          "src": ".atlas-data/korea-assets/kr_glasslock_classic_white_10set/photo_songpyeon.jpg",
+          "alt": "추석 송편이 소반에 담긴 실사 사진 (CC0, 위키미디어 공용)",
+          "placement": "수호네 집 이야기 문단 뒤 (공개 라이선스 실사 사진)",
+          "anchorKeywords": [
+            "수호네 집도 작년 추석에 똑같은 일을 겪었습니다",
+            "보관 용기부터 먼저 챙기기로 했습니다"
+          ],
+          "license": "CC0 1.0",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Songpyeon.jpg"
+        },
+        {
+          "id": "img_product_photo_1",
+          "role": "product_photo",
+          "src": "",
+          "alt": "글라스락 클래식 화이트에디션 10종 세트 공식 상품 이미지",
+          "placement": "오늘 소개할 제품 문단 뒤 (쿠팡 파트너스 공식 상품 이미지)",
+          "anchorKeywords": [
+            "유리 밀폐용기 10개 세트입니다"
+          ],
+          "optional": true,
+          "required": false,
+          "blockedReason": "파트너스 승인 전: Open API·파트너스 화면 소재 없음. 글라스락몰 상품 이미지는 사용 권한이 확인되지 않아 가져오지 않음."
+        },
+        {
+          "id": "img_suho_storage_rules",
+          "role": "body_usage",
+          "src": "atlas-generated://kr_glasslock_classic_white_10set/img_suho_storage_rules",
+          "alt": "수호가 명절 남은 음식 보관 3원칙을 정리한 카드",
+          "placement": "왜 이 제품을 골랐는지 마지막 문단 뒤 (수호 마스터 무료 카드)",
+          "anchorKeywords": [
+            "세 가지를 모두 갖추고 있어서",
+            "후보 중에서 가장 먼저 눈에 들어왔습니다"
+          ],
+          "card": {
+            "kicker": "명절 남은 음식 보관 체크",
+            "title": "용기를 고를 때 이 세 가지를 먼저 보세요",
+            "columns": [
+              [
+                "소재",
+                "전·나물 냄새와 색이 배지 않는 유리인지"
+              ],
+              [
+                "데우기",
+                "뚜껑만 열고 전자레인지에 바로 넣을 수 있는지"
+              ],
+              [
+                "크기 구성",
+                "전 한 접시부터 국물 요리까지 한 세트로 되는지"
+              ]
+            ],
+            "footer": "글라스락 공식 표기 기준. 세부 구성과 온도 조건은 판매 페이지에서 확인하세요."
+          }
+        },
+        {
+          "id": "img_photo_glass_container",
+          "role": "life_photo_container",
+          "src": ".atlas-data/korea-assets/kr_glasslock_classic_white_10set/photo_glass_container_mealprep.jpg",
+          "alt": "유리 밀폐용기에 음식을 나눠 담은 실사 사진 (CC BY 2.0 Ella Olsson, 위키미디어 공용)",
+          "placement": "715ml 나물 전용 문단 뒤 (공개 라이선스 실사 사진)",
+          "anchorKeywords": [
+            "715ml 4개는 나물 전용으로 쓰기 좋습니다",
+            "송편 몇 개를 담아 두기에 알맞은 크기입니다"
+          ],
+          "license": "CC BY 2.0",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Meal_prep_glass_container_(45165270525).jpg"
+        },
+        {
+          "id": "img_photo_fridge",
+          "role": "life_photo_fridge",
+          "src": ".atlas-data/korea-assets/kr_glasslock_classic_white_10set/photo_fridge_containers.jpg",
+          "alt": "냉장고 선반에 밀폐용기가 정리된 실사 사진 (퍼블릭 도메인 USDA, 위키미디어 공용)",
+          "placement": "포개서 수납 문단 뒤 (공개 라이선스 실사 사진)",
+          "anchorKeywords": [
+            "작은 용기를 큰 용기 안에 포개서 넣을 수 있어",
+            "수납 공간도 덜 차지합니다"
+          ],
+          "license": "Public domain",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Food_Safety_-_Cut_Waste_in_Refrigerators_(20200608-FSIS-LSC-0093).jpg"
+        },
+        {
+          "id": "img_suho_buy_check",
+          "role": "product_check",
+          "src": "atlas-generated://kr_glasslock_classic_white_10set/img_suho_buy_check",
+          "alt": "수호가 구매 전 확인할 세 가지를 정리한 카드",
+          "placement": "가격과 구매 판단 마지막 문단 뒤 (수호 마스터 무료 카드)",
+          "anchorKeywords": [
+            "오픈마켓 가격은 이 글에서 확인하지 않았으니",
+            "여러 판매처를 한 번 더 비교해 보세요"
+          ],
+          "card": {
+            "kicker": "구매 전 마지막 확인",
+            "title": "결제 전에 이것만 확인하세요",
+            "columns": [
+              [
+                "구성",
+                "400·715·900·1,100ml 10개 구성이 맞는지"
+              ],
+              [
+                "가격",
+                "공식몰 53,350원 기준으로 다른 판매처와 비교했는지"
+              ],
+              [
+                "사용 조건",
+                "오븐 금지·뚜껑 90°C 조건이 내 습관에 맞는지"
+              ]
+            ],
+            "footer": "2026년 9월 21일 글라스락몰 표기 기준. 가격·할인은 수시로 바뀝니다."
+          }
+        }
+      ],
+      "state": "published",
+      "approvedAt": "2026-09-21T03:08:44.412Z",
+      "publishedAt": "2026-09-21T03:13:36.504Z",
+      "publishedUrl": "https://blog.naver.com/who-ami/224418550466",
+      "lastError": "",
+      "createdAt": "2026-09-21T03:08:34.928Z",
+      "updatedAt": "2026-09-21T03:13:36.505Z",
+      "channelId": "korea_naver",
+      "assetScope": "korea",
+      "assetNamespace": ".atlas-data/korea-assets",
+      "heroCharacterId": "suho",
+      "masterFileName": "ATLAS-SUO-MASTER.png",
+      "masterAssetPath": "public/atlas/characters/ATLAS-SUO-MASTER.png",
+      "visualMode": "warm-practical-illustration",
+      "styleReferenceAssetPath": "public/atlas/korea/suho/multitap/featured.png",
+      "characterPolicyVersion": "ATLAS_CHARACTER_CHANNEL_V1",
+      "automationStatus": "published",
+      "logNoPublished": "224418550466"
+    },
+    {
       "id": "kr_multitap_224407589323",
       "platform": "naver",
       "contentType": "new_product_review",
