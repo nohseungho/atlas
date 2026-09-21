@@ -3693,6 +3693,273 @@
       "bloggerStatus": "LIVE",
       "bloggerSyncedAt": "2026-09-20T09:25:59.498Z",
       "publishedAt": "2026-09-20T09:22:03.409Z"
+    },
+    {
+      "id": "art_023",
+      "keywordId": "",
+      "keyword": "travel insurance claim",
+      "title": "How to File a Travel Insurance Claim: Documents, Deadlines, Denials",
+      "hookTitle": "How to File a Travel Insurance Claim: Documents, Deadlines, Denials",
+      "slug": "how-to-file-travel-insurance-claim",
+      "language": "en",
+      "searchIntent": "informational",
+      "excerpt": "A practical guide to filing a travel insurance claim after a medical emergency, cancellation, delay or lost bag: who to call first, which documents insurers ask for, the deadlines to watch, and the reasons claims are most often denied.",
+      "metaDescription": "Learn how to file a travel insurance claim step by step: who to call first, the documents to collect abroad, deadlines to watch, and why claims get denied.",
+      "category": "Travel Insurance",
+      "tags": [
+        "Travel Insurance",
+        "Insurance Claims",
+        "Travel Planning",
+        "Medical Emergency Abroad",
+        "Trip Cancellation"
+      ],
+      "template": "editorial-guide",
+      "outline": [
+        "Quick Answer",
+        "Before Anything Else: Call the Assistance Line",
+        "The Documents Every Claim Needs",
+        "Claim Types and What Each One Requires",
+        "Deadlines and Timing Rules to Watch",
+        "Why Travel Insurance Claims Get Denied",
+        "A Step-by-Step Claim Checklist",
+        "If Your Claim Is Denied",
+        "FAQ",
+        "Official Sources"
+      ],
+      "quickAnswer": "Call the insurer's 24-hour assistance line as early as possible, get every report, invoice and receipt in writing before you leave the place where the problem happened, and file within the window your policy sets. Claims are decided on documents: the original receipts, a doctor's report, an airline or police report, and proof of what you paid. Most denials come from undeclared pre-existing conditions, excluded activities, events that were already known when you bought the policy, and missing paperwork.",
+      "comparisonCriteria": [
+        "Who to contact first",
+        "Documents to collect",
+        "Common reason for denial"
+      ],
+      "keyTakeaways": [
+        "Contact the insurer's 24-hour assistance line as early as possible; for medical care, ask whether the insurer must approve treatment before you receive it.",
+        "The Government of Canada advises getting a detailed report and invoice from the doctor or hospital before leaving the country, submitting original receipts, and keeping copies for your files.",
+        "Regulators list pre-existing conditions, adventure activities, civil unrest and events that were already public when you bought the policy among the most common exclusions, so many denials are decided at purchase time, not claim time.",
+        "If a claim is denied, request the decision in writing with the policy wording it relies on, appeal through the insurer, and then contact your state insurance department or national ombudsman."
+      ],
+      "comparisonHeaders": [
+        "Claim type",
+        "Contact first and key documents",
+        "Typical denial reason"
+      ],
+      "comparisonTable": [
+        {
+          "label": "Emergency medical care",
+          "optionA": "24-hour assistance line, before treatment where possible. Doctor’s report and diagnosis, itemized hospital invoice, original receipts, prescriptions.",
+          "optionB": "Undeclared pre-existing condition or excluded activity"
+        },
+        {
+          "label": "Trip cancellation",
+          "optionA": "Insurer, then the airline, hotel or tour operator. Proof of the covered reason, booking invoices, written refund refusals.",
+          "optionB": "Reason not listed in the policy, or event already known when the policy was bought"
+        },
+        {
+          "label": "Trip interruption or delay",
+          "optionA": "Assistance line, then the carrier. Carrier’s written confirmation of the delay, new tickets and hotel receipts, unused-portion invoices.",
+          "optionB": "Delay shorter than the policy minimum, or no carrier confirmation"
+        },
+        {
+          "label": "Lost, stolen or delayed baggage",
+          "optionA": "Airline desk (property irregularity report) or local police, then the insurer. Airline or police report, boarding passes, bag tags, receipts for essentials.",
+          "optionB": "No report filed at the time, or items excluded by the policy"
+        }
+      ],
+      "sources": [
+        {
+          "title": "NAIC — Should I Get Travel Insurance? (June 16, 2026)",
+          "url": "https://content.naic.org/article/should-you-get-travel-insurance-what-you-should-know-about-protecting-your-trips"
+        },
+        {
+          "title": "Government of Canada — Travel insurance (modified May 8, 2026)",
+          "url": "https://travel.gc.ca/travelling/documents/travel-insurance"
+        },
+        {
+          "title": "GOV.UK — Foreign travel insurance (updated August 2, 2024)",
+          "url": "https://www.gov.uk/guidance/foreign-travel-insurance"
+        },
+        {
+          "title": "CDC Travelers' Health — Travel Insurance, Travel Health Insurance & Medical Evacuation Insurance (reviewed May 27, 2026)",
+          "url": "https://wwwnc.cdc.gov/travel/page/insurance"
+        },
+        {
+          "title": "Insurance Information Institute — Should you buy travel insurance?",
+          "url": "https://www.iii.org/article/should-you-buy-travel-insurance"
+        }
+      ],
+      "trust": {
+        "methodology": "This guide draws on public consumer guidance from U.S. state insurance regulators (NAIC), the Government of Canada, the UK Foreign, Commonwealth & Development Office (GOV.UK), the CDC and the Insurance Information Institute for how travel insurance claims are documented, what policies commonly exclude, and where to turn when a claim is disputed. Specific deadlines and document lists differ by insurer, so the article describes what to check in your own policy rather than quoting one company's rules.",
+        "independenceNote": "This guide is based on the public consumer guidance listed above. It contains no affiliate links or sponsored recommendations and does not name or rank insurers. Policy terms change; confirm deadlines and document requirements in your own policy wording before you file."
+      },
+      "relatedArticles": [
+        {
+          "id": "art_002",
+          "title": "How to Compare Travel Insurance for an International Trip",
+          "url": "https://atlas-money-2026.blogspot.com/2026/07/best-travel-insurance-for-international.html"
+        },
+        {
+          "id": "art_004",
+          "title": "What to Do If You Get Sick While Traveling Abroad",
+          "url": "https://atlas-money-2026.blogspot.com/2026/07/what-to-do-if-you-get-sick-while-traveling-abroad.html"
+        },
+        {
+          "id": "art_013",
+          "title": "What Trip Cancellation Insurance Actually Covers (and What It Doesn't)",
+          "url": "https://atlas-money-2026.blogspot.com/2026/08/what-trip-cancellation-insurance.html"
+        },
+        {
+          "id": "external_1036687334958659255_baggage",
+          "title": "Travel Insurance for Baggage Delay and Lost Luggage: What to Check",
+          "url": "https://atlas-money-2026.blogspot.com/2026/08/travel-insurance-for-baggage-delay-and.html"
+        }
+      ],
+      "heroImage": {
+        "url": "",
+        "alt": "Miji, the ATLAS travel guide presenter, introducing the travel insurance claim guide",
+        "caption": "",
+        "source": "",
+        "aspectRatio": "16:9"
+      },
+      "visualAssets": [
+        {
+          "key": "featured",
+          "role": "featured",
+          "placement": "afterSection:Quick Answer",
+          "alt": "Miji, the ATLAS travel guide presenter, introducing the travel insurance claim guide",
+          "prompt": "ATLAS Miji master portrait composed on a clean editorial background. Presenter image, not a product photo.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "/images/articles/how-to-file-travel-insurance-claim/featured.png",
+          "publicUrl": "",
+          "characterRequired": true,
+          "identityReview": {
+            "level": "high",
+            "note": "ATLAS-MIJI-MASTER.png 원본을 그대로 합성한 이미지. 얼굴 일치 100%.",
+            "reviewedAt": "2026-09-21"
+          }
+        },
+        {
+          "key": "context",
+          "role": "context",
+          "placement": "afterSection:The Documents Every Claim Needs",
+          "alt": "Information card listing the documents a travel insurance claim usually needs: policy number, reports, itemized invoices, original receipts and proof of payment",
+          "prompt": "Locally rendered information card, no people.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "/images/articles/how-to-file-travel-insurance-claim/context.png",
+          "publicUrl": "",
+          "characterRequired": false
+        },
+        {
+          "key": "comparison",
+          "role": "comparison",
+          "placement": "afterSection:Claim Types and What Each One Requires",
+          "alt": "Comparison card of four travel insurance claim types with who to contact first, documents needed and the typical denial reason",
+          "prompt": "Locally rendered comparison card, no people.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "/images/articles/how-to-file-travel-insurance-claim/comparison.png",
+          "publicUrl": "",
+          "characterRequired": false
+        },
+        {
+          "key": "action",
+          "role": "action",
+          "placement": "afterSection:Why Travel Insurance Claims Get Denied",
+          "alt": "Card listing the six most common reasons travel insurance claims are denied",
+          "prompt": "Locally rendered card, no people.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "/images/articles/how-to-file-travel-insurance-claim/action.png",
+          "publicUrl": "",
+          "characterRequired": false
+        },
+        {
+          "key": "checklist",
+          "role": "checklist",
+          "placement": "afterSection:A Step-by-Step Claim Checklist",
+          "alt": "Step-by-step claim checklist card from the first phone call to the appeal",
+          "prompt": "Locally rendered checklist card, no people.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "localSrc": "/images/articles/how-to-file-travel-insurance-claim/checklist.png",
+          "publicUrl": "",
+          "characterRequired": false
+        }
+      ],
+      "affiliatePlan": {
+        "providerId": "",
+        "providerName": "",
+        "network": "",
+        "status": "pending",
+        "url": "",
+        "disclosure": "",
+        "cta": {
+          "topLabel": "",
+          "decisionLabel": ""
+        },
+        "productSlots": []
+      },
+      "bodyMarkdown": "## Quick Answer\nSomething went wrong on the trip. A fall on the second day, a cancelled flight home, a bag that never arrived. You have a policy, and now you want to know how to actually get paid.\n\nThe short version: call the insurer's 24-hour assistance line as early as possible, collect every report, invoice and receipt in writing before you leave the place where the problem happened, and file within the window your policy sets. The Government of Canada puts the documents rule bluntly: get a detailed report and invoice from the doctor or hospital before leaving the country, submit original receipts, and keep copies for your files.\n\nClaims are decided on paper, and most denials trace back to a handful of causes: an undeclared pre-existing condition, an excluded activity, an event that was already public when the policy was bought, a missed deadline, or a missing document. This guide walks through each stage so none of those catch you.\n\n## Before Anything Else: Call the Assistance Line\nEvery reputable policy comes with an emergency assistance number, and GOV.UK tells travelers to carry the policy number and the insurer's emergency assistance telephone number with them, and to share them with travel companions and with family at home in case someone has to call on your behalf. That number is the first step of nearly every claim.\n\nFor medical care the call matters even more. The NAIC advises asking, before you buy, whether you need the insurer's approval before getting medical care. Many policies require it for non-emergency treatment and for evacuation, and treatment arranged without that approval can be paid at a lower rate or not at all. The CDC recommends choosing a policy that will make payments to hospitals directly and one that provides a 24-hour physician support center; both of those only help if you call.\n\nWhen you call, write down the date and time, the name of the person you spoke to and any case or file number they give you. That reference will follow the claim from here on.\n\n## The Documents Every Claim Needs\nRegardless of claim type, insurers ask for the same core set of papers. Collect them while you are still on the spot; the Government of Canada warns that trying to get the proper paperwork from thousands of kilometres away can be frustrating.\n\n- Your policy number and the assistance case number.\n- A written account of what happened, with dates, places and names.\n- Third-party confirmation: a doctor's report, an airline delay letter, a police report or a property irregularity report from the airline.\n- Itemized invoices and original receipts for every cost you are claiming.\n- Proof that you paid: card statements or bank records.\n- Proof of the trip: booking confirmations, tickets, boarding passes and bag tags.\n\nPhotograph or scan each document as you receive it and keep the originals together. Canada's guidance is explicit on this point: always submit the original receipts for medical services or prescriptions received abroad, and keep a copy of the documents for your files.\n\n## Claim Types and What Each One Requires\nThe core documents are the same, but each type of loss adds its own proof. The NAIC describes the main coverages as trip cancellation, interruption and delay; travel medical; medical evacuation; accidental death and dismemberment; and baggage loss or delay. Here is what each of the common ones needs.\n\n### Emergency medical care\nCall the assistance line first. Ask the treating doctor for a written diagnosis and report, an itemized invoice and copies of any prescriptions, and get all of it before you are discharged or leave the country. If the insurer pays the hospital directly, keep a copy of whatever the hospital gives you anyway.\n\n### Trip cancellation\nThe policy lists the reasons it covers, and the NAIC's examples include illness or injury confirmed by a doctor, a non-traveling family member's hospitalization or death, severe weather or carrier problems, a natural disaster at home or at the destination, and jury duty. You will need proof of the covered reason, the invoices for what you prepaid, and written confirmation from the airline, hotel or tour operator that a refund was refused or only partly given. The insurer pays what you could not get back, not the whole trip.\n\n### Trip interruption and delay\nAsk the carrier for written confirmation of the cancellation or delay and its cause. Keep receipts for replacement tickets, hotel nights and meals, and the invoices for the unused part of the trip. Policies set a minimum delay before benefits apply, so note the exact times.\n\n### Lost, stolen or delayed baggage\nReport the problem before you leave the airport and get the airline's written report; for theft, file a police report locally. The Insurance Information Institute also suggests checking how much the airline itself is liable for and whether your homeowners or renters policy already covers off-premises theft, since the travel insurer will ask what other coverage applies. For a delay, keep receipts for the essentials you bought.\n\n## Deadlines and Timing Rules to Watch\nThere are three clocks running on any claim, and the exact numbers are set by your own policy, not by a general rule.\n\n- Notification: how soon you must tell the insurer that something happened. For medical and evacuation claims this is usually immediate, through the assistance line.\n- Filing: how long you have after the trip to submit the claim form and documents.\n- Responding: how long you have to supply anything the insurer requests afterward.\n\nTwo timing rules are decided before the trip even begins. First, purchase timing: the NAIC notes that if you wait until a storm has already been named, the policy likely will not cover claims related to it, and GOV.UK warns that claims arising from strikes or civil unrest may not be covered if those events were already public when you booked or bought the policy. Second, optional cancel-for-any-reason coverage, which the NAIC says must typically be bought within a set period after booking and usually reimburses only a portion of the trip cost.\n\nWrite the notification and filing windows from your policy into your phone before departure. A late claim can be denied even when the loss itself was clearly covered.\n\n## Why Travel Insurance Claims Get Denied\nMost denials are not surprises to the insurer; they follow from the policy wording. The NAIC lists common exclusions as pre-existing health conditions, pandemics, civil and political unrest at the destination, pregnancy and childbirth, and activities such as bungee jumping and backcountry skiing. GOV.UK adds quad bikes and mopeds, winter sports and skydiving as things standard policies usually leave out, and notes that travel to a destination where the UK government advises against travel may invalidate the policy.\n\nThe pre-existing-condition clause deserves special attention. The Government of Canada tells travelers to get a written agreement that a condition is covered, otherwise a claim can be found null and void, and explains that such agreements usually include a stability period during which there must be no change in the condition, no new symptoms and no new medications. GOV.UK gives the same warning from the other side: failing to declare an existing condition or pending tests may invalidate the insurance.\n\nPut together, the six reasons behind most denials are: an undeclared pre-existing condition; an excluded activity or destination; an event already known when the policy was bought; treatment arranged without the required approval; a missed notification or filing deadline; and missing or copied documents where originals were required. Every one of them can be checked before you travel.\n\n## A Step-by-Step Claim Checklist\n### Before you travel\nSave the policy document and the assistance number offline. Declare conditions and activities, and get written confirmation if anything is borderline. Note the notification and filing windows.\n\n### When something goes wrong\nCall the assistance line and record the case number. Ask what the insurer needs to approve before you spend money. Start a folder, physical or digital, for every document.\n\n### While you are still there\nGet the doctor's report, the airline or police report, itemized invoices and original receipts. Photograph everything. Confirm with the airline, hotel or operator in writing what they will and will not refund.\n\n### When you get home\nComplete the claim form, attach the documents, and submit before the filing deadline. Keep a copy of the full submission and note the date it was sent.\n\n### After you file\nAnswer any request for more information promptly. Keep a log of every call and message with dates and names.\n\n## If Your Claim Is Denied\nAsk for the decision in writing, including the specific policy wording the insurer relied on. Compare it with your own copy of the policy and with the documents you submitted. If the denial rests on a missing document you can still obtain, send it. If it rests on an interpretation you disagree with, use the insurer's internal complaint or appeal process first.\n\nIf that does not resolve it, the next step depends on where you live. The NAIC says the department of insurance in your state can help with questions about travel insurance, and every U.S. state has a complaint process for insurers it regulates. In the UK and Canada, insurers are regulated nationally and consumer complaint routes exist through the relevant regulator or ombudsman; GOV.UK points UK travelers to the Association of British Insurers' guidance on making a claim. One caution from the Insurance Information Institute applies here: cancellation waivers sold by cruise lines and tour operators are not insurance and are not regulated by state insurance departments, so a dispute over a waiver goes to the operator, not the regulator.\n\n## FAQ\n### Who do I call first when something goes wrong abroad?\nThe insurer's 24-hour assistance line printed on your policy. GOV.UK advises carrying the policy number and that number with you and sharing them with companions and family. For medical care, ask whether the insurer must approve treatment first.\n\n### Which documents does a travel insurance claim need?\nA written account, third-party confirmation such as a doctor's report or airline report, itemized invoices, original receipts, proof of payment and proof of the trip. The Government of Canada advises getting the medical report and invoice before leaving the country and keeping copies.\n\n### How long do I have to file a travel insurance claim?\nYour policy sets the notification and filing windows, and they differ by insurer and claim type. Note them before you travel; a late filing can be denied even when the loss is covered.\n\n### Why are travel insurance claims most often denied?\nUndeclared pre-existing conditions, excluded activities or destinations, events already public when the policy was bought, treatment arranged without required approval, missed deadlines and missing documents. The NAIC and GOV.UK both list pre-existing conditions and adventure activities among common exclusions.\n\n### Can I claim if I did not tell the insurer before getting treatment?\nSometimes, but many policies pay less or nothing for non-emergency care that was not approved in advance. The NAIC recommends asking about the approval requirement before you buy, and calling the assistance line as soon as it is safe to do so.\n\n### What can I do if my claim is denied?\nGet the denial in writing, supply any missing document, and use the insurer's appeal process. If that fails, the NAIC points U.S. consumers to their state insurance department; UK and Canadian travelers have national regulators and ombudsman routes.\n\n## Official Sources\n- NAIC — Should I Get Travel Insurance? (June 16, 2026): https://content.naic.org/article/should-you-get-travel-insurance-what-you-should-know-about-protecting-your-trips\n- Government of Canada — Travel insurance (modified May 8, 2026): https://travel.gc.ca/travelling/documents/travel-insurance\n- GOV.UK — Foreign travel insurance (updated August 2, 2024): https://www.gov.uk/guidance/foreign-travel-insurance\n- CDC Travelers' Health — Travel Insurance, Travel Health Insurance & Medical Evacuation Insurance (reviewed May 27, 2026): https://wwwnc.cdc.gov/travel/page/insurance\n- Insurance Information Institute — Should you buy travel insurance?: https://www.iii.org/article/should-you-buy-travel-insurance\n\nDisclaimer: This article is general travel-planning information, not insurance, legal or medical advice. Claim deadlines, document requirements and exclusions differ by insurer, policy and country. Read your own policy wording and confirm the process with your insurer before you file.",
+      "faq": [
+        {
+          "question": "Who do I call first when something goes wrong abroad?",
+          "answer": "The insurer's 24-hour assistance line printed on your policy. GOV.UK advises carrying the policy number and that number with you and sharing them with companions and family. For medical care, ask whether the insurer must approve treatment first."
+        },
+        {
+          "question": "Which documents does a travel insurance claim need?",
+          "answer": "A written account, third-party confirmation such as a doctor's report or airline report, itemized invoices, original receipts, proof of payment and proof of the trip. The Government of Canada advises getting the medical report and invoice before leaving the country and keeping copies."
+        },
+        {
+          "question": "How long do I have to file a travel insurance claim?",
+          "answer": "Your policy sets the notification and filing windows, and they differ by insurer and claim type. Note them before you travel; a late filing can be denied even when the loss is covered."
+        },
+        {
+          "question": "Why are travel insurance claims most often denied?",
+          "answer": "Undeclared pre-existing conditions, excluded activities or destinations, events already public when the policy was bought, treatment arranged without required approval, missed deadlines and missing documents. The NAIC and GOV.UK both list pre-existing conditions and adventure activities among common exclusions."
+        },
+        {
+          "question": "Can I claim if I did not tell the insurer before getting treatment?",
+          "answer": "Sometimes, but many policies pay less or nothing for non-emergency care that was not approved in advance. The NAIC recommends asking about the approval requirement before you buy, and calling the assistance line as soon as it is safe to do so."
+        },
+        {
+          "question": "What can I do if my claim is denied?",
+          "answer": "Get the denial in writing, supply any missing document, and use the insurer's appeal process. If that fails, the NAIC points U.S. consumers to their state insurance department; UK and Canadian travelers have national regulators and ombudsman routes."
+        }
+      ],
+      "qualityChecklist": {
+        "hasDisclaimer": true
+      },
+      "koreanReview": "여행자보험 청구 절차를 다루는 정보형 글. 기존 18개 공개 글(비교·의료·취소·수하물·모험·연간·EES·신용카드 등)과 주제가 겹치지 않는 '청구 실무' 관점. NAIC(2026-06), 캐나다 정부(2026-05), GOV.UK(2024-08), CDC(2026-05), Triple-I 공식 소비자 안내만 근거로 사용하고 특정 보험사·기한 숫자는 인용하지 않는다(정책별 상이). 이미지 5장은 유료 API 없이 로컬 제작: 대표 이미지는 ATLAS-MIJI-MASTER.png 원본을 그대로 합성(얼굴 일치 100%), 나머지 4장은 사람 없는 정보 카드.",
+      "status": "written",
+      "publishState": "approved",
+      "publishedUrl": "",
+      "blogId": "blog_001",
+      "channelId": "global_blogger",
+      "assetScope": "global",
+      "assetNamespace": "atlas/articles",
+      "character": "miji",
+      "heroCharacterId": "miji",
+      "masterFileName": "ATLAS-MIJI-MASTER.png",
+      "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+      "visualMode": "natural-review-photo",
+      "characterPolicyVersion": "ATLAS_CHARACTER_CHANNEL_V1",
+      "publishError": "",
+      "publishErrorCode": "",
+      "publishingStartedAt": "",
+      "createdAt": "2026-09-21T03:20:00.000Z",
+      "updatedAt": "2026-09-21T03:19:59.591Z",
+      "approvedAt": "2026-09-21T03:19:59.591Z"
     }
   ]
 }
