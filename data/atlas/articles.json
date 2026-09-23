@@ -4111,16 +4111,16 @@
       ],
       "sources": [
         {
-          "title": "U.S. Department of State — Your Passport and Travel Documents",
-          "url": "https://travel.state.gov/content/travel/en/passports.html"
-        },
-        {
-          "title": "U.S. Department of State — Country Information",
-          "url": "https://travel.state.gov/content/travel/en/international-travel/International-Travel-Country-Information-Pages.html"
-        },
-        {
-          "title": "UK Government — Passport Rules for Travel to Europe",
+          "title": "UK Government - Passport Rules for Travel to Europe",
           "url": "https://www.gov.uk/guidance/passport-rules-for-travel-to-europe"
+        },
+        {
+          "title": "UK Government - Passports Guidance",
+          "url": "https://www.gov.uk/browse/abroad/passports"
+        },
+        {
+          "title": "Your Europe - Entry and Exit Requirements",
+          "url": "https://europa.eu/youreurope/citizens/travel/entry-exit/index_en.htm"
         }
       ],
       "trust": {
@@ -4319,12 +4319,283 @@
       "characterPolicyVersion": "ATLAS_CHARACTER_CHANNEL_V1",
       "topicId": "gl_info_passport_validity",
       "createdAt": "2026-09-23T01:39:21.712Z",
-      "updatedAt": "2026-09-23T01:48:09.359Z",
-      "bodyHtml": "<h2 id=\"atlas-h2-0\">Why a Valid Passport Is Not Always Enough</h2>\n<p><strong>Suho:</strong> My passport does not expire until next spring. Why would anyone turn me away?</p>\n<p><strong>Miji:</strong> Because a lot of countries do not ask whether the passport is valid today. They ask how much validity is left on the day you arrive. Six months is the most common threshold, and your spring expiry may be under that.</p>\n<p><strong>Suho:</strong> So the country decides, but who actually stops me?</p>\n<p><strong>Miji:</strong> The airline, usually. Carriers are responsible for passengers they bring to a border that refuses entry, so they check the rule at the desk. That is why people find out at check-in rather than on arrival.</p>\n<h2 id=\"atlas-h2-1\">How to Count the Six Months Correctly</h2>\n<p><strong>Suho:</strong> Do I count six months from when I leave home?</p>\n<p><strong>Miji:</strong> From the date you enter the destination. If you arrive on 10 March, your passport should generally be valid through 10 September. For a multi-country trip, use the latest arrival date on the itinerary, not the first.</p>\n<p><strong>Suho:</strong> And if I am only connecting through an airport?</p>\n<p><strong>Miji:</strong> Transit rules differ by country, and some apply their own validity and visa requirements even airside. Check the transit country separately instead of assuming a layover is exempt.</p>\n<h2 id=\"atlas-h2-2\">Blank Pages and the Stamps You Cannot Control</h2>\n<p><strong>Suho:</strong> I have pages left, but they all have stamps on them.</p>\n<p><strong>Miji:</strong> Several destinations require genuinely blank visa pages — often one or two — and pages marked \"amendments and endorsements\" do not always count. Border officers need somewhere to place a visa or an entry stamp.</p>\n<p><strong>Suho:</strong> Can I add pages instead of renewing?</p>\n<p><strong>Miji:</strong> Many passport authorities stopped adding pages years ago, so the answer is usually a full renewal. That is a timing problem, not a paperwork problem.</p>\n<h2 id=\"atlas-h2-3\">Renewal Timing Before You Book</h2>\n<p><strong>Suho:</strong> How early should I renew?</p>\n<p><strong>Miji:</strong> Check the published processing time for your passport authority, then add your own buffer. Processing estimates are averages, and they lengthen during peak travel seasons.</p>\n<p><strong>Suho:</strong> What if I have already booked and the timing is tight?</p>\n<p><strong>Miji:</strong> Look for an expedited or urgent service before you change the trip. And keep in mind that while your application is being processed, your old passport is usually not available to you.</p>\n<h2 id=\"atlas-h2-4\">A Check You Can Do in Five Minutes</h2>\n<p><strong>Suho:</strong> Give me the short version I can actually run through tonight.</p>\n<p><strong>Miji:</strong> Open your passport, write down the expiry date, then write down your arrival date at each country on the trip. If any arrival date is within six months of the expiry, treat the trip as blocked until you renew. Then count your blank pages, and check the official entry requirements for every country on the route, including transits.</p>\n<p><strong>Suho:</strong> And I should do that before paying for anything.</p>\n<p><strong>Miji:</strong> Before paying, yes. A renewal is inconvenient. A non-refundable ticket you cannot use is worse.</p>",
-      "publishState": "written",
-      "approvedAt": "",
-      "publishError": "",
-      "publishErrorCode": ""
+      "updatedAt": "2026-09-23T02:16:15.137Z",
+      "bodyHtml": "<h2 id=\"atlas-h2-0\">Why a Valid Passport Is Not Always Enough</h2>\n<p><strong>Suho:</strong> My passport does not expire until next spring. Why would anyone turn me away?</p>\n<p><strong>Miji:</strong> Because a lot of countries do not ask whether the passport is valid today. They ask how much validity is left on the day you arrive. Six months is the most common threshold, and your spring expiry may be under that.</p>\n<p><strong>Suho:</strong> So the country decides, but who actually stops me?</p>\n<p><strong>Miji:</strong> The airline, usually. Carriers are responsible for passengers they bring to a border that refuses entry, so they check the rule at the desk. That is why people find out at check-in rather than on arrival.</p>\n<h2 id=\"atlas-h2-1\">How to Count the Six Months Correctly</h2>\n<p><strong>Suho:</strong> Do I count six months from when I leave home?</p>\n<p><strong>Miji:</strong> From the date you enter the destination. If you arrive on 10 March, your passport should generally be valid through 10 September. For a multi-country trip, use the latest arrival date on the itinerary, not the first.</p>\n<p><strong>Suho:</strong> And if I am only connecting through an airport?</p>\n<p><strong>Miji:</strong> Transit rules differ by country, and some apply their own validity and visa requirements even airside. Check the transit country separately instead of assuming a layover is exempt.</p>\n<h2 id=\"atlas-h2-2\">Blank Pages and the Stamps You Cannot Control</h2>\n<p><strong>Suho:</strong> I have pages left, but they all have stamps on them.</p>\n<p><strong>Miji:</strong> Several destinations require genuinely blank visa pages — often one or two — and pages marked \"amendments and endorsements\" do not always count. Border officers need somewhere to place a visa or an entry stamp.</p>\n<p><strong>Suho:</strong> Can I add pages instead of renewing?</p>\n<p><strong>Miji:</strong> Many passport authorities stopped adding pages years ago, so the answer is usually a full renewal. That is a timing problem, not a paperwork problem.</p>\n<h2 id=\"atlas-h2-3\">Renewal Timing Before You Book</h2>\n<p><strong>Suho:</strong> How early should I renew?</p>\n<p><strong>Miji:</strong> Check the published processing time for your passport authority, then add your own buffer. Processing estimates are averages, and they lengthen during peak travel seasons.</p>\n<p><strong>Suho:</strong> What if I have already booked and the timing is tight?</p>\n<p><strong>Miji:</strong> Look for an expedited or urgent service before you change the trip. And keep in mind that while your application is being processed, your old passport is usually not available to you.</p>\n<h2 id=\"atlas-h2-4\">A Check You Can Do in Five Minutes</h2>\n<p><strong>Suho:</strong> Give me the short version I can actually run through tonight.</p>\n<p><strong>Miji:</strong> Open your passport, write down the expiry date, then write down your arrival date at each country on the trip. If any arrival date is within six months of the expiry, treat the trip as blocked until you renew. Then count your blank pages, and check the official entry requirements for every country on the route, including transits.</p>\n<p><strong>Suho:</strong> And I should do that before paying for anything.</p>\n<p><strong>Miji:</strong> Before paying, yes. A renewal is inconvenient. A non-refundable ticket you cannot use is worse.</p>"
+    },
+    {
+      "id": "art_025",
+      "keywordId": "",
+      "keyword": "lost passport abroad",
+      "title": "Lost Your Passport Abroad? The Order You Do Things In Decides How Long You Wait",
+      "hookTitle": "Lost Your Passport Abroad? The Order You Do Things In Decides How Long You Wait",
+      "slug": "what-to-do-if-you-lose-your-passport-abroad",
+      "language": "en",
+      "searchIntent": "informational",
+      "excerpt": "Report the loss to the local police, then contact your nearest embassy or consulate to apply for a replacement or an emergency travel document. A reported passport is cancelled permanently, so never keep using one you later find, and rebook your flights only after the embassy gives you a timeline.",
+      "metaDescription": "Losing a passport overseas is a paperwork problem with a fixed order: report it, reach your embassy, prove who you are, then rebook. Here is what to do first, what an emergency travel document actually is, and which copies save you days.",
+      "category": "Travel Safety",
+      "tags": [
+        "lost",
+        "passport",
+        "abroad"
+      ],
+      "template": "revenue-guide",
+      "outline": [
+        "The First Hour After You Notice",
+        "Reaching Your Embassy or Consulate",
+        "Proving Who You Are Without a Passport",
+        "Replacement or Emergency Travel Document",
+        "Rebooking, Insurance and the Copies for Next Time"
+      ],
+      "quickAnswer": "Report the loss to the local police, then contact your nearest embassy or consulate to apply for a replacement or an emergency travel document. A reported passport is cancelled permanently, so never keep using one you later find, and rebook your flights only after the embassy gives you a timeline.",
+      "comparisonCriteria": [
+        "How soon you need to travel",
+        "Whether you can prove your identity and citizenship on the spot",
+        "Whether the trip continues or ends at home"
+      ],
+      "keyTakeaways": [
+        "Report first, because the report is what your embassy and your insurer both ask for.",
+        "A reported passport is cancelled for good, even if it turns up an hour later.",
+        "Copies held somewhere other than your bag are what turn days of delay into hours."
+      ],
+      "comparisonHeaders": [
+        "Document",
+        "What it is for",
+        "What it usually needs"
+      ],
+      "comparisonTable": [
+        [
+          "Full replacement passport",
+          "Continuing a longer trip",
+          "Application, photo, fee, proof of identity and citizenship"
+        ],
+        [
+          "Emergency travel document",
+          "Immediate travel, often one journey only",
+          "Police report, proof of identity, confirmed travel plans"
+        ],
+        [
+          "Police report alone",
+          "Evidence for insurance and the embassy",
+          "Filed where the loss or theft happened"
+        ]
+      ],
+      "sources": [
+        {
+          "title": "UK Government - Report a Lost or Stolen Passport",
+          "url": "https://www.gov.uk/report-a-lost-or-stolen-passport"
+        },
+        {
+          "title": "UK Government - Emergency Travel Document",
+          "url": "https://www.gov.uk/emergency-travel-document"
+        },
+        {
+          "title": "UK Government - Foreign Travel Advice by Country",
+          "url": "https://www.gov.uk/foreign-travel-advice"
+        }
+      ],
+      "trust": {
+        "methodology": "Assembled from the consular guidance national foreign ministries publish for citizens who lose a passport overseas. It describes the sequence and the document types; it does not state fees, processing times or requirements for any one country, because those are published per authority and change.",
+        "independenceNote": "This guide contains no affiliate links and recommends no product."
+      },
+      "relatedArticles": [],
+      "heroImage": null,
+      "visualAssets": [
+        {
+          "key": "featured",
+          "role": "featured",
+          "placement": "afterByline",
+          "alt": "Miji introducing lost passport abroad for travellers",
+          "prompt": "ATLAS Miji master portrait composed on a clean editorial card. Presenter image, not a product photo. No text, logo or watermark.\n\nIdentity lock: Miji, the same Korean woman in her 30s shown in the identity reference: long dark-brown wavy hair, warm brown almond-shaped eyes, oval face, soft jawline. Use the attached ATLAS master only as the identity reference. Preserve her facial identity. Do not substitute another presenter. No text, logo or watermark.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "characterRequired": true,
+          "localSrc": "/images/articles/what-to-do-if-you-lose-your-passport-abroad/featured.png",
+          "publicUrl": "",
+          "card": {
+            "kicker": "ATLAS TRAVEL GUIDE",
+            "title": "The First Hour After You Notice",
+            "lines": [
+              "Report the loss to the local police, then contact your nearest embassy or consulate to apply for a replacement or an emergency travel document. A reported passport is cancelled permanently, so never keep using one you later find, and rebook your flights only after the embassy gives you a timeline."
+            ],
+            "footer": "LOST PASSPORT ABROAD"
+          },
+          "channelId": "global_blogger",
+          "assetScope": "global",
+          "assetNamespace": "atlas/articles",
+          "characterId": "miji",
+          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+        },
+        {
+          "key": "context",
+          "role": "context",
+          "placement": "afterSection:Reaching Your Embassy or Consulate",
+          "alt": "Miji explaining reaching your embassy or consulate",
+          "prompt": "ATLAS Miji master portrait composed on a clean editorial card. Presenter image, not a product photo. No text, logo or watermark.\n\nIdentity lock: Miji, the same Korean woman in her 30s shown in the identity reference: long dark-brown wavy hair, warm brown almond-shaped eyes, oval face, soft jawline. Use the attached ATLAS master only as the identity reference. Preserve her facial identity. Do not substitute another presenter. No text, logo or watermark.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "characterRequired": true,
+          "localSrc": "/images/articles/what-to-do-if-you-lose-your-passport-abroad/context.png",
+          "publicUrl": "",
+          "card": {
+            "kicker": "ATLAS TRAVEL GUIDE",
+            "title": "Reaching Your Embassy or Consulate",
+            "lines": [
+              "Your foreign ministry publishes the list of its embassies and consulates by country. Find the one covering the city you are in, not just the capital, and check its opening hours before you travel across town.",
+              "Most have an emergency contact line for citizens outside office hours. Use it when you have an urgent flight; otherwise wait for the counter to open, because the paperwork happens in person."
+            ],
+            "footer": "LOST PASSPORT ABROAD"
+          },
+          "channelId": "global_blogger",
+          "assetScope": "global",
+          "assetNamespace": "atlas/articles",
+          "characterId": "miji",
+          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+        },
+        {
+          "key": "comparison",
+          "role": "comparison",
+          "placement": "afterSection:Proving Who You Are Without a Passport",
+          "alt": "Miji walking through proving who you are without a passport",
+          "prompt": "ATLAS Miji master portrait composed on a clean editorial card. Presenter image, not a product photo. No text, logo or watermark.\n\nIdentity lock: Miji, the same Korean woman in her 30s shown in the identity reference: long dark-brown wavy hair, warm brown almond-shaped eyes, oval face, soft jawline. Use the attached ATLAS master only as the identity reference. Preserve her facial identity. Do not substitute another presenter. No text, logo or watermark.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "characterRequired": true,
+          "localSrc": "/images/articles/what-to-do-if-you-lose-your-passport-abroad/comparison.png",
+          "publicUrl": "",
+          "card": {
+            "kicker": "ATLAS TRAVEL GUIDE",
+            "title": "Proving Who You Are Without a Passport",
+            "lines": [
+              "That is the situation the copies are for. A photo of the data page on your phone, a scan in your email, a driving licence, a national ID card, even a birth certificate. Any of these narrows the questions the consular officer has to ask.",
+              "It still works, it just takes longer. They can verify you through records at home and through someone who can confirm your identity, and that verification is the part that adds days."
+            ],
+            "footer": "LOST PASSPORT ABROAD"
+          },
+          "channelId": "global_blogger",
+          "assetScope": "global",
+          "assetNamespace": "atlas/articles",
+          "characterId": "miji",
+          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+        },
+        {
+          "key": "checklist",
+          "role": "checklist",
+          "placement": "afterSection:Replacement or Emergency Travel Document",
+          "alt": "Miji summarising replacement or emergency travel document",
+          "prompt": "ATLAS Miji master portrait composed on a clean editorial card. Presenter image, not a product photo. No text, logo or watermark.\n\nIdentity lock: Miji, the same Korean woman in her 30s shown in the identity reference: long dark-brown wavy hair, warm brown almond-shaped eyes, oval face, soft jawline. Use the attached ATLAS master only as the identity reference. Preserve her facial identity. Do not substitute another presenter. No text, logo or watermark.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "characterRequired": true,
+          "localSrc": "/images/articles/what-to-do-if-you-lose-your-passport-abroad/checklist.png",
+          "publicUrl": "",
+          "card": {
+            "kicker": "ATLAS TRAVEL GUIDE",
+            "title": "Replacement or Emergency Travel Document",
+            "lines": [
+              "No. It is a limited document, often valid for a single journey and sometimes only to your home country or along a specific route. A full replacement passport takes longer but works like the passport you lost.",
+              "By what is left of the trip. Flying home in two days is an emergency travel document. Three more countries over three weeks is a replacement passport."
+            ],
+            "footer": "LOST PASSPORT ABROAD"
+          },
+          "channelId": "global_blogger",
+          "assetScope": "global",
+          "assetNamespace": "atlas/articles",
+          "characterId": "miji",
+          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+        },
+        {
+          "key": "closing",
+          "role": "closing",
+          "placement": "afterFaq",
+          "alt": "Miji closing the lost passport abroad guide",
+          "prompt": "ATLAS Miji master portrait composed on a clean editorial card. Presenter image, not a product photo. No text, logo or watermark.\n\nIdentity lock: Miji, the same Korean woman in her 30s shown in the identity reference: long dark-brown wavy hair, warm brown almond-shaped eyes, oval face, soft jawline. Use the attached ATLAS master only as the identity reference. Preserve her facial identity. Do not substitute another presenter. No text, logo or watermark.",
+          "width": 1600,
+          "height": 900,
+          "fit": "cover",
+          "required": true,
+          "characterRequired": true,
+          "localSrc": "/images/articles/what-to-do-if-you-lose-your-passport-abroad/closing.png",
+          "publicUrl": "",
+          "card": {
+            "kicker": "ATLAS TRAVEL GUIDE",
+            "title": "Rebooking, Insurance and the Copies for Next Time",
+            "lines": [
+              "Report first, because the report is what your embassy and your insurer both ask for.",
+              "A reported passport is cancelled for good, even if it turns up an hour later.",
+              "Copies held somewhere other than your bag are what turn days of delay into hours."
+            ],
+            "footer": "LOST PASSPORT ABROAD"
+          },
+          "channelId": "global_blogger",
+          "assetScope": "global",
+          "assetNamespace": "atlas/articles",
+          "characterId": "miji",
+          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+        }
+      ],
+      "affiliatePlan": {
+        "providerId": "",
+        "providerName": "",
+        "network": "",
+        "status": "pending",
+        "url": "",
+        "disclosure": "",
+        "cta": {
+          "topLabel": "",
+          "decisionLabel": ""
+        },
+        "productSlots": []
+      },
+      "bodyMarkdown": "## The First Hour After You Notice\n\n**Suho:** My passport is gone. Do I call the embassy or the police first?\n\n**Miji:** Police first, where the loss or theft happened. You want a written report with a reference number, because the embassy will ask for it and so will your travel insurer.\n\n**Suho:** Even if I just left it somewhere and it was not stolen?\n\n**Miji:** Report it either way. Once you report a passport lost or stolen it is cancelled, and that cancellation is what stops someone else travelling on it.\n\n**Suho:** What if I find it right after reporting?\n\n**Miji:** It is still cancelled. Do not try to travel on it. You will be stopped, and using a passport reported lost causes far bigger problems than the replacement did.\n\n## Reaching Your Embassy or Consulate\n\n**Suho:** How do I find the right office?\n\n**Miji:** Your foreign ministry publishes the list of its embassies and consulates by country. Find the one covering the city you are in, not just the capital, and check its opening hours before you travel across town.\n\n**Suho:** What if it is a weekend or a holiday?\n\n**Miji:** Most have an emergency contact line for citizens outside office hours. Use it when you have an urgent flight; otherwise wait for the counter to open, because the paperwork happens in person.\n\n**Suho:** Can someone else go for me?\n\n**Miji:** Generally no. You are proving that you are you, so you normally have to appear in person.\n\n## Proving Who You Are Without a Passport\n\n**Suho:** The only photo ID I had was the passport itself.\n\n**Miji:** That is the situation the copies are for. A photo of the data page on your phone, a scan in your email, a driving licence, a national ID card, even a birth certificate. Any of these narrows the questions the consular officer has to ask.\n\n**Suho:** And if I have absolutely nothing?\n\n**Miji:** It still works, it just takes longer. They can verify you through records at home and through someone who can confirm your identity, and that verification is the part that adds days.\n\n**Suho:** So the copy is worth the two minutes it takes.\n\n**Miji:** It is the single highest-value thing on this list. Keep one copy somewhere separate from your bag, and one somewhere online you can reach without your phone.\n\n## Replacement or Emergency Travel Document\n\n**Suho:** They mentioned an emergency travel document. Is that just a fast passport?\n\n**Miji:** No. It is a limited document, often valid for a single journey and sometimes only to your home country or along a specific route. A full replacement passport takes longer but works like the passport you lost.\n\n**Suho:** How do I choose?\n\n**Miji:** By what is left of the trip. Flying home in two days is an emergency travel document. Three more countries over three weeks is a replacement passport.\n\n**Suho:** Does an emergency document get me through every border?\n\n**Miji:** Not necessarily. Some countries and some airlines treat it differently, and any visa in the lost passport is gone with it, so confirm the route before you rely on it.\n\n## Rebooking, Insurance and the Copies for Next Time\n\n**Suho:** Should I rebook my flight while I wait?\n\n**Miji:** Not until the embassy gives you a realistic timeline. Rebooking on a guess is how people pay twice for the same seat.\n\n**Suho:** Will insurance cover any of this?\n\n**Miji:** It depends entirely on your policy. Check whether it covers replacement fees and the extra nights, tell the insurer early, and keep the police report and every receipt, because claims are decided on documents.\n\n**Suho:** And before the next trip?\n\n**Miji:** Photograph the data page, keep a copy somewhere separate from the passport, note the embassy address and emergency number for each country on the route, and stop carrying the passport around on days you do not need it.",
+      "faq": [
+        {
+          "question": "Do I have to report a lost passport to the police?",
+          "answer": "Reporting is what gets you a written record, and both your embassy and your travel insurer normally ask for it. Report it where the loss or theft happened, and keep the reference number."
+        },
+        {
+          "question": "What happens if I find my passport after reporting it lost?",
+          "answer": "It stays cancelled. Do not travel on it. Carry the replacement or emergency document the embassy issues instead, and follow their instructions for handing the old one in."
+        },
+        {
+          "question": "What is an emergency travel document?",
+          "answer": "A limited document some authorities issue so you can complete urgent travel, often for a single journey and sometimes only along a specific route. It is not a substitute for a full passport."
+        },
+        {
+          "question": "What happens to the visas that were in my lost passport?",
+          "answer": "They are gone with the passport. You normally have to approach the issuing country again, so ask the embassy how that affects the rest of your route before you rebook."
+        },
+        {
+          "question": "Can a friend collect the replacement for me?",
+          "answer": "Usually not. Replacing a passport is an identity check, so you are normally required to attend in person."
+        }
+      ],
+      "qualityChecklist": [],
+      "koreanReview": "해외에서 여권을 분실했을 때의 처리 순서(경찰 신고 → 대사관·영사관 → 신원 확인 → 긴급여권 또는 재발급 → 항공권 재예약)를 미지와 수호의 문답으로 정리한 정보글입니다. 국가별 수수료·소요기간을 단정하지 않고 확인 방법만 제시했습니다. 분실 신고한 여권은 되찾아도 사용할 수 없다는 점과 사본 보관의 중요성을 핵심으로 다뤘습니다. 제휴 링크는 없습니다.",
+      "status": "written",
+      "publishedUrl": "",
+      "blogId": "",
+      "channelId": "global_blogger",
+      "assetScope": "global",
+      "assetNamespace": "atlas/articles",
+      "character": "miji",
+      "heroCharacterId": "miji",
+      "masterFileName": "ATLAS-MIJI-MASTER.png",
+      "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+      "visualMode": "natural-review-photo",
+      "characterPolicyVersion": "ATLAS_CHARACTER_CHANNEL_V1",
+      "topicId": "gl_info_lost_passport",
+      "createdAt": "2026-09-23T02:11:04.521Z",
+      "updatedAt": "2026-09-23T02:16:15.011Z",
+      "bodyHtml": "<h2 id=\"atlas-h2-0\">The First Hour After You Notice</h2>\n<p><strong>Suho:</strong> My passport is gone. Do I call the embassy or the police first?</p>\n<p><strong>Miji:</strong> Police first, where the loss or theft happened. You want a written report with a reference number, because the embassy will ask for it and so will your travel insurer.</p>\n<p><strong>Suho:</strong> Even if I just left it somewhere and it was not stolen?</p>\n<p><strong>Miji:</strong> Report it either way. Once you report a passport lost or stolen it is cancelled, and that cancellation is what stops someone else travelling on it.</p>\n<p><strong>Suho:</strong> What if I find it right after reporting?</p>\n<p><strong>Miji:</strong> It is still cancelled. Do not try to travel on it. You will be stopped, and using a passport reported lost causes far bigger problems than the replacement did.</p>\n<h2 id=\"atlas-h2-1\">Reaching Your Embassy or Consulate</h2>\n<p><strong>Suho:</strong> How do I find the right office?</p>\n<p><strong>Miji:</strong> Your foreign ministry publishes the list of its embassies and consulates by country. Find the one covering the city you are in, not just the capital, and check its opening hours before you travel across town.</p>\n<p><strong>Suho:</strong> What if it is a weekend or a holiday?</p>\n<p><strong>Miji:</strong> Most have an emergency contact line for citizens outside office hours. Use it when you have an urgent flight; otherwise wait for the counter to open, because the paperwork happens in person.</p>\n<p><strong>Suho:</strong> Can someone else go for me?</p>\n<p><strong>Miji:</strong> Generally no. You are proving that you are you, so you normally have to appear in person.</p>\n<h2 id=\"atlas-h2-2\">Proving Who You Are Without a Passport</h2>\n<p><strong>Suho:</strong> The only photo ID I had was the passport itself.</p>\n<p><strong>Miji:</strong> That is the situation the copies are for. A photo of the data page on your phone, a scan in your email, a driving licence, a national ID card, even a birth certificate. Any of these narrows the questions the consular officer has to ask.</p>\n<p><strong>Suho:</strong> And if I have absolutely nothing?</p>\n<p><strong>Miji:</strong> It still works, it just takes longer. They can verify you through records at home and through someone who can confirm your identity, and that verification is the part that adds days.</p>\n<p><strong>Suho:</strong> So the copy is worth the two minutes it takes.</p>\n<p><strong>Miji:</strong> It is the single highest-value thing on this list. Keep one copy somewhere separate from your bag, and one somewhere online you can reach without your phone.</p>\n<h2 id=\"atlas-h2-3\">Replacement or Emergency Travel Document</h2>\n<p><strong>Suho:</strong> They mentioned an emergency travel document. Is that just a fast passport?</p>\n<p><strong>Miji:</strong> No. It is a limited document, often valid for a single journey and sometimes only to your home country or along a specific route. A full replacement passport takes longer but works like the passport you lost.</p>\n<p><strong>Suho:</strong> How do I choose?</p>\n<p><strong>Miji:</strong> By what is left of the trip. Flying home in two days is an emergency travel document. Three more countries over three weeks is a replacement passport.</p>\n<p><strong>Suho:</strong> Does an emergency document get me through every border?</p>\n<p><strong>Miji:</strong> Not necessarily. Some countries and some airlines treat it differently, and any visa in the lost passport is gone with it, so confirm the route before you rely on it.</p>\n<h2 id=\"atlas-h2-4\">Rebooking, Insurance and the Copies for Next Time</h2>\n<p><strong>Suho:</strong> Should I rebook my flight while I wait?</p>\n<p><strong>Miji:</strong> Not until the embassy gives you a realistic timeline. Rebooking on a guess is how people pay twice for the same seat.</p>\n<p><strong>Suho:</strong> Will insurance cover any of this?</p>\n<p><strong>Miji:</strong> It depends entirely on your policy. Check whether it covers replacement fees and the extra nights, tell the insurer early, and keep the police report and every receipt, because claims are decided on documents.</p>\n<p><strong>Suho:</strong> And before the next trip?</p>\n<p><strong>Miji:</strong> Photograph the data page, keep a copy somewhere separate from the passport, note the embassy address and emergency number for each country on the route, and stop carrying the passport around on days you do not need it.</p>"
     }
   ]
 }

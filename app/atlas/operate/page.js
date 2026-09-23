@@ -140,19 +140,24 @@ export default function OperatePage() {
   const [busy, setBusy] = useState("");
   const [message, setMessage] = useState("");
   const [result, setResult] = useState(null);
+  // 준비된 원고가 여러 개일 때 화면이 보고 있는 항목. 비어 있으면 가장 최근 것.
+  const [picked, setPicked] = useState({ [KOREA]: "", [GLOBAL]: "" });
 
-  const load = useCallback(async () => {
-    const res = await fetch("/api/atlas/operate", { cache: "no-store" });
+  const load = useCallback(async (selection) => {
+    const query = new URLSearchParams();
+    if (selection?.[KOREA]) query.set("koreaId", selection[KOREA]);
+    if (selection?.[GLOBAL]) query.set("globalId", selection[GLOBAL]);
+    const res = await fetch(`/api/atlas/operate?${query}`, { cache: "no-store" });
     const data = await res.json().catch(() => ({}));
     if (data.status === "ok") setState(data.state);
     else setMessage(data.error || "운영 상태를 읽지 못했습니다.");
   }, []);
 
   useEffect(() => {
-    // 자체 API에 대한 마운트 시 1회 로드 — 이 운영 도구에서는 의도된 동작이다.
+    // 자체 API 로드. 선택이 바뀌면 그 항목 기준으로 다시 읽는다.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    load();
-  }, [load]);
+    load(picked);
+  }, [load, picked]);
 
   async function run(label, fn) {
     setBusy(label);
@@ -161,17 +166,19 @@ export default function OperatePage() {
       await fn();
     } catch (error) {
       setMessage(String(error?.message || error));
+      await load(picked).catch(() => {});
     } finally {
       setBusy("");
-      await load().catch(() => {});
     }
   }
 
   function act(body, note) {
     return run(body.action, async () => {
-      const { ok, data } = await postJson("/api/atlas/operate", body);
+      const selection = { koreaId: picked[KOREA], globalId: picked[GLOBAL] };
+      const { ok, data } = await postJson("/api/atlas/operate", { ...selection, ...body });
       if (data.state) setState(data.state);
       if (!ok) throw new Error(data.error || "처리하지 못했습니다.");
+      if (data.id) setPicked((prev) => ({ ...prev, [body.channelId]: data.id }));
       setMessage(note);
     });
   }
@@ -198,6 +205,8 @@ export default function OperatePage() {
       }
       setResult({ channel: KOREA, url: data.publishedUrl || "" });
       setMessage("네이버 발행 완료.");
+      setPicked((prev) => ({ ...prev, [KOREA]: "" }));
+      await load({ ...picked, [KOREA]: "" });
     });
   }
 
@@ -208,14 +217,13 @@ export default function OperatePage() {
       const approved = await postJson("/api/atlas/publisher-approval", { articleId: article.id, action: "approve" });
       if (approved.data.status !== "ok") throw new Error(`승인 실패: ${approved.data.errorCode || "오류"}`);
       const { data } = await postJson("/api/publish", { articleId: article.id, blogId: "blog_001" });
-      if (data.status === "succeeded") {
+      if (data.status === "succeeded" || data.status === "linked_existing") {
         setResult({ channel: GLOBAL, url: data.publishedUrl || "" });
-        setMessage("Blogger 발행 완료.");
-        return;
-      }
-      if (data.status === "linked_existing") {
-        setResult({ channel: GLOBAL, url: data.publishedUrl || "" });
-        setMessage("같은 글이 이미 공개되어 있어 새로 만들지 않고 연결했습니다.");
+        setMessage(data.status === "succeeded"
+          ? "Blogger 발행 완료."
+          : "같은 글이 이미 공개되어 있어 새로 만들지 않고 연결했습니다.");
+        setPicked((prev) => ({ ...prev, [GLOBAL]: "" }));
+        await load({ ...picked, [GLOBAL]: "" });
         return;
       }
       throw new Error(data.error || `발행 실패 (${data.status || data.errorCode || "오류"})`);
@@ -231,6 +239,7 @@ export default function OperatePage() {
         throw new Error("공개 이미지 호스팅이 설정되지 않았습니다(.env.local의 CLOUDINARY_URL). 설정 후 다시 누르면 5장이 공개 URL로 연결됩니다.");
       }
       setMessage(`공개 이미지 연결 완료 (${(data.results || []).filter((r) => r.status === "uploaded").length}장).`);
+      await load(picked);
     });
   }
 
@@ -290,6 +299,24 @@ export default function OperatePage() {
         </section>
       ) : (
         <>
+          {channel.prepared?.length > 1 ? (
+            <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+              <label className="block text-sm">
+                <span className="text-zinc-400">준비된 원고 {channel.prepared.length}개</span>
+                <select
+                  className="mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-900 p-2 text-sm"
+                  value={record.id}
+                  disabled={Boolean(busy)}
+                  onChange={(e) => setPicked((prev) => ({ ...prev, [active]: e.target.value }))}
+                >
+                  {channel.prepared.map((p) => (
+                    <option key={p.id} value={p.id}>{p.title}</option>
+                  ))}
+                </select>
+              </label>
+            </section>
+          ) : null}
+
           <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="min-w-0">
@@ -302,7 +329,7 @@ export default function OperatePage() {
                 type="button"
                 className={secondary}
                 disabled={Boolean(busy)}
-                onClick={() => act({ action: "write", channelId: active, topicId: record.topicId }, "본문을 다시 작성했습니다. 이미 생성된 이미지는 그대로 유지됩니다.")}
+                onClick={() => act({ action: "write", channelId: active, topicId: record.topicId, id: record.id }, "본문을 다시 작성했습니다. 이미 생성된 이미지는 그대로 유지됩니다.")}
               >
                 본문 다시 작성
               </button>
@@ -314,7 +341,7 @@ export default function OperatePage() {
             images={steps.images}
             thumbs={thumbs}
             busy={Boolean(busy)}
-            onRender={(force) => act({ action: "images", channelId: active, force }, "이미지를 실제 파일로 생성해 본문에 연결했습니다.")}
+            onRender={(force) => act({ action: "images", channelId: active, force, id: record.id }, "이미지를 실제 파일로 생성해 본문에 연결했습니다.")}
           />
 
           <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">

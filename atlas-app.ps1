@@ -1,7 +1,7 @@
 ﻿# ATLAS 통합 실행기
 #
 # 바탕화면 "ATLAS" 바로가기 -> start-atlas.bat -> 이 스크립트.
-# 서버를 시작하고, 준비되면 "블로그 글 만들기"를 전용 앱 창으로 하나만 연다.
+# 서버를 시작하고, 준비되면 국내·해외 단일 운영 화면을 전용 앱 창으로 하나만 연다.
 # 그 창이 닫히면 이 스크립트가 직접 시작한 서버 프로세스 트리만 종료한다.
 #
 # 원칙:
@@ -12,7 +12,7 @@
 $ErrorActionPreference = 'Continue'
 
 $Port         = 3002
-$StartPath    = '/atlas/revenue'
+$StartPath    = '/atlas/operate'
 $ProjectDir   = $PSScriptRoot
 $Url          = "http://localhost:$Port$StartPath"
 $ProfileDir   = Join-Path $env:LOCALAPPDATA 'ATLAS\chrome-profile'

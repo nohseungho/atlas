@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { readJson, writeJson } from "@/lib/data-store";
-import { KOREA_DRAFT_STATE, canPublishKoreaDraft, publishBlockers, validateKoreaDraft } from "@/lib/atlas/korea-product-pipeline";
+import { KOREA_DRAFT_STATE, canPublishKoreaDraft, canonicalNaverUrl, publishBlockers, validateKoreaDraft } from "@/lib/atlas/korea-product-pipeline";
 import { runNaverBrowserJob } from "@/lib/atlas/naver-browser-publisher";
 import { evaluateKoreaDraft } from "@/lib/atlas/policy-validator";
 
@@ -95,7 +95,7 @@ export async function POST(request) {
       patch(fresh, id, {
         state: KOREA_DRAFT_STATE.PUBLISHED,
         publishedAt: new Date().toISOString(),
-        publishedUrl: result.publishedUrl || "",
+        publishedUrl: canonicalNaverUrl(result.publishedUrl, draft.blogId) || "",
         lastError: "",
         automationStatus: "published",
       });

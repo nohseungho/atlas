@@ -68,6 +68,24 @@
 - 국내: ATLAS 전용 Edge 프로필의 네이버 로그인 세션 (최초 1회 로그인)
 - 해외: Blogger OAuth(연결됨) + 공개 이미지 호스팅 `CLOUDINARY_URL` (`.env.local`)
 
+## 실행 화면
+
+`start-atlas.bat` → `atlas-app.ps1`이 여는 시작 주소는 `/atlas/operate`다.
+프로덕션 빌드에 새 라우트가 없으면 이 화면이 404로 뜨므로, 라우트를 추가한 뒤에는
+`npm run build`를 다시 돌려야 한다.
+
+## 준비된 원고가 여러 개일 때
+
+채널마다 미발행 운영 초안을 전부 들고 있고, 화면 상단 선택 상자로 바꾼다.
+`GET /api/atlas/operate?koreaId=...&globalId=...`로 선택을 유지하며,
+작성·이미지 작업은 `id`로 대상을 지정한다.
+
+## 미리보기 이미지
+
+`.atlas-data/korea-assets/`는 정적으로 서빙되지 않으므로
+`/api/atlas/operate/asset?draft=<draftId>&image=<imageId>`가 스트리밍한다.
+경로를 받지 않고 식별자만 받아 고정 세그먼트로 조립한다.
+
 ## 검증
 
 ```

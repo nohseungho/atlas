@@ -77,23 +77,36 @@ function globalSteps(article) {
   };
 }
 
-// 운영 화면이 다루는 현재 작업물: 아직 공개되지 않은 가장 최근 운영 초안 하나.
+// 운영 화면이 다루는 작업물: 아직 공개되지 않은 운영 초안 전부(최근 수정 순).
 // 기존 미발행 초안은 절대 지우지 않으며, 운영 화면이 만든 것(topicId 보유)만 대상으로 삼는다.
-function currentKoreaDraft(items) {
-  return items.find((d) => d.topicId && d.state !== "published" && !d.publishedUrl) || null;
+function byRecent(a, b) {
+  return String(b.updatedAt || "").localeCompare(String(a.updatedAt || ""));
 }
 
-function currentGlobalArticle(articles) {
-  return articles.find((a) => a.topicId && a.status !== "published" && !a.publishedUrl) || null;
+function koreaPrepared(items) {
+  return items.filter((d) => d.topicId && d.state !== "published" && !d.publishedUrl).sort(byRecent);
+}
+
+function globalPrepared(articles) {
+  return articles.filter((a) => a.topicId && a.status !== "published" && !a.publishedUrl).sort(byRecent);
+}
+
+// 화면이 고른 항목을 우선하고, 없으면 가장 최근 것을 쓴다.
+function pick(list, id) {
+  return list.find((item) => item.id === id) || list[0] || null;
 }
 
 function koreaPreview(draft) {
   const paragraphs = bodyParagraphsFromDraft(draft);
   const placements = planImagePlacements(paragraphs, draft.images || [], (src) => fs.existsSync(src));
+  // 미리보기 이미지는 경로가 아니라 draft/image 식별자로 요청한다(asset 라우트 참고).
   return {
     html: bodyHtmlFromDraft(draft),
     paragraphs,
-    placements: placements.map((p) => ({ ...p, previewUrl: `/api/atlas/operate/asset?src=${encodeURIComponent(p.src)}` })),
+    placements: placements.map((p) => ({
+      ...p,
+      previewUrl: `/api/atlas/operate/asset?draft=${encodeURIComponent(draft.id)}&image=${encodeURIComponent(p.id)}`,
+    })),
   };
 }
 
@@ -101,13 +114,15 @@ function globalPreview(article) {
   return { html: buildLocalPreviewHtml(article) };
 }
 
-function buildState() {
+function buildState({ koreaId = "", globalId = "" } = {}) {
   const published = publishedIndex();
   const items = koreaItems();
   const articles = articleList();
 
-  const koreaDraft = currentKoreaDraft(items);
-  const globalArticle = currentGlobalArticle(articles);
+  const koreaList = koreaPrepared(items);
+  const globalList = globalPrepared(articles);
+  const koreaDraft = pick(koreaList, koreaId);
+  const globalArticle = pick(globalList, globalId);
 
   const koreaUsedTopics = new Set([...items.map((d) => d.topicId).filter(Boolean)]);
   const globalUsedTopics = new Set([...articles.map((a) => a.topicId).filter(Boolean)]);
@@ -126,6 +141,7 @@ function buildState() {
           || (koreaUsedTopics.has(topic.id) ? "이 주제로 만든 초안이 이미 있습니다." : ""),
       })),
       draft: koreaDraft,
+      prepared: koreaList.map((d) => ({ id: d.id, title: d.title, updatedAt: d.updatedAt })),
       steps: koreaSteps(koreaDraft),
       policy: koreaDraft ? evaluateKoreaDraft(koreaDraft) : null,
       preview: koreaDraft ? koreaPreview(koreaDraft) : null,
@@ -145,6 +161,7 @@ function buildState() {
           || (globalUsedTopics.has(topic.id) ? "이 주제로 만든 원고가 이미 있습니다." : ""),
       })),
       article: globalArticle,
+      prepared: globalList.map((a) => ({ id: a.id, title: a.title, updatedAt: a.updatedAt })),
       steps: globalSteps(globalArticle),
       policy: globalArticle
         ? evaluateGlobalArticle(globalArticle, { html: buildLocalPreviewHtml(globalArticle) })
@@ -155,9 +172,13 @@ function buildState() {
   };
 }
 
-export async function GET() {
+export async function GET(request) {
+  const params = new URL(request.url).searchParams;
   try {
-    return NextResponse.json({ status: "ok", state: buildState() });
+    return NextResponse.json({
+      status: "ok",
+      state: buildState({ koreaId: params.get("koreaId") || "", globalId: params.get("globalId") || "" }),
+    });
   } catch (error) {
     return NextResponse.json({ status: "error", error: String(error?.message || error) }, { status: 500 });
   }
@@ -191,7 +212,7 @@ function writeKorea(topicId) {
 
   const next = existing ? items.map((d) => (d.id === draft.id ? draft : d)) : [draft, ...items];
   writeKoreaItems(next);
-  return { status: "ok" };
+  return { status: "ok", id: draft.id };
 }
 
 function writeGlobal(topicId) {
@@ -238,9 +259,9 @@ function writeGlobal(topicId) {
 }
 
 // ── 이미지 생성 ──────────────────────────────────────────────────────────────
-async function imagesKorea(force) {
+async function imagesKorea(force, id) {
   const items = koreaItems();
-  const draft = currentKoreaDraft(items);
+  const draft = pick(koreaPrepared(items), id);
   if (!draft) return { status: "error", error: "작성된 국내 초안이 없습니다.", code: 404 };
   const { images, rendered } = await renderKoreaDraftImages(draft, { force });
   const next = items.map((d) =>
@@ -252,9 +273,9 @@ async function imagesKorea(force) {
   return { status: "ok", rendered: rendered.length };
 }
 
-async function imagesGlobal(force) {
+async function imagesGlobal(force, id) {
   const articles = articleList();
-  const article = currentGlobalArticle(articles);
+  const article = pick(globalPrepared(articles), id);
   if (!article) return { status: "error", error: "작성된 해외 원고가 없습니다.", code: 404 };
   const { rendered } = await renderGlobalArticleImages(article, { force });
   return { status: "ok", rendered: rendered.length };
@@ -275,15 +296,21 @@ export async function POST(request) {
     if (action === "write") {
       result = korea ? writeKorea(String(body.topicId || "")) : writeGlobal(String(body.topicId || ""));
     } else if (action === "images") {
-      result = korea ? await imagesKorea(Boolean(body.force)) : await imagesGlobal(Boolean(body.force));
+      result = korea
+        ? await imagesKorea(Boolean(body.force), String(body.id || ""))
+        : await imagesGlobal(Boolean(body.force), String(body.id || ""));
     } else {
       return NextResponse.json({ status: "error", error: "지원하지 않는 작업입니다." }, { status: 400 });
     }
 
+    const selection = {
+      koreaId: korea ? String(result.id || body.id || "") : String(body.koreaId || ""),
+      globalId: global ? String(result.id || body.id || "") : String(body.globalId || ""),
+    };
     if (result.status !== "ok") {
-      return NextResponse.json({ ...result, state: buildState() }, { status: result.code || 409 });
+      return NextResponse.json({ ...result, state: buildState(selection) }, { status: result.code || 409 });
     }
-    return NextResponse.json({ ...result, state: buildState() });
+    return NextResponse.json({ ...result, state: buildState(selection) });
   } catch (error) {
     return NextResponse.json(
       { status: "failed", errorCode: error?.code || "ATLAS_OPERATE_FAILED", error: String(error?.message || error) },
