@@ -154,100 +154,39 @@
           "id": "img_info_why",
           "role": "info_why",
           "src": "D:\\projects\\atlas\\.atlas-data\\korea-assets\\kr_kr_info_autumn_humidity\\img_info_why.png",
-          "alt": "환절기 습도 관리 핵심 정리",
+          "alt": "환절기 습도 관리 — 가을 습도가 방마다 다른 이유 장면",
           "placement": "가을 습도가 방마다 다른 이유 문단 뒤",
           "anchorKeywords": [
             "가을 습도가 방마다 다른 이유",
             "환절기 습도 관리"
           ],
-          "card": {
-            "kicker": "ATLAS 생활정보",
-            "title": "가을 습도가 방마다 다른 이유",
-            "columns": [
-              [
-                "외벽·창가",
-                "실내 평균보다 차가워 수증기가 먼저 맺힙니다"
-              ],
-              [
-                "북향 방",
-                "공기가 거의 움직이지 않습니다"
-              ],
-              [
-                "장롱 안쪽",
-                "같은 자리에서 곰팡이가 반복됩니다"
-              ]
-            ],
-            "footer": "집 전체가 아니라 특정 자리의 문제입니다."
-          },
           "generatedLocalPath": "D:\\projects\\atlas\\.atlas-data\\korea-assets\\kr_kr_info_autumn_humidity\\img_info_why.png",
-          "generatedAt": "2026-09-23T02:13:15.637Z"
+          "generatedAt": "2026-09-23T06:30:57.952Z"
         },
         {
           "id": "img_info_how",
           "role": "info_how",
           "src": "D:\\projects\\atlas\\.atlas-data\\korea-assets\\kr_kr_info_autumn_humidity\\img_info_how.png",
-          "alt": "환절기 습도 관리 기준 정리",
+          "alt": "환절기 습도 관리 — 방마다 다르게 잡는 실내 습도 기준 장면",
           "placement": "방마다 다르게 잡는 실내 습도 기준 문단 뒤",
           "anchorKeywords": [
             "방마다 다르게 잡는 실내 습도 기준"
           ],
-          "card": {
-            "kicker": "ATLAS 생활정보",
-            "title": "돈 안 드는 순서부터",
-            "columns": [
-              [
-                "1. 환기",
-                "아침 5~10분, 마주 보는 창을 함께"
-              ],
-              [
-                "2. 가구 배치",
-                "외벽에 붙은 가구를 5cm 이상 띄우기"
-              ],
-              [
-                "3. 장비",
-                "그래도 축축한 방에만 제습기 고려"
-              ]
-            ],
-            "footer": "순서를 바꾸면 장비를 사고도 곰팡이가 다시 생깁니다."
-          },
           "generatedLocalPath": "D:\\projects\\atlas\\.atlas-data\\korea-assets\\kr_kr_info_autumn_humidity\\img_info_how.png",
-          "generatedAt": "2026-09-23T02:13:15.637Z"
+          "generatedAt": "2026-09-23T06:30:57.952Z"
         },
         {
           "id": "img_info_checklist",
           "role": "info_checklist",
           "src": "D:\\projects\\atlas\\.atlas-data\\korea-assets\\kr_kr_info_autumn_humidity\\img_info_checklist.png",
-          "alt": "환절기 습도 관리 체크리스트",
+          "alt": "환절기 습도 관리 — 확인 장면",
           "placement": "체크리스트 문단 뒤",
           "anchorKeywords": [
             "오늘의 체크리스트",
             "체크리스트"
           ],
-          "card": {
-            "kicker": "ATLAS 생활정보",
-            "title": "오늘의 체크리스트",
-            "columns": [
-              [
-                "환기",
-                "아침 5~10분 맞바람"
-              ],
-              [
-                "배치",
-                "외벽 가구 5cm 띄우기"
-              ],
-              [
-                "습도",
-                "40~60% 유지"
-              ],
-              [
-                "빨래",
-                "실내 건조 시 문 열어두기"
-              ]
-            ],
-            "footer": "하나만 해도 달라집니다."
-          },
           "generatedLocalPath": "D:\\projects\\atlas\\.atlas-data\\korea-assets\\kr_kr_info_autumn_humidity\\img_info_checklist.png",
-          "generatedAt": "2026-09-23T02:13:15.637Z"
+          "generatedAt": "2026-09-23T06:30:57.952Z"
         }
       ],
       "state": "approved",
@@ -256,7 +195,7 @@
       "publishedUrl": "",
       "lastError": "5분 안에 네이버 로그인이 완료되지 않았습니다. Edge 창을 유지합니다.",
       "createdAt": "2026-09-23T01:38:51.583Z",
-      "updatedAt": "2026-09-23T02:13:15.637Z",
+      "updatedAt": "2026-09-23T06:30:57.952Z",
       "channelId": "korea_naver",
       "assetScope": "korea",
       "assetNamespace": ".atlas-data/korea-assets",
