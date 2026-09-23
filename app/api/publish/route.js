@@ -24,6 +24,7 @@ import { selectLabels } from "@/lib/atlas/seo-engine";
 import { PUBLISH_STATE, publishStateOf, matchLivePost } from "@/lib/atlas/publisher-sync";
 import { ATLAS_CHANNEL_ID, validateChannelIdentity } from "@/lib/atlas/character-channel-policy";
 import { evaluateGlobalArticle } from "@/lib/atlas/policy-validator";
+import { checkUserApproval, consumeUserApproval } from "@/lib/atlas/operate/publish-approval-store";
 
 export const runtime = "nodejs";
 
@@ -148,6 +149,22 @@ export async function POST(request) {
     );
   }
 
+  // (3c) 사용자 발행 승인 — 자동 발행 금지(2026-09-24). 최종 검수 화면에서 사용자가 "발행"을 눌러
+  // 남긴 승인(내용 해시 일치·15분 이내·1회용)이 없으면 Blogger를 부르지 않는다.
+  // 최근 글 5개와 검색의도가 겹치거나 미지 얼굴 검수를 통과하지 못해도 여기서 막힌다.
+  const approval = checkUserApproval("global", article);
+  if (approval.issues.length) {
+    return NextResponse.json(
+      {
+        status: "user_approval_required",
+        errorCode: "USER_PUBLISH_APPROVAL_REQUIRED",
+        error: approval.issues[0],
+        issues: approval.issues,
+      },
+      { status: 409 },
+    );
+  }
+
   // (4) In-process concurrency lock.
   const lockKey = `${articleId}:${blogId}`;
   if (inFlight.has(lockKey)) {
@@ -189,6 +206,7 @@ export async function POST(request) {
 
     if (preflight.status === "matched") {
       const post = preflight.post;
+      consumeUserApproval("global", articleId);
       persist(articleId, {
         publishState: PUBLISH_STATE.PUBLISHED,
         status: "published",
@@ -215,6 +233,8 @@ export async function POST(request) {
     }
 
     // (6) No existing post: mark publishing, then insert exactly once.
+    // 승인은 insert 직전에 소비한다. 실패해도 같은 승인으로 다시 시도하지 않는다.
+    consumeUserApproval("global", articleId);
     persist(articleId, {
       publishState: PUBLISH_STATE.PUBLISHING,
       publishingStartedAt: new Date().toISOString(),

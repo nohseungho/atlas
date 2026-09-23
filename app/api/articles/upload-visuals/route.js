@@ -14,6 +14,7 @@ import { bloggerProvider } from "@/lib/atlas/providers/blogger-provider";
 import { getTokenByBlogId, decryptToken, upsertTokenForBlog } from "@/lib/atlas/repositories/token-repository";
 import { getJobsByArticleId, markJobImageSync } from "@/lib/atlas/repositories/publishing-repository";
 import { isPublicImageUrl } from "@/lib/atlas/revenue-layout-engine";
+import { faceMatchIssues } from "@/lib/atlas/face-match";
 
 // Two explicit request modes. "prepare" (written articles) uploads to Cloudinary
 // and saves publicUrl only — it must never reach the Blogger update path below.
@@ -132,6 +133,17 @@ export async function POST(request) {
   const assets = Array.isArray(article.visualAssets) ? article.visualAssets : [];
   if (assets.length === 0) {
     return NextResponse.json({ articleId, errorCode: "NO_VISUAL_ASSETS" }, { status: 400 });
+  }
+
+  // 미지 얼굴 일치 검수를 통과하지 못한 이미지는 공개 업로드도, 공개 글 교체(sync)도 하지 않는다.
+  // (art_024 얼굴 불일치 사고 이후 필수 게이트)
+  const faceIssues = faceMatchIssues(assets.filter(isRequired));
+  if (faceIssues.length) {
+    return NextResponse.json({ articleId, mode, errorCode: "GLOBAL_CHARACTER_FACE_MISMATCH", issues: faceIssues }, { status: 409 });
+  }
+  // 교체 후보로 표시된 공개 글은 사용자 승인 전 자동으로 바꾸지 않는다.
+  if (mode === "sync" && article.imageReplacement?.liveUpdateRequiresUserApproval && !article.imageReplacement?.userApprovedAt) {
+    return NextResponse.json({ articleId, mode, errorCode: "LIVE_IMAGE_REPLACEMENT_NEEDS_USER_APPROVAL" }, { status: 409 });
   }
 
   // prepare only runs on drafts. Published articles use "sync" (which also

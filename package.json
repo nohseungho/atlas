@@ -13,7 +13,7 @@
     "naver:doctor": "node scripts/naver-blog-doctor.mjs",
     "naver:verify": "node scripts/atlas-korea-verify.mjs",
     "character:verify": "node --test lib/atlas/character-channel-policy.test.mjs",
-    "operate:verify": "node --test lib/atlas/operate/operate.test.mjs"
+    "operate:verify": "node --test lib/atlas/operate/operate.test.mjs lib/atlas/publish-review.test.mjs"
   },
   "dependencies": {
     "cloudinary": "^2.10.0",

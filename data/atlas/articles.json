@@ -4153,7 +4153,15 @@
           "assetScope": "global",
           "assetNamespace": "atlas/articles",
           "characterId": "miji",
-          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+          "faceMatch": {
+            "status": "fail",
+            "method": "operator_review",
+            "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+            "reason": "운영자 검수: 얼굴이 ATLAS-MIJI-MASTER와 불일치",
+            "checkedAt": "2026-09-23T15:34:23.212Z"
+          },
+          "reuseBlocked": true
         },
         {
           "key": "context",
@@ -4178,7 +4186,15 @@
           "assetScope": "global",
           "assetNamespace": "atlas/articles",
           "characterId": "miji",
-          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+          "faceMatch": {
+            "status": "fail",
+            "method": "operator_review",
+            "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+            "reason": "운영자 검수: 얼굴이 ATLAS-MIJI-MASTER와 불일치",
+            "checkedAt": "2026-09-23T15:34:23.212Z"
+          },
+          "reuseBlocked": true
         },
         {
           "key": "comparison",
@@ -4203,7 +4219,15 @@
           "assetScope": "global",
           "assetNamespace": "atlas/articles",
           "characterId": "miji",
-          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+          "faceMatch": {
+            "status": "fail",
+            "method": "operator_review",
+            "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+            "reason": "운영자 검수: 얼굴이 ATLAS-MIJI-MASTER와 불일치",
+            "checkedAt": "2026-09-23T15:34:23.212Z"
+          },
+          "reuseBlocked": true
         },
         {
           "key": "checklist",
@@ -4228,7 +4252,15 @@
           "assetScope": "global",
           "assetNamespace": "atlas/articles",
           "characterId": "miji",
-          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+          "faceMatch": {
+            "status": "fail",
+            "method": "operator_review",
+            "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+            "reason": "운영자 검수: 얼굴이 ATLAS-MIJI-MASTER와 불일치",
+            "checkedAt": "2026-09-23T15:34:23.212Z"
+          },
+          "reuseBlocked": true
         },
         {
           "key": "closing",
@@ -4253,7 +4285,15 @@
           "assetScope": "global",
           "assetNamespace": "atlas/articles",
           "characterId": "miji",
-          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+          "faceMatch": {
+            "status": "fail",
+            "method": "operator_review",
+            "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+            "reason": "운영자 검수: 얼굴이 ATLAS-MIJI-MASTER와 불일치",
+            "checkedAt": "2026-09-23T15:34:23.212Z"
+          },
+          "reuseBlocked": true
         }
       ],
       "affiliatePlan": {
@@ -4316,7 +4356,20 @@
       "bloggerUrl": "https://atlas-money-2026.blogspot.com/2026/09/passport-validity-rules-why-your-trip.html",
       "bloggerStatus": "LIVE",
       "bloggerSyncedAt": "2026-09-23T15:18:06.442Z",
-      "publishedAt": "2026-09-23T15:18:06.442Z"
+      "publishedAt": "2026-09-23T15:18:06.442Z",
+      "imageReplacement": {
+        "status": "candidate",
+        "reason": "미지 얼굴 불일치 — 5장 전부 교체 대상. 사용자 승인 전 공개 글 자동 수정 금지.",
+        "roles": [
+          "featured",
+          "context",
+          "comparison",
+          "checklist",
+          "closing"
+        ],
+        "flaggedAt": "2026-09-23T15:34:23.212Z",
+        "liveUpdateRequiresUserApproval": true
+      }
     },
     {
       "id": "art_025",

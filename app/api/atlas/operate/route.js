@@ -1,7 +1,8 @@
 // ATLAS 단일 운영 API — 국내·해외 블로그를 한 화면에서
 // 주제 선택 → 자동 작성 → 이미지 생성 → 미리보기 → 발행 → 공개 URL 확인 순서로 진행한다.
 //
-// 여기서는 실제 발행을 하지 않는다. 발행은 기존에 검증된 경로를 그대로 쓴다.
+// 여기서는 실제 발행을 하지 않는다. 자동 발행은 없다(2026-09-24): 최종 검수 화면에서 사용자가
+// "발행"을 눌러 approvePublish 승인이 남은 뒤에만 아래 발행 경로가 공개를 실행한다.
 //   국내: POST /api/atlas/korea-publish  (운영 정책 게이트 + Edge 자동화)
 //   해외: POST /api/atlas/publisher-approval → POST /api/publish (승인 게이트 + 중복 차단)
 // 이 라우트는 그 앞 단계(주제·원고·이미지·미리보기)와 상태 조회만 담당한다.
@@ -24,6 +25,8 @@ import {
   renderKoreaDraftImages,
 } from "@/lib/atlas/operate/image-render";
 import { duplicateReason, publishedIndex } from "@/lib/atlas/operate/published-index";
+import { globalRecent, globalReviewPacket, koreaRecent, koreaReviewPacket, recordUserApproval } from "@/lib/atlas/operate/publish-approval-store";
+import { topicSimilarity } from "@/lib/atlas/publish-review";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -124,6 +127,9 @@ function buildState({ koreaId = "", globalId = "" } = {}) {
   const koreaDraft = pick(koreaList, koreaId);
   const globalArticle = pick(globalList, globalId);
 
+  // 최근 공개 글 5개와 핵심 검색의도가 겹치는 주제는 고르지 못하게 하고 신규 주제로 유도한다.
+  const koreaRecentPosts = koreaRecent("");
+  const globalRecentPosts = globalRecent("");
   const koreaUsedTopics = new Set([...items.map((d) => d.topicId).filter(Boolean)]);
   const globalUsedTopics = new Set([...articles.map((a) => a.topicId).filter(Boolean)]);
 
@@ -138,13 +144,16 @@ function buildState({ koreaId = "", globalId = "" } = {}) {
         inSeason: topic.inSeason,
         blockedReason:
           duplicateReason({ ...topic, topicId: topic.id }, published[ATLAS_CHANNEL_ID.KOREA_NAVER])
-          || (koreaUsedTopics.has(topic.id) ? "이 주제로 만든 초안이 이미 있습니다." : ""),
+          || (koreaUsedTopics.has(topic.id) ? "이 주제로 만든 초안이 이미 있습니다." : "")
+          || topicSimilarity(topic, koreaRecentPosts).blocking[0] || "",
       })),
       draft: koreaDraft,
       prepared: koreaList.map((d) => ({ id: d.id, title: d.title, updatedAt: d.updatedAt })),
       steps: koreaSteps(koreaDraft),
       policy: koreaDraft ? evaluateKoreaDraft(koreaDraft) : null,
       preview: koreaDraft ? koreaPreview(koreaDraft) : null,
+      // 최종 검수 화면: 제목·요약·이미지 전체·최근 글 5개 비교. 사용자가 "발행"을 눌러야 공개된다.
+      review: koreaDraft ? koreaReviewPacket(koreaDraft) : null,
       editorTarget: koreaDraft ? naverEditorTarget(koreaDraft) : "",
       published: published[ATLAS_CHANNEL_ID.KOREA_NAVER],
     },
@@ -158,7 +167,8 @@ function buildState({ koreaId = "", globalId = "" } = {}) {
         inSeason: true,
         blockedReason:
           duplicateReason({ ...topic, topicId: topic.id }, published[ATLAS_CHANNEL_ID.GLOBAL_BLOGGER])
-          || (globalUsedTopics.has(topic.id) ? "이 주제로 만든 원고가 이미 있습니다." : ""),
+          || (globalUsedTopics.has(topic.id) ? "이 주제로 만든 원고가 이미 있습니다." : "")
+          || topicSimilarity(topic, globalRecentPosts).blocking[0] || "",
       })),
       article: globalArticle,
       prepared: globalList.map((a) => ({ id: a.id, title: a.title, updatedAt: a.updatedAt })),
@@ -167,6 +177,7 @@ function buildState({ koreaId = "", globalId = "" } = {}) {
         ? evaluateGlobalArticle(globalArticle, { html: buildLocalPreviewHtml(globalArticle) })
         : null,
       preview: globalArticle ? globalPreview(globalArticle) : null,
+      review: globalArticle ? globalReviewPacket(globalArticle) : null,
       published: published[ATLAS_CHANNEL_ID.GLOBAL_BLOGGER],
     },
   };
@@ -283,8 +294,21 @@ async function imagesGlobal(force, id) {
   const articles = articleList();
   const article = pick(globalPrepared(articles), id);
   if (!article) return { status: "error", error: "작성된 해외 원고가 없습니다.", code: 404 };
-  const { rendered, missing, artRequest } = await renderGlobalArticleImages(article, { force });
-  return { status: "ok", rendered: rendered.length, missing, artRequest };
+  const { rendered, missing, rejected, faceMatch, artRequest } = await renderGlobalArticleImages(article, { force });
+  // 얼굴 검수 결과를 기사에 기록한다. 발행 게이트(global_character_face_match)는 이 값만 본다.
+  // 기록이 없는 역할은 null로 남겨 통과로 보지 않는다.
+  const data = readJson(ARTICLES_FILE);
+  data.articles = data.articles.map((a) =>
+    a.id === article.id
+      ? {
+          ...a,
+          visualAssets: (a.visualAssets || []).map((v) => ({ ...v, faceMatch: faceMatch[v.role || v.key] ?? null })),
+          updatedAt: new Date().toISOString(),
+        }
+      : a,
+  );
+  writeJson(ARTICLES_FILE, data);
+  return { status: "ok", rendered: rendered.length, missing, rejected, artRequest };
 }
 
 export async function POST(request) {
@@ -305,6 +329,18 @@ export async function POST(request) {
       result = korea
         ? await imagesKorea(Boolean(body.force), String(body.id || ""))
         : await imagesGlobal(Boolean(body.force), String(body.id || ""));
+    } else if (action === "approvePublish") {
+      // 최종 검수 화면의 "발행" 버튼 전용. 화면이 본 contentHash와 확인 문구가 있어야 승인이 남는다.
+      // 승인만 기록하고 발행은 하지 않는다. 발행 API가 이 승인을 다시 검사한다.
+      const approval = recordUserApproval({
+        channel: korea ? "korea" : "global",
+        id: String(body.id || ""),
+        contentHash: String(body.contentHash || ""),
+        confirm: String(body.confirm || ""),
+      });
+      result = approval.ok
+        ? { status: "ok", id: String(body.id || ""), approval: approval.approval }
+        : { status: "rejected", errorCode: "USER_PUBLISH_APPROVAL_REJECTED", error: approval.issues[0], issues: approval.issues, code: 409 };
     } else {
       return NextResponse.json({ status: "error", error: "지원하지 않는 작업입니다." }, { status: 400 });
     }

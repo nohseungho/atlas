@@ -183,10 +183,27 @@ export default function OperatePage() {
     });
   }
 
+  // 최종 검수 화면에서 사용자가 "발행"을 눌렀을 때만 승인이 남는다. 발행 API는 이 승인 없이는
+  // Naver/Blogger를 부르지 않는다(자동 발행 금지). 화면이 본 contentHash를 그대로 보낸다.
+  async function approvePublish(channelId, id) {
+    const review = state?.[channelId]?.review;
+    if (!review || review.id !== id) throw new Error("최종 검수 정보를 불러오지 못했습니다. 새로고침하세요.");
+    if (review.blocking.length) throw new Error(review.blocking[0]);
+    const ok = window.confirm(`아래 글을 실제로 공개합니다.
+
+${review.title}
+
+제목·요약·이미지 ${review.images.length}장·최근 글 비교를 확인했으면 [확인]을 누르세요.`);
+    if (!ok) throw new Error("발행을 취소했습니다.");
+    const { data } = await postJson("/api/atlas/operate", { action: "approvePublish", channelId, id, contentHash: review.contentHash, confirm: "발행" });
+    if (data.status !== "ok") throw new Error(data.error || "발행 승인이 거절되었습니다.");
+  }
+
   async function publishKorea() {
     await run("publish", async () => {
       const draft = state?.[KOREA]?.draft;
       if (!draft) throw new Error("발행할 국내 초안이 없습니다.");
+      await approvePublish(KOREA, draft.id);
       // 검수 → 승인은 기존 국내 파이프라인의 상태 전이를 그대로 쓴다.
       for (const action of ["review", "approve"]) {
         const res = await fetch("/api/atlas/korea-drafts", {
@@ -214,6 +231,7 @@ export default function OperatePage() {
     await run("publish", async () => {
       const article = state?.[GLOBAL]?.article;
       if (!article) throw new Error("발행할 해외 원고가 없습니다.");
+      await approvePublish(GLOBAL, article.id);
       const approved = await postJson("/api/atlas/publisher-approval", { articleId: article.id, action: "approve" });
       if (approved.data.status !== "ok") throw new Error(`승인 실패: ${approved.data.errorCode || "오류"}`);
       const { data } = await postJson("/api/publish", { articleId: article.id, blogId: "blog_001" });
@@ -365,8 +383,13 @@ export default function OperatePage() {
             ) : null}
           </section>
 
+          <ReviewPanel review={channel.review} />
+
           <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
             <h2 className="font-semibold">발행</h2>
+            <p className="mt-1 text-xs text-zinc-500">
+              자동 발행은 없습니다. 위 최종 검수를 확인한 뒤 &quot;발행&quot;을 눌러야 실제로 공개됩니다.
+            </p>
             {!steps.imagesDone ? (
               <p className="mt-1 text-sm text-amber-300">이미지 생성이 끝나야 발행할 수 있습니다.</p>
             ) : null}
@@ -384,10 +407,10 @@ export default function OperatePage() {
               <button
                 type="button"
                 className={danger}
-                disabled={Boolean(busy) || !steps.imagesDone || steps.published}
+                disabled={Boolean(busy) || !steps.imagesDone || steps.published || Boolean(channel.review?.blocking?.length)}
                 onClick={isKorea ? publishKorea : publishGlobal}
               >
-                {busy === "publish" ? "발행 중…" : "실제 발행"}
+                {busy === "publish" ? "발행 중…" : "발행"}
               </button>
             </div>
             {isKorea ? (
@@ -427,5 +450,75 @@ export default function OperatePage() {
         <p className="mt-2 text-xs text-zinc-500">이 목록과 겹치는 주제는 주제 선택 단계에서 자동으로 막힙니다.</p>
       </section>
     </main>
+  );
+}
+
+// 최종 검수: 제목 / 요약 / 이미지 전체 / 최근 글 5개와의 중복 비교.
+function ReviewPanel({ review }) {
+  if (!review) return null;
+  return (
+    <section className="rounded-xl border border-sky-900 bg-zinc-950 p-4">
+      <h2 className="font-semibold">최종 검수</h2>
+      <dl className="mt-3 space-y-2 text-sm">
+        <div>
+          <dt className="text-xs text-zinc-500">제목</dt>
+          <dd className="font-medium">{review.title}</dd>
+        </div>
+        <div>
+          <dt className="text-xs text-zinc-500">요약</dt>
+          <dd className="text-zinc-300">{review.summary || "(요약 없음)"}</dd>
+        </div>
+      </dl>
+
+      <h3 className="mt-4 text-sm font-semibold">이미지 {review.images.length}장</h3>
+      <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {review.images.map((img) => (
+          <figure key={img.role} className="overflow-hidden rounded-lg border border-zinc-800">
+            {img.src ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={img.src} alt={img.alt || img.role} className="block w-full" />
+            ) : (
+              <div className="p-6 text-center text-xs text-amber-300">이미지 없음</div>
+            )}
+            <figcaption className="flex justify-between px-2 py-1 text-xs text-zinc-400">
+              <span>{img.role}</span>
+              <span className={img.faceMatch?.status === "pass" ? "text-emerald-400" : img.faceMatch ? "text-red-400" : "text-zinc-500"}>
+                얼굴 검수: {img.faceMatch?.status || "기록 없음"}
+                {typeof img.faceMatch?.similarity === "number" ? ` (${img.faceMatch.similarity.toFixed(2)})` : ""}
+              </span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+
+      <h3 className="mt-4 text-sm font-semibold">최근 공개 글 {review.similarity.comparisons.length}개와 비교</h3>
+      <table className="mt-2 w-full text-left text-xs">
+        <thead className="text-zinc-500">
+          <tr>
+            <th className="py-1">최근 글</th>
+            <th className="py-1">카테고리</th>
+            <th className="py-1">겹치는 검색의도</th>
+            <th className="py-1">판정</th>
+          </tr>
+        </thead>
+        <tbody>
+          {review.similarity.comparisons.map((c) => (
+            <tr key={c.id} className="border-t border-zinc-800">
+              <td className="py-1 pr-2">{c.url ? <a href={c.url} target="_blank" rel="noreferrer" className="underline">{c.title}</a> : c.title}</td>
+              <td className={`py-1 pr-2 ${c.sameCategory ? "text-amber-300" : ""}`}>{c.category || "-"}</td>
+              <td className="py-1 pr-2">{c.sharedIntents.join(", ") || "-"}</td>
+              <td className={`py-1 ${c.verdict === "similar" ? "text-red-400" : "text-emerald-400"}`}>{c.verdict === "similar" ? "유사 — 교체" : "다름"}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {review.warnings.map((w) => (
+        <p key={w} className="mt-2 text-sm text-amber-300">경고: {w}</p>
+      ))}
+      {review.blocking.map((b) => (
+        <p key={b} className="mt-2 text-sm text-red-400">발행 불가: {b}</p>
+      ))}
+    </section>
   );
 }

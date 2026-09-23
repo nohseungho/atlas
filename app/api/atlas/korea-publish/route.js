@@ -3,6 +3,7 @@ import { readJson, writeJson } from "@/lib/data-store";
 import { KOREA_DRAFT_STATE, canPublishKoreaDraft, canonicalNaverUrl, publishBlockers, validateKoreaDraft } from "@/lib/atlas/korea-product-pipeline";
 import { runNaverBrowserJob } from "@/lib/atlas/naver-browser-publisher";
 import { evaluateKoreaDraft } from "@/lib/atlas/policy-validator";
+import { checkUserApproval } from "@/lib/atlas/operate/publish-approval-store";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -70,6 +71,16 @@ export async function POST(request) {
     return NextResponse.json({ status: "rejected", errorCode: "MONETIZATION_REQUIRED", blockers, error: `실제 발행 조건이 부족합니다(연결된 이미지 필수, 파트너스 승인 후에는 제휴 링크 필수): ${blockers.join(", ")}` }, { status: 409 });
   }
 
+  // 사용자 발행 승인 — 자동 발행 금지(2026-09-24). 최종 검수 화면에서 사용자가 "발행"을 눌러
+  // 남긴 승인(내용 해시 일치·15분 이내·1회용)이 없으면 네이버 발행을 실행하지 않는다.
+  // 스테이징(편집기에 올려두기만 함)은 공개가 아니므로 승인 없이 허용한다.
+  if (mode === "publish") {
+    const approval = checkUserApproval("korea", draft);
+    if (approval.issues.length) {
+      return NextResponse.json({ status: "rejected", errorCode: "USER_PUBLISH_APPROVAL_REQUIRED", error: approval.issues[0], issues: approval.issues }, { status: 409 });
+    }
+  }
+
   if (inFlight.has(id)) {
     return NextResponse.json({ status: "in_progress", errorCode: "PUBLISH_IN_PROGRESS" }, { status: 409 });
   }
@@ -98,6 +109,7 @@ export async function POST(request) {
         publishedUrl: canonicalNaverUrl(result.publishedUrl, draft.blogId) || "",
         lastError: "",
         automationStatus: "published",
+        userPublishApproval: { ...(draft.userPublishApproval || {}), usedAt: new Date().toISOString() },
       });
     } else {
       patch(fresh, id, {
@@ -115,6 +127,8 @@ export async function POST(request) {
       state: mode === "publish" ? KOREA_DRAFT_STATE.APPROVED : draft.state,
       lastError: String(error?.message || error),
       automationStatus: "failed",
+      // 실패해도 공개가 일부 진행됐을 수 있으므로 같은 승인으로 다시 발행하지 않는다.
+      ...(mode === "publish" ? { userPublishApproval: { ...(draft.userPublishApproval || {}), usedAt: new Date().toISOString() } } : {}),
     });
     return NextResponse.json({
       status: "failed",

@@ -28,7 +28,13 @@
         "sampler": "dpmpp_sde",
         "scheduler": "karras"
       },
-      "generatedAt": "2026-09-23T14:24:37.427Z"
+      "generatedAt": "2026-09-23T14:24:37.427Z",
+      "faceMatch": {
+        "status": "fail",
+        "method": "operator_review",
+        "reason": "운영자 검수: 얼굴이 ATLAS-MIJI-MASTER와 불일치",
+        "checkedAt": "2026-09-23T15:34:23.212Z"
+      }
     },
     "context": {
       "file": "public/atlas/global/miji/passport_validity/context.png",
@@ -55,7 +61,13 @@
         "sampler": "dpmpp_sde",
         "scheduler": "karras"
       },
-      "generatedAt": "2026-09-23T14:19:01.294Z"
+      "generatedAt": "2026-09-23T14:19:01.294Z",
+      "faceMatch": {
+        "status": "fail",
+        "method": "operator_review",
+        "reason": "운영자 검수: 얼굴이 ATLAS-MIJI-MASTER와 불일치",
+        "checkedAt": "2026-09-23T15:34:23.212Z"
+      }
     },
     "comparison": {
       "file": "public/atlas/global/miji/passport_validity/comparison.png",
@@ -83,7 +95,13 @@
         "sampler": "dpmpp_sde",
         "scheduler": "karras"
       },
-      "generatedAt": "2026-09-23T14:21:03.677Z"
+      "generatedAt": "2026-09-23T14:21:03.677Z",
+      "faceMatch": {
+        "status": "fail",
+        "method": "operator_review",
+        "reason": "운영자 검수: 얼굴이 ATLAS-MIJI-MASTER와 불일치",
+        "checkedAt": "2026-09-23T15:34:23.212Z"
+      }
     },
     "checklist": {
       "file": "public/atlas/global/miji/passport_validity/checklist.png",
@@ -111,7 +129,13 @@
         "sampler": "dpmpp_sde",
         "scheduler": "karras"
       },
-      "generatedAt": "2026-09-23T14:24:56.641Z"
+      "generatedAt": "2026-09-23T14:24:56.641Z",
+      "faceMatch": {
+        "status": "fail",
+        "method": "operator_review",
+        "reason": "운영자 검수: 얼굴이 ATLAS-MIJI-MASTER와 불일치",
+        "checkedAt": "2026-09-23T15:34:23.212Z"
+      }
     },
     "closing": {
       "file": "public/atlas/global/miji/passport_validity/closing.png",
@@ -138,9 +162,16 @@
         "sampler": "dpmpp_sde",
         "scheduler": "karras"
       },
-      "generatedAt": "2026-09-23T14:19:55.887Z"
+      "generatedAt": "2026-09-23T14:19:55.887Z",
+      "faceMatch": {
+        "status": "fail",
+        "method": "operator_review",
+        "reason": "운영자 검수: 얼굴이 ATLAS-MIJI-MASTER와 불일치",
+        "checkedAt": "2026-09-23T15:34:23.212Z"
+      }
     }
   },
   "character": "miji",
-  "dropDirectory": "public/atlas/global/miji/passport_validity"
+  "dropDirectory": "public/atlas/global/miji/passport_validity",
+  "reuseBlocked": true
 }
