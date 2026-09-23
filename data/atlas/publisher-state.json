@@ -1,10 +1,10 @@
 {
   "blogId": "blog_001",
-  "lastSyncedAt": "2026-09-23T01:28:53.126Z",
+  "lastSyncedAt": "2026-09-23T03:17:29.252Z",
   "lastSyncStatus": "ok",
   "lastSyncMessage": "",
   "connection": "connected",
-  "bloggerLiveCount": 18,
+  "bloggerLiveCount": 19,
   "externalPosts": [
     {
       "id": "8600511254087159006",
@@ -33,10 +33,10 @@
     }
   ],
   "counts": {
-    "bloggerLive": 18,
-    "atlasLinked": 13,
+    "bloggerLive": 19,
+    "atlasLinked": 14,
     "external": 5,
-    "pending": 3,
+    "pending": 4,
     "missingLinks": 2,
     "conflicts": 0
   }

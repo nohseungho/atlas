@@ -414,6 +414,21 @@
       "updatedAt": "2026-09-20T09:22:03.410Z",
       "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/09/credit-card-travel-insurance-is-it.html",
       "externalId": "3325899877125386472"
+    },
+    {
+      "id": "job_028",
+      "articleId": "art_025",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "attemptCount": 1,
+      "maxAttempts": 3,
+      "lastError": null,
+      "nextRetryAt": null,
+      "createdAt": "2026-09-23T03:16:22.872Z",
+      "updatedAt": "2026-09-23T03:16:25.371Z",
+      "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/09/lost-your-passport-abroad-order-you-do.html",
+      "externalId": "1447275760740653025"
     }
   ],
   "history": [
@@ -1373,6 +1388,39 @@
       "message": "Blogger 자동 발행 성공",
       "error": null,
       "createdAt": "2026-09-20T09:22:03.412Z"
+    },
+    {
+      "id": "hist_088",
+      "jobId": "job_028",
+      "articleId": "art_025",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "queued",
+      "message": "Job 생성",
+      "error": null,
+      "createdAt": "2026-09-23T03:16:22.877Z"
+    },
+    {
+      "id": "hist_089",
+      "jobId": "job_028",
+      "articleId": "art_025",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "running",
+      "message": "자동 발행 시작",
+      "error": null,
+      "createdAt": "2026-09-23T03:16:22.882Z"
+    },
+    {
+      "id": "hist_090",
+      "jobId": "job_028",
+      "articleId": "art_025",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "message": "Blogger 자동 발행 성공",
+      "error": null,
+      "createdAt": "2026-09-23T03:16:25.374Z"
     }
   ]
 }
