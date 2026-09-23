@@ -4135,7 +4135,13 @@
           "role": "featured",
           "placement": "afterByline",
           "alt": "Miji introducing passport validity rules for travellers",
-          "prompt": "ATLAS Miji master portrait composed on a clean editorial card. Presenter image, not a product photo. No text, logo or watermark.\n\nIdentity lock: Miji, the same Korean woman in her 30s shown in the identity reference: long dark-brown wavy hair, warm brown almond-shaped eyes, oval face, soft jawline. Use the attached ATLAS master only as the identity reference. Preserve her facial identity. Do not substitute another presenter. No text, logo or watermark.",
+          "prompt": "Miji at a travel-planning desk holding her passport open at the photo page beside a wall calendar. standing, holding the document she is talking about. medium shot from the waist up. facing the camera. half-up hairstyle. natural editorial travel photography, realistic, soft natural light. no text, no logo, no watermark, no readable signage.\n\nIdentity lock: Miji, the same Korean woman in her 30s shown in the identity reference: long dark-brown wavy hair, warm brown almond-shaped eyes, oval face, soft jawline. Keep the same face across every image in this set; vary everything else.",
+          "direction": {
+            "hair": "half-up hairstyle",
+            "camera": "medium shot from the waist up",
+            "viewpoint": "facing the camera",
+            "posture": "standing, holding the document she is talking about"
+          },
           "width": 1600,
           "height": 900,
           "fit": "cover",
@@ -4143,10 +4149,6 @@
           "characterRequired": true,
           "localSrc": "/images/articles/passport-validity-rules-before-you-book/featured.png",
           "publicUrl": "",
-          "scene": {
-            "file": "File:Passport documents desk (Unsplash).jpg",
-            "label": "Before you book"
-          },
           "channelId": "global_blogger",
           "assetScope": "global",
           "assetNamespace": "atlas/articles",
@@ -4157,8 +4159,14 @@
           "key": "context",
           "role": "context",
           "placement": "afterSection:How to Count the Six Months Correctly",
-          "alt": "Miji explaining how to count the six months correctly",
-          "prompt": "ATLAS Miji master portrait composed on a clean editorial card. Presenter image, not a product photo. No text, logo or watermark.\n\nIdentity lock: Miji, the same Korean woman in her 30s shown in the identity reference: long dark-brown wavy hair, warm brown almond-shaped eyes, oval face, soft jawline. Use the attached ATLAS master only as the identity reference. Preserve her facial identity. Do not substitute another presenter. No text, logo or watermark.",
+          "alt": "Miji in the setting described by \"How to Count the Six Months Correctly\"",
+          "prompt": "Miji walking through an airport border-control hall with a shoulder bag. walking through the space with a shoulder bag. wide shot, full body in the scene. three-quarter turn away from the camera. hair tied up in a neat bun. natural editorial travel photography, realistic, soft natural light. no text, no logo, no watermark, no readable signage.\n\nIdentity lock: Miji, the same Korean woman in her 30s shown in the identity reference: long dark-brown wavy hair, warm brown almond-shaped eyes, oval face, soft jawline. Keep the same face across every image in this set; vary everything else.",
+          "direction": {
+            "hair": "hair tied up in a neat bun",
+            "camera": "wide shot, full body in the scene",
+            "viewpoint": "three-quarter turn away from the camera",
+            "posture": "walking through the space with a shoulder bag"
+          },
           "width": 1600,
           "height": 900,
           "fit": "cover",
@@ -4166,10 +4174,6 @@
           "characterRequired": true,
           "localSrc": "/images/articles/passport-validity-rules-before-you-book/context.png",
           "publicUrl": "",
-          "scene": {
-            "file": "File:20180412-144358-otopeni-henri-coanda-airport-passport-control-2018.jpg",
-            "label": "At the border"
-          },
           "channelId": "global_blogger",
           "assetScope": "global",
           "assetNamespace": "atlas/articles",
@@ -4180,8 +4184,14 @@
           "key": "comparison",
           "role": "comparison",
           "placement": "afterSection:Blank Pages and the Stamps You Cannot Control",
-          "alt": "Miji walking through blank pages and the stamps you cannot control",
-          "prompt": "ATLAS Miji master portrait composed on a clean editorial card. Presenter image, not a product photo. No text, logo or watermark.\n\nIdentity lock: Miji, the same Korean woman in her 30s shown in the identity reference: long dark-brown wavy hair, warm brown almond-shaped eyes, oval face, soft jawline. Use the attached ATLAS master only as the identity reference. Preserve her facial identity. Do not substitute another presenter. No text, logo or watermark.",
+          "alt": "Miji working through \"Blank Pages and the Stamps You Cannot Control\"",
+          "prompt": "Miji seated at a table comparing two passports with different expiry dates laid side by side. seated at a table, comparing two items laid out in front of her. low angle from table height. seen from slightly above. low ponytail. natural editorial travel photography, realistic, soft natural light. no text, no logo, no watermark, no readable signage.\n\nIdentity lock: Miji, the same Korean woman in her 30s shown in the identity reference: long dark-brown wavy hair, warm brown almond-shaped eyes, oval face, soft jawline. Keep the same face across every image in this set; vary everything else.",
+          "direction": {
+            "hair": "low ponytail",
+            "camera": "low angle from table height",
+            "viewpoint": "seen from slightly above",
+            "posture": "seated at a table, comparing two items laid out in front of her"
+          },
           "width": 1600,
           "height": 900,
           "fit": "cover",
@@ -4189,10 +4199,6 @@
           "characterRequired": true,
           "localSrc": "/images/articles/passport-validity-rules-before-you-book/comparison.png",
           "publicUrl": "",
-          "scene": {
-            "file": "File:Singapore Airlines Check-in Counter@PEK (20140801125831).JPG",
-            "label": "Checked at the desk"
-          },
           "channelId": "global_blogger",
           "assetScope": "global",
           "assetNamespace": "atlas/articles",
@@ -4203,8 +4209,14 @@
           "key": "checklist",
           "role": "checklist",
           "placement": "afterSection:Renewal Timing Before You Book",
-          "alt": "Miji summarising renewal timing before you book",
-          "prompt": "ATLAS Miji master portrait composed on a clean editorial card. Presenter image, not a product photo. No text, logo or watermark.\n\nIdentity lock: Miji, the same Korean woman in her 30s shown in the identity reference: long dark-brown wavy hair, warm brown almond-shaped eyes, oval face, soft jawline. Use the attached ATLAS master only as the identity reference. Preserve her facial identity. Do not substitute another presenter. No text, logo or watermark.",
+          "alt": "Miji going through the checks in \"Renewal Timing Before You Book\"",
+          "prompt": "Miji crouched beside an open carry-on case, counting the blank pages in her passport. crouched beside an open case, working through it item by item. over-the-shoulder shot from behind. seen from behind, face turned to the side. hair tucked under a soft cap. natural editorial travel photography, realistic, soft natural light. no text, no logo, no watermark, no readable signage.\n\nIdentity lock: Miji, the same Korean woman in her 30s shown in the identity reference: long dark-brown wavy hair, warm brown almond-shaped eyes, oval face, soft jawline. Keep the same face across every image in this set; vary everything else.",
+          "direction": {
+            "hair": "hair tucked under a soft cap",
+            "camera": "over-the-shoulder shot from behind",
+            "viewpoint": "seen from behind, face turned to the side",
+            "posture": "crouched beside an open case, working through it item by item"
+          },
           "width": 1600,
           "height": 900,
           "fit": "cover",
@@ -4212,10 +4224,6 @@
           "characterRequired": true,
           "localSrc": "/images/articles/passport-validity-rules-before-you-book/checklist.png",
           "publicUrl": "",
-          "scene": {
-            "file": "File:Packing Suitcase in Car Boot for a Holiday.jpg",
-            "label": "Five-minute check"
-          },
           "channelId": "global_blogger",
           "assetScope": "global",
           "assetNamespace": "atlas/articles",
@@ -4227,7 +4235,13 @@
           "role": "closing",
           "placement": "afterFaq",
           "alt": "Miji closing the passport validity rules guide",
-          "prompt": "ATLAS Miji master portrait composed on a clean editorial card. Presenter image, not a product photo. No text, logo or watermark.\n\nIdentity lock: Miji, the same Korean woman in her 30s shown in the identity reference: long dark-brown wavy hair, warm brown almond-shaped eyes, oval face, soft jawline. Use the attached ATLAS master only as the identity reference. Preserve her facial identity. Do not substitute another presenter. No text, logo or watermark.",
+          "prompt": "Miji pausing by an airport window with her phone, checking renewal processing times. pausing by a window, phone in hand. close shot, head and shoulders. side profile. long hair worn down. natural editorial travel photography, realistic, soft natural light. no text, no logo, no watermark, no readable signage.\n\nIdentity lock: Miji, the same Korean woman in her 30s shown in the identity reference: long dark-brown wavy hair, warm brown almond-shaped eyes, oval face, soft jawline. Keep the same face across every image in this set; vary everything else.",
+          "direction": {
+            "hair": "long hair worn down",
+            "camera": "close shot, head and shoulders",
+            "viewpoint": "side profile",
+            "posture": "pausing by a window, phone in hand"
+          },
           "width": 1600,
           "height": 900,
           "fit": "cover",
@@ -4235,10 +4249,6 @@
           "characterRequired": true,
           "localSrc": "/images/articles/passport-validity-rules-before-you-book/closing.png",
           "publicUrl": "",
-          "scene": {
-            "file": "File:AeroportodeSantiago31mar2007-04.jpg",
-            "label": "Renew before you pay"
-          },
           "channelId": "global_blogger",
           "assetScope": "global",
           "assetNamespace": "atlas/articles",
@@ -4294,7 +4304,7 @@
       "characterPolicyVersion": "ATLAS_CHARACTER_CHANNEL_V1",
       "topicId": "gl_info_passport_validity",
       "createdAt": "2026-09-23T01:39:21.712Z",
-      "updatedAt": "2026-09-23T06:31:05.021Z",
+      "updatedAt": "2026-09-23T06:46:04.290Z",
       "bodyHtml": "<h2 id=\"atlas-h2-0\">Why a Valid Passport Is Not Always Enough</h2>\n<p><strong>Suho:</strong> My passport does not expire until next spring. Why would anyone turn me away?</p>\n<p><strong>Miji:</strong> Because a lot of countries do not ask whether the passport is valid today. They ask how much validity is left on the day you arrive. Six months is the most common threshold, and your spring expiry may be under that.</p>\n<p><strong>Suho:</strong> So the country decides, but who actually stops me?</p>\n<p><strong>Miji:</strong> The airline, usually. Carriers are responsible for passengers they bring to a border that refuses entry, so they check the rule at the desk. That is why people find out at check-in rather than on arrival.</p>\n<h2 id=\"atlas-h2-1\">How to Count the Six Months Correctly</h2>\n<p><strong>Suho:</strong> Do I count six months from when I leave home?</p>\n<p><strong>Miji:</strong> From the date you enter the destination. If you arrive on 10 March, your passport should generally be valid through 10 September. For a multi-country trip, use the latest arrival date on the itinerary, not the first.</p>\n<p><strong>Suho:</strong> And if I am only connecting through an airport?</p>\n<p><strong>Miji:</strong> Transit rules differ by country, and some apply their own validity and visa requirements even airside. Check the transit country separately instead of assuming a layover is exempt.</p>\n<h2 id=\"atlas-h2-2\">Blank Pages and the Stamps You Cannot Control</h2>\n<p><strong>Suho:</strong> I have pages left, but they all have stamps on them.</p>\n<p><strong>Miji:</strong> Several destinations require genuinely blank visa pages — often one or two — and pages marked \"amendments and endorsements\" do not always count. Border officers need somewhere to place a visa or an entry stamp.</p>\n<p><strong>Suho:</strong> Can I add pages instead of renewing?</p>\n<p><strong>Miji:</strong> Many passport authorities stopped adding pages years ago, so the answer is usually a full renewal. That is a timing problem, not a paperwork problem.</p>\n<h2 id=\"atlas-h2-3\">Renewal Timing Before You Book</h2>\n<p><strong>Suho:</strong> How early should I renew?</p>\n<p><strong>Miji:</strong> Check the published processing time for your passport authority, then add your own buffer. Processing estimates are averages, and they lengthen during peak travel seasons.</p>\n<p><strong>Suho:</strong> What if I have already booked and the timing is tight?</p>\n<p><strong>Miji:</strong> Look for an expedited or urgent service before you change the trip. And keep in mind that while your application is being processed, your old passport is usually not available to you.</p>\n<h2 id=\"atlas-h2-4\">A Check You Can Do in Five Minutes</h2>\n<p><strong>Suho:</strong> Give me the short version I can actually run through tonight.</p>\n<p><strong>Miji:</strong> Open your passport, write down the expiry date, then write down your arrival date at each country on the trip. If any arrival date is within six months of the expiry, treat the trip as blocked until you renew. Then count your blank pages, and check the official entry requirements for every country on the route, including transits.</p>\n<p><strong>Suho:</strong> And I should do that before paying for anything.</p>\n<p><strong>Miji:</strong> Before paying, yes. A renewal is inconvenient. A non-refundable ticket you cannot use is worse.</p>"
     },
     {

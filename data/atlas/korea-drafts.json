@@ -153,40 +153,55 @@
         {
           "id": "img_info_why",
           "role": "info_why",
-          "src": "D:\\projects\\atlas\\.atlas-data\\korea-assets\\kr_kr_info_autumn_humidity\\img_info_why.png",
+          "src": "",
           "alt": "환절기 습도 관리 — 가을 습도가 방마다 다른 이유 장면",
           "placement": "가을 습도가 방마다 다른 이유 문단 뒤",
           "anchorKeywords": [
             "가을 습도가 방마다 다른 이유",
             "환절기 습도 관리"
           ],
-          "generatedLocalPath": "D:\\projects\\atlas\\.atlas-data\\korea-assets\\kr_kr_info_autumn_humidity\\img_info_why.png",
-          "generatedAt": "2026-09-23T06:30:57.952Z"
+          "prompt": "Suho beside a window in a Korean apartment where condensation has formed along the frame in the early morning. leaning in to look closely at the problem spot, hand raised near it. medium shot from the waist up. three-quarter turn away from the camera. warm anime-style illustration of a Korean home interior, soft daylight, clean lines. no text, no logo, no watermark, no readable signage.\n\nIdentity lock: Suho, the same young Korean man from the warm anime-style illustration reference: tousled dark-brown hair, large dark eyes, bright friendly smile, dark green knit sweater; keep the illustration style, never a photographic or older-looking man. Keep the same face across every image in this set; vary everything else.",
+          "direction": {
+            "camera": "medium shot from the waist up",
+            "viewpoint": "three-quarter turn away from the camera",
+            "posture": "leaning in to look closely at the problem spot, hand raised near it"
+          },
+          "sceneArtSource": ""
         },
         {
           "id": "img_info_how",
           "role": "info_how",
-          "src": "D:\\projects\\atlas\\.atlas-data\\korea-assets\\kr_kr_info_autumn_humidity\\img_info_how.png",
+          "src": "",
           "alt": "환절기 습도 관리 — 방마다 다르게 잡는 실내 습도 기준 장면",
           "placement": "방마다 다르게 잡는 실내 습도 기준 문단 뒤",
           "anchorKeywords": [
             "방마다 다르게 잡는 실내 습도 기준"
           ],
-          "generatedLocalPath": "D:\\projects\\atlas\\.atlas-data\\korea-assets\\kr_kr_info_autumn_humidity\\img_info_how.png",
-          "generatedAt": "2026-09-23T06:30:57.952Z"
+          "prompt": "Suho pulling a wardrobe a few centimetres away from an outside wall to open an air gap behind it. crouched down mid-action, actually doing the step. wide shot, full body in the scene. facing the camera. warm anime-style illustration of a Korean home interior, soft daylight, clean lines. no text, no logo, no watermark, no readable signage.\n\nIdentity lock: Suho, the same young Korean man from the warm anime-style illustration reference: tousled dark-brown hair, large dark eyes, bright friendly smile, dark green knit sweater; keep the illustration style, never a photographic or older-looking man. Keep the same face across every image in this set; vary everything else.",
+          "direction": {
+            "camera": "wide shot, full body in the scene",
+            "viewpoint": "facing the camera",
+            "posture": "crouched down mid-action, actually doing the step"
+          },
+          "sceneArtSource": ""
         },
         {
           "id": "img_info_checklist",
           "role": "info_checklist",
-          "src": "D:\\projects\\atlas\\.atlas-data\\korea-assets\\kr_kr_info_autumn_humidity\\img_info_checklist.png",
+          "src": "",
           "alt": "환절기 습도 관리 — 확인 장면",
           "placement": "체크리스트 문단 뒤",
           "anchorKeywords": [
             "오늘의 체크리스트",
             "체크리스트"
           ],
-          "generatedLocalPath": "D:\\projects\\atlas\\.atlas-data\\korea-assets\\kr_kr_info_autumn_humidity\\img_info_checklist.png",
-          "generatedAt": "2026-09-23T06:30:57.952Z"
+          "prompt": "Suho at a low living-room table checking a small humidity meter next to a mug. seated at a low table, pointing at the item being checked. low angle from table height. side profile. warm anime-style illustration of a Korean home interior, soft daylight, clean lines. no text, no logo, no watermark, no readable signage.\n\nIdentity lock: Suho, the same young Korean man from the warm anime-style illustration reference: tousled dark-brown hair, large dark eyes, bright friendly smile, dark green knit sweater; keep the illustration style, never a photographic or older-looking man. Keep the same face across every image in this set; vary everything else.",
+          "direction": {
+            "camera": "low angle from table height",
+            "viewpoint": "side profile",
+            "posture": "seated at a low table, pointing at the item being checked"
+          },
+          "sceneArtSource": ""
         }
       ],
       "state": "approved",
@@ -195,7 +210,7 @@
       "publishedUrl": "",
       "lastError": "5분 안에 네이버 로그인이 완료되지 않았습니다. Edge 창을 유지합니다.",
       "createdAt": "2026-09-23T01:38:51.583Z",
-      "updatedAt": "2026-09-23T06:30:57.952Z",
+      "updatedAt": "2026-09-23T06:45:53.743Z",
       "channelId": "korea_naver",
       "assetScope": "korea",
       "assetNamespace": ".atlas-data/korea-assets",
@@ -205,7 +220,7 @@
       "visualMode": "warm-practical-illustration",
       "styleReferenceAssetPath": "public/atlas/korea/suho/multitap/featured.png",
       "characterPolicyVersion": "ATLAS_CHARACTER_CHANNEL_V1",
-      "automationStatus": "assets_ready"
+      "automationStatus": "scene_art_required"
     },
     {
       "id": "kr_glasslock_classic_white_10set",

@@ -263,22 +263,28 @@ async function imagesKorea(force, id) {
   const items = koreaItems();
   const draft = pick(koreaPrepared(items), id);
   if (!draft) return { status: "error", error: "작성된 국내 초안이 없습니다.", code: 404 };
-  const { images, rendered } = await renderKoreaDraftImages(draft, { force });
+  const { images, rendered, missing, artRequest } = await renderKoreaDraftImages(draft, { force });
   const next = items.map((d) =>
     d.id === draft.id
-      ? { ...d, images, automationStatus: "assets_ready", updatedAt: new Date().toISOString() }
+      ? {
+          ...d,
+          images,
+          automationStatus: missing.length ? "scene_art_required" : "assets_ready",
+          updatedAt: new Date().toISOString(),
+        }
       : d,
   );
   writeKoreaItems(next);
-  return { status: "ok", rendered: rendered.length };
+  // 장면 아트가 빠진 역할은 완료로 보고하지 않는다. 합성으로 자리를 메우지 않았다.
+  return { status: "ok", rendered: rendered.length, missing, artRequest };
 }
 
 async function imagesGlobal(force, id) {
   const articles = articleList();
   const article = pick(globalPrepared(articles), id);
   if (!article) return { status: "error", error: "작성된 해외 원고가 없습니다.", code: 404 };
-  const { rendered } = await renderGlobalArticleImages(article, { force });
-  return { status: "ok", rendered: rendered.length };
+  const { rendered, missing, artRequest } = await renderGlobalArticleImages(article, { force });
+  return { status: "ok", rendered: rendered.length, missing, artRequest };
 }
 
 export async function POST(request) {

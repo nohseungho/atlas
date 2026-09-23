@@ -55,3 +55,6 @@ next-env.d.ts
 
 # ATLAS 장면 사진 캐시(Wikimedia 원본) — 재다운로드 가능하므로 커밋하지 않는다.
 .atlas-data/scene-cache/
+
+# 장면 아트 생성 요청서(운영자 외부 생성용, 재생성 가능)
+.atlas-data/art-requests/
