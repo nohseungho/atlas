@@ -1,0 +1,363 @@
+{
+  "channel": "global",
+  "topicSlug": "passport_validity",
+  "items": {
+    "featured": {
+      "faceMatch": {
+        "status": "pass",
+        "similarity": 0.7456,
+        "faces": 1,
+        "threshold": 0.5,
+        "method": "arcface_buffalo_l",
+        "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "checkedAt": "2026-09-23T23:02:56.827Z",
+        "candidates": [
+          {
+            "seed": 1775953675,
+            "similarity": 0.7456
+          },
+          {
+            "seed": 1775954675,
+            "similarity": 0.7146
+          },
+          {
+            "seed": 1775955675,
+            "similarity": 0.6438
+          },
+          {
+            "seed": 1775956675,
+            "similarity": 0.6735
+          },
+          {
+            "seed": 1775957675,
+            "similarity": 0.7102
+          },
+          {
+            "seed": 1775958675,
+            "similarity": 0.6905
+          }
+        ]
+      },
+      "file": "public/atlas/global/miji/_review/passport_validity/featured.png",
+      "character": "miji",
+      "direction": {
+        "hair": "half-up hairstyle",
+        "camera": "medium shot from the waist up",
+        "viewpoint": "facing the camera",
+        "posture": "standing, holding the document she is talking about"
+      },
+      "prompt": "(half-up hairstyle:1.6), (facing the camera:1.3), (medium shot from the waist up:1.2), (standing, holding the document she is talking about:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her 30s, dark-brown hair color, warm brown almond-shaped eyes, oval face, soft jawline. the same person at a travel-planning desk holding her passport open at the photo page beside a wall calendar.",
+      "seed": 1775953675,
+      "negative": "anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
+      "references": [
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+      ],
+      "ipAdapterWeight": null,
+      "faceId": {
+        "preset": "FACEID PLUS V2",
+        "loraStrength": 0.6,
+        "weight": 0.8,
+        "weightV2": 1.2,
+        "startAt": 0.15,
+        "endAt": 1
+      },
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-23T23:02:56.830Z"
+    },
+    "context": {
+      "faceMatch": {
+        "status": "pass",
+        "similarity": 0.7014,
+        "faces": 1,
+        "threshold": 0.5,
+        "method": "arcface_buffalo_l",
+        "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "checkedAt": "2026-09-23T23:05:04.054Z",
+        "candidates": [
+          {
+            "seed": 2549237964,
+            "similarity": 0.6757
+          },
+          {
+            "seed": 2549238964,
+            "similarity": 0.7014
+          },
+          {
+            "seed": 2549239964,
+            "similarity": 0.4775
+          },
+          {
+            "seed": 2549240964,
+            "similarity": 0.4246
+          },
+          {
+            "seed": 2549241964,
+            "similarity": 0.6327
+          },
+          {
+            "seed": 2549242964,
+            "similarity": 0.6338
+          }
+        ]
+      },
+      "file": "public/atlas/global/miji/_review/passport_validity/context.png",
+      "character": "miji",
+      "direction": {
+        "hair": "hair tied up in a neat bun",
+        "camera": "wide shot, full body in the scene",
+        "viewpoint": "three-quarter turn away from the camera",
+        "posture": "walking through the space with a shoulder bag"
+      },
+      "prompt": "(hair tied up in a neat bun:1.6), (three-quarter turn away from the camera:1.3), (wide shot, full body in the scene:1.2), (walking through the space with a shoulder bag:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her 30s, dark-brown hair color, warm brown almond-shaped eyes, oval face, soft jawline. the same person walking through an airport border-control hall with a shoulder bag.",
+      "seed": 2549238964,
+      "negative": "anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
+      "references": [
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+      ],
+      "ipAdapterWeight": null,
+      "faceId": {
+        "preset": "FACEID PLUS V2",
+        "loraStrength": 0.6,
+        "weight": 0.8,
+        "weightV2": 1.2,
+        "startAt": 0.15,
+        "endAt": 1
+      },
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-23T23:05:04.055Z"
+    },
+    "comparison": {
+      "faceMatch": {
+        "status": "pass",
+        "similarity": 0.6618,
+        "faces": 1,
+        "threshold": 0.5,
+        "method": "arcface_buffalo_l",
+        "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "checkedAt": "2026-09-23T23:07:12.973Z",
+        "candidates": [
+          {
+            "seed": 564734324,
+            "similarity": 0.66
+          },
+          {
+            "seed": 564735324,
+            "similarity": 0.4656
+          },
+          {
+            "seed": 564736324,
+            "similarity": 0.6618
+          },
+          {
+            "seed": 564737324,
+            "similarity": 0.609
+          },
+          {
+            "seed": 564738324,
+            "similarity": 0.5689
+          },
+          {
+            "seed": 564739324,
+            "similarity": 0.6265
+          }
+        ]
+      },
+      "file": "public/atlas/global/miji/_review/passport_validity/comparison.png",
+      "character": "miji",
+      "direction": {
+        "hair": "low ponytail",
+        "camera": "low angle from table height",
+        "viewpoint": "seen from slightly above",
+        "posture": "seated at a table, comparing two items laid out in front of her"
+      },
+      "prompt": "(low ponytail:1.6), (seen from slightly above:1.3), (low angle from table height:1.2), (seated at a table, comparing two items laid out in front of her:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her 30s, dark-brown hair color, warm brown almond-shaped eyes, oval face, soft jawline. the same person seated at a table comparing two passports with different expiry dates laid side by side.",
+      "seed": 564736324,
+      "negative": "anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
+      "references": [
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+      ],
+      "ipAdapterWeight": null,
+      "faceId": {
+        "preset": "FACEID PLUS V2",
+        "loraStrength": 0.6,
+        "weight": 0.8,
+        "weightV2": 1.2,
+        "startAt": 0.15,
+        "endAt": 1
+      },
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-23T23:07:12.975Z"
+    },
+    "checklist": {
+      "faceMatch": {
+        "status": "pass",
+        "similarity": 0.6542,
+        "faces": 1,
+        "threshold": 0.5,
+        "method": "arcface_buffalo_l",
+        "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "checkedAt": "2026-09-23T23:13:59.422Z",
+        "candidates": [
+          {
+            "seed": 3446702847,
+            "similarity": 0.6342
+          },
+          {
+            "seed": 3446703847,
+            "similarity": 0.6542
+          },
+          {
+            "seed": 3446704847,
+            "similarity": 0.5954
+          },
+          {
+            "seed": 3446705847,
+            "similarity": 0.5786
+          },
+          {
+            "seed": 3446706847,
+            "similarity": 0.6077
+          },
+          {
+            "seed": 3446707847,
+            "similarity": 0.6378
+          }
+        ]
+      },
+      "file": "public/atlas/global/miji/_review/passport_validity/checklist.png",
+      "character": "miji",
+      "direction": {
+        "hair": "hair tucked under a soft cap",
+        "camera": "over-the-shoulder shot from behind",
+        "viewpoint": "seen from behind, looking back over her shoulder so her face is clearly visible",
+        "posture": "crouched beside an open case, working through it item by item"
+      },
+      "prompt": "(hair tucked under a soft cap:1.6), (seen from behind, looking back over her shoulder so her face is clearly visible:1.3), (over-the-shoulder shot from behind:1.2), (crouched beside an open case, working through it item by item:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her 30s, dark-brown hair color, warm brown almond-shaped eyes, oval face, soft jawline. the same person crouched beside an open carry-on case, counting the blank pages in her passport.",
+      "seed": 3446703847,
+      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
+      "references": [
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+      ],
+      "ipAdapterWeight": null,
+      "faceId": {
+        "preset": "FACEID PLUS V2",
+        "loraStrength": 0.6,
+        "weight": 0.8,
+        "weightV2": 1.2,
+        "startAt": 0.15,
+        "endAt": 1
+      },
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-23T23:13:59.425Z"
+    },
+    "closing": {
+      "faceMatch": {
+        "status": "pass",
+        "similarity": 0.6512,
+        "faces": 1,
+        "threshold": 0.5,
+        "method": "arcface_buffalo_l",
+        "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "checkedAt": "2026-09-23T23:11:26.264Z",
+        "candidates": [
+          {
+            "seed": 1485770580,
+            "similarity": 0.6084
+          },
+          {
+            "seed": 1485771580,
+            "similarity": 0.5704
+          },
+          {
+            "seed": 1485772580,
+            "similarity": 0.6508
+          },
+          {
+            "seed": 1485773580,
+            "similarity": 0.6385
+          },
+          {
+            "seed": 1485774580,
+            "similarity": 0.6395
+          },
+          {
+            "seed": 1485775580,
+            "similarity": 0.6512
+          }
+        ]
+      },
+      "file": "public/atlas/global/miji/_review/passport_validity/closing.png",
+      "character": "miji",
+      "direction": {
+        "hair": "long hair worn down",
+        "camera": "close shot, head and shoulders",
+        "viewpoint": "side profile",
+        "posture": "pausing by a window, phone in hand"
+      },
+      "prompt": "(long hair worn down:1.6), (side profile:1.3), (close shot, head and shoulders:1.2), (pausing by a window, phone in hand:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her 30s, dark-brown hair color, warm brown almond-shaped eyes, oval face, soft jawline. the same person pausing by an airport window with her phone, checking renewal processing times.",
+      "seed": 1485775580,
+      "negative": "anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait",
+      "references": [
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+      ],
+      "ipAdapterWeight": null,
+      "faceId": {
+        "preset": "FACEID PLUS V2",
+        "loraStrength": 0.6,
+        "weight": 0.8,
+        "weightV2": 1.2,
+        "startAt": 0.15,
+        "endAt": 1
+      },
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-23T23:11:26.265Z"
+    }
+  },
+  "character": "miji",
+  "dropDirectory": "public/atlas/global/miji/_review/passport_validity"
+}
