@@ -1,6 +1,133 @@
 {
   "items": [
     {
+      "id": "kr_kr_info_autumn_humidity",
+      "platform": "naver",
+      "contentType": "info_guide",
+      "blogId": "who-ami",
+      "logNo": "",
+      "title": "환절기 집안 습도 관리, 가을에 유독 어려운 이유와 방마다 다른 해결법",
+      "productName": "",
+      "productUrl": "",
+      "affiliateUrl": "",
+      "topicId": "kr_info_autumn_humidity",
+      "keyword": "환절기 습도 관리",
+      "generatedBy": "ATLAS_KOREA_INFO_V1",
+      "affiliateDisclosure": "",
+      "character": "suho",
+      "recommendationMode": "DIRECT_RECOMMENDATION",
+      "bodyHtml": "",
+      "bodyText": "가을이 되면 낮에는 건조한데 아침저녁으로는 창가에 물이 맺힙니다. 같은 집 안에서도 방마다 습도가 다르기 때문입니다.\n\n가을 습도가 방마다 다른 이유\n\n가을은 바깥 공기가 차가워지는 속도가 실내보다 빠릅니다. 그래서 바깥과 맞닿은 벽이나 창가는 실내 평균보다 온도가 낮고, 같은 양의 수증기라도 그 자리에서 먼저 물방울로 바뀝니다.\n\n거실은 사람이 많이 움직이고 환기도 자주 되지만, 북향 방이나 붙박이장 안쪽은 공기가 거의 움직이지 않습니다. 결로와 곰팡이가 늘 같은 자리에서 반복되는 이유입니다.\n\n방마다 다르게 잡는 실내 습도 기준\n\n환절기 실내 습도는 40~60%를 기준으로 봅니다. 40% 아래로 내려가면 목과 피부가 먼저 반응하고, 60%를 넘기면 결로와 곰팡이 위험이 올라갑니다.\n\n침실은 자는 동안 호흡으로 습도가 올라가므로 잠들기 전 기준을 조금 낮게, 거실은 활동 시간대에 맞춰 조금 높게 두면 하루 전체 편차가 줄어듭니다.\n\n돈 안 드는 순서부터 해결하기\n\n가장 먼저 할 일은 환기입니다. 아침에 5~10분, 맞바람이 통하도록 마주 보는 창을 함께 여는 방식이 가장 효율이 좋습니다.\n\n그 다음은 가구 배치입니다. 외벽에 딱 붙은 장롱과 침대를 5cm 이상 띄우면 그 자리에 공기가 지나갈 길이 생깁니다.\n\n여기까지 해도 특정 방만 계속 축축하다면 그때 제습기나 가습기 같은 장비를 고려합니다. 순서를 바꾸면 장비를 사고도 같은 자리에 곰팡이가 다시 생깁니다.\n\n자주 틀리는 세 가지\n\n첫째, 창문을 계속 닫아두는 것입니다. 습기는 빠져나갈 곳이 있어야 줄어듭니다.\n\n둘째, 빨래를 방 안에서 말리면서 문까지 닫는 것입니다. 습도가 올라간 공기가 갇힙니다.\n\n셋째, 곰팡이를 마른 천으로 닦아내는 것입니다. 포자가 공기 중으로 흩어져 다른 자리로 옮겨 갑니다.\n\n오늘의 체크리스트\n\n- 아침 환기 5~10분, 마주 보는 창을 함께 열기\n- 외벽에 붙은 가구는 5cm 이상 띄우기\n- 실내 습도 40~60% 유지\n- 실내 건조 시에는 문을 열어두고 공기 순환시키기\n\n자주 묻는 질문\n\nQ. 제습기와 가습기를 같이 써도 되나요?\nA. 같은 방에서 동시에 쓰면 서로 상쇄되어 전기만 씁니다. 방마다 습도가 다르다면 방별로 하나씩 나눠 쓰는 편이 맞습니다.\n\nQ. 결로가 생긴 창틀은 어떻게 닦나요?\nA. 마른 천보다 젖은 천으로 닦아낸 뒤 환기로 말립니다. 마른 상태에서 문지르면 곰팡이 포자가 날립니다.\n\nQ. 습도계는 어디에 두는 것이 좋나요?\nA. 사람이 오래 머무는 자리의 가슴 높이에 둡니다. 창가나 바닥은 실제 생활 습도와 차이가 큽니다.\n\n마무리\n\n생활 정보는 한 번에 다 바꾸기보다 순서대로 하나씩 확인하는 편이 오래 갑니다. 오늘은 체크리스트 중 하나만 해보셔도 충분합니다.",
+      "images": [
+        {
+          "id": "img_info_why",
+          "role": "info_why",
+          "src": "D:\\projects\\atlas\\.atlas-data\\korea-assets\\kr_kr_info_autumn_humidity\\img_info_why.png",
+          "alt": "환절기 습도 관리 핵심 정리",
+          "placement": "가을 습도가 방마다 다른 이유 문단 뒤",
+          "anchorKeywords": [
+            "가을 습도가 방마다 다른 이유",
+            "환절기 습도 관리"
+          ],
+          "card": {
+            "kicker": "ATLAS 생활정보",
+            "title": "가을 습도가 방마다 다른 이유",
+            "columns": [
+              [
+                "1",
+                "아침 환기 5~10분, 마주 보는 창을 함께 열기"
+              ],
+              [
+                "2",
+                "외벽에 붙은 가구는 5cm 이상 띄우기"
+              ],
+              [
+                "3",
+                "실내 습도 40~60% 유지"
+              ]
+            ],
+            "footer": "순서대로 하나씩 확인하면 됩니다."
+          }
+        },
+        {
+          "id": "img_info_how",
+          "role": "info_how",
+          "src": "D:\\projects\\atlas\\.atlas-data\\korea-assets\\kr_kr_info_autumn_humidity\\img_info_how.png",
+          "alt": "환절기 습도 관리 실행 순서",
+          "placement": "방마다 다르게 잡는 실내 습도 기준 문단 뒤",
+          "anchorKeywords": [
+            "방마다 다르게 잡는 실내 습도 기준"
+          ],
+          "card": {
+            "kicker": "ATLAS 생활정보",
+            "title": "방마다 다르게 잡는 실내 습도 기준",
+            "columns": [
+              [
+                "1단계",
+                "환절기 실내 습도는 40~60%를 기준으로 봅니다."
+              ],
+              [
+                "2단계",
+                "침실은 자는 동안 호흡으로 습도가 올라가므로 잠들기 전 기준을 조금 낮게, 거실은 활동 시간대에 맞춰 조금 "
+              ]
+            ],
+            "footer": "돈이 안 드는 순서부터 먼저 해봅니다."
+          }
+        },
+        {
+          "id": "img_info_checklist",
+          "role": "info_checklist",
+          "src": "D:\\projects\\atlas\\.atlas-data\\korea-assets\\kr_kr_info_autumn_humidity\\img_info_checklist.png",
+          "alt": "환절기 습도 관리 체크리스트",
+          "placement": "체크리스트 문단 뒤",
+          "anchorKeywords": [
+            "오늘의 체크리스트",
+            "체크리스트"
+          ],
+          "card": {
+            "kicker": "ATLAS 생활정보",
+            "title": "오늘의 체크리스트",
+            "columns": [
+              [
+                "체크 1",
+                "아침 환기 5~10분, 마주 보는 창을 함께 열기"
+              ],
+              [
+                "체크 2",
+                "외벽에 붙은 가구는 5cm 이상 띄우기"
+              ],
+              [
+                "체크 3",
+                "실내 습도 40~60% 유지"
+              ],
+              [
+                "체크 4",
+                "실내 건조 시에는 문을 열어두고 공기 순환시키기"
+              ]
+            ],
+            "footer": "하나만 해도 달라집니다."
+          }
+        }
+      ],
+      "state": "approved",
+      "approvedAt": "2026-09-23T01:42:14.053Z",
+      "publishedAt": "",
+      "publishedUrl": "",
+      "lastError": "5분 안에 네이버 로그인이 완료되지 않았습니다. Edge 창을 유지합니다.",
+      "createdAt": "2026-09-23T01:38:51.583Z",
+      "updatedAt": "2026-09-23T01:47:39.426Z",
+      "channelId": "korea_naver",
+      "assetScope": "korea",
+      "assetNamespace": ".atlas-data/korea-assets",
+      "heroCharacterId": "suho",
+      "masterFileName": "ATLAS-SUO-MASTER.png",
+      "masterAssetPath": "public/atlas/characters/ATLAS-SUO-MASTER.png",
+      "visualMode": "warm-practical-illustration",
+      "styleReferenceAssetPath": "public/atlas/korea/suho/multitap/featured.png",
+      "characterPolicyVersion": "ATLAS_CHARACTER_CHANNEL_V1",
+      "automationStatus": "failed"
+    },
+    {
       "id": "kr_glasslock_classic_white_10set",
       "platform": "naver",
       "contentType": "new_product_review",

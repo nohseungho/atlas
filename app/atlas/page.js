@@ -48,12 +48,12 @@ const CARDS = [
 // 현재 운영의 중심은 국내·해외 통합 운영 화면이다. 아래 카드/흐름은 그대로 두고,
 // 진입 시 어디로 가야 하는지만 맨 위에서 분명히 한다.
 const PRIMARY = {
-  href: "/atlas/unified-publish",
-  title: "국내·해외 통합 운영",
-  description: "국내 Naver(수호)와 해외 Blogger(미지)의 다음 글을 한 화면에서 준비·검수합니다. 여기서는 실제 발행하지 않습니다.",
+  href: "/atlas/operate",
+  title: "국내·해외 운영 (제작 → 발행)",
+  description: "주제 선택 → 자동 작성 → 이미지 생성 → 미리보기 → 발행 → 공개 URL 확인까지 한 화면에서 끝냅니다. 이미지 생성이 끝나야 발행 버튼이 열립니다.",
   lanes: [
-    { label: "국내 Naver · 수호", detail: "TOP5 상품형 → 수익화 확인된 후보만 자동 준비", href: "/atlas/korea" },
-    { label: "해외 Blogger · 미지", detail: "여행 정보형 원고 우선 → Publisher에서 검수·발행", href: "/publisher" },
+    { label: "국내 Naver · 수호", detail: "생활편의·시즌 검색형 정보글 · 제휴 링크 없이 발행 가능", href: "/atlas/operate" },
+    { label: "해외 Blogger · 미지", detail: "미지↔수호 문답형 · Quick Answer / TOC / FAQ / Sources · 미지 이미지 5장", href: "/atlas/operate" },
   ],
 };
 

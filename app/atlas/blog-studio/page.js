@@ -2,11 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { KEYS, newId, readList, writeList } from "@/app/atlas/lib/storage";
-import {
-  buildMysteryBlackFilePrompt,
-  buildOutdoorSafetyFilePrompt,
-} from "@/app/atlas/shorts-studio/page";
-
 const CATEGORIES = ["Outdoor Safety", "Mystery", "History", "Nature"];
 const STATUSES = ["Draft", "Review", "Approved"];
 
@@ -212,39 +207,12 @@ const emptyForm = {
   status: "Draft",
 };
 
-// Production Pipeline: 기존 슬러그와 겹치지 않도록 -copy, -copy-2 ... 로 기계적으로 생성한다 (AI 아님).
-function generateUniqueSlug(baseSlug, existingSlugs) {
-  const base = (baseSlug || "untitled").replace(/\/$/, "");
-  let candidate = `${base}-copy`;
-  let n = 2;
-  while (existingSlugs.includes(candidate)) {
-    candidate = `${base}-copy-${n}`;
-    n += 1;
-  }
-  return candidate;
-}
-
-// Image Prompt 6장을 보장한다. 원본에 6장 미만이면 6가지 고정 역할(Situation/Real Scene/
-// Map·Checklist/Gear in Use/Comparison/Closing) 이름으로 템플릿 프롬프트를 채운다 (AI 생성 아님).
-function ensureSixImagePrompts(sourcePrompts, topic) {
-  const roles = ["Situation", "Real Scene", "Map / Checklist", "Gear in Use", "Comparison", "Closing"];
-  const result = [...sourcePrompts];
-  for (let i = result.length; i < 6; i += 1) {
-    result.push(
-      `Realistic documentary-style photograph representing "${roles[i]}" for "${topic}", natural lighting, high detail, no text, no watermark.`
-    );
-  }
-  return result.slice(0, 6);
-}
-
 export default function BlogStudioPage() {
   const [drafts, setDrafts] = useState([]);
   const [products, setProducts] = useState([]);
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
   const [imagePromptInput, setImagePromptInput] = useState("");
-  const [generateSourceId, setGenerateSourceId] = useState("");
-  const [generateResult, setGenerateResult] = useState(null);
 
   useEffect(() => {
     setDrafts(readList(KEYS.blogDrafts));
@@ -333,78 +301,6 @@ export default function BlogStudioPage() {
       if (!confirmed) return;
     }
     updateField("body", BLOG_DNA_TEMPLATE);
-  }
-
-  // Production Pipeline: MASTER 선택 → Duplicate → Title/Slug/SEO Meta/Product/Image Prompt
-  // 자동 채움 → Draft 저장(Publishing Center에 자동 노출) → Shorts Prompt 자동 생성(Video Library에 메모로 등록)
-  // 새 API/DB/필드 없이 기존 blogDrafts·products·videoLibrary 구조만 그대로 재사용한다.
-  function handleGenerate() {
-    const source = drafts.find((d) => d.id === generateSourceId);
-    if (!source) return;
-
-    const existingSlugs = drafts.map((d) => d.slug).filter(Boolean);
-    const newSlug = generateUniqueSlug(source.slug, existingSlugs);
-    const newTopic = `${source.topic} (Copy)`;
-    const newImagePrompts = ensureSixImagePrompts(source.imagePrompts || [], newTopic);
-
-    const newDraft = {
-      id: newId("blog"),
-      topic: newTopic, // Title 생성 (SEO Meta Title도 동일 필드를 재사용 — 별도 필드 없음)
-      category: source.category,
-      body: source.body, // FAQ / Sources / Checklist 등 본문 섹션 그대로 승계
-      metaDescription: source.metaDescription, // SEO Meta Description 생성
-      slug: newSlug, // Slug 생성
-      productIds: [...(source.productIds || [])], // Product 자동 연결
-      imagePrompts: newImagePrompts, // Image Prompt 6개 생성
-      status: "Draft", // Draft 생성 (승인 전 상태 유지, 임의 자동승인 안 함)
-      updatedAt: new Date().toISOString(),
-    };
-
-    const nextDrafts = [newDraft, ...drafts];
-    setDrafts(nextDrafts);
-    writeList(KEYS.blogDrafts, nextDrafts);
-
-    // Keywords 생성: 별도 필드를 새로 만들지 않고, Publishing Center가 이미
-    // category + 연결 상품명으로 Tags를 자동 생성하는 기존 로직을 그대로 활용한다.
-    const linkedProductNames = newDraft.productIds
-      .map((id) => products.find((p) => p.id === id)?.name)
-      .filter(Boolean);
-
-    // Shorts Prompt 자동 생성: 기존 Shorts Studio 로직을 재사용한다 (그 파일의 UI/구조는 변경하지 않음).
-    const shortsPromptText =
-      newDraft.category === "Outdoor Safety"
-        ? buildOutdoorSafetyFilePrompt({ aiEngine: "MagicLight", productNames: linkedProductNames })
-        : newDraft.category === "Mystery"
-          ? buildMysteryBlackFilePrompt({
-              aiEngine: "MagicLight",
-              duration: "60s",
-              productNames: linkedProductNames,
-            })
-          : `[알림] "${newDraft.category}" 카테고리 Shorts 템플릿은 아직 준비되지 않았습니다.`;
-
-    // Publishing Center 자동 등록: Video Library에 Pending 영상 항목을 자동 생성해
-    // relatedBlogSlug로 새 Draft와 연결한다 (mp4Path는 실제 영상이 없으므로 비워둠 — 정상 동작).
-    const videoLibrary = readList(KEYS.videoLibrary);
-    const newVideoEntry = {
-      id: newId("video"),
-      videoTitle: `${newTopic} - Shorts`,
-      mp4Path: "",
-      relatedBlogSlug: newSlug,
-      channel: "ATLAS Shorts - Main",
-      status: "Pending",
-      memo: shortsPromptText,
-      updatedAt: new Date().toISOString(),
-    };
-    writeList(KEYS.videoLibrary, [newVideoEntry, ...videoLibrary]);
-
-    handleLoadDraft(newDraft);
-    setGenerateResult({
-      topic: newTopic,
-      slug: newSlug,
-      productCount: newDraft.productIds.length,
-      imagePromptCount: newImagePrompts.length,
-      shortsPrompt: shortsPromptText,
-    });
   }
 
   return (
@@ -598,51 +494,19 @@ export default function BlogStudioPage() {
             </div>
 
             <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
-              <h2 className="text-lg font-semibold">Production Pipeline</h2>
+              <h2 className="text-lg font-semibold">제작·발행은 운영 화면에서</h2>
               <p className="mt-1 text-xs text-zinc-500">
-                Approved MASTER 하나를 골라 Generate를 누르면 Title/Slug/SEO
-                Meta/FAQ/Sources/Image Prompt 6개/Product 연결/Shorts
-                Prompt까지 자동으로 채운 새 Draft가 생성되고 Publishing
-                Center에 자동 등록됩니다.
+                기존 Generate 단계는 MASTER를 &quot;(Copy)&quot; 제목과 -copy 슬러그로 복제해
+                같은 글이 중복으로 쌓이는 원인이었습니다. 주제 선택부터 자동 작성·이미지
+                생성·미리보기·실제 발행까지는 국내·해외 운영 화면에서 한 번에 진행합니다.
+                이 화면은 한국어 MASTER 본문을 직접 손보는 용도로만 남깁니다.
               </p>
-              <div className="mt-3 space-y-2">
-                <select
-                  value={generateSourceId}
-                  onChange={(e) => setGenerateSourceId(e.target.value)}
-                  className="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-zinc-100"
-                >
-                  <option value="">MASTER 선택 (Approved만)</option>
-                  {drafts
-                    .filter((d) => d.status === "Approved")
-                    .map((d) => (
-                      <option key={d.id} value={d.id}>
-                        {d.topic} ({d.category})
-                      </option>
-                    ))}
-                </select>
-                <button
-                  onClick={handleGenerate}
-                  disabled={!generateSourceId}
-                  className="w-full rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 disabled:opacity-50"
-                >
-                  Generate
-                </button>
-              </div>
-
-              {generateResult && (
-                <div className="mt-3 space-y-1 rounded-lg border border-emerald-800 bg-emerald-500/5 p-3 text-xs text-zinc-300">
-                  <p className="font-semibold text-emerald-400">
-                    Draft 생성 완료: {generateResult.topic}
-                  </p>
-                  <p>Slug: {generateResult.slug}</p>
-                  <p>Product 자동 연결: {generateResult.productCount}개</p>
-                  <p>Image Prompt: {generateResult.imagePromptCount}개</p>
-                  <p>Shorts Prompt 자동 생성 완료 (Video Library에 Pending으로 등록됨)</p>
-                  <p className="text-zinc-500">
-                    Publishing Center에서 이 Draft를 확인할 수 있습니다.
-                  </p>
-                </div>
-              )}
+              <a
+                href="/atlas/operate"
+                className="mt-3 block rounded-lg bg-emerald-600 px-4 py-2 text-center text-sm font-semibold text-white hover:bg-emerald-500"
+              >
+                국내·해외 운영 화면 열기
+              </a>
             </div>
 
             <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">

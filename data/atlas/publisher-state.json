@@ -1,9 +1,9 @@
 {
   "blogId": "blog_001",
-  "lastSyncedAt": "2026-09-20T09:25:59.498Z",
-  "lastSyncStatus": "reconnect_required",
-  "lastSyncMessage": "Blogger 연결이 없습니다.",
-  "connection": "reconnect_required",
+  "lastSyncedAt": "2026-09-23T01:28:53.126Z",
+  "lastSyncStatus": "ok",
+  "lastSyncMessage": "",
+  "connection": "connected",
   "bloggerLiveCount": 18,
   "externalPosts": [
     {
@@ -36,7 +36,7 @@
     "bloggerLive": 18,
     "atlasLinked": 13,
     "external": 5,
-    "pending": 2,
+    "pending": 3,
     "missingLinks": 2,
     "conflicts": 0
   }

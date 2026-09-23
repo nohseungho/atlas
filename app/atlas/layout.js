@@ -6,7 +6,9 @@ export const metadata = {
 };
 
 const NAV_ITEMS = [
-  { href: "/atlas/unified-publish", label: "국내·해외 통합 운영" },
+  // 제작부터 실제 발행까지 한 화면에서 끝내는 단일 운영 화면.
+  { href: "/atlas/operate", label: "국내·해외 운영 (제작→발행)" },
+  { href: "/atlas/unified-publish", label: "국내·해외 후보 준비" },
   { href: "/atlas", label: "Dashboard" },
   { href: "/atlas/revenue", label: "해외 Blogger" },
   { href: "/atlas/korea", label: "국내 Naver" },
