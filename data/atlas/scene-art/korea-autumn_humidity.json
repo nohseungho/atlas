@@ -1,0 +1,89 @@
+{
+  "channel": "korea",
+  "topicSlug": "autumn_humidity",
+  "items": {
+    "info_why": {
+      "file": "public/atlas/korea/suho/autumn_humidity/info_why.png",
+      "character": "suho",
+      "direction": {
+        "camera": "medium shot from the waist up",
+        "viewpoint": "three-quarter turn away from the camera",
+        "posture": "leaning in to look closely at the problem spot, hand raised near it"
+      },
+      "prompt": "(the same person beside a window in a Korean apartment where condensation has formed along the frame in the early morning:1.4), (three-quarter turn away from the camera:1.3), (medium shot from the waist up:1.2), (leaning in to look closely at the problem spot, hand raised near it:1.2). anime illustration, korean webtoon style, clean lineart, soft cel shading, warm daylight, detailed cozy korean apartment interior. a young Korean man in his 20s, tousled dark-brown hair, large dark eyes, focused expression, dark green knit sweater. leaning in to look closely at the problem spot, hand raised near it. medium shot from the waist up. three-quarter turn away from the camera. warm anime-style illustration of a Korean home interior, soft daylight, clean lines.",
+      "seed": 2327734491,
+      "negative": "looking at viewer, posing for camera, portrait, photo, photorealistic, 3d render, realistic skin, old man, beard, woman, text, letters, watermark, logo, signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border",
+      "references": [
+        "public/atlas/characters/ATLAS-SUO-MASTER.png"
+      ],
+      "ipAdapterWeight": 0.5,
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-23T14:34:05.254Z"
+    },
+    "info_how": {
+      "file": "public/atlas/korea/suho/autumn_humidity/info_how.png",
+      "character": "suho",
+      "direction": {
+        "camera": "wide shot, full body in the scene",
+        "viewpoint": "facing the camera",
+        "posture": "crouched down mid-action, actually doing the step"
+      },
+      "prompt": "(the same person pulling a wardrobe a few centimetres away from an outside wall to open an air gap behind it:1.4), (facing the camera:1.3), (wide shot, full body in the scene:1.2), (crouched down mid-action, actually doing the step:1.2). anime illustration, korean webtoon style, clean lineart, soft cel shading, warm daylight, detailed cozy korean apartment interior. a young Korean man in his 20s, tousled dark-brown hair, large dark eyes, focused expression, dark green knit sweater. crouched down mid-action, actually doing the step. wide shot, full body in the scene. facing the camera. warm anime-style illustration of a Korean home interior, soft daylight, clean lines.",
+      "seed": 3525972380,
+      "negative": "looking at viewer, posing for camera, portrait, photo, photorealistic, 3d render, realistic skin, old man, beard, woman, text, letters, watermark, logo, signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border",
+      "references": [
+        "public/atlas/characters/ATLAS-SUO-MASTER.png"
+      ],
+      "ipAdapterWeight": 0.5,
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-23T14:33:28.673Z"
+    },
+    "info_checklist": {
+      "file": "public/atlas/korea/suho/autumn_humidity/info_checklist.png",
+      "character": "suho",
+      "direction": {
+        "camera": "low angle from table height",
+        "viewpoint": "side profile",
+        "posture": "seated at a low table, pointing at the item being checked"
+      },
+      "prompt": "(the same person at a low living-room table checking a small humidity meter next to a mug:1.4), (side profile:1.3), (low angle from table height:1.2), (seated at a low table, pointing at the item being checked:1.2). anime illustration, korean webtoon style, clean lineart, soft cel shading, warm daylight, detailed cozy korean apartment interior. a young Korean man in his 20s, tousled dark-brown hair, large dark eyes, focused expression, dark green knit sweater. seated at a low table, pointing at the item being checked. low angle from table height. side profile. warm anime-style illustration of a Korean home interior, soft daylight, clean lines.",
+      "seed": 2873665246,
+      "negative": "looking at viewer, posing for camera, portrait, photo, photorealistic, 3d render, realistic skin, old man, beard, woman, text, letters, watermark, logo, signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border",
+      "references": [
+        "public/atlas/characters/ATLAS-SUO-MASTER.png"
+      ],
+      "ipAdapterWeight": 0.5,
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-23T14:33:46.849Z"
+    }
+  },
+  "character": "suho",
+  "dropDirectory": "public/atlas/korea/suho/autumn_humidity"
+}
