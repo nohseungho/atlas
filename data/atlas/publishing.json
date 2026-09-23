@@ -429,6 +429,21 @@
       "updatedAt": "2026-09-23T03:16:25.371Z",
       "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/09/lost-your-passport-abroad-order-you-do.html",
       "externalId": "1447275760740653025"
+    },
+    {
+      "id": "job_029",
+      "articleId": "art_024",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "attemptCount": 1,
+      "maxAttempts": 3,
+      "lastError": null,
+      "nextRetryAt": null,
+      "createdAt": "2026-09-23T15:18:02.993Z",
+      "updatedAt": "2026-09-23T15:18:06.443Z",
+      "publishedUrl": "https://atlas-money-2026.blogspot.com/2026/09/passport-validity-rules-why-your-trip.html",
+      "externalId": "8598824458188828506"
     }
   ],
   "history": [
@@ -1421,6 +1436,39 @@
       "message": "Blogger 자동 발행 성공",
       "error": null,
       "createdAt": "2026-09-23T03:16:25.374Z"
+    },
+    {
+      "id": "hist_091",
+      "jobId": "job_029",
+      "articleId": "art_024",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "queued",
+      "message": "Job 생성",
+      "error": null,
+      "createdAt": "2026-09-23T15:18:02.996Z"
+    },
+    {
+      "id": "hist_092",
+      "jobId": "job_029",
+      "articleId": "art_024",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "running",
+      "message": "자동 발행 시작",
+      "error": null,
+      "createdAt": "2026-09-23T15:18:03.000Z"
+    },
+    {
+      "id": "hist_093",
+      "jobId": "job_029",
+      "articleId": "art_024",
+      "channelId": "blog_001",
+      "provider": "blogger",
+      "status": "succeeded",
+      "message": "Blogger 자동 발행 성공",
+      "error": null,
+      "createdAt": "2026-09-23T15:18:06.446Z"
     }
   ]
 }
