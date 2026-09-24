@@ -1,0 +1,363 @@
+{
+  "channel": "global",
+  "topicSlug": "credit_card_insurance",
+  "items": {
+    "featured": {
+      "faceMatch": {
+        "status": "pass",
+        "similarity": 0.7294,
+        "faces": 1,
+        "threshold": 0.5,
+        "method": "arcface_buffalo_l",
+        "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "checkedAt": "2026-09-23T23:45:20.105Z",
+        "candidates": [
+          {
+            "seed": 2407340673,
+            "similarity": 0.6458
+          },
+          {
+            "seed": 2407341673,
+            "similarity": 0.6573
+          },
+          {
+            "seed": 2407342673,
+            "similarity": 0.6624
+          },
+          {
+            "seed": 2407343673,
+            "similarity": 0.7294
+          },
+          {
+            "seed": 2407344673,
+            "similarity": 0.6906
+          },
+          {
+            "seed": 2407345673,
+            "similarity": 0.7095
+          }
+        ]
+      },
+      "file": "public/atlas/global/miji/_review/credit_card_insurance/featured.png",
+      "character": "miji",
+      "direction": {
+        "hair": "half-up hairstyle",
+        "camera": "medium shot from the waist up",
+        "viewpoint": "facing the camera",
+        "posture": "standing, holding the document she is talking about"
+      },
+      "prompt": "(half-up hairstyle:1.6), (facing the camera:1.3), (medium shot from the waist up:1.2), (standing, holding the document she is talking about:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her 30s, dark-brown hair color, warm brown almond-shaped eyes, oval face, soft jawline. the same person at a home desk holding her credit card benefits guide booklet next to a laptop showing a flight booking.",
+      "seed": 2407343673,
+      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
+      "references": [
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+      ],
+      "ipAdapterWeight": null,
+      "faceId": {
+        "preset": "FACEID PLUS V2",
+        "loraStrength": 0.6,
+        "weight": 0.8,
+        "weightV2": 1.2,
+        "startAt": 0.15,
+        "endAt": 1
+      },
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-23T23:45:20.108Z"
+    },
+    "context": {
+      "faceMatch": {
+        "status": "pass",
+        "similarity": 0.6926,
+        "faces": 1,
+        "threshold": 0.5,
+        "method": "arcface_buffalo_l",
+        "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "checkedAt": "2026-09-23T23:47:13.278Z",
+        "candidates": [
+          {
+            "seed": 4269910418,
+            "similarity": 0.6848
+          },
+          {
+            "seed": 4269911418,
+            "similarity": 0.6274
+          },
+          {
+            "seed": 4269912418,
+            "similarity": 0.6926
+          },
+          {
+            "seed": 4269913418,
+            "similarity": 0.6658
+          },
+          {
+            "seed": 4269914418,
+            "similarity": 0.6597
+          },
+          {
+            "seed": 4269915418,
+            "similarity": 0.646
+          }
+        ]
+      },
+      "file": "public/atlas/global/miji/_review/credit_card_insurance/context.png",
+      "character": "miji",
+      "direction": {
+        "hair": "hair tied up in a neat bun",
+        "camera": "wide shot, full body in the scene",
+        "viewpoint": "three-quarter turn away from the camera",
+        "posture": "walking through the space with a shoulder bag"
+      },
+      "prompt": "(hair tied up in a neat bun:1.6), (three-quarter turn away from the camera:1.3), (wide shot, full body in the scene:1.2), (walking through the space with a shoulder bag:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her 30s, dark-brown hair color, warm brown almond-shaped eyes, oval face, soft jawline. the same person walking through a bright airport check-in hall with a shoulder bag, card wallet in hand.",
+      "seed": 4269912418,
+      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
+      "references": [
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+      ],
+      "ipAdapterWeight": null,
+      "faceId": {
+        "preset": "FACEID PLUS V2",
+        "loraStrength": 0.6,
+        "weight": 0.8,
+        "weightV2": 1.2,
+        "startAt": 0.15,
+        "endAt": 1
+      },
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-23T23:47:13.287Z"
+    },
+    "comparison": {
+      "faceMatch": {
+        "status": "pass",
+        "similarity": 0.6947,
+        "faces": 1,
+        "threshold": 0.5,
+        "method": "arcface_buffalo_l",
+        "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "checkedAt": "2026-09-23T23:49:03.032Z",
+        "candidates": [
+          {
+            "seed": 985721530,
+            "similarity": 0.6667
+          },
+          {
+            "seed": 985722530,
+            "similarity": 0.6947
+          },
+          {
+            "seed": 985723530,
+            "similarity": 0.6911
+          },
+          {
+            "seed": 985724530,
+            "similarity": 0.6698
+          },
+          {
+            "seed": 985725530,
+            "similarity": 0.6223
+          },
+          {
+            "seed": 985726530,
+            "similarity": 0.6033
+          }
+        ]
+      },
+      "file": "public/atlas/global/miji/_review/credit_card_insurance/comparison.png",
+      "character": "miji",
+      "direction": {
+        "hair": "low ponytail",
+        "camera": "low angle from table height",
+        "viewpoint": "seen from slightly above",
+        "posture": "seated at a table, comparing two items laid out in front of her"
+      },
+      "prompt": "(low ponytail:1.6), (seen from slightly above:1.3), (low angle from table height:1.2), (seated at a table, comparing two items laid out in front of her:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her 30s, dark-brown hair color, warm brown almond-shaped eyes, oval face, soft jawline. the same person seated at a cafe table comparing a credit card benefits leaflet with a printed standalone travel insurance policy.",
+      "seed": 985722530,
+      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
+      "references": [
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+      ],
+      "ipAdapterWeight": null,
+      "faceId": {
+        "preset": "FACEID PLUS V2",
+        "loraStrength": 0.6,
+        "weight": 0.8,
+        "weightV2": 1.2,
+        "startAt": 0.15,
+        "endAt": 1
+      },
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-23T23:49:03.033Z"
+    },
+    "action": {
+      "faceMatch": {
+        "status": "pass",
+        "similarity": 0.6104,
+        "faces": 1,
+        "threshold": 0.5,
+        "method": "arcface_buffalo_l",
+        "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "checkedAt": "2026-09-23T23:50:56.016Z",
+        "candidates": [
+          {
+            "seed": 1667649769,
+            "similarity": 0.6087
+          },
+          {
+            "seed": 1667650769,
+            "similarity": 0.5461
+          },
+          {
+            "seed": 1667651769,
+            "similarity": 0.5886
+          },
+          {
+            "seed": 1667652769,
+            "similarity": 0.6104
+          },
+          {
+            "seed": 1667653769,
+            "similarity": 0.5001
+          },
+          {
+            "seed": 1667654769,
+            "similarity": 0.6034
+          }
+        ]
+      },
+      "file": "public/atlas/global/miji/_review/credit_card_insurance/action.png",
+      "character": "miji",
+      "direction": {
+        "hair": "long hair worn down",
+        "camera": "close shot, head and shoulders",
+        "viewpoint": "side profile",
+        "posture": "pausing by a window, phone in hand"
+      },
+      "prompt": "(long hair worn down:1.6), (side profile:1.3), (close shot, head and shoulders:1.2), (pausing by a window, phone in hand:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her 30s, dark-brown hair color, warm brown almond-shaped eyes, oval face, soft jawline. the same person by a hotel window on the phone to her card issuer, checking what the coverage includes.",
+      "seed": 1667652769,
+      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait",
+      "references": [
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+      ],
+      "ipAdapterWeight": null,
+      "faceId": {
+        "preset": "FACEID PLUS V2",
+        "loraStrength": 0.6,
+        "weight": 0.8,
+        "weightV2": 1.2,
+        "startAt": 0.15,
+        "endAt": 1
+      },
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-23T23:50:56.025Z"
+    },
+    "checklist": {
+      "faceMatch": {
+        "status": "pass",
+        "similarity": 0.6617,
+        "faces": 1,
+        "threshold": 0.5,
+        "method": "arcface_buffalo_l",
+        "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "checkedAt": "2026-09-23T23:52:45.953Z",
+        "candidates": [
+          {
+            "seed": 905803961,
+            "similarity": 0.5829
+          },
+          {
+            "seed": 905804961,
+            "similarity": 0.654
+          },
+          {
+            "seed": 905805961,
+            "similarity": 0.6253
+          },
+          {
+            "seed": 905806961,
+            "similarity": 0.6381
+          },
+          {
+            "seed": 905807961,
+            "similarity": 0.6375
+          },
+          {
+            "seed": 905808961,
+            "similarity": 0.6617
+          }
+        ]
+      },
+      "file": "public/atlas/global/miji/_review/credit_card_insurance/checklist.png",
+      "character": "miji",
+      "direction": {
+        "hair": "hair tucked under a soft cap",
+        "camera": "over-the-shoulder shot from behind",
+        "viewpoint": "seen from behind, looking back over her shoulder so her face is clearly visible",
+        "posture": "crouched beside an open case, working through it item by item"
+      },
+      "prompt": "(hair tucked under a soft cap:1.6), (seen from behind, looking back over her shoulder so her face is clearly visible:1.3), (over-the-shoulder shot from behind:1.2), (crouched beside an open case, working through it item by item:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her 30s, dark-brown hair color, warm brown almond-shaped eyes, oval face, soft jawline. the same person crouched beside an open suitcase, tucking a folder of printed policy documents and receipts into it.",
+      "seed": 905808961,
+      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
+      "references": [
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+      ],
+      "ipAdapterWeight": null,
+      "faceId": {
+        "preset": "FACEID PLUS V2",
+        "loraStrength": 0.6,
+        "weight": 0.8,
+        "weightV2": 1.2,
+        "startAt": 0.15,
+        "endAt": 1
+      },
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-23T23:52:45.954Z"
+    }
+  },
+  "character": "miji",
+  "dropDirectory": "public/atlas/global/miji/_review/credit_card_insurance"
+}

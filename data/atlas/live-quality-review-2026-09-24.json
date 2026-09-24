@@ -1,0 +1,362 @@
+{
+  "checkedAt": "2026-09-23T23:26:12.572Z",
+  "method": "live Blogger feed images, ArcFace vs ATLAS-MIJI-MASTER (read-only)",
+  "unpublished": [
+    {
+      "id": "art_024",
+      "url": "https://atlas-money-2026.blogspot.com/2026/09/passport-validity-rules-why-your-trip.html",
+      "action": "reverted_to_draft",
+      "publicUrlAfter": 404,
+      "backup": "data/atlas/backups/art_024-8598824458188828506-2026-09-23T23-27-22-707Z.json",
+      "reason": "미지 얼굴 마스터 불일치(ArcFace 0.03~0.39) + art_025와 검색의도 유사"
+    },
+    {
+      "id": "art_025",
+      "url": "https://atlas-money-2026.blogspot.com/2026/09/lost-your-passport-abroad-order-you-do.html",
+      "action": "reverted_to_draft",
+      "publicUrlAfter": 404,
+      "backup": "data/atlas/backups/art_025-1447275760740653025-2026-09-23T23-28-08-650Z.json",
+      "reason": "5장 모두 같은 마스터 얼굴 크롭·같은 구도의 텍스트 카드 합성 + art_024와 검색의도 유사"
+    },
+    {
+      "id": "art_022",
+      "url": "https://atlas-money-2026.blogspot.com/2026/09/credit-card-travel-insurance-is-it.html",
+      "action": "reverted_to_draft",
+      "publicUrlAfter": 404,
+      "backup": "data/atlas/backups/art_022-3325899877125386472-2026-09-23T23-41-50-711Z.json",
+      "reason": "대표 이미지 마스터 합성 + 텍스트 카드 4장"
+    },
+    {
+      "id": "external-7464819806483273330",
+      "url": "https://atlas-money-2026.blogspot.com/2026/09/nepal-floods-2026-how-to-help-now-and.html",
+      "action": "reverted_to_draft",
+      "publicUrlAfter": 404,
+      "backup": "data/atlas/backups/external-7464819806483273330-7464819806483273330-2026-09-23T23-41-54-840Z.json",
+      "reason": "대표 이미지 마스터 합성"
+    },
+    {
+      "id": "external-8257964298533269720",
+      "url": "https://atlas-money-2026.blogspot.com/2026/08/adventure-travel-insurance-are-hiking.html",
+      "action": "reverted_to_draft",
+      "publicUrlAfter": 404,
+      "backup": "data/atlas/backups/external-8257964298533269720-8257964298533269720-2026-09-23T23-41-57-788Z.json",
+      "reason": "대표 이미지 마스터 합성"
+    }
+  ],
+  "posts": [
+    {
+      "title": "Lost Your Passport Abroad? The Order You Do Things In Decides How Long You Wait",
+      "url": "https://atlas-money-2026.blogspot.com/2026/09/lost-your-passport-abroad-order-you-do.html",
+      "faceScores": [
+        "0.97",
+        "0.97",
+        "0.97",
+        "0.97",
+        "0.97"
+      ],
+      "status": "unpublished_draft",
+      "issues": [
+        "같은 마스터 얼굴 크롭·같은 구도 5회 반복",
+        "텍스트 카드형 합성",
+        "art_024와 검색의도 유사"
+      ]
+    },
+    {
+      "title": "Credit Card Travel Insurance: Is It Enough for an International Trip?",
+      "url": "https://atlas-money-2026.blogspot.com/2026/09/credit-card-travel-insurance-is-it.html",
+      "faceScores": [
+        "0.98",
+        "none",
+        "none",
+        "none",
+        "none"
+      ],
+      "status": "unpublished_draft",
+      "issues": [
+        "대표 이미지가 마스터 사진을 배경 도형 위에 붙인 합성(합성 티)"
+      ]
+    },
+    {
+      "title": "Europe EES Travel Checklist 2026: What to Expect at the Border",
+      "url": "https://atlas-money-2026.blogspot.com/2026/09/europe-ees-travel-checklist-2026-what.html",
+      "faceScores": [
+        "0.86",
+        "0.75",
+        "0.79",
+        "0.82",
+        "0.84"
+      ],
+      "status": "ok_keep",
+      "issues": []
+    },
+    {
+      "title": "A Pre-Trip Safety Checklist for International Travelers",
+      "url": "https://atlas-money-2026.blogspot.com/2026/09/a-pre-trip-safety-checklist-for.html",
+      "faceScores": [
+        "none",
+        "none",
+        "none",
+        "none"
+      ],
+      "status": "ok_keep",
+      "issues": [
+        "미지 미등장 일반 인물 실사 장면 — 육안 검수 결과 기괴한 인물·반복·합성 없음"
+      ]
+    },
+    {
+      "title": "Nepal Floods 2026: How to Help Now — and How Families Can Prepare for Flash Floods",
+      "url": "https://atlas-money-2026.blogspot.com/2026/09/nepal-floods-2026-how-to-help-now-and.html",
+      "faceScores": [
+        "0.98",
+        "none",
+        "none",
+        "none",
+        "none"
+      ],
+      "status": "unpublished_draft",
+      "issues": [
+        "대표 이미지가 마스터 사진을 배경 도형 위에 붙인 합성(합성 티)"
+      ]
+    },
+    {
+      "title": "How to Prepare for Travel Health Risks by Destination",
+      "url": "https://atlas-money-2026.blogspot.com/2026/08/how-to-prepare-for-travel-health-risks.html",
+      "faceScores": [
+        "0.75",
+        "none",
+        "none",
+        "none",
+        "none"
+      ],
+      "status": "ok_keep",
+      "issues": []
+    },
+    {
+      "title": "Travel Insurance for Baggage Delay and Lost Luggage: What to Check",
+      "url": "https://atlas-money-2026.blogspot.com/2026/08/travel-insurance-for-baggage-delay-and.html",
+      "faceScores": [
+        "0.69",
+        "none",
+        "none",
+        "none",
+        "none"
+      ],
+      "status": "ok_keep",
+      "issues": []
+    },
+    {
+      "title": "Adventure Travel Insurance: Are Hiking, Diving, and Skiing Covered?",
+      "url": "https://atlas-money-2026.blogspot.com/2026/08/adventure-travel-insurance-are-hiking.html",
+      "faceScores": [
+        "0.98",
+        "none",
+        "none",
+        "none",
+        "none"
+      ],
+      "status": "unpublished_draft",
+      "issues": [
+        "대표 이미지가 마스터 사진을 배경 도형 위에 붙인 합성(합성 티)"
+      ]
+    },
+    {
+      "title": "Annual Multi-Trip Travel Insurance: Is It Worth It?",
+      "url": "https://atlas-money-2026.blogspot.com/2026/08/annual-multi-trip-travel-insurance-is.html",
+      "faceScores": [
+        "0.89",
+        "none",
+        "none",
+        "0.92",
+        "none"
+      ],
+      "status": "ok_keep",
+      "issues": []
+    },
+    {
+      "title": "When to Buy Travel Insurance for Hurricane Season",
+      "url": "https://atlas-money-2026.blogspot.com/2026/08/when-to-buy-travel-insurance-for.html",
+      "faceScores": [
+        "0.81",
+        "0.89",
+        "0.76",
+        "0.81",
+        "0.77"
+      ],
+      "status": "keep_minor_revision_candidate",
+      "issues": [
+        "얼굴은 일치하나 5장 중 4장이 같은 옷·머리의 정면 착석 구도(경미한 반복)"
+      ]
+    },
+    {
+      "title": "What Trip Cancellation Insurance Actually Covers (and What It Doesn't)",
+      "url": "https://atlas-money-2026.blogspot.com/2026/08/what-trip-cancellation-insurance.html",
+      "faceScores": [
+        "-0.09",
+        "-0.07",
+        "none",
+        "-0.09",
+        "none"
+      ],
+      "status": "ok_keep",
+      "issues": [
+        "미지 미등장 일반 인물 실사 장면 — 육안 검수 결과 기괴한 인물·반복·합성 없음"
+      ]
+    },
+    {
+      "title": "Student Travel Medical Insurance for Studying Abroad: A Practical Guide",
+      "url": "https://atlas-money-2026.blogspot.com/2026/08/student-travel-medical-insurance-for.html",
+      "faceScores": [
+        "0.01",
+        "-0.01",
+        "none",
+        "-0.07",
+        "none"
+      ],
+      "status": "ok_keep",
+      "issues": [
+        "미지 미등장 일반 인물 실사 장면 — 육안 검수 결과 기괴한 인물·반복·합성 없음"
+      ]
+    },
+    {
+      "title": "Travel Medical Insurance for Seniors Over 65: A Pre-Trip Checklist",
+      "url": "https://atlas-money-2026.blogspot.com/2026/08/travel-medical-insurance-for-seniors.html",
+      "faceScores": [
+        "-0.09",
+        "-0.01",
+        "-0.02",
+        "-0.02",
+        "none"
+      ],
+      "status": "ok_keep",
+      "issues": [
+        "미지 미등장 일반 인물 실사 장면 — 육안 검수 결과 기괴한 인물·반복·합성 없음"
+      ]
+    },
+    {
+      "title": "Emergency Medical Evacuation Insurance: Remote Trips and Cruises",
+      "url": "https://atlas-money-2026.blogspot.com/2026/08/emergency-medical-evacuation-insurance.html",
+      "faceScores": [
+        "0.07",
+        "-0.06",
+        "none",
+        "-0.09",
+        "none"
+      ],
+      "status": "ok_keep",
+      "issues": [
+        "미지 미등장 일반 인물 실사 장면 — 육안 검수 결과 기괴한 인물·반복·합성 없음"
+      ]
+    },
+    {
+      "title": "Travel Insurance Pre-Existing Condition Waiver: How to Qualify",
+      "url": "https://atlas-money-2026.blogspot.com/2026/07/travel-insurance-pre-existing-condition.html",
+      "faceScores": [
+        "-0.06",
+        "none",
+        "-0.03",
+        "-0.02",
+        "none"
+      ],
+      "status": "ok_keep",
+      "issues": [
+        "미지 미등장 일반 인물 실사 장면 — 육안 검수 결과 기괴한 인물·반복·합성 없음"
+      ]
+    },
+    {
+      "title": "Food and Water Safety Abroad: How to Lower Your Risk of Getting Sick",
+      "url": "https://atlas-money-2026.blogspot.com/2026/07/food-and-water-safety-abroad-how-to_01445432643.html",
+      "faceScores": [
+        "0.05",
+        "none",
+        "none",
+        "none",
+        "none"
+      ],
+      "status": "ok_keep",
+      "issues": [
+        "미지 미등장 일반 인물 실사 장면 — 육안 검수 결과 기괴한 인물·반복·합성 없음"
+      ]
+    },
+    {
+      "title": "How to Build a Travel Health Kit for an International Trip",
+      "url": "https://atlas-money-2026.blogspot.com/2026/07/how-to-build-travel-health-kit-for_02069363082.html",
+      "faceScores": [
+        "-0.04",
+        "none"
+      ],
+      "status": "ok_keep",
+      "issues": [
+        "미지 미등장 일반 인물 실사 장면 — 육안 검수 결과 기괴한 인물·반복·합성 없음"
+      ]
+    },
+    {
+      "title": "What to Do If You Get Sick While Traveling Abroad",
+      "url": "https://atlas-money-2026.blogspot.com/2026/07/what-to-do-if-you-get-sick-while-traveling-abroad.html",
+      "faceScores": [
+        "-0.04",
+        "-0.10",
+        "-0.03",
+        "0.04",
+        "none"
+      ],
+      "status": "ok_keep",
+      "issues": [
+        "미지 미등장 일반 인물 실사 장면 — 육안 검수 결과 기괴한 인물·반복·합성 없음"
+      ]
+    },
+    {
+      "title": "How to Compare Travel Insurance for an International Trip",
+      "url": "https://atlas-money-2026.blogspot.com/2026/07/best-travel-insurance-for-international.html",
+      "faceScores": [
+        "none",
+        "none",
+        "none"
+      ],
+      "status": "ok_keep",
+      "issues": [
+        "미지 미등장 일반 인물 실사 장면 — 육안 검수 결과 기괴한 인물·반복·합성 없음"
+      ]
+    }
+  ],
+  "korea": [
+    {
+      "logNo": "224420731235",
+      "title": "추석 선물 고르기",
+      "status": "manual_unpublish_needed",
+      "issues": [
+        "3장 모두 같은 수호 얼굴 크롭·같은 위치의 텍스트 카드"
+      ]
+    },
+    {
+      "logNo": "224418550466",
+      "title": "글라스락 클래식 화이트 10종",
+      "status": "manual_unpublish_needed",
+      "issues": [
+        "수호 텍스트 카드 2장이 같은 얼굴·같은 구도(실사진 4장은 정상)"
+      ]
+    },
+    {
+      "logNo": "224418047839",
+      "title": "필립스 3000 전기주전자",
+      "status": "manual_unpublish_needed",
+      "issues": [
+        "수호 텍스트 카드 1장(얼굴 크롭 합성)"
+      ]
+    },
+    {
+      "logNo": "224412747695",
+      "title": "멀티탭 고르는 법",
+      "status": "ok_keep",
+      "issues": []
+    },
+    {
+      "logNo": "224416535205",
+      "title": "제주 황금향 2kg",
+      "status": "ok_keep",
+      "issues": [
+        "제품 사진만 사용 — 캐릭터 없음"
+      ]
+    }
+  ],
+  "koreaNote": "네이버 비공개 전환 도구가 시스템에 없어 자동 처리하지 않았다. 네이버 글관리에서 수동 비공개 필요. 224407589323은 보호 글로 대상 아님."
+}

@@ -1,0 +1,31 @@
+{
+  "articleId": "art_022",
+  "note": "art_022 카드형 이미지 교체용 장면 의도. 본문은 수정하지 않는다.",
+  "items": [
+    {
+      "role": "featured",
+      "directionRole": "featured",
+      "intent": "Miji at a home desk holding her credit card benefits guide booklet next to a laptop showing a flight booking"
+    },
+    {
+      "role": "context",
+      "directionRole": "context",
+      "intent": "Miji walking through a bright airport check-in hall with a shoulder bag, card wallet in hand"
+    },
+    {
+      "role": "comparison",
+      "directionRole": "comparison",
+      "intent": "Miji seated at a cafe table comparing a credit card benefits leaflet with a printed standalone travel insurance policy"
+    },
+    {
+      "role": "action",
+      "directionRole": "closing",
+      "intent": "Miji by a hotel window on the phone to her card issuer, checking what the coverage includes"
+    },
+    {
+      "role": "checklist",
+      "directionRole": "checklist",
+      "intent": "Miji crouched beside an open suitcase, tucking a folder of printed policy documents and receipts into it"
+    }
+  ]
+}

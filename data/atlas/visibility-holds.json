@@ -1,0 +1,32 @@
+{
+  "7464819806483273330": {
+    "title": "Nepal Floods 2026",
+    "action": "revert_to_draft",
+    "status": "reverted_to_draft",
+    "userApprovedAt": "2026-09-23T23:41:36.651Z",
+    "approvedVia": "user_instruction_2026-09-24_문제글_백업후_비공개",
+    "reasons": [
+      "대표 이미지가 미지 마스터 사진을 도형 배경에 붙인 저품질 합성"
+    ],
+    "republishRequiresUserApproval": true,
+    "revertedAt": "2026-09-23T23:41:57.248Z",
+    "publicUrlStatusAfter": 404,
+    "backupFile": "data/atlas/backups/external-7464819806483273330-7464819806483273330-2026-09-23T23-41-54-840Z.json",
+    "bloggerStatus": "DRAFT"
+  },
+  "8257964298533269720": {
+    "title": "Adventure Travel Insurance",
+    "action": "revert_to_draft",
+    "status": "reverted_to_draft",
+    "userApprovedAt": "2026-09-23T23:41:36.651Z",
+    "approvedVia": "user_instruction_2026-09-24_문제글_백업후_비공개",
+    "reasons": [
+      "대표 이미지가 미지 마스터 사진을 도형 배경에 붙인 저품질 합성"
+    ],
+    "republishRequiresUserApproval": true,
+    "revertedAt": "2026-09-23T23:42:00.115Z",
+    "publicUrlStatusAfter": 404,
+    "backupFile": "data/atlas/backups/external-8257964298533269720-8257964298533269720-2026-09-23T23-41-57-788Z.json",
+    "bloggerStatus": "DRAFT"
+  }
+}

@@ -3690,9 +3690,23 @@
       "bloggerBlogId": "3095933984698455887",
       "bloggerPostId": "3325899877125386472",
       "bloggerUrl": "https://atlas-money-2026.blogspot.com/2026/09/credit-card-travel-insurance-is-it.html",
-      "bloggerStatus": "LIVE",
+      "bloggerStatus": "DRAFT",
       "bloggerSyncedAt": "2026-09-23T03:17:29.252Z",
-      "publishedAt": "2026-09-20T09:22:03.409Z"
+      "publishedAt": "2026-09-20T09:22:03.409Z",
+      "visibilityHold": {
+        "action": "revert_to_draft",
+        "status": "reverted_to_draft",
+        "userApprovedAt": "2026-09-23T23:41:36.651Z",
+        "approvedVia": "user_instruction_2026-09-24_문제글_백업후_비공개",
+        "reasons": [
+          "대표 이미지가 미지 마스터 사진을 도형 배경에 붙인 저품질 합성",
+          "나머지 4장은 텍스트 카드형"
+        ],
+        "republishRequiresUserApproval": true,
+        "revertedAt": "2026-09-23T23:41:53.725Z",
+        "publicUrlStatusAfter": 404,
+        "backupFile": "data/atlas/backups/art_022-3325899877125386472-2026-09-23T23-41-50-711Z.json"
+      }
     },
     {
       "id": "art_023",
@@ -4354,7 +4368,7 @@
       "bloggerBlogId": "3095933984698455887",
       "bloggerPostId": "8598824458188828506",
       "bloggerUrl": "https://atlas-money-2026.blogspot.com/2026/09/passport-validity-rules-why-your-trip.html",
-      "bloggerStatus": "LIVE",
+      "bloggerStatus": "DRAFT",
       "bloggerSyncedAt": "2026-09-23T15:18:06.442Z",
       "publishedAt": "2026-09-23T15:18:06.442Z",
       "imageReplacement": {
@@ -4369,6 +4383,19 @@
         ],
         "flaggedAt": "2026-09-23T15:34:23.212Z",
         "liveUpdateRequiresUserApproval": true
+      },
+      "visibilityHold": {
+        "action": "revert_to_draft",
+        "status": "reverted_to_draft",
+        "userApprovedAt": "2026-09-23T23:23:16.296Z",
+        "approvedVia": "user_instruction_2026-09-24_긴급정리",
+        "reasons": [
+          "미지 얼굴 마스터 불일치(ArcFace 0.03~0.39)",
+          "최근 글 art_025와 검색의도 유사(여권·여행서류)"
+        ],
+        "republishRequiresUserApproval": true,
+        "revertedAt": "2026-09-23T23:23:34.141Z",
+        "publicUrlStatusAfter": 404
       }
     },
     {
@@ -4475,7 +4502,16 @@
           "assetScope": "global",
           "assetNamespace": "atlas/articles",
           "characterId": "miji",
-          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+          "imageReview": {
+            "status": "fail",
+            "reasons": [
+              "same_master_crop_repeated",
+              "same_composition_repeated",
+              "text_card_composite"
+            ],
+            "checkedAt": "2026-09-23T23:23:16.296Z"
+          }
         },
         {
           "key": "context",
@@ -4503,7 +4539,16 @@
           "assetScope": "global",
           "assetNamespace": "atlas/articles",
           "characterId": "miji",
-          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+          "imageReview": {
+            "status": "fail",
+            "reasons": [
+              "same_master_crop_repeated",
+              "same_composition_repeated",
+              "text_card_composite"
+            ],
+            "checkedAt": "2026-09-23T23:23:16.296Z"
+          }
         },
         {
           "key": "comparison",
@@ -4531,7 +4576,16 @@
           "assetScope": "global",
           "assetNamespace": "atlas/articles",
           "characterId": "miji",
-          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+          "imageReview": {
+            "status": "fail",
+            "reasons": [
+              "same_master_crop_repeated",
+              "same_composition_repeated",
+              "text_card_composite"
+            ],
+            "checkedAt": "2026-09-23T23:23:16.296Z"
+          }
         },
         {
           "key": "checklist",
@@ -4559,7 +4613,16 @@
           "assetScope": "global",
           "assetNamespace": "atlas/articles",
           "characterId": "miji",
-          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+          "imageReview": {
+            "status": "fail",
+            "reasons": [
+              "same_master_crop_repeated",
+              "same_composition_repeated",
+              "text_card_composite"
+            ],
+            "checkedAt": "2026-09-23T23:23:16.296Z"
+          }
         },
         {
           "key": "closing",
@@ -4588,7 +4651,16 @@
           "assetScope": "global",
           "assetNamespace": "atlas/articles",
           "characterId": "miji",
-          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+          "masterAssetPath": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+          "imageReview": {
+            "status": "fail",
+            "reasons": [
+              "same_master_crop_repeated",
+              "same_composition_repeated",
+              "text_card_composite"
+            ],
+            "checkedAt": "2026-09-23T23:23:16.296Z"
+          }
         }
       ],
       "affiliatePlan": {
@@ -4653,9 +4725,32 @@
       "bloggerBlogId": "3095933984698455887",
       "bloggerPostId": "1447275760740653025",
       "bloggerUrl": "https://atlas-money-2026.blogspot.com/2026/09/lost-your-passport-abroad-order-you-do.html",
-      "bloggerStatus": "LIVE",
+      "bloggerStatus": "DRAFT",
       "bloggerSyncedAt": "2026-09-23T03:17:29.252Z",
-      "publishedAt": "2026-09-23T03:16:25.370Z"
+      "publishedAt": "2026-09-23T03:16:25.370Z",
+      "visibilityHold": {
+        "action": "revert_to_draft",
+        "status": "reverted_to_draft",
+        "flaggedAt": "2026-09-23T23:23:16.296Z",
+        "reasons": [
+          "이미지 5장 모두 같은 마스터 얼굴 크롭·같은 구도 반복",
+          "텍스트 카드형 합성 이미지(AI 합성 티)",
+          "최근 글 art_024와 검색의도 유사(여권·여행서류)"
+        ],
+        "noApprovedReplacementAsset": true,
+        "userApprovedAt": "2026-09-23T23:28:07.286Z",
+        "approvedVia": "user_instruction_2026-09-24_문제글_비공개",
+        "republishRequiresUserApproval": true,
+        "revertedAt": "2026-09-23T23:28:11.588Z",
+        "publicUrlStatusAfter": 404,
+        "backupFile": "data/atlas/backups/art_025-1447275760740653025-2026-09-23T23-28-08-650Z.json"
+      },
+      "imageReplacement": {
+        "status": "candidate",
+        "reason": "검수 완료 교체 자산 없음 — 억지 교체하지 않고 보류",
+        "flaggedAt": "2026-09-23T23:23:16.296Z",
+        "liveUpdateRequiresUserApproval": true
+      }
     }
   ]
 }

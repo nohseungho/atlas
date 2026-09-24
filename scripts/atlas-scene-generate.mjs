@@ -18,6 +18,8 @@ import os from "os";
 import { execFileSync } from "child_process";
 import { artDirFor } from "../lib/atlas/operate/scene-art.js";
 import { directionFor } from "../lib/atlas/operate/scene-direction.js";
+import { findTopic } from "../lib/atlas/operate/topic-catalog.js";
+import { globalVisualAssets } from "../lib/atlas/operate/global-dialogue-writer.js";
 import { FACE_MATCH_THRESHOLD, faceMatchRequired } from "../lib/atlas/face-match.js";
 import { GENERATOR, buildWorkflow, channelProfile, generationPrompt, referenceAssets, seedFor } from "../lib/atlas/operate/scene-generator.js";
 
@@ -52,6 +54,12 @@ function readData(file) {
 
 // 생성할 역할과 요청 프롬프트. 공개된 글이면 멈춘다.
 function requestItems() {
+  // 검수본 전용: 카탈로그 주제가 없는 글(예전 카드형 글·외부 글)은 data/atlas/scene-art/intents/ 의
+  // 장면 의도 파일을 쓴다. 연출(머리·자세·시점·거리)은 directionRole의 scene-direction 값을 따른다.
+  const intentsFile = path.join(process.cwd(), "data", "atlas", "scene-art", "intents", `${channel}-${topicSlug}.json`);
+  if (REVIEW && fs.existsSync(intentsFile)) {
+    return JSON.parse(fs.readFileSync(intentsFile, "utf8")).items.map((i) => ({ role: i.role, directionRole: i.directionRole, prompt: `${i.intent}.` }));
+  }
   if (channel === "korea") {
     const draft = (readData("korea-drafts.json").items || []).find((d) => d.topicId === `kr_info_${topicSlug}`);
     if (!draft) throw new Error(`국내 초안이 없습니다: kr_info_${topicSlug}`);
@@ -63,6 +71,10 @@ function requestItems() {
     const article = (readData("articles.json").articles || []).find((a) => a.topicId === `gl_info_${topicSlug}`);
     if (!article) throw new Error(`해외 원고가 없습니다: gl_info_${topicSlug}`);
     if (!REVIEW && (article.status === "published" || article.bloggerUrl || article.publishedUrl)) throw new Error(`이미 공개된 글입니다: ${article.id}`);
+    // 검수본은 주제 카탈로그의 장면 프롬프트를 우선한다. 예전 카드형 글(art_025 등)은 저장된
+    // 프롬프트가 "마스터 합성" 지시라 그대로 쓰면 같은 얼굴 카드가 다시 나온다.
+    const topic = REVIEW ? findTopic(`gl_info_${topicSlug}`) : null;
+    if (topic) return globalVisualAssets(topic).map((a) => ({ role: a.role || a.key, prompt: a.prompt }));
     return (article.visualAssets || []).map((a) => ({ role: a.role || a.key, prompt: a.prompt }));
   }
   throw new Error("채널은 korea 또는 global 입니다.");
@@ -113,11 +125,11 @@ async function main() {
   const manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, "utf8")) : { channel, topicSlug, items: {} };
 
   for (const item of items) {
-    const prompt = generationPrompt(channel, item.prompt, directionFor(channel, item.role));
+    const prompt = generationPrompt(channel, item.prompt, directionFor(channel, item.directionRole || item.role));
     const candidates = [];
     for (let k = 0; k < Math.max(1, CANDIDATES); k += 1) {
       const seed = seedFor(channel, topicSlug, item.role, SEED_BASE + k * 1000);
-      const workflow = buildWorkflow({ channel, prompt, seed, referenceNames, direction: directionFor(channel, item.role), prefix: `atlas-${channel}-${topicSlug}-${item.role}` });
+      const workflow = buildWorkflow({ channel, prompt, seed, referenceNames, direction: directionFor(channel, item.directionRole || item.role), prefix: `atlas-${channel}-${topicSlug}-${item.role}` });
       const { prompt_id: promptId } = await (await comfy("/prompt", {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -135,7 +147,9 @@ async function main() {
     if (faceMatchRequired(channel)) {
       const scores = faceScores(candidates.map((c) => c.file));
       candidates.forEach((c, i) => { c.score = scores[i]; });
-      chosen = [...candidates].sort((a, b) => (b.score?.similarity ?? 0) - (a.score?.similarity ?? 0))[0];
+      // 얼굴이 2개 이상 잡힌 후보(같은 인물 복제·다른 인물 동석)는 고르지 않는다. 모두 그렇다면 최고점을 쓰되 기록에 남는다.
+      const single = candidates.filter((c) => c.score?.faces === 1);
+      chosen = [...(single.length ? single : candidates)].sort((a, b) => (b.score?.similarity ?? 0) - (a.score?.similarity ?? 0))[0];
       faceMatch = {
         ...chosen.score,
         threshold: FACE_MATCH_THRESHOLD,
@@ -154,7 +168,7 @@ async function main() {
       faceMatch,
       file: path.relative(process.cwd(), file).split(path.sep).join("/"),
       character: profile.characterId,
-      direction: directionFor(channel, item.role),
+      direction: directionFor(channel, item.directionRole || item.role),
       prompt,
       seed,
       negative: workflow.neg.inputs.text,

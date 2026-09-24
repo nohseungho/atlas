@@ -1,0 +1,79 @@
+{
+  "channel": "global",
+  "topicSlug": "nepal_floods",
+  "items": {
+    "featured": {
+      "faceMatch": {
+        "status": "pass",
+        "similarity": 0.7007,
+        "faces": 1,
+        "threshold": 0.5,
+        "method": "arcface_buffalo_l",
+        "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "checkedAt": "2026-09-24T00:00:58.579Z",
+        "candidates": [
+          {
+            "seed": 1420082732,
+            "similarity": 0.6805
+          },
+          {
+            "seed": 1420083732,
+            "similarity": 0.6733
+          },
+          {
+            "seed": 1420084732,
+            "similarity": 0.6528
+          },
+          {
+            "seed": 1420085732,
+            "similarity": 0.7007
+          },
+          {
+            "seed": 1420086732,
+            "similarity": 0.6936
+          },
+          {
+            "seed": 1420087732,
+            "similarity": 0.6437
+          }
+        ]
+      },
+      "file": "public/atlas/global/miji/_review/nepal_floods/featured.png",
+      "character": "miji",
+      "direction": {
+        "hair": "low ponytail",
+        "camera": "low angle from table height",
+        "viewpoint": "seen from slightly above",
+        "posture": "seated at a table, comparing two items laid out in front of her"
+      },
+      "prompt": "(low ponytail:1.6), (seen from slightly above:1.3), (low angle from table height:1.2), (seated at a table, comparing two items laid out in front of her:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her 30s, dark-brown hair color, warm brown almond-shaped eyes, oval face, soft jawline. the same person kneeling at a kitchen table packing a flood emergency kit: water bottles, a flashlight, a first-aid pouch and a waterproof document bag laid out in front of her, serious concerned expression, not smiling.",
+      "seed": 1420085732,
+      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
+      "references": [
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+      ],
+      "ipAdapterWeight": null,
+      "faceId": {
+        "preset": "FACEID PLUS V2",
+        "loraStrength": 0.6,
+        "weight": 0.8,
+        "weightV2": 1.2,
+        "startAt": 0.15,
+        "endAt": 1
+      },
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-24T00:00:58.582Z"
+    }
+  },
+  "character": "miji",
+  "dropDirectory": "public/atlas/global/miji/_review/nepal_floods"
+}

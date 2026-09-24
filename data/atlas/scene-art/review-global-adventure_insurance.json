@@ -1,0 +1,79 @@
+{
+  "channel": "global",
+  "topicSlug": "adventure_insurance",
+  "items": {
+    "featured": {
+      "faceMatch": {
+        "status": "pass",
+        "similarity": 0.7232,
+        "faces": 1,
+        "threshold": 0.5,
+        "method": "arcface_buffalo_l",
+        "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "checkedAt": "2026-09-24T00:02:57.184Z",
+        "candidates": [
+          {
+            "seed": 3261928505,
+            "similarity": 0.6363
+          },
+          {
+            "seed": 3261929505,
+            "similarity": 0.7232
+          },
+          {
+            "seed": 3261930505,
+            "similarity": 0.6689
+          },
+          {
+            "seed": 3261931505,
+            "similarity": 0.5937
+          },
+          {
+            "seed": 3261932505,
+            "similarity": 0.6357
+          },
+          {
+            "seed": 3261933505,
+            "similarity": 0.6301
+          }
+        ]
+      },
+      "file": "public/atlas/global/miji/_review/adventure_insurance/featured.png",
+      "character": "miji",
+      "direction": {
+        "hair": "low ponytail",
+        "camera": "low angle from table height",
+        "viewpoint": "seen from slightly above",
+        "posture": "seated at a table, comparing two items laid out in front of her"
+      },
+      "prompt": "(low ponytail:1.6), (seen from slightly above:1.3), (low angle from table height:1.2), (seated at a table, comparing two items laid out in front of her:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her 30s, dark-brown hair color, warm brown almond-shaped eyes, oval face, soft jawline. the same person at a mountain lodge table reading the activity exclusions page of her travel insurance policy, hiking backpack and helmet beside her.",
+      "seed": 3261929505,
+      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
+      "references": [
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+      ],
+      "ipAdapterWeight": null,
+      "faceId": {
+        "preset": "FACEID PLUS V2",
+        "loraStrength": 0.6,
+        "weight": 0.8,
+        "weightV2": 1.2,
+        "startAt": 0.15,
+        "endAt": 1
+      },
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-24T00:02:57.186Z"
+    }
+  },
+  "character": "miji",
+  "dropDirectory": "public/atlas/global/miji/_review/adventure_insurance"
+}

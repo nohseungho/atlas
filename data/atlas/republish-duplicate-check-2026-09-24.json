@@ -1,0 +1,193 @@
+{
+  "checkedAt": "2026-09-23T23:45:09.412Z",
+  "against": "현재 공개 글 15개 전체",
+  "results": [
+    {
+      "name": "art_024",
+      "title": "Passport Validity Rules: Why Your Trip Can Be Denied With a Valid Passport",
+      "intents": [
+        "travel_documents"
+      ],
+      "similarLive": [
+        {
+          "title": "Europe EES Travel Checklist 2026: What to Expect at the Border",
+          "sharedIntents": [
+            "travel_documents"
+          ],
+          "jaccard": 0
+        }
+      ],
+      "verdict": "재공개 보류 — 수정 후보"
+    },
+    {
+      "name": "art_025",
+      "title": "Lost Your Passport Abroad? The Order You Do Things In Decides How Long You Wait",
+      "intents": [
+        "travel_documents"
+      ],
+      "similarLive": [
+        {
+          "title": "Europe EES Travel Checklist 2026: What to Expect at the Border",
+          "sharedIntents": [
+            "travel_documents"
+          ],
+          "jaccard": 0
+        }
+      ],
+      "verdict": "재공개 보류 — 수정 후보"
+    },
+    {
+      "name": "art_022",
+      "title": "Credit Card Travel Insurance: Is It Enough for an International Trip?",
+      "intents": [
+        "travel_insurance"
+      ],
+      "similarLive": [
+        {
+          "title": "Travel Insurance for Baggage Delay and Lost Luggage: What to Check",
+          "sharedIntents": [
+            "travel_insurance"
+          ],
+          "jaccard": 0.1
+        },
+        {
+          "title": "Annual Multi-Trip Travel Insurance: Is It Worth It?",
+          "sharedIntents": [
+            "travel_insurance"
+          ],
+          "jaccard": 0.13
+        },
+        {
+          "title": "When to Buy Travel Insurance for Hurricane Season",
+          "sharedIntents": [
+            "travel_insurance"
+          ],
+          "jaccard": 0.11
+        },
+        {
+          "title": "What Trip Cancellation Insurance Actually Covers (and What It Doesn't)",
+          "sharedIntents": [
+            "travel_insurance"
+          ],
+          "jaccard": 0.11
+        },
+        {
+          "title": "Student Travel Medical Insurance for Studying Abroad: A Practical Guide",
+          "sharedIntents": [
+            "travel_insurance"
+          ],
+          "jaccard": 0.1
+        },
+        {
+          "title": "Travel Medical Insurance for Seniors Over 65: A Pre-Trip Checklist",
+          "sharedIntents": [
+            "travel_insurance"
+          ],
+          "jaccard": 0.1
+        },
+        {
+          "title": "Emergency Medical Evacuation Insurance: Remote Trips and Cruises",
+          "sharedIntents": [
+            "travel_insurance"
+          ],
+          "jaccard": 0.09
+        },
+        {
+          "title": "Travel Insurance Pre-Existing Condition Waiver: How to Qualify",
+          "sharedIntents": [
+            "travel_insurance"
+          ],
+          "jaccard": 0.1
+        },
+        {
+          "title": "How to Compare Travel Insurance for an International Trip",
+          "sharedIntents": [
+            "travel_insurance"
+          ],
+          "jaccard": 0.33
+        }
+      ],
+      "verdict": "재공개 보류 — 수정 후보"
+    },
+    {
+      "name": "Nepal Floods",
+      "title": "Nepal Floods 2026: How to Help Now — and How Families Can Prepare for Flash Floods",
+      "intents": [],
+      "similarLive": [],
+      "verdict": "중복 없음"
+    },
+    {
+      "name": "Adventure Insurance",
+      "title": "Adventure Travel Insurance: Are Hiking, Diving, and Skiing Covered?",
+      "intents": [
+        "travel_insurance"
+      ],
+      "similarLive": [
+        {
+          "title": "Travel Insurance for Baggage Delay and Lost Luggage: What to Check",
+          "sharedIntents": [
+            "travel_insurance"
+          ],
+          "jaccard": 0.08
+        },
+        {
+          "title": "Annual Multi-Trip Travel Insurance: Is It Worth It?",
+          "sharedIntents": [
+            "travel_insurance"
+          ],
+          "jaccard": 0.1
+        },
+        {
+          "title": "When to Buy Travel Insurance for Hurricane Season",
+          "sharedIntents": [
+            "travel_insurance"
+          ],
+          "jaccard": 0.09
+        },
+        {
+          "title": "What Trip Cancellation Insurance Actually Covers (and What It Doesn't)",
+          "sharedIntents": [
+            "travel_insurance"
+          ],
+          "jaccard": 0.09
+        },
+        {
+          "title": "Student Travel Medical Insurance for Studying Abroad: A Practical Guide",
+          "sharedIntents": [
+            "travel_insurance"
+          ],
+          "jaccard": 0.08
+        },
+        {
+          "title": "Travel Medical Insurance for Seniors Over 65: A Pre-Trip Checklist",
+          "sharedIntents": [
+            "travel_insurance"
+          ],
+          "jaccard": 0.08
+        },
+        {
+          "title": "Emergency Medical Evacuation Insurance: Remote Trips and Cruises",
+          "sharedIntents": [
+            "travel_insurance"
+          ],
+          "jaccard": 0.08
+        },
+        {
+          "title": "Travel Insurance Pre-Existing Condition Waiver: How to Qualify",
+          "sharedIntents": [
+            "travel_insurance"
+          ],
+          "jaccard": 0.08
+        },
+        {
+          "title": "How to Compare Travel Insurance for an International Trip",
+          "sharedIntents": [
+            "travel_insurance"
+          ],
+          "jaccard": 0.11
+        }
+      ],
+      "verdict": "재공개 보류 — 수정 후보"
+    }
+  ]
+}
