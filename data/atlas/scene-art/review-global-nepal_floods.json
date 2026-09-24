@@ -5,36 +5,36 @@
     "featured": {
       "faceMatch": {
         "status": "pass",
-        "similarity": 0.7007,
+        "similarity": 0.6452,
         "faces": 1,
         "threshold": 0.5,
         "method": "arcface_buffalo_l",
         "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
-        "checkedAt": "2026-09-24T00:00:58.579Z",
+        "checkedAt": "2026-09-24T06:19:21.808Z",
         "candidates": [
           {
-            "seed": 1420082732,
-            "similarity": 0.6805
+            "seed": 1420082832,
+            "similarity": 0.6311
           },
           {
-            "seed": 1420083732,
-            "similarity": 0.6733
+            "seed": 1420083832,
+            "similarity": 0.6452
           },
           {
-            "seed": 1420084732,
-            "similarity": 0.6528
+            "seed": 1420084832,
+            "similarity": 0.7322
           },
           {
-            "seed": 1420085732,
-            "similarity": 0.7007
+            "seed": 1420085832,
+            "similarity": 0.6834
           },
           {
-            "seed": 1420086732,
-            "similarity": 0.6936
+            "seed": 1420086832,
+            "similarity": 0.6952
           },
           {
-            "seed": 1420087732,
-            "similarity": 0.6437
+            "seed": 1420087832,
+            "similarity": 0.6786
           }
         ]
       },
@@ -46,8 +46,8 @@
         "viewpoint": "seen from slightly above",
         "posture": "seated at a table, comparing two items laid out in front of her"
       },
-      "prompt": "(low ponytail:1.6), (seen from slightly above:1.3), (low angle from table height:1.2), (seated at a table, comparing two items laid out in front of her:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her 30s, dark-brown hair color, warm brown almond-shaped eyes, oval face, soft jawline. the same person kneeling at a kitchen table packing a flood emergency kit: water bottles, a flashlight, a first-aid pouch and a waterproof document bag laid out in front of her, serious concerned expression, not smiling.",
-      "seed": 1420085732,
+      "prompt": "(low ponytail:1.6), (seen from slightly above:1.3), (low angle from table height:1.2), (seated at a table, comparing two items laid out in front of her:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her 30s, dark-brown hair color, warm brown almond-shaped eyes, oval face, soft jawline. the same person seated at a kitchen table packing a flood emergency kit, clearly visible on the table: an open red emergency backpack, bottled water, a flashlight, a first-aid kit with a red cross, spare batteries and a clear waterproof document pouch with passports, serious concerned expression, not smiling.",
+      "seed": 1420083832,
       "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
       "references": [
         "public/atlas/characters/ATLAS-MIJI-MASTER.png"
@@ -71,7 +71,12 @@
         "sampler": "dpmpp_sde",
         "scheduler": "karras"
       },
-      "generatedAt": "2026-09-24T00:00:58.582Z"
+      "generatedAt": "2026-09-24T06:18:03.243Z",
+      "visualReview": {
+        "status": "reselected",
+        "reason": "사용자 수정 요청(비상키트 표현 강화) — 구급 가방·약·물·서류가 보이는 후보 선택",
+        "at": "2026-09-24T06:19:21.808Z"
+      }
     }
   },
   "character": "miji",

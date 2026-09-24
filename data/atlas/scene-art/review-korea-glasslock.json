@@ -11,8 +11,8 @@
         "viewpoint": "facing the camera",
         "posture": "crouched down mid-action, actually doing the step"
       },
-      "prompt": "(the same person wearing his dark green knit sweater (no apron) crouched at a Korean kitchen counter, moving leftover Korean jeon and seasoned namul side dishes into white glass food containers:1.4), (facing the camera:1.3), (wide shot, full body in the scene:1.2), (crouched down mid-action, actually doing the step:1.2). anime illustration, korean webtoon style, clean lineart, soft cel shading, warm daylight, detailed cozy korean apartment interior. a young Korean man in his 20s, tousled dark-brown hair, large dark eyes, focused expression, dark green knit sweater",
-      "seed": 3517398352,
+      "prompt": "(the same person wearing his dark green knit sweater at a Korean kitchen counter, filling a row of clear glass food storage containers with white locking lids with leftover Korean jeon and namul, the glass containers large and clearly visible in the foreground:1.4), (facing the camera:1.3), (wide shot, full body in the scene:1.2), (crouched down mid-action, actually doing the step:1.2). anime illustration, korean webtoon style, clean lineart, soft cel shading, warm daylight, detailed cozy korean apartment interior. a young Korean man in his 20s, tousled dark-brown hair, large dark eyes, focused expression, dark green knit sweater",
+      "seed": 3517397392,
       "negative": "looking at viewer, posing for camera, portrait, photo, photorealistic, 3d render, realistic skin, old man, beard, woman, text, letters, watermark, logo, signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border",
       "references": [
         "public/atlas/characters/ATLAS-SUO-MASTER.png"
@@ -29,12 +29,12 @@
         "sampler": "dpmpp_sde",
         "scheduler": "karras"
       },
-      "generatedAt": "2026-09-24T06:04:23.471Z",
+      "generatedAt": "2026-09-24T06:15:53.263Z",
       "visualReview": {
         "status": "selected_by_visual_review",
-        "reason": "앞치마 차림 문제로 재생성 — 초록 니트가 가장 잘 보이는 후보 선택. 유리 용기 표현은 약함(사용자 검수 필요)",
-        "at": "2026-09-24T06:04:46.006Z",
-        "note": "수호는 애니메이션이라 ArcFace 대상이 아님"
+        "reason": "사용자 수정 요청(유리 용기 표현 강화) — 흰 뚜껑 유리 용기에 담는 동작, 용기가 전경에 뚜렷한 후보",
+        "at": "2026-09-24T06:19:21.808Z",
+        "note": "수호는 애니메이션이라 ArcFace 대상 아님"
       }
     },
     "product_check": {

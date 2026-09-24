@@ -1,0 +1,89 @@
+{
+  "preparedAt": "2026-09-24T06:19:46.026Z",
+  "status": "ready_for_final_approval",
+  "note": "재공개 직전까지만 준비. 네이버에는 아무것도 반영하지 않았다. 사용자 최종 승인 후에만 이미지 교체와 공개범위 전체공개 전환을 실행한다.",
+  "items": [
+    {
+      "logNo": "224420731235",
+      "url": "https://blog.naver.com/who-ami/224420731235",
+      "currentVisibility": "비공개",
+      "targetVisibility": "전체공개",
+      "imageReplacements": [
+        {
+          "replaceInPost": "img_info_why.png",
+          "withFile": "public/atlas/korea/suho/_review/chuseok_gift/info_why.png",
+          "sha256": "5ef8572ff2529d2e"
+        },
+        {
+          "replaceInPost": "img_info_how.png",
+          "withFile": "public/atlas/korea/suho/_review/chuseok_gift/info_how.png",
+          "sha256": "2e19bbc8da3fddb7"
+        },
+        {
+          "replaceInPost": "img_info_checklist.png",
+          "withFile": "public/atlas/korea/suho/_review/chuseok_gift/info_checklist.png",
+          "sha256": "b9ba89618b89b0bb"
+        }
+      ],
+      "keepUnchanged": [
+        "제목",
+        "본문",
+        "실사진",
+        "URL(logNo)"
+      ],
+      "preview": "/atlas/korea/suho/_review/chuseok_gift/preview.html",
+      "backup": "data/atlas/backups/naver-224420731235-2026-09-24T00-54-02-929Z.json",
+      "duplicateCheck": {
+        "against": [
+          "멀티탭, 아무거나 쓰면 안 되는 이유와 안전하게 고르는 법",
+          "추석 과일 선물, 제주 황금향 2kg 세트를 먼저 본 이유와 아쉬운 점"
+        ],
+        "blocking": [
+          "최근 글 \"추석 과일 선물, 제주 황금향 2kg 세트를 먼저 본 이유와 아쉬운 점\"과 핵심 검색의도(holiday_gift)가 겹칩니다. 신규 주제로 교체하세요."
+        ],
+        "warnings": [],
+        "similar": [
+          {
+            "title": "추석 과일 선물, 제주 황금향 2kg 세트를 먼저 본 이유와 아쉬운 점",
+            "sharedIntents": [
+              "holiday_gift"
+            ]
+          }
+        ]
+      },
+      "approvalRequired": "사용자 최종 승인(글별 명시)",
+      "republishBlockedBy": "최근 공개 글과 검색의도 유사 — 승인하더라도 재공개 전 주제 조정 필요"
+    },
+    {
+      "logNo": "224418047839",
+      "url": "https://blog.naver.com/who-ami/224418047839",
+      "currentVisibility": "비공개",
+      "targetVisibility": "전체공개",
+      "imageReplacements": [
+        {
+          "replaceInPost": "img_kettle_suho_usage.png",
+          "withFile": "public/atlas/korea/suho/_review/kettle/body_usage.png",
+          "sha256": "b5c49de40fd4e2b7"
+        }
+      ],
+      "keepUnchanged": [
+        "제목",
+        "본문",
+        "실사진",
+        "URL(logNo)"
+      ],
+      "preview": "/atlas/korea/suho/_review/kettle/preview.html",
+      "backup": "data/atlas/backups/naver-224418047839-2026-09-24T00-54-03-273Z.json",
+      "duplicateCheck": {
+        "against": [
+          "멀티탭, 아무거나 쓰면 안 되는 이유와 안전하게 고르는 법",
+          "추석 과일 선물, 제주 황금향 2kg 세트를 먼저 본 이유와 아쉬운 점"
+        ],
+        "blocking": [],
+        "warnings": [],
+        "similar": []
+      },
+      "approvalRequired": "사용자 최종 승인(글별 명시)"
+    }
+  ]
+}

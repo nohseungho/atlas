@@ -1,0 +1,46 @@
+{
+  "decidedAt": "2026-09-24T06:13:32.647Z",
+  "decidedBy": "user",
+  "rules": "승인 대기 글은 재공개 직전까지만 준비. 실제 재공개·이미지 교체는 사용자 최종 승인 후. 비공개 유지 글은 재발행·재공개 금지.",
+  "items": {
+    "naver-224420731235": {
+      "slug": "chuseok_gift",
+      "title": "추석 선물 고르기",
+      "decision": "approval_pending"
+    },
+    "naver-224418550466": {
+      "slug": "glasslock",
+      "title": "글라스락 클래식 화이트 10종",
+      "decision": "revision_requested",
+      "request": "유리 용기 표현 강화"
+    },
+    "naver-224418047839": {
+      "slug": "kettle",
+      "title": "필립스 3000 전기주전자",
+      "decision": "approval_pending"
+    },
+    "art_024": {
+      "slug": "passport_validity",
+      "decision": "keep_private"
+    },
+    "art_025": {
+      "slug": "lost_passport",
+      "decision": "keep_private"
+    },
+    "art_022": {
+      "slug": "credit_card_insurance",
+      "decision": "keep_private"
+    },
+    "external-8257964298533269720": {
+      "slug": "adventure_insurance",
+      "title": "Adventure Travel Insurance",
+      "decision": "keep_private"
+    },
+    "external-7464819806483273330": {
+      "slug": "nepal_floods",
+      "title": "Nepal Floods 2026",
+      "decision": "revision_requested",
+      "request": "비상키트 표현 강화"
+    }
+  }
+}
