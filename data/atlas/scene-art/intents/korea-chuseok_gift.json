@@ -1,0 +1,22 @@
+{
+  "logNo": "224420731235",
+  "draftId": "kr_kr_info_chuseok_gift",
+  "note": "수호 텍스트 카드 3장 교체용 생활 장면. 본문은 수정하지 않는다.",
+  "items": [
+    {
+      "role": "info_why",
+      "directionRole": "info_why",
+      "intent": "Suho at a living room table leaning over a notepad listing family and coworkers, deciding which Chuseok gift fits each person, pen raised"
+    },
+    {
+      "role": "info_how",
+      "directionRole": "info_how",
+      "intent": "Suho crouched in front of an open refrigerator, measuring whether a Chuseok fruit gift box will fit on the shelf"
+    },
+    {
+      "role": "info_checklist",
+      "directionRole": "info_checklist",
+      "intent": "Suho seated at a low table with a laptop and a delivery address slip, pointing at the delivery date on the screen"
+    }
+  ]
+}

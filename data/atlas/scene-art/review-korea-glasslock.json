@@ -1,0 +1,78 @@
+{
+  "channel": "korea",
+  "topicSlug": "glasslock",
+  "items": {
+    "body_usage": {
+      "faceMatch": null,
+      "file": "public/atlas/korea/suho/_review/glasslock/body_usage.png",
+      "character": "suho",
+      "direction": {
+        "camera": "wide shot, full body in the scene",
+        "viewpoint": "facing the camera",
+        "posture": "crouched down mid-action, actually doing the step"
+      },
+      "prompt": "(the same person in a Korean kitchen crouched at the counter, moving leftover Chuseok jeon pancakes and namul into white glass food containers:1.4), (facing the camera:1.3), (wide shot, full body in the scene:1.2), (crouched down mid-action, actually doing the step:1.2). anime illustration, korean webtoon style, clean lineart, soft cel shading, warm daylight, detailed cozy korean apartment interior. a young Korean man in his 20s, tousled dark-brown hair, large dark eyes, focused expression, dark green knit sweater",
+      "seed": 3517397302,
+      "negative": "looking at viewer, posing for camera, portrait, photo, photorealistic, 3d render, realistic skin, old man, beard, woman, text, letters, watermark, logo, signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border",
+      "references": [
+        "public/atlas/characters/ATLAS-SUO-MASTER.png"
+      ],
+      "ipAdapterWeight": 0.5,
+      "faceId": null,
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-24T00:59:42.383Z",
+      "visualReview": {
+        "status": "selected_by_visual_review",
+        "reason": "3장 모두 앞치마 차림 — 행동이 맞는 후보 선택(옷차림 차이는 사용자 검수 필요)",
+        "at": "2026-09-24T01:02:58.024Z",
+        "note": "수호는 애니메이션이라 ArcFace 대상이 아님 — 육안 검수로 선택, 최종 승인은 사용자"
+      }
+    },
+    "product_check": {
+      "faceMatch": null,
+      "file": "public/atlas/korea/suho/_review/glasslock/product_check.png",
+      "character": "suho",
+      "direction": {
+        "camera": "low angle from table height",
+        "viewpoint": "side profile",
+        "posture": "seated at a low table, pointing at the item being checked"
+      },
+      "prompt": "(the same person seated at a low table pressing down the locking lid of a white glass food container to check the seal, a phone and receipt beside him:1.4), (side profile:1.3), (low angle from table height:1.2), (seated at a low table, pointing at the item being checked:1.2). anime illustration, korean webtoon style, clean lineart, soft cel shading, warm daylight, detailed cozy korean apartment interior. a young Korean man in his 20s, tousled dark-brown hair, large dark eyes, focused expression, dark green knit sweater",
+      "seed": 2788828742,
+      "negative": "looking at viewer, posing for camera, portrait, photo, photorealistic, 3d render, realistic skin, old man, beard, woman, text, letters, watermark, logo, signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border",
+      "references": [
+        "public/atlas/characters/ATLAS-SUO-MASTER.png"
+      ],
+      "ipAdapterWeight": 0.5,
+      "faceId": null,
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-24T01:00:40.148Z",
+      "visualReview": {
+        "status": "selected_by_visual_review",
+        "reason": "뚜껑 잠금 확인 동작이 가장 명확",
+        "at": "2026-09-24T01:02:58.024Z",
+        "note": "수호는 애니메이션이라 ArcFace 대상이 아님 — 육안 검수로 선택, 최종 승인은 사용자"
+      }
+    }
+  },
+  "character": "suho",
+  "dropDirectory": "public/atlas/korea/suho/_review/glasslock"
+}

@@ -1,0 +1,12 @@
+{
+  "logNo": "224418047839",
+  "draftId": "kr_philips_3000_kettle",
+  "note": "수호 카드 1장 교체용. 제품 사진은 유지.",
+  "items": [
+    {
+      "role": "body_usage",
+      "directionRole": "info_why",
+      "intent": "Suho in a bright Korean kitchen leaning in to look at the water level window of a white electric kettle as it switches off, mug in his other hand"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "logNo": "224418550466",
+  "draftId": "kr_glasslock_classic_white_10set",
+  "note": "수호 카드 2장 교체용. 실사진 4장은 유지.",
+  "items": [
+    {
+      "role": "body_usage",
+      "directionRole": "info_how",
+      "intent": "Suho in a Korean kitchen crouched at the counter, moving leftover Chuseok jeon pancakes and namul into white glass food containers"
+    },
+    {
+      "role": "product_check",
+      "directionRole": "info_checklist",
+      "intent": "Suho seated at a low table pressing down the locking lid of a white glass food container to check the seal, a phone and receipt beside him"
+    }
+  ]
+}
