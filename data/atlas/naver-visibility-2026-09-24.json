@@ -1,0 +1,29 @@
+{
+  "224420731235": {
+    "title": "추석 선물",
+    "status": "private_confirmed",
+    "pcBodyVisible": false,
+    "mobileBodyVisible": false,
+    "checkedAt": "2026-09-24T06:02:16.631Z",
+    "method": "네이버 편집기 발행 설정 공개범위=비공개 저장(본문·이미지·URL 유지), 익명 접근으로 본문 미노출 확인",
+    "backup": "data/atlas/backups/naver-224420731235-2026-09-24T00-54-02-929Z.json"
+  },
+  "224418550466": {
+    "title": "글라스락",
+    "status": "private_confirmed",
+    "pcBodyVisible": false,
+    "mobileBodyVisible": false,
+    "checkedAt": "2026-09-24T06:02:16.631Z",
+    "method": "네이버 편집기 발행 설정 공개범위=비공개 저장(본문·이미지·URL 유지), 익명 접근으로 본문 미노출 확인",
+    "backup": "data/atlas/backups/naver-224418550466-2026-09-24T00-54-03-131Z.json"
+  },
+  "224418047839": {
+    "title": "전기주전자",
+    "status": "private_confirmed",
+    "pcBodyVisible": false,
+    "mobileBodyVisible": false,
+    "checkedAt": "2026-09-24T06:02:16.631Z",
+    "method": "네이버 편집기 발행 설정 공개범위=비공개 저장(본문·이미지·URL 유지), 익명 접근으로 본문 미노출 확인",
+    "backup": "data/atlas/backups/naver-224418047839-2026-09-24T00-54-03-273Z.json"
+  }
+}

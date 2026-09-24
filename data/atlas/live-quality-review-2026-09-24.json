@@ -322,26 +322,53 @@
     {
       "logNo": "224420731235",
       "title": "추석 선물 고르기",
-      "status": "manual_unpublish_needed",
+      "status": "unpublished_private",
       "issues": [
         "3장 모두 같은 수호 얼굴 크롭·같은 위치의 텍스트 카드"
-      ]
+      ],
+      "visibility": {
+        "title": "추석 선물",
+        "status": "private_confirmed",
+        "pcBodyVisible": false,
+        "mobileBodyVisible": false,
+        "checkedAt": "2026-09-24T06:02:16.631Z",
+        "method": "네이버 편집기 발행 설정 공개범위=비공개 저장(본문·이미지·URL 유지), 익명 접근으로 본문 미노출 확인",
+        "backup": "data/atlas/backups/naver-224420731235-2026-09-24T00-54-02-929Z.json"
+      }
     },
     {
       "logNo": "224418550466",
       "title": "글라스락 클래식 화이트 10종",
-      "status": "manual_unpublish_needed",
+      "status": "unpublished_private",
       "issues": [
         "수호 텍스트 카드 2장이 같은 얼굴·같은 구도(실사진 4장은 정상)"
-      ]
+      ],
+      "visibility": {
+        "title": "글라스락",
+        "status": "private_confirmed",
+        "pcBodyVisible": false,
+        "mobileBodyVisible": false,
+        "checkedAt": "2026-09-24T06:02:16.631Z",
+        "method": "네이버 편집기 발행 설정 공개범위=비공개 저장(본문·이미지·URL 유지), 익명 접근으로 본문 미노출 확인",
+        "backup": "data/atlas/backups/naver-224418550466-2026-09-24T00-54-03-131Z.json"
+      }
     },
     {
       "logNo": "224418047839",
       "title": "필립스 3000 전기주전자",
-      "status": "manual_unpublish_needed",
+      "status": "unpublished_private",
       "issues": [
         "수호 텍스트 카드 1장(얼굴 크롭 합성)"
-      ]
+      ],
+      "visibility": {
+        "title": "전기주전자",
+        "status": "private_confirmed",
+        "pcBodyVisible": false,
+        "mobileBodyVisible": false,
+        "checkedAt": "2026-09-24T06:02:16.631Z",
+        "method": "네이버 편집기 발행 설정 공개범위=비공개 저장(본문·이미지·URL 유지), 익명 접근으로 본문 미노출 확인",
+        "backup": "data/atlas/backups/naver-224418047839-2026-09-24T00-54-03-273Z.json"
+      }
     },
     {
       "logNo": "224412747695",
@@ -358,5 +385,5 @@
       ]
     }
   ],
-  "koreaNote": "네이버 비공개 전환 도구가 시스템에 없어 자동 처리하지 않았다. 네이버 글관리에서 수동 비공개 필요. 224407589323은 보호 글로 대상 아님."
+  "koreaNote": "국내 문제 글 3건은 네이버 전용 Edge 세션(scripts/naver-session-keeper.mjs + naver-visibility-worker.mjs)으로 공개범위만 비공개 저장. 본문·이미지·URL 유지."
 }
