@@ -5,61 +5,61 @@
     "featured": {
       "faceMatch": {
         "status": "pass",
-        "similarity": 0.6452,
+        "similarity": 0.5271,
         "faces": 1,
         "threshold": 0.5,
         "method": "arcface_buffalo_l",
         "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
-        "checkedAt": "2026-09-24T06:19:21.808Z",
+        "checkedAt": "2026-09-26T16:23:53.721Z",
         "candidates": [
           {
-            "seed": 1420082832,
-            "similarity": 0.6311
+            "seed": 1420083482,
+            "similarity": 0.5271
           },
           {
-            "seed": 1420083832,
-            "similarity": 0.6452
+            "seed": 1420084482,
+            "similarity": 0.5736
           },
           {
-            "seed": 1420084832,
-            "similarity": 0.7322
+            "seed": 1420085482,
+            "similarity": 0.5291
           },
           {
-            "seed": 1420085832,
-            "similarity": 0.6834
-          },
-          {
-            "seed": 1420086832,
-            "similarity": 0.6952
-          },
-          {
-            "seed": 1420087832,
-            "similarity": 0.6786
+            "seed": 1420086482,
+            "similarity": 0.5753
           }
         ]
       },
       "file": "public/atlas/global/miji/_review/nepal_floods/featured.png",
       "character": "miji",
       "direction": {
-        "hair": "low ponytail",
+        "hair": "long straight hair worn down",
+        "makeup": "fresh minimal makeup, rosy cheeks",
         "camera": "low angle from table height",
         "viewpoint": "seen from slightly above",
         "posture": "seated at a table, comparing two items laid out in front of her"
       },
-      "prompt": "(low ponytail:1.6), (seen from slightly above:1.3), (low angle from table height:1.2), (seated at a table, comparing two items laid out in front of her:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her 30s, dark-brown hair color, warm brown almond-shaped eyes, oval face, soft jawline. the same person seated at a kitchen table packing a flood emergency kit, clearly visible on the table: an open red emergency backpack, bottled water, a flashlight, a first-aid kit with a red cross, spare batteries and a clear waterproof document pouch with passports, serious concerned expression, not smiling.",
-      "seed": 1420083832,
-      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
+      "prompt": "(long straight hair worn down:1.6), (fresh minimal makeup, rosy cheeks:1.1), (seen from slightly above:1.3), (low angle from table height:1.2), (seated at a table, comparing two items laid out in front of her:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her early 30s, dark-brown hair color, soft rounded oval face, gentle smiling eyes, warm brown almond-shaped eyes, small nose, soft jawline, youthful bright complexion, kind warm smile. (the same person packing an open red emergency backpack on her kitchen table with bottled water, a flashlight and a first-aid kit:1.4), both hands placing items into the bag, (serious focused expression, not smiling:1.2).",
+      "seed": 1420083482,
+      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, (pasted face:1.3), face swap artifact, mismatched face lighting, uncanny face, distorted face, heavy airbrushed skin, (older woman:1.3), wrinkles, gaunt face, sharp cheekbones, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait",
       "references": [
-        "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "public/atlas/characters/references/miji/miji-ref-1.png",
+        "public/atlas/characters/references/miji/miji-ref-2.png",
+        "public/atlas/characters/references/miji/miji-ref-3.png",
+        "public/atlas/characters/references/miji/miji-ref-4.png",
+        "public/atlas/characters/references/miji/miji-ref-5.png",
+        "public/atlas/characters/references/miji/miji-ref-6.png"
       ],
       "ipAdapterWeight": null,
       "faceId": {
         "preset": "FACEID PLUS V2",
         "loraStrength": 0.6,
-        "weight": 0.8,
+        "weight": 0.9,
         "weightV2": 1.2,
-        "startAt": 0.15,
-        "endAt": 1
+        "startAt": 0.1,
+        "endAt": 1,
+        "useExtraReferencesOnly": true
       },
       "generator": {
         "tool": "ComfyUI (local)",
@@ -71,11 +71,310 @@
         "sampler": "dpmpp_sde",
         "scheduler": "karras"
       },
-      "generatedAt": "2026-09-24T06:18:03.243Z",
+      "generatedAt": "2026-09-26T16:16:22.957Z",
       "visualReview": {
-        "status": "reselected",
-        "reason": "사용자 수정 요청(비상키트 표현 강화) — 구급 가방·약·물·서류가 보이는 후보 선택",
-        "at": "2026-09-24T06:19:21.808Z"
+        "status": "selected_by_visual_review",
+        "reason": "비상 배낭에 물·손전등·구급용품을 넣는 행동이 가장 뚜렷한 후보",
+        "at": "2026-09-26T16:23:53.722Z"
+      }
+    },
+    "context": {
+      "faceMatch": {
+        "status": "pass",
+        "similarity": 0.6215,
+        "faces": 1,
+        "threshold": 0.5,
+        "method": "arcface_buffalo_l",
+        "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "checkedAt": "2026-09-26T16:00:37.631Z",
+        "candidates": [
+          {
+            "seed": 1862834373,
+            "similarity": 0.6071
+          },
+          {
+            "seed": 1862835373,
+            "similarity": 0.563
+          },
+          {
+            "seed": 1862836373,
+            "similarity": 0.6215
+          },
+          {
+            "seed": 1862837373,
+            "similarity": 0.5883
+          }
+        ]
+      },
+      "file": "public/atlas/global/miji/_review/nepal_floods/context.png",
+      "character": "miji",
+      "direction": {
+        "hair": "half-up hairstyle",
+        "makeup": "light natural makeup, soft skin",
+        "camera": "medium shot from the waist up",
+        "viewpoint": "facing the camera",
+        "posture": "standing, holding the document she is talking about"
+      },
+      "prompt": "(half-up hairstyle:1.6), (light natural makeup, soft skin:1.1), (facing the camera:1.3), (medium shot from the waist up:1.2), (standing, holding the document she is talking about:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her early 30s, dark-brown hair color, soft rounded oval face, gentle smiling eyes, warm brown almond-shaped eyes, small nose, soft jawline, youthful bright complexion, kind warm smile. the same person standing in her home study reading official flood relief updates on a laptop screen, holding a printed news briefing, serious attentive expression.",
+      "seed": 1862836373,
+      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, (pasted face:1.3), face swap artifact, mismatched face lighting, uncanny face, distorted face, heavy airbrushed skin, (older woman:1.3), wrinkles, gaunt face, sharp cheekbones, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
+      "references": [
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "public/atlas/characters/references/miji/miji-ref-1.png",
+        "public/atlas/characters/references/miji/miji-ref-2.png",
+        "public/atlas/characters/references/miji/miji-ref-3.png",
+        "public/atlas/characters/references/miji/miji-ref-4.png",
+        "public/atlas/characters/references/miji/miji-ref-5.png",
+        "public/atlas/characters/references/miji/miji-ref-6.png"
+      ],
+      "ipAdapterWeight": null,
+      "faceId": {
+        "preset": "FACEID PLUS V2",
+        "loraStrength": 0.6,
+        "weight": 0.9,
+        "weightV2": 1.2,
+        "startAt": 0.1,
+        "endAt": 1,
+        "useExtraReferencesOnly": true
+      },
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-26T16:00:37.632Z"
+    },
+    "comparison": {
+      "faceMatch": {
+        "status": "pass",
+        "similarity": 0.5752,
+        "faces": 1,
+        "threshold": 0.5,
+        "method": "arcface_buffalo_l",
+        "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "checkedAt": "2026-09-26T16:23:53.807Z",
+        "candidates": [
+          {
+            "seed": 1821002013,
+            "similarity": 0.6019
+          },
+          {
+            "seed": 1821003013,
+            "similarity": 0.5752
+          },
+          {
+            "seed": 1821004013,
+            "similarity": 0.7074
+          },
+          {
+            "seed": 1821005013,
+            "similarity": 0.6122
+          }
+        ]
+      },
+      "file": "public/atlas/global/miji/_review/nepal_floods/comparison.png",
+      "character": "miji",
+      "direction": {
+        "hair": "hair tied up in a neat bun",
+        "makeup": "slightly fuller makeup, defined eyeliner, soft rose lipstick",
+        "camera": "wide shot, full body in the scene",
+        "viewpoint": "three-quarter turn away from the camera",
+        "posture": "walking through the space with a shoulder bag"
+      },
+      "prompt": "(hair tied up in a neat bun:1.6), (slightly fuller makeup, defined eyeliner, soft rose lipstick:1.1), (three-quarter turn away from the camera:1.3), (wide shot, full body in the scene:1.2), (walking through the space with a shoulder bag:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her early 30s, dark-brown hair color, soft rounded oval face, gentle smiling eyes, warm brown almond-shaped eyes, small nose, soft jawline, youthful bright complexion, kind warm smile. (the same person carrying a large cardboard box of donated blankets and bottled water in both arms:1.4) outside a community center on a rainy day, wet street, (serious expression, not smiling:1.2).",
+      "seed": 1821003013,
+      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, (pasted face:1.3), face swap artifact, mismatched face lighting, uncanny face, distorted face, heavy airbrushed skin, (older woman:1.3), wrinkles, gaunt face, sharp cheekbones, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
+      "references": [
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "public/atlas/characters/references/miji/miji-ref-1.png",
+        "public/atlas/characters/references/miji/miji-ref-2.png",
+        "public/atlas/characters/references/miji/miji-ref-3.png",
+        "public/atlas/characters/references/miji/miji-ref-4.png",
+        "public/atlas/characters/references/miji/miji-ref-5.png",
+        "public/atlas/characters/references/miji/miji-ref-6.png"
+      ],
+      "ipAdapterWeight": null,
+      "faceId": {
+        "preset": "FACEID PLUS V2",
+        "loraStrength": 0.6,
+        "weight": 0.9,
+        "weightV2": 1.2,
+        "startAt": 0.1,
+        "endAt": 1,
+        "useExtraReferencesOnly": true
+      },
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-26T16:18:30.911Z",
+      "visualReview": {
+        "status": "selected_by_visual_review",
+        "reason": "기부 담요·물 상자를 안고 비 오는 거리를 걷는 행동이 뚜렷한 후보",
+        "at": "2026-09-26T16:23:53.809Z"
+      }
+    },
+    "checklist": {
+      "faceMatch": {
+        "status": "pass",
+        "similarity": 0.5946,
+        "faces": 1,
+        "threshold": 0.5,
+        "method": "arcface_buffalo_l",
+        "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "checkedAt": "2026-09-26T16:23:53.903Z",
+        "candidates": [
+          {
+            "seed": 3561263704,
+            "similarity": 0.6002
+          },
+          {
+            "seed": 3561264704,
+            "similarity": 0.5946
+          },
+          {
+            "seed": 3561265704,
+            "similarity": 0.554
+          },
+          {
+            "seed": 3561266704,
+            "similarity": 0.5367
+          }
+        ]
+      },
+      "file": "public/atlas/global/miji/_review/nepal_floods/checklist.png",
+      "character": "miji",
+      "direction": {
+        "hair": "hair tucked under a soft cap",
+        "makeup": "light natural makeup, soft skin",
+        "camera": "over-the-shoulder shot from behind",
+        "viewpoint": "seen from behind, looking back over her shoulder so her face is clearly visible",
+        "posture": "crouched beside an open case, working through it item by item"
+      },
+      "prompt": "(hair tucked under a soft cap:1.6), (light natural makeup, soft skin:1.1), (seen from behind, looking back over her shoulder so her face is clearly visible:1.3), (over-the-shoulder shot from behind:1.2), (crouched beside an open case, working through it item by item:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her early 30s, dark-brown hair color, soft rounded oval face, gentle smiling eyes, warm brown almond-shaped eyes, small nose, soft jawline, youthful bright complexion, kind warm smile. (the same person sliding family passports into a clear zip waterproof document pouch:1.4) while kneeling by a low cabinet at home, only one person, (serious focused expression, not smiling:1.2).",
+      "seed": 3561264704,
+      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, (pasted face:1.3), face swap artifact, mismatched face lighting, uncanny face, distorted face, heavy airbrushed skin, (older woman:1.3), wrinkles, gaunt face, sharp cheekbones, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
+      "references": [
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "public/atlas/characters/references/miji/miji-ref-1.png",
+        "public/atlas/characters/references/miji/miji-ref-2.png",
+        "public/atlas/characters/references/miji/miji-ref-3.png",
+        "public/atlas/characters/references/miji/miji-ref-4.png",
+        "public/atlas/characters/references/miji/miji-ref-5.png",
+        "public/atlas/characters/references/miji/miji-ref-6.png"
+      ],
+      "ipAdapterWeight": null,
+      "faceId": {
+        "preset": "FACEID PLUS V2",
+        "loraStrength": 0.6,
+        "weight": 0.9,
+        "weightV2": 1.2,
+        "startAt": 0.1,
+        "endAt": 1,
+        "useExtraReferencesOnly": true
+      },
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-26T16:20:41.148Z",
+      "visualReview": {
+        "status": "selected_by_visual_review",
+        "reason": "인물 한 명, 여권을 챙기는 동작(다른 후보는 인물 2명이라 탈락)",
+        "at": "2026-09-26T16:23:53.904Z"
+      }
+    },
+    "closing": {
+      "faceMatch": {
+        "status": "pass",
+        "similarity": 0.6245,
+        "faces": 1,
+        "threshold": 0.5,
+        "method": "arcface_buffalo_l",
+        "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "checkedAt": "2026-09-26T16:23:53.995Z",
+        "candidates": [
+          {
+            "seed": 3144021515,
+            "similarity": 0.5601
+          },
+          {
+            "seed": 3144022515,
+            "similarity": 0.6245
+          },
+          {
+            "seed": 3144023515,
+            "similarity": 0.5374
+          },
+          {
+            "seed": 3144024515,
+            "similarity": 0.5276
+          }
+        ]
+      },
+      "file": "public/atlas/global/miji/_review/nepal_floods/closing.png",
+      "character": "miji",
+      "direction": {
+        "hair": "long soft wavy hair worn loose",
+        "makeup": "slightly fuller makeup, defined eyeliner, soft rose lipstick",
+        "camera": "close shot, head and shoulders",
+        "viewpoint": "side profile",
+        "posture": "pausing by a window, phone in hand"
+      },
+      "prompt": "(long soft wavy hair worn loose:1.6), (slightly fuller makeup, defined eyeliner, soft rose lipstick:1.1), (side profile:1.3), (close shot, head and shoulders:1.2), (pausing by a window, phone in hand:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her early 30s, dark-brown hair color, soft rounded oval face, gentle smiling eyes, warm brown almond-shaped eyes, small nose, soft jawline, youthful bright complexion, kind warm smile. (the same person holding a smartphone to her ear on a phone call:1.4) beside a rain-streaked window at dusk, (worried concerned expression, not smiling:1.2).",
+      "seed": 3144022515,
+      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, (pasted face:1.3), face swap artifact, mismatched face lighting, uncanny face, distorted face, heavy airbrushed skin, (older woman:1.3), wrinkles, gaunt face, sharp cheekbones, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
+      "references": [
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "public/atlas/characters/references/miji/miji-ref-1.png",
+        "public/atlas/characters/references/miji/miji-ref-2.png",
+        "public/atlas/characters/references/miji/miji-ref-3.png",
+        "public/atlas/characters/references/miji/miji-ref-4.png",
+        "public/atlas/characters/references/miji/miji-ref-5.png",
+        "public/atlas/characters/references/miji/miji-ref-6.png"
+      ],
+      "ipAdapterWeight": null,
+      "faceId": {
+        "preset": "FACEID PLUS V2",
+        "loraStrength": 0.6,
+        "weight": 0.9,
+        "weightV2": 1.2,
+        "startAt": 0.1,
+        "endAt": 1,
+        "useExtraReferencesOnly": true
+      },
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-26T16:22:48.364Z",
+      "visualReview": {
+        "status": "selected_by_visual_review",
+        "reason": "비 오는 창가에서 통화하는 장면",
+        "at": "2026-09-26T16:23:53.996Z"
       }
     }
   },

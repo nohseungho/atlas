@@ -1,11 +1,31 @@
 {
   "postId": "7464819806483273330",
-  "note": "외부 글 대표 이미지 교체용. 재난 주제라 웃는 표정·과장 연출 금지.",
+  "note": "Nepal Floods 2026 외부 글: 미지가 주인공인 장면 5장(2026-09-27 사용자 요청). 대표 이미지 + 정보 카드 4장 자리를 대체하는 검수본. 본문 텍스트는 수정하지 않는다.",
   "items": [
     {
       "role": "featured",
       "directionRole": "comparison",
-      "intent": "Miji seated at a kitchen table packing a flood emergency kit, clearly visible on the table: an open red emergency backpack, bottled water, a flashlight, a first-aid kit with a red cross, spare batteries and a clear waterproof document pouch with passports, serious concerned expression, not smiling"
+      "intent": "(Miji packing an open red emergency backpack on her kitchen table with bottled water, a flashlight and a first-aid kit:1.4), both hands placing items into the bag, (serious focused expression, not smiling:1.2)"
+    },
+    {
+      "role": "context",
+      "directionRole": "featured",
+      "intent": "Miji standing in her home study reading official flood relief updates on a laptop screen, holding a printed news briefing, serious attentive expression"
+    },
+    {
+      "role": "comparison",
+      "directionRole": "context",
+      "intent": "(Miji carrying a large cardboard box of donated blankets and bottled water in both arms:1.4) outside a community center on a rainy day, wet street, (serious expression, not smiling:1.2)"
+    },
+    {
+      "role": "checklist",
+      "directionRole": "checklist",
+      "intent": "(Miji sliding family passports into a clear zip waterproof document pouch:1.4) while kneeling by a low cabinet at home, only one person, (serious focused expression, not smiling:1.2)"
+    },
+    {
+      "role": "closing",
+      "directionRole": "closing",
+      "intent": "(Miji holding a smartphone to her ear on a phone call:1.4) beside a rain-streaked window at dusk, (worried concerned expression, not smiling:1.2)"
     }
   ]
 }
