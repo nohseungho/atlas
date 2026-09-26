@@ -1,0 +1,66 @@
+{
+  "channel": "korea",
+  "topicSlug": "glasslock_free",
+  "items": {
+    "body_usage": {
+      "faceMatch": null,
+      "file": "public/atlas/korea/suho/_review/glasslock_free/body_usage.png",
+      "character": "suho",
+      "direction": {
+        "camera": "wide shot, full body in the scene",
+        "viewpoint": "facing the camera",
+        "posture": "crouched down mid-action, actually doing the step"
+      },
+      "prompt": "(She at a Korean kitchen counter, filling a row of clear glass food storage containers with white locking lids with leftover Korean jeon and namul, the glass containers large and clearly visible in the foreground:1.4), (facing the camera:1.3), (wide shot, full body in the scene:1.2), (crouched down mid-action, actually doing the step:1.2). anime illustration, korean webtoon style, clean lineart, soft cel shading, warm daylight, detailed cozy korean apartment interior. a young Korean woman in her 20s with shoulder-length dark brown hair and a cream knit cardigan",
+      "seed": 3816683757,
+      "negative": "looking at viewer, posing for camera, portrait, photo, photorealistic, 3d render, realistic skin, old man, beard, woman, text, letters, watermark, logo, signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border",
+      "references": [
+        "public/atlas/characters/ATLAS-SUO-MASTER.png"
+      ],
+      "ipAdapterWeight": 0.5,
+      "faceId": null,
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-26T15:49:53.076Z"
+    },
+    "product_check": {
+      "faceMatch": null,
+      "file": "public/atlas/korea/suho/_review/glasslock_free/product_check.png",
+      "character": "suho",
+      "direction": {
+        "camera": "low angle from table height",
+        "viewpoint": "side profile",
+        "posture": "seated at a low table, pointing at the item being checked"
+      },
+      "prompt": "(She seated at a low table pressing down the locking lid of a white glass food container to check the seal, a phone and receipt beside her:1.4), (side profile:1.3), (low angle from table height:1.2), (seated at a low table, pointing at the item being checked:1.2). anime illustration, korean webtoon style, clean lineart, soft cel shading, warm daylight, detailed cozy korean apartment interior. a young Korean woman in her 20s with shoulder-length dark brown hair and a cream knit cardigan",
+      "seed": 479607719,
+      "negative": "looking at viewer, posing for camera, portrait, photo, photorealistic, 3d render, realistic skin, old man, beard, woman, text, letters, watermark, logo, signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border",
+      "references": [
+        "public/atlas/characters/ATLAS-SUO-MASTER.png"
+      ],
+      "ipAdapterWeight": 0.5,
+      "faceId": null,
+      "generator": {
+        "tool": "ComfyUI (local)",
+        "checkpoint": "dreamshaperXL_lightningDPMSDE.safetensors",
+        "ipadapter": "ip-adapter-plus-face_sdxl_vit-h.safetensors",
+        "clipVision": "CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+        "steps": 8,
+        "cfg": 2,
+        "sampler": "dpmpp_sde",
+        "scheduler": "karras"
+      },
+      "generatedAt": "2026-09-26T15:53:27.380Z"
+    }
+  },
+  "character": "suho",
+  "dropDirectory": "public/atlas/korea/suho/_review/glasslock_free"
+}

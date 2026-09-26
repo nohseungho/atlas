@@ -1,0 +1,14 @@
+{
+  "logNo": "224418047839",
+  "draftId": "kr_philips_3000_kettle",
+  "note": "국내 기준(2026-09-24): 캐릭터 성별 고정 없음 — 수호 버전과 비교용 자유 캐릭터 장면. 채널 잠금 규칙(수호) 변경 전에는 발행 불가.",
+  "items": [
+    {
+      "role": "body_usage",
+      "directionRole": "info_why",
+      "intent": "She in a bright Korean kitchen leaning in to look at the water level window of a white electric kettle as it switches off, mug in her other hand"
+    }
+  ],
+  "freeCharacter": true,
+  "subject": "a young Korean woman in her 20s with shoulder-length dark brown hair and a cream knit cardigan"
+}

@@ -1,0 +1,24 @@
+{
+  "logNo": "224420731235",
+  "draftId": "kr_kr_info_chuseok_gift",
+  "note": "국내 기준(2026-09-24): 캐릭터 성별 고정 없음 — 수호 버전과 비교용 자유 캐릭터 장면. 채널 잠금 규칙(수호) 변경 전에는 발행 불가.",
+  "items": [
+    {
+      "role": "info_why",
+      "directionRole": "info_why",
+      "intent": "She at a living room table leaning over a notepad listing family and coworkers, deciding which Chuseok gift fits each person, pen raised"
+    },
+    {
+      "role": "info_how",
+      "directionRole": "info_how",
+      "intent": "She crouched in front of an open refrigerator, measuring whether a Chuseok fruit gift box will fit on the shelf"
+    },
+    {
+      "role": "info_checklist",
+      "directionRole": "info_checklist",
+      "intent": "She seated at a low table with a laptop and a delivery address slip, pointing at the delivery date on the screen"
+    }
+  ],
+  "freeCharacter": true,
+  "subject": "a young Korean woman in her 20s with shoulder-length dark brown hair and a cream knit cardigan"
+}

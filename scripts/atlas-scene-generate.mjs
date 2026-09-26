@@ -35,6 +35,7 @@ const SEED_BASE = Number(opt("seed-base", "0"));
 const ONLY = opt("roles") ? opt("roles").split(",") : null;
 const REVIEW = args.includes("--review");
 const CANDIDATES = Number(opt("candidates", channel === "global" ? "4" : "1"));
+let FREE_CHARACTER = null;
 const FACE_PYTHON = process.env.ATLAS_FACE_PYTHON || path.join(os.homedir(), "ComfyUI", "venv", "Scripts", "python.exe");
 
 // ArcFace 점수. 해외만 검수한다(수호는 애니메이션이라 ArcFace 대상이 아니다).
@@ -58,7 +59,10 @@ function requestItems() {
   // 장면 의도 파일을 쓴다. 연출(머리·자세·시점·거리)은 directionRole의 scene-direction 값을 따른다.
   const intentsFile = path.join(process.cwd(), "data", "atlas", "scene-art", "intents", `${channel}-${topicSlug}.json`);
   if (REVIEW && fs.existsSync(intentsFile)) {
-    return JSON.parse(fs.readFileSync(intentsFile, "utf8")).items.map((i) => ({ role: i.role, directionRole: i.directionRole, prompt: `${i.intent}.` }));
+    const intents = JSON.parse(fs.readFileSync(intentsFile, "utf8"));
+    // freeCharacter: 국내 기준(2026-09-24) 비교용. 캐릭터 얼굴 고정 없이 파일의 인물 묘사(subject)로 장면을 만든다.
+    if (intents.freeCharacter) FREE_CHARACTER = { subject: String(intents.subject || "") };
+    return intents.items.map((i) => ({ role: i.role, directionRole: i.directionRole, prompt: `${i.intent}.` }));
   }
   if (channel === "korea") {
     const draft = (readData("korea-drafts.json").items || []).find((d) => d.topicId === `kr_info_${topicSlug}`);
@@ -125,11 +129,18 @@ async function main() {
   const manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, "utf8")) : { channel, topicSlug, items: {} };
 
   for (const item of items) {
-    const prompt = generationPrompt(channel, item.prompt, directionFor(channel, item.directionRole || item.role));
+    let prompt = generationPrompt(channel, item.prompt, directionFor(channel, item.directionRole || item.role));
+    if (FREE_CHARACTER) prompt = prompt.replace(profile.subject, FREE_CHARACTER.subject);
     const candidates = [];
     for (let k = 0; k < Math.max(1, CANDIDATES); k += 1) {
       const seed = seedFor(channel, topicSlug, item.role, SEED_BASE + k * 1000);
       const workflow = buildWorkflow({ channel, prompt, seed, referenceNames, direction: directionFor(channel, item.directionRole || item.role), prefix: `atlas-${channel}-${topicSlug}-${item.role}` });
+      if (FREE_CHARACTER) {
+        // 얼굴 고정 노드를 빼고 체크포인트 모델로 바로 샘플링한다(합성·참조 이미지 없음).
+        for (const key of Object.keys(workflow)) if (/^(apply|ipa|clipv|ref\d+|prep\d+|batch\d+|crop0)$/.test(key)) delete workflow[key];
+        workflow.sample.inputs.model = ["ckpt", 0];
+        workflow.neg.inputs.text = workflow.neg.inputs.text.replace(/woman, /, "");
+      }
       const { prompt_id: promptId } = await (await comfy("/prompt", {
         method: "POST",
         headers: { "content-type": "application/json" },

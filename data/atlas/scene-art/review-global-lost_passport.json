@@ -5,36 +5,36 @@
     "featured": {
       "faceMatch": {
         "status": "pass",
-        "similarity": 0.6955,
+        "similarity": 0.6166,
         "faces": 1,
         "threshold": 0.5,
         "method": "arcface_buffalo_l",
         "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
-        "checkedAt": "2026-09-23T23:32:29.610Z",
+        "checkedAt": "2026-09-24T06:57:01.231Z",
         "candidates": [
           {
-            "seed": 1683326151,
-            "similarity": 0.6955
+            "seed": 1683326951,
+            "similarity": 0.5804
           },
           {
-            "seed": 1683327151,
-            "similarity": 0.6876
+            "seed": 1683327951,
+            "similarity": 0.6024
           },
           {
-            "seed": 1683328151,
-            "similarity": 0.6562
+            "seed": 1683328951,
+            "similarity": 0.6166
           },
           {
-            "seed": 1683329151,
-            "similarity": 0.6285
+            "seed": 1683329951,
+            "similarity": 0.6064
           },
           {
-            "seed": 1683330151,
-            "similarity": 0.6344
+            "seed": 1683330951,
+            "similarity": 0.6088
           },
           {
-            "seed": 1683331151,
-            "similarity": 0.6342
+            "seed": 1683331951,
+            "similarity": 0.6032
           }
         ]
       },
@@ -42,24 +42,32 @@
       "character": "miji",
       "direction": {
         "hair": "half-up hairstyle",
+        "makeup": "light natural makeup, soft skin",
         "camera": "medium shot from the waist up",
         "viewpoint": "facing the camera",
         "posture": "standing, holding the document she is talking about"
       },
-      "prompt": "(half-up hairstyle:1.6), (facing the camera:1.3), (medium shot from the waist up:1.2), (standing, holding the document she is talking about:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her 30s, dark-brown hair color, warm brown almond-shaped eyes, oval face, soft jawline. the same person at a hotel desk realising her passport is missing from her bag.",
-      "seed": 1683326151,
-      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
+      "prompt": "(half-up hairstyle:1.6), (light natural makeup, soft skin:1.1), (facing the camera:1.3), (medium shot from the waist up:1.2), (standing, holding the document she is talking about:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her early 30s, dark-brown hair color, soft rounded oval face, gentle smiling eyes, warm brown almond-shaped eyes, small nose, soft jawline, youthful bright complexion, kind warm smile. the same person at a hotel desk realising her passport is missing from her bag.",
+      "seed": 1683328951,
+      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, (pasted face:1.3), face swap artifact, mismatched face lighting, uncanny face, distorted face, heavy airbrushed skin, (older woman:1.3), wrinkles, gaunt face, sharp cheekbones, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
       "references": [
-        "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "public/atlas/characters/references/miji/miji-ref-1.png",
+        "public/atlas/characters/references/miji/miji-ref-2.png",
+        "public/atlas/characters/references/miji/miji-ref-3.png",
+        "public/atlas/characters/references/miji/miji-ref-4.png",
+        "public/atlas/characters/references/miji/miji-ref-5.png",
+        "public/atlas/characters/references/miji/miji-ref-6.png"
       ],
       "ipAdapterWeight": null,
       "faceId": {
         "preset": "FACEID PLUS V2",
         "loraStrength": 0.6,
-        "weight": 0.8,
+        "weight": 0.9,
         "weightV2": 1.2,
-        "startAt": 0.15,
-        "endAt": 1
+        "startAt": 0.1,
+        "endAt": 1,
+        "useExtraReferencesOnly": true
       },
       "generator": {
         "tool": "ComfyUI (local)",
@@ -71,41 +79,41 @@
         "sampler": "dpmpp_sde",
         "scheduler": "karras"
       },
-      "generatedAt": "2026-09-23T23:32:29.613Z"
+      "generatedAt": "2026-09-24T06:57:01.234Z"
     },
     "context": {
       "faceMatch": {
         "status": "pass",
-        "similarity": 0.6824,
-        "faces": 2,
+        "similarity": 0.6167,
+        "faces": 1,
         "threshold": 0.5,
         "method": "arcface_buffalo_l",
         "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
-        "checkedAt": "2026-09-23T23:44:25.335Z",
+        "checkedAt": "2026-09-24T06:59:05.249Z",
         "candidates": [
           {
-            "seed": 3158396744,
-            "similarity": 0.6761
+            "seed": 3158397544,
+            "similarity": 0.5465
           },
           {
-            "seed": 3158397744,
-            "similarity": 0.5356
+            "seed": 3158398544,
+            "similarity": 0.6102
           },
           {
-            "seed": 3158398744,
-            "similarity": 0.6967
+            "seed": 3158399544,
+            "similarity": 0.6096
           },
           {
-            "seed": 3158399744,
-            "similarity": 0.6179
+            "seed": 3158400544,
+            "similarity": 0.5455
           },
           {
-            "seed": 3158400744,
-            "similarity": 0.639
+            "seed": 3158401544,
+            "similarity": 0.5991
           },
           {
-            "seed": 3158401744,
-            "similarity": 0.6824
+            "seed": 3158402544,
+            "similarity": 0.6167
           }
         ]
       },
@@ -113,24 +121,32 @@
       "character": "miji",
       "direction": {
         "hair": "hair tied up in a neat bun",
+        "makeup": "slightly fuller makeup, defined eyeliner, soft rose lipstick",
         "camera": "wide shot, full body in the scene",
         "viewpoint": "three-quarter turn away from the camera",
         "posture": "walking through the space with a shoulder bag"
       },
-      "prompt": "(hair tied up in a neat bun:1.6), (three-quarter turn away from the camera:1.3), (wide shot, full body in the scene:1.2), (walking through the space with a shoulder bag:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her 30s, dark-brown hair color, warm brown almond-shaped eyes, oval face, soft jawline. the same person walking up to an embassy reception counter with a document folder.",
-      "seed": 3158401744,
-      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
+      "prompt": "(hair tied up in a neat bun:1.6), (slightly fuller makeup, defined eyeliner, soft rose lipstick:1.1), (three-quarter turn away from the camera:1.3), (wide shot, full body in the scene:1.2), (walking through the space with a shoulder bag:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her early 30s, dark-brown hair color, soft rounded oval face, gentle smiling eyes, warm brown almond-shaped eyes, small nose, soft jawline, youthful bright complexion, kind warm smile. the same person walking up to an embassy reception counter with a document folder.",
+      "seed": 3158402544,
+      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, (pasted face:1.3), face swap artifact, mismatched face lighting, uncanny face, distorted face, heavy airbrushed skin, (older woman:1.3), wrinkles, gaunt face, sharp cheekbones, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
       "references": [
-        "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "public/atlas/characters/references/miji/miji-ref-1.png",
+        "public/atlas/characters/references/miji/miji-ref-2.png",
+        "public/atlas/characters/references/miji/miji-ref-3.png",
+        "public/atlas/characters/references/miji/miji-ref-4.png",
+        "public/atlas/characters/references/miji/miji-ref-5.png",
+        "public/atlas/characters/references/miji/miji-ref-6.png"
       ],
       "ipAdapterWeight": null,
       "faceId": {
         "preset": "FACEID PLUS V2",
         "loraStrength": 0.6,
-        "weight": 0.8,
+        "weight": 0.9,
         "weightV2": 1.2,
-        "startAt": 0.15,
-        "endAt": 1
+        "startAt": 0.1,
+        "endAt": 1,
+        "useExtraReferencesOnly": true
       },
       "generator": {
         "tool": "ComfyUI (local)",
@@ -142,74 +158,74 @@
         "sampler": "dpmpp_sde",
         "scheduler": "karras"
       },
-      "generatedAt": "2026-09-23T23:34:18.548Z",
-      "visualReview": {
-        "status": "reselected",
-        "reason": "자동 1위 후보(seed 3158398744)는 같은 인물이 두 명 나와 탈락. 한 사람만 나온 후보 중 최고점으로 교체.",
-        "rejectedSeeds": [
-          3158398744
-        ],
-        "at": "2026-09-23T23:44:25.337Z"
-      }
+      "generatedAt": "2026-09-24T06:59:05.251Z"
     },
     "comparison": {
       "faceMatch": {
         "status": "pass",
-        "similarity": 0.7199,
+        "similarity": 0.628,
         "faces": 1,
         "threshold": 0.5,
         "method": "arcface_buffalo_l",
         "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
-        "checkedAt": "2026-09-23T23:36:09.723Z",
+        "checkedAt": "2026-09-24T07:01:07.159Z",
         "candidates": [
           {
-            "seed": 1860105648,
-            "similarity": 0.6097
+            "seed": 1860106448,
+            "similarity": 0.628
           },
           {
-            "seed": 1860106648,
-            "similarity": 0.7143
+            "seed": 1860107448,
+            "similarity": 0.5995
           },
           {
-            "seed": 1860107648,
-            "similarity": 0.6345
+            "seed": 1860108448,
+            "similarity": 0.6078
           },
           {
-            "seed": 1860108648,
-            "similarity": 0.7199
+            "seed": 1860109448,
+            "similarity": 0.5874
           },
           {
-            "seed": 1860109648,
-            "similarity": 0.643
+            "seed": 1860110448,
+            "similarity": 0.6028
           },
           {
-            "seed": 1860110648,
-            "similarity": 0.627
+            "seed": 1860111448,
+            "similarity": 0.6196
           }
         ]
       },
       "file": "public/atlas/global/miji/_review/lost_passport/comparison.png",
       "character": "miji",
       "direction": {
-        "hair": "low ponytail",
+        "hair": "long straight hair worn down",
+        "makeup": "fresh minimal makeup, rosy cheeks",
         "camera": "low angle from table height",
         "viewpoint": "seen from slightly above",
         "posture": "seated at a table, comparing two items laid out in front of her"
       },
-      "prompt": "(low ponytail:1.6), (seen from slightly above:1.3), (low angle from table height:1.2), (seated at a table, comparing two items laid out in front of her:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her 30s, dark-brown hair color, warm brown almond-shaped eyes, oval face, soft jawline. the same person seated at a consular desk comparing an emergency travel document against a full passport.",
-      "seed": 1860108648,
-      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
+      "prompt": "(long straight hair worn down:1.6), (fresh minimal makeup, rosy cheeks:1.1), (seen from slightly above:1.3), (low angle from table height:1.2), (seated at a table, comparing two items laid out in front of her:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her early 30s, dark-brown hair color, soft rounded oval face, gentle smiling eyes, warm brown almond-shaped eyes, small nose, soft jawline, youthful bright complexion, kind warm smile. the same person seated at a consular desk comparing an emergency travel document against a full passport.",
+      "seed": 1860106448,
+      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, (pasted face:1.3), face swap artifact, mismatched face lighting, uncanny face, distorted face, heavy airbrushed skin, (older woman:1.3), wrinkles, gaunt face, sharp cheekbones, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait",
       "references": [
-        "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "public/atlas/characters/references/miji/miji-ref-1.png",
+        "public/atlas/characters/references/miji/miji-ref-2.png",
+        "public/atlas/characters/references/miji/miji-ref-3.png",
+        "public/atlas/characters/references/miji/miji-ref-4.png",
+        "public/atlas/characters/references/miji/miji-ref-5.png",
+        "public/atlas/characters/references/miji/miji-ref-6.png"
       ],
       "ipAdapterWeight": null,
       "faceId": {
         "preset": "FACEID PLUS V2",
         "loraStrength": 0.6,
-        "weight": 0.8,
+        "weight": 0.9,
         "weightV2": 1.2,
-        "startAt": 0.15,
-        "endAt": 1
+        "startAt": 0.1,
+        "endAt": 1,
+        "useExtraReferencesOnly": true
       },
       "generator": {
         "tool": "ComfyUI (local)",
@@ -221,41 +237,41 @@
         "sampler": "dpmpp_sde",
         "scheduler": "karras"
       },
-      "generatedAt": "2026-09-23T23:36:09.725Z"
+      "generatedAt": "2026-09-24T07:01:07.160Z"
     },
     "checklist": {
       "faceMatch": {
         "status": "pass",
-        "similarity": 0.672,
+        "similarity": 0.5689,
         "faces": 1,
         "threshold": 0.5,
         "method": "arcface_buffalo_l",
         "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
-        "checkedAt": "2026-09-23T23:38:02.700Z",
+        "checkedAt": "2026-09-26T15:32:22.173Z",
         "candidates": [
           {
-            "seed": 2729705835,
-            "similarity": 0.672
+            "seed": 2729706635,
+            "similarity": 0.549
           },
           {
-            "seed": 2729706835,
-            "similarity": 0.59
+            "seed": 2729707635,
+            "similarity": 0.5633
           },
           {
-            "seed": 2729707835,
-            "similarity": 0.587
+            "seed": 2729708635,
+            "similarity": 0.5689
           },
           {
-            "seed": 2729708835,
-            "similarity": 0.669
+            "seed": 2729709635,
+            "similarity": 0.5914
           },
           {
-            "seed": 2729709835,
-            "similarity": 0.5912
+            "seed": 2729710635,
+            "similarity": 0.4578
           },
           {
-            "seed": 2729710835,
-            "similarity": 0.6082
+            "seed": 2729711635,
+            "similarity": 0.5501
           }
         ]
       },
@@ -263,24 +279,32 @@
       "character": "miji",
       "direction": {
         "hair": "hair tucked under a soft cap",
+        "makeup": "light natural makeup, soft skin",
         "camera": "over-the-shoulder shot from behind",
         "viewpoint": "seen from behind, looking back over her shoulder so her face is clearly visible",
         "posture": "crouched beside an open case, working through it item by item"
       },
-      "prompt": "(hair tucked under a soft cap:1.6), (seen from behind, looking back over her shoulder so her face is clearly visible:1.3), (over-the-shoulder shot from behind:1.2), (crouched beside an open case, working through it item by item:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her 30s, dark-brown hair color, warm brown almond-shaped eyes, oval face, soft jawline. the same person crouched beside her suitcase, laying out ID copies and a police report.",
-      "seed": 2729705835,
-      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
+      "prompt": "(hair tucked under a soft cap:1.6), (light natural makeup, soft skin:1.1), (seen from behind, looking back over her shoulder so her face is clearly visible:1.3), (over-the-shoulder shot from behind:1.2), (crouched beside an open case, working through it item by item:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her early 30s, dark-brown hair color, soft rounded oval face, gentle smiling eyes, warm brown almond-shaped eyes, small nose, soft jawline, youthful bright complexion, kind warm smile. the same person crouched beside her suitcase, laying out ID copies and a police report.",
+      "seed": 2729708635,
+      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, (pasted face:1.3), face swap artifact, mismatched face lighting, uncanny face, distorted face, heavy airbrushed skin, (older woman:1.3), wrinkles, gaunt face, sharp cheekbones, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
       "references": [
-        "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "public/atlas/characters/references/miji/miji-ref-1.png",
+        "public/atlas/characters/references/miji/miji-ref-2.png",
+        "public/atlas/characters/references/miji/miji-ref-3.png",
+        "public/atlas/characters/references/miji/miji-ref-4.png",
+        "public/atlas/characters/references/miji/miji-ref-5.png",
+        "public/atlas/characters/references/miji/miji-ref-6.png"
       ],
       "ipAdapterWeight": null,
       "faceId": {
         "preset": "FACEID PLUS V2",
         "loraStrength": 0.6,
-        "weight": 0.8,
+        "weight": 0.9,
         "weightV2": 1.2,
-        "startAt": 0.15,
-        "endAt": 1
+        "startAt": 0.1,
+        "endAt": 1,
+        "useExtraReferencesOnly": true
       },
       "generator": {
         "tool": "ComfyUI (local)",
@@ -292,66 +316,79 @@
         "sampler": "dpmpp_sde",
         "scheduler": "karras"
       },
-      "generatedAt": "2026-09-23T23:38:02.702Z"
+      "generatedAt": "2026-09-24T07:03:04.379Z",
+      "visualReview": {
+        "status": "selected_by_visual_review",
+        "reason": "자동 1위 후보(2729709635)는 모자·머리카락이 공중에 떠 있는 기괴한 결과라 탈락. 모자·여행가방·돌아보는 자세가 자연스러운 후보 선택",
+        "at": "2026-09-26T15:32:22.175Z"
+      }
     },
     "closing": {
       "faceMatch": {
         "status": "pass",
-        "similarity": 0.6322,
+        "similarity": 0.6115,
         "faces": 1,
         "threshold": 0.5,
         "method": "arcface_buffalo_l",
         "reference": "public/atlas/characters/ATLAS-MIJI-MASTER.png",
-        "checkedAt": "2026-09-23T23:39:54.086Z",
+        "checkedAt": "2026-09-24T07:04:59.464Z",
         "candidates": [
           {
-            "seed": 67729048,
-            "similarity": 0.5721
+            "seed": 67729848,
+            "similarity": 0.6087
           },
           {
-            "seed": 67730048,
-            "similarity": 0.5753
+            "seed": 67730848,
+            "similarity": 0.5791
           },
           {
-            "seed": 67731048,
-            "similarity": 0.6141
+            "seed": 67731848,
+            "similarity": 0.4793
           },
           {
-            "seed": 67732048,
-            "similarity": 0.6322
+            "seed": 67732848,
+            "similarity": 0.6115
           },
           {
-            "seed": 67733048,
-            "similarity": 0.6042
+            "seed": 67733848,
+            "similarity": 0.5397
           },
           {
-            "seed": 67734048,
-            "similarity": 0.627
+            "seed": 67734848,
+            "similarity": 0.5981
           }
         ]
       },
       "file": "public/atlas/global/miji/_review/lost_passport/closing.png",
       "character": "miji",
       "direction": {
-        "hair": "long hair worn down",
+        "hair": "long soft wavy hair worn loose",
+        "makeup": "slightly fuller makeup, defined eyeliner, soft rose lipstick",
         "camera": "close shot, head and shoulders",
         "viewpoint": "side profile",
         "posture": "pausing by a window, phone in hand"
       },
-      "prompt": "(long hair worn down:1.6), (side profile:1.3), (close shot, head and shoulders:1.2), (pausing by a window, phone in hand:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her 30s, dark-brown hair color, warm brown almond-shaped eyes, oval face, soft jawline. the same person by a departure-board window with her phone, waiting to rebook.",
-      "seed": 67732048,
-      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait",
+      "prompt": "(long soft wavy hair worn loose:1.6), (slightly fuller makeup, defined eyeliner, soft rose lipstick:1.1), (side profile:1.3), (close shot, head and shoulders:1.2), (pausing by a window, phone in hand:1.2). photorealistic editorial travel photograph, 35mm lens, natural soft light, realistic skin texture, shallow depth of field. a Korean woman in her early 30s, dark-brown hair color, soft rounded oval face, gentle smiling eyes, warm brown almond-shaped eyes, small nose, soft jawline, youthful bright complexion, kind warm smile. the same person by a departure-board window with her phone, waiting to rebook.",
+      "seed": 67732848,
+      "negative": "(two people:1.4), (second person:1.3), twins, duplicate person, (pasted face:1.3), face swap artifact, mismatched face lighting, uncanny face, distorted face, heavy airbrushed skin, (older woman:1.3), wrinkles, gaunt face, sharp cheekbones, anime, illustration, cartoon, painting, 3d render, man, child, text, letters, watermark, logo, readable signage, deformed hands, extra fingers, lowres, blurry, collage, split screen, frame, border, studio portrait, (loose long hair:1.3), hair down, hair over shoulders",
       "references": [
-        "public/atlas/characters/ATLAS-MIJI-MASTER.png"
+        "public/atlas/characters/ATLAS-MIJI-MASTER.png",
+        "public/atlas/characters/references/miji/miji-ref-1.png",
+        "public/atlas/characters/references/miji/miji-ref-2.png",
+        "public/atlas/characters/references/miji/miji-ref-3.png",
+        "public/atlas/characters/references/miji/miji-ref-4.png",
+        "public/atlas/characters/references/miji/miji-ref-5.png",
+        "public/atlas/characters/references/miji/miji-ref-6.png"
       ],
       "ipAdapterWeight": null,
       "faceId": {
         "preset": "FACEID PLUS V2",
         "loraStrength": 0.6,
-        "weight": 0.8,
+        "weight": 0.9,
         "weightV2": 1.2,
-        "startAt": 0.15,
-        "endAt": 1
+        "startAt": 0.1,
+        "endAt": 1,
+        "useExtraReferencesOnly": true
       },
       "generator": {
         "tool": "ComfyUI (local)",
@@ -363,7 +400,7 @@
         "sampler": "dpmpp_sde",
         "scheduler": "karras"
       },
-      "generatedAt": "2026-09-23T23:39:54.087Z"
+      "generatedAt": "2026-09-24T07:04:59.465Z"
     }
   },
   "character": "miji",
