@@ -11,6 +11,7 @@ import fs from "fs";
 import path from "path";
 import { execFile } from "child_process";
 import { promisify } from "util";
+import crypto from "crypto";
 import { readJson, writeJson } from "@/lib/data-store";
 import { ATLAS_CHANNEL_ID } from "@/lib/atlas/character-channel-policy";
 import { normalizeKoreaDraft, validateKoreaDraft, naverEditorTarget } from "@/lib/atlas/korea-product-pipeline";
@@ -20,6 +21,8 @@ import { bodyHtmlFromDraft, bodyParagraphsFromDraft, planImagePlacements } from 
 import { evaluateGlobalArticle, evaluateKoreaDraft } from "@/lib/atlas/policy-validator";
 import { globalTopics, koreaTopics, findTopic } from "@/lib/atlas/operate/topic-catalog";
 import { buildKoreaInfoDraft } from "@/lib/atlas/operate/korea-info-writer";
+import { koreaInfoImages, koreaProductPhotoSlot } from "@/lib/atlas/operate/korea-info-writer";
+import { POST as importProductPage } from "@/app/api/atlas/product-import/route";
 import { buildGlobalMasterPackage } from "@/lib/atlas/operate/global-dialogue-writer";
 import {
   globalLocalImageStatus,
@@ -247,6 +250,54 @@ function writeKorea(topicId) {
   return { status: "ok", id: draft.id };
 }
 
+async function prepareKoreaProduct(url) {
+  const importedResponse = await importProductPage(new Request("http://localhost:3002/api/atlas/product-import", {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url }),
+  }));
+  const imported = await importedResponse.json();
+  if (!importedResponse.ok) return { status: "rejected", error: imported.message || "상품 정보를 확인하지 못했습니다.", code: 422 };
+  const product = imported.draft;
+  if (!product.name || product.currentPrice === null || !product.currency || !product.features?.length) {
+    return { status: "rejected", error: "상품명·현재가·통화·특징이 확인되는 판매 페이지가 필요합니다.", code: 422 };
+  }
+  const topicId = `kr_info_product_${crypto.createHash("sha256").update(imported.canonicalUrl || url).digest("hex").slice(0, 12)}`;
+  const items = koreaItems();
+  if (items.some((d) => d.topicId === topicId || d.productUrl === imported.canonicalUrl)) {
+    return { status: "duplicate", error: "이미 준비했거나 게시한 제품입니다. 준비된 글에서 확인하세요.", code: 409 };
+  }
+  const name = product.name;
+  const price = `${product.currentPrice.toLocaleString("ko-KR")} ${product.currency}`;
+  const features = product.features.slice(0, 5).map((feature) => String(feature).trim()).filter(Boolean);
+  const topic = {
+    keyword: name,
+    sections: [{ heading: "필요한 상황", paragraphs: [] }, { heading: "제품 정보와 특징", paragraphs: [] }],
+    sceneIntents: {
+      info_why: `Suho noticing an everyday problem that ${name} is intended to solve, in a real Korean home setting`,
+      info_how: `Suho naturally using ${name} in a different part of a Korean home; product shape must match the verified product photo`,
+      info_checklist: `Suho checking the dimensions and purchase details of ${name} in a third distinct lived-in scene`,
+    },
+  };
+  const bodyText = [
+    `생활 속에서 ${name}을 살펴볼 때는 판매 페이지에 적힌 구성과 가격부터 확인하는 편이 정확합니다. 직접 사용한 후기가 아니라 판매처에서 확인한 정보로 정리했습니다.`,
+    "제품 정보와 현재 가격", `${name}\n확인 가격: ${price}\n확인일: ${product.priceCheckedAt}\n판매처: ${imported.canonicalUrl}`,
+    "선택할 만한 특징", ...features.map((feature) => `- ${feature}`),
+    "구매 전에 아쉬운 점과 확인할 점",
+    `판매 페이지 정보만으로는 실제 사용감과 내구성을 확인할 수 없습니다.${product.shippingFee === null ? " 배송비도 확인되지 않았으니 결제 화면에서 확인해야 합니다." : ` 확인된 배송비: ${product.shippingFee.toLocaleString("ko-KR")} ${product.currency}.`}`,
+    "잘 맞는 사람", `위에 적힌 특징이 필요한 사람에게 비교 후보가 됩니다. 설치 공간과 옵션은 구매 전에 직접 확인하세요.`,
+    "마무리", `가격과 옵션은 바뀔 수 있습니다. ${name}의 현재 판매 정보는 원문 링크에서 다시 확인하세요.`,
+  ].join("\n\n");
+  const draft = normalizeKoreaDraft({
+    id: `kr_${topicId}`, topicId, contentType: "new_product_review", title: `${name}, 가격과 특징·구매 전 확인할 점`,
+    productName: name, productUrl: imported.canonicalUrl, productInfo: { ...product, evidence: imported.evidence },
+    keyword: name, bodyText, images: [koreaProductPhotoSlot({ productName: name }), ...koreaInfoImages(topic)],
+    productImageCandidates: imported.imageCandidates, state: "ready_for_review", generatedBy: "ATLAS_VERIFIED_PRODUCT_IMPORT",
+  });
+  const validation = validateKoreaDraft(draft);
+  if (!validation.ok) return { status: "rejected", error: validation.issues.join(", "), code: 422 };
+  writeKoreaItems([draft, ...items]);
+  return { status: "ok", id: draft.id, topicId };
+}
+
 function writeGlobal(topicId) {
   const topic = findTopic(topicId);
   if (!topic) return { status: "error", error: "주제를 찾지 못했습니다.", code: 404 };
@@ -356,6 +407,14 @@ export async function POST(request) {
         const generatorError = await generateMissingScenes(korea ? "korea" : "global", topicId, roles);
         result = { ...written, ...(korea ? await imagesKorea(false, written.id) : await imagesGlobal(false, written.id)),
           id: written.id, generatorError };
+      } else result = written;
+    } else if (action === "prepareProduct" && korea) {
+      const written = await prepareKoreaProduct(String(body.productUrl || ""));
+      if (written.status === "ok") {
+        const draft = koreaItems().find((d) => d.id === written.id);
+        const roles = draft.images.filter((img) => img.role !== "product_photo").map((img) => img.role);
+        const generatorError = await generateMissingScenes("korea", written.topicId, roles);
+        result = { ...written, ...(await imagesKorea(false, written.id)), generatorError };
       } else result = written;
     } else if (action === "write") {
       result = korea ? writeKorea(String(body.topicId || "")) : writeGlobal(String(body.topicId || ""));

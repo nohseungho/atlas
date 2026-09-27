@@ -128,6 +128,7 @@ export default function OperatePage() {
   const [message, setMessage] = useState("");
   const [result, setResult] = useState(null);
   const [choosingTopic, setChoosingTopic] = useState(false);
+  const [productUrl, setProductUrl] = useState("");
   // 준비된 원고가 여러 개일 때 화면이 보고 있는 항목. 비어 있으면 가장 최근 것.
   const [picked, setPicked] = useState({ [KOREA]: "", [GLOBAL]: "" });
 
@@ -255,6 +256,23 @@ ${review.title}
     });
   }
 
+  async function uploadProductPhoto(file) {
+    if (!file) return;
+    await run("photo", async () => {
+      const draft = state?.[KOREA]?.draft;
+      if (!draft) throw new Error("제품 글을 먼저 준비하세요.");
+      const form = new FormData();
+      form.set("draftId", draft.id);
+      form.set("imageId", "img_product_photo");
+      form.set("file", file);
+      const response = await fetch("/api/atlas/korea-assets", { method: "POST", body: form });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "제품 사진을 연결하지 못했습니다.");
+      await load({ ...picked, [KOREA]: draft.id });
+      setMessage("실제 제품 사진을 연결했습니다. 미리보기에서 사진과 수호 장면을 확인하세요.");
+    });
+  }
+
   if (!state) {
     return (
       <main className="p-8 text-zinc-300">
@@ -306,6 +324,20 @@ ${review.title}
             busy={Boolean(busy)}
             onPick={(topicId) => act({ action: "prepare", channelId: active, topicId }, "글과 사용 가능한 장면 이미지를 준비했습니다. 아래에서 빠진 이미지와 전체 내용을 확인하세요.")}
           />
+          {isKorea ? (
+            <form className="rounded-xl border border-zinc-800 bg-zinc-950 p-4" onSubmit={(event) => {
+              event.preventDefault();
+              act({ action: "prepareProduct", channelId: KOREA, productUrl }, "확인된 판매 정보로 제품 글과 수호 장면을 준비했습니다. 실제 제품 사진을 연결해야 게시할 수 있습니다.");
+            }}>
+              <label className="block text-sm font-semibold" htmlFor="atlas-product-url">제품 글: 판매 페이지 주소</label>
+              <p className="mt-1 text-xs text-zinc-400">가격·특징이 확인되는 페이지를 사용합니다. 확인되지 않은 상품은 초안을 만들지 않습니다.</p>
+              <div className="mt-3 flex gap-2">
+                <input id="atlas-product-url" type="url" required value={productUrl} onChange={(event) => setProductUrl(event.target.value)}
+                  placeholder="https://..." className="min-w-0 flex-1 rounded-lg border border-zinc-700 bg-zinc-900 p-2 text-sm" />
+                <button type="submit" className={primary} disabled={Boolean(busy)}>제품 글 만들기</button>
+              </div>
+            </form>
+          ) : null}
         </section>
       ) : (
         <>
@@ -352,6 +384,14 @@ ${review.title}
             busy={Boolean(busy)}
             onRender={(force) => act({ action: "images", channelId: active, force, id: record.id }, "사용 가능한 이미지를 다시 확인했습니다.")}
           />
+          {isKorea && record.contentType === "new_product_review" ? (
+            <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+              <h2 className="font-semibold">실제 제품 사진</h2>
+              <p className="mt-1 text-xs text-zinc-400">직접 촬영했거나 사용 권한이 있는 제품 사진을 연결하세요. 판매 페이지의 사진은 권한 확인 없이 자동 복사하지 않습니다.</p>
+              <input type="file" accept="image/png,image/jpeg,image/webp" disabled={Boolean(busy)}
+                className="mt-3 block text-sm" onChange={(event) => uploadProductPhoto(event.target.files?.[0])} />
+            </section>
+          ) : null}
 
           <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
             <h2 className="font-semibold">전체 글·이미지 미리보기</h2>
