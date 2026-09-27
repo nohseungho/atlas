@@ -33,6 +33,7 @@ const PROTECTED_FIELDS = new Set([
   "blogId",
   "contentType",
   "logNo",
+  "userPublishApproval",
 ]);
 
 function readItems() {
@@ -112,6 +113,9 @@ export async function PATCH(request) {
 
   const safePatch = editablePatch(body.patch);
   let next = normalizeKoreaDraft({ ...items[index], ...safePatch, id });
+  // operate 최종 검수에서 남긴 일회성 발행 승인 기록은 상태 전이 중 보존한다.
+  // 입력 patch로는 덮어쓸 수 없고 실제 발행 API가 해시·만료·사용 여부를 다시 검사한다.
+  if (items[index].userPublishApproval) next.userPublishApproval = items[index].userPublishApproval;
 
   if (next.affiliateUrl && !String(next.affiliateDisclosure || "").trim()) {
     next.affiliateDisclosure = disclosureFor(next.affiliateUrl);
