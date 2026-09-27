@@ -321,6 +321,21 @@ async function uploadImages(page, scope, draft) {
   return { uploaded, requested: (draft.images || []).length, placements };
 }
 
+// 이미지가 모두 마지막 본문 뒤에 붙은 경우에는 업로드 성공 수와 무관하게 발행하지 않는다.
+async function verifyImagesAreInline(scope, draft) {
+  const paragraphs = bodyParagraphsFromDraft(draft);
+  const closing = paragraphs.at(-1) || "";
+  const { blocks, texts } = await editorParagraphs(scope);
+  const closingIndex = pickVerifiedEditorAnchorIndex(texts, closing, [closing.slice(0, 12)]);
+  if (closingIndex < 0) return false;
+  const firstImage = scope.locator(".se-main-container .se-component.se-image").first();
+  if (!await firstImage.count()) return false;
+  const imageElement = await firstImage.elementHandle();
+  if (!imageElement) return false;
+  return blocks.nth(closingIndex).evaluate((lastText, image) =>
+    Boolean(lastText.compareDocumentPosition(image) & Node.DOCUMENT_POSITION_PRECEDING), imageElement).catch(() => false);
+}
+
 async function firstVisibleAcrossScopes(page, preferredScope, selectors) {
   const candidates = [preferredScope, page, ...page.frames()];
   const seen = new Set();
@@ -429,6 +444,9 @@ async function main() {
     const images = await uploadImages(page, scope, draft);
     if (publish && images.uploaded !== images.requested) {
       throw Object.assign(new Error(`이미지 ${images.uploaded}/${images.requested}장만 본문에 삽입되었습니다. 게시를 중단했습니다.`), { code: "NAVER_IMAGE_INSERTION_INCOMPLETE" });
+    }
+    if (publish && !await verifyImagesAreInline(scope, draft)) {
+      throw Object.assign(new Error("네이버 편집기에서 이미지가 본문 중간에 배치됐는지 확인할 수 없어 게시를 중단했습니다."), { code: "NAVER_INLINE_IMAGE_UNVERIFIED" });
     }
     if (!publish) result = { status: "staged", editorUrl: page.url(), imageUpload: images, message: "네이버 편집기에 자동 반영했습니다. 발행은 승인 전이라 실행하지 않았습니다." };
     else { await clickPublish(page, scope); result = { status: "published", editorUrl: page.url(), publishedUrl: page.url(), imageUpload: images, message: "네이버 발행 동작을 완료했습니다." }; }
