@@ -4,7 +4,7 @@ import path from "path";
 import { createRequire } from "module";
 import { naverEditorTarget } from "../lib/atlas/korea-product-pipeline.js";
 import { assertNaverWriteTarget, getCharacterDefinition } from "../lib/atlas/character-channel-policy.js";
-import { bodyHtmlFromDraft, bodyPlainTextFromDraft, caretToEndOfElement, escapeHtml, pickAnchorParagraphIndex, usableImages as filterUsableImages } from "../lib/atlas/naver-image-placement.js";
+import { bodyHtmlFromDraft, bodyParagraphsFromDraft, bodyPlainTextFromDraft, caretToEndOfElement, escapeHtml, pickAnchorParagraphIndex, pickVerifiedEditorAnchorIndex, usableImages as filterUsableImages } from "../lib/atlas/naver-image-placement.js";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright-core");
@@ -280,17 +280,10 @@ async function editorParagraphs(scope) {
 }
 
 // anchorKeywords를 포함하는 "문단 전체"를 찾는다. 키워드 문자열은 자르거나 바꾸지 않는다.
-async function findAnchor(scope, keywords = []) {
+async function findAnchor(scope, expectedParagraph, keywords = []) {
   const { blocks, texts } = await editorParagraphs(scope);
-  const index = pickAnchorParagraphIndex(texts, keywords);
+  const index = pickVerifiedEditorAnchorIndex(texts, expectedParagraph, keywords);
   return index >= 0 ? blocks.nth(index) : null;
-}
-
-// 마지막 문단(안전한 문단 끝). anchor를 못 찾았을 때만 쓴다.
-async function lastParagraph(scope) {
-  const { blocks, texts } = await editorParagraphs(scope);
-  for (let i = texts.length - 1; i >= 0; i -= 1) if (texts[i].trim()) return blocks.nth(i);
-  return null;
 }
 
 // 문단 끝에 커서를 놓고 새 줄을 연다. 커서가 문단 끝이 아니면 Enter를 누르지 않는다(문장/단어 분할 방지).
@@ -308,15 +301,16 @@ async function openLineAfterParagraph(page, locator) {
 async function uploadImages(page, scope, draft) {
   const images = usableImages(draft);
   if (!images.length) return { uploaded: 0, requested: (draft.images || []).length, placements: [] };
+  const paragraphs = bodyParagraphsFromDraft(draft);
   const placements = [];
   let uploaded = 0;
   for (const image of images) {
-    const anchor = await findAnchor(scope, image.anchorKeywords || []);
+    const expectedIndex = pickAnchorParagraphIndex(paragraphs, image.anchorKeywords || []);
+    const anchor = expectedIndex < 0 ? null : await findAnchor(scope, paragraphs[expectedIndex], image.anchorKeywords || []);
     const matched = Boolean(anchor);
-    let opened = await openLineAfterParagraph(page, anchor);
-    if (!opened.ok && !matched) opened = await openLineAfterParagraph(page, await lastParagraph(scope));
+    const opened = await openLineAfterParagraph(page, anchor);
     if (!opened.ok) {
-      // 안전한 삽입 위치를 만들지 못하면 본문을 건드리지 않고 이미지를 건너뛴다.
+      // 목표 문단을 찾지 못하면 글 끝에 몰아 넣지 않고 게시를 차단한다.
       placements.push({ id: image.id || image.role, matched, skipped: true, reason: opened.reason, keywords: image.anchorKeywords || [] });
       continue;
     }
