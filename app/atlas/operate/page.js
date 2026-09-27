@@ -450,15 +450,15 @@ ${review.title}
             <h2 className="font-semibold">전체 글·이미지 미리보기</h2>
             <p className="mt-1 text-xs text-zinc-500">
               {isKorea
-                ? "네이버 편집기에 들어갈 본문과 이미지 삽입 위치입니다."
-                : "Blogger에 발행될 구조 그대로이며, 이미지는 아직 로컬 파일을 가리킵니다."}
+                ? "본문 사이에 이미지를 배치한 최종 검수 화면입니다."
+                : "Blogger에 발행될 글과 이미지의 배치를 확인하세요."}
             </p>
             <div className="mt-3 rounded-lg bg-white p-4 text-zinc-900">
               <div dangerouslySetInnerHTML={{ __html: channel.preview?.html || "" }} />
             </div>
           </section>
 
-          <ReviewPanel review={channel.review} preview={channel.preview} isKorea={isKorea} />
+          <ReviewPanel review={channel.review} />
 
           <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
             <h2 className="font-semibold">발행</h2>
@@ -529,9 +529,8 @@ ${review.title}
 }
 
 // 최종 검수: 제목 / 요약 / 이미지 전체 / 최근 글 5개와의 중복 비교.
-function ReviewPanel({ review, preview, isKorea }) {
+function ReviewPanel({ review }) {
   if (!review) return null;
-  const placementUrls = new Map((preview?.placements || []).map((p) => [p.id, p.previewUrl]));
   return (
     <section className="rounded-xl border border-sky-900 bg-zinc-950 p-4">
       <h2 className="font-semibold">최종 검수</h2>
@@ -546,26 +545,7 @@ function ReviewPanel({ review, preview, isKorea }) {
         </div>
       </dl>
 
-      <h3 className="mt-4 text-sm font-semibold">이미지 {review.images.length}장</h3>
-      <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {review.images.map((img) => (
-          <figure key={img.role} className="overflow-hidden rounded-lg border border-zinc-800">
-            {(isKorea ? placementUrls.get(`img_${img.role}`) || img.src : img.src) ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={isKorea ? placementUrls.get(`img_${img.role}`) || img.src : img.src} alt={img.alt || img.role} className="block w-full" />
-            ) : (
-              <div className="p-6 text-center text-xs text-amber-300">이미지 없음</div>
-            )}
-            <figcaption className="flex justify-between px-2 py-1 text-xs text-zinc-400">
-              <span>{img.role}{!img.ready ? " · 연결 필요" : ""}</span>
-              <span className={img.faceMatch?.status === "pass" ? "text-emerald-400" : img.faceMatch ? "text-red-400" : "text-zinc-500"}>
-                얼굴 검수: {img.faceMatch?.status || "기록 없음"}
-                {typeof img.faceMatch?.similarity === "number" ? ` (${img.faceMatch.similarity.toFixed(2)})` : ""}
-              </span>
-            </figcaption>
-          </figure>
-        ))}
-      </div>
+      <p className="mt-4 text-sm text-zinc-300">이미지 {review.images.filter((img) => img.ready).length}/{review.images.length}장 준비 · 배치는 위 전체 미리보기에서 확인</p>
 
       <h3 className="mt-4 text-sm font-semibold">최근 공개 글 {review.similarity.comparisons.length}개와 비교</h3>
       <table className="mt-2 w-full text-left text-xs">

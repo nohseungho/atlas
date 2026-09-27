@@ -433,6 +433,9 @@ async function main() {
     if (draft.contentType !== "existing_post_update" || draft.updateMode !== "images_only") await setTitle(scope, draft.title || "");
     await setBody(page, scope, draft);
     const images = await uploadImages(page, scope, draft);
+    if (publish && images.uploaded !== images.requested) {
+      throw Object.assign(new Error(`이미지 ${images.uploaded}/${images.requested}장만 본문에 삽입되었습니다. 게시를 중단했습니다.`), { code: "NAVER_IMAGE_INSERTION_INCOMPLETE" });
+    }
     if (!publish) result = { status: "staged", editorUrl: page.url(), imageUpload: images, message: "네이버 편집기에 자동 반영했습니다. 발행은 승인 전이라 실행하지 않았습니다." };
     else { await clickPublish(page, scope); result = { status: "published", editorUrl: page.url(), publishedUrl: page.url(), imageUpload: images, message: "네이버 발행 동작을 완료했습니다." }; }
   } catch (error) {

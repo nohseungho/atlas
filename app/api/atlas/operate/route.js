@@ -127,13 +127,15 @@ function koreaPreview(draft) {
   const paragraphs = bodyParagraphsFromDraft(draft);
   const placements = planImagePlacements(paragraphs, draft.images || [], (src) => fs.existsSync(src));
   // 미리보기 이미지는 경로가 아니라 draft/image 식별자로 요청한다(asset 라우트 참고).
+  const previewPlacements = placements.map((p) => ({
+    ...p,
+    alt: draft.images.find((img) => img.id === p.id)?.alt || "",
+    previewUrl: `/api/atlas/operate/asset?draft=${encodeURIComponent(draft.id)}&image=${encodeURIComponent(p.id)}&ext=${encodeURIComponent(p.src.split('.').pop().toLowerCase())}`,
+  }));
   return {
-    html: bodyHtmlFromDraft(draft),
+    html: bodyHtmlFromDraft(draft, previewPlacements),
     paragraphs,
-    placements: placements.map((p) => ({
-      ...p,
-      previewUrl: `/api/atlas/operate/asset?draft=${encodeURIComponent(draft.id)}&image=${encodeURIComponent(p.id)}&ext=${encodeURIComponent(p.src.split('.').pop().toLowerCase())}`,
-    })),
+    placements: previewPlacements,
   };
 }
 
