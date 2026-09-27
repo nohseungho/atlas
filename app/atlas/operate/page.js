@@ -15,11 +15,11 @@ const KOREA = "korea_naver";
 const GLOBAL = "global_blogger";
 
 const CHANNELS = [
-  { id: KOREA, label: "국내 Naver", character: "수호", note: "생활편의·시즌 검색형 정보글 · 제휴 링크 없이 발행 가능" },
-  { id: GLOBAL, label: "해외 Blogger", character: "미지", note: "미지↔수호 문답형 · Quick Answer / TOC / FAQ / Sources · 미지 이미지 5장" },
+  { id: KOREA, label: "국내", character: "수호", note: "Naver who-ami · 생활 장면형" },
+  { id: GLOBAL, label: "해외", character: "미지", note: "Blogger atlas-money-2026 · 미지 이미지 5장 이상" },
 ];
 
-const STEPS = ["주제 선택", "자동 작성", "이미지 생성", "미리보기", "발행", "공개 URL"];
+const STEPS = ["주제 선택", "글·이미지 제작", "전체 미리보기·검수", "승인 후 게시"];
 
 const primary = "rounded-lg bg-emerald-700 px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40";
 const secondary = "rounded-lg border border-zinc-600 px-3 py-2.5 text-sm font-medium text-zinc-200 disabled:opacity-40";
@@ -97,14 +97,14 @@ function TopicPicker({ topics, busy, onPick }) {
   );
 }
 
-function ImagePanel({ images, thumbs, busy, onRender }) {
+function ImagePanel({ images, busy, onRender }) {
   if (!images) return null;
   const done = images.total > 0 && images.ready === images.total;
   return (
     <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="font-semibold">이미지 생성</div>
+          <div className="font-semibold">이미지 준비 상태</div>
           <div className={`mt-1 text-sm ${done ? "text-emerald-300" : "text-amber-300"}`}>
             캐릭터 이미지 {images.ready}/{images.total} 생성 완료
             {images.productPhotoTotal
@@ -114,22 +114,9 @@ function ImagePanel({ images, thumbs, busy, onRender }) {
           {images.missing?.length ? <div className="mt-1 text-xs text-zinc-500">대기: {images.missing.join(", ")}</div> : null}
         </div>
         <div className="flex gap-2">
-          <button type="button" className={primary} disabled={busy} onClick={() => onRender(false)}>
-            {done ? "빠진 이미지만 생성" : "이미지 생성"}
-          </button>
-          <button type="button" className={secondary} disabled={busy} onClick={() => onRender(true)}>
-            전체 다시 생성
-          </button>
+          {!done ? <button type="button" className={secondary} disabled={busy} onClick={() => onRender(false)}>이미지 준비 다시 확인</button> : null}
         </div>
       </div>
-      {thumbs?.length ? (
-        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {thumbs.map((thumb) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img key={thumb.id} src={thumb.url} alt={thumb.id} className="w-full rounded-lg border border-zinc-800" />
-          ))}
-        </div>
-      ) : null}
     </section>
   );
 }
@@ -140,6 +127,7 @@ export default function OperatePage() {
   const [busy, setBusy] = useState("");
   const [message, setMessage] = useState("");
   const [result, setResult] = useState(null);
+  const [choosingTopic, setChoosingTopic] = useState(false);
   // 준비된 원고가 여러 개일 때 화면이 보고 있는 항목. 비어 있으면 가장 최근 것.
   const [picked, setPicked] = useState({ [KOREA]: "", [GLOBAL]: "" });
 
@@ -178,8 +166,14 @@ export default function OperatePage() {
       const { ok, data } = await postJson("/api/atlas/operate", { ...selection, ...body });
       if (data.state) setState(data.state);
       if (!ok) throw new Error(data.error || "처리하지 못했습니다.");
-      if (data.id) setPicked((prev) => ({ ...prev, [body.channelId]: data.id }));
-      setMessage(note);
+      if (data.id) { setPicked((prev) => ({ ...prev, [body.channelId]: data.id })); setChoosingTopic(false); }
+      let publicNote = "";
+      if (body.action === "prepare" && body.channelId === GLOBAL && data.state?.[GLOBAL]?.steps?.imagesDone) {
+        const uploaded = await postJson("/api/articles/upload-visuals", { articleId: data.id, mode: "prepare" });
+        publicNote = uploaded.ok ? "공개 이미지 주소 연결 완료." : "공개 이미지 연결 대기: Cloudinary 설정을 확인하세요.";
+        await load({ ...picked, [GLOBAL]: data.id });
+      }
+      setMessage([note, data.generatorError, data.missing?.length ? `빠진 장면: ${data.missing.join(", ")}` : "", publicNote].filter(Boolean).join(" "));
     });
   }
 
@@ -273,9 +267,7 @@ ${review.title}
   const isKorea = active === KOREA;
   const steps = channel.steps;
   const record = isKorea ? channel.draft : channel.article;
-  const thumbs = isKorea
-    ? (channel.preview?.placements || []).map((p) => ({ id: p.id, url: p.previewUrl }))
-    : (record?.visualAssets || []).map((a) => ({ id: a.key, url: a.localSrc })).filter((t) => t.url);
+  const progress = !record ? 1 : !steps.imagesDone ? 2 : 3;
 
   return (
     <main className="mx-auto max-w-5xl space-y-6 px-4 py-8 text-zinc-100">
@@ -283,7 +275,7 @@ ${review.title}
         <div className="text-sm text-amber-300">ATLAS · 단일 운영 화면</div>
         <h1 className="mt-1 text-3xl font-bold">국내·해외 블로그 운영</h1>
         <p className="mt-2 text-sm text-zinc-400">
-          주제를 고르면 본문·이미지까지 자동으로 만들고, 미리보기로 확인한 뒤 실제 발행과 공개 URL까지 이 화면에서 끝냅니다.
+          주제 선택 → 글·이미지 준비 → 전체 검수 → 직접 승인 후 게시. 이미지가 부족하면 이유를 보여주고 게시를 막습니다.
         </p>
       </header>
 
@@ -293,7 +285,7 @@ ${review.title}
             key={c.id}
             type="button"
             aria-pressed={active === c.id}
-            onClick={() => { setActive(c.id); setResult(null); setMessage(""); }}
+            onClick={() => { setActive(c.id); setResult(null); setMessage(""); setChoosingTopic(false); }}
             className={`rounded-xl border p-4 text-left ${active === c.id ? "border-emerald-500 bg-zinc-900" : "border-zinc-800 bg-zinc-950"}`}
           >
             <div className="font-bold">{c.label} · {c.character}</div>
@@ -302,17 +294,17 @@ ${review.title}
         ))}
       </div>
 
-      <StepRail current={steps.step} />
+      <StepRail current={steps.published ? 5 : progress} />
 
       {message ? <p role="status" className="rounded-lg bg-zinc-900 p-3 text-sm text-zinc-200">{message}</p> : null}
 
-      {!record ? (
+      {!record || choosingTopic ? (
         <section className="space-y-3">
           <h2 className="text-lg font-semibold">1. 주제 선택</h2>
           <TopicPicker
             topics={channel.topics}
             busy={Boolean(busy)}
-            onPick={(topicId) => act({ action: "write", channelId: active, topicId }, "본문을 자동으로 작성했습니다. 다음은 이미지 생성입니다.")}
+            onPick={(topicId) => act({ action: "prepare", channelId: active, topicId }, "글과 사용 가능한 장면 이미지를 준비했습니다. 아래에서 빠진 이미지와 전체 내용을 확인하세요.")}
           />
         </section>
       ) : (
@@ -347,9 +339,9 @@ ${review.title}
                 type="button"
                 className={secondary}
                 disabled={Boolean(busy)}
-                onClick={() => act({ action: "write", channelId: active, topicId: record.topicId, id: record.id }, "본문을 다시 작성했습니다. 이미 생성된 이미지는 그대로 유지됩니다.")}
+                onClick={() => setChoosingTopic(true)}
               >
-                본문 다시 작성
+                다른 주제 선택
               </button>
             </div>
             <div className="mt-3"><PolicyBadges policy={channel.policy} /></div>
@@ -357,33 +349,23 @@ ${review.title}
 
           <ImagePanel
             images={steps.images}
-            thumbs={thumbs}
             busy={Boolean(busy)}
-            onRender={(force) => act({ action: "images", channelId: active, force, id: record.id }, "이미지를 실제 파일로 생성해 본문에 연결했습니다.")}
+            onRender={(force) => act({ action: "images", channelId: active, force, id: record.id }, "사용 가능한 이미지를 다시 확인했습니다.")}
           />
 
           <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
-            <h2 className="font-semibold">미리보기</h2>
+            <h2 className="font-semibold">전체 글·이미지 미리보기</h2>
             <p className="mt-1 text-xs text-zinc-500">
               {isKorea
                 ? "네이버 편집기에 들어갈 본문과 이미지 삽입 위치입니다."
                 : "Blogger에 발행될 구조 그대로이며, 이미지는 아직 로컬 파일을 가리킵니다."}
             </p>
-            <div className="mt-3 max-h-[28rem] overflow-auto rounded-lg bg-white p-4 text-zinc-900">
+            <div className="mt-3 rounded-lg bg-white p-4 text-zinc-900">
               <div dangerouslySetInnerHTML={{ __html: channel.preview?.html || "" }} />
             </div>
-            {isKorea && channel.preview?.placements?.length ? (
-              <ul className="mt-3 space-y-1 text-xs text-zinc-400">
-                {channel.preview.placements.map((p) => (
-                  <li key={p.id}>
-                    {p.id} · {p.matched ? `${p.paragraphIndex + 1}번째 문단 뒤` : "앵커 문단을 못 찾아 본문 끝에 배치"}
-                  </li>
-                ))}
-              </ul>
-            ) : null}
           </section>
 
-          <ReviewPanel review={channel.review} />
+          <ReviewPanel review={channel.review} preview={channel.preview} isKorea={isKorea} />
 
           <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
             <h2 className="font-semibold">발행</h2>
@@ -407,10 +389,10 @@ ${review.title}
               <button
                 type="button"
                 className={danger}
-                disabled={Boolean(busy) || !steps.imagesDone || steps.published || Boolean(channel.review?.blocking?.length)}
+                disabled={Boolean(busy) || !steps.imagesDone || steps.published || !channel.review || Boolean(channel.review.blocking?.length) || (!isKorea && steps.publicImages < steps.images.total)}
                 onClick={isKorea ? publishKorea : publishGlobal}
               >
-                {busy === "publish" ? "발행 중…" : "발행"}
+                {busy === "publish" ? "게시 중…" : "최종 승인하고 게시"}
               </button>
             </div>
             {isKorea ? (
@@ -454,8 +436,9 @@ ${review.title}
 }
 
 // 최종 검수: 제목 / 요약 / 이미지 전체 / 최근 글 5개와의 중복 비교.
-function ReviewPanel({ review }) {
+function ReviewPanel({ review, preview, isKorea }) {
   if (!review) return null;
+  const placementUrls = new Map((preview?.placements || []).map((p) => [p.id, p.previewUrl]));
   return (
     <section className="rounded-xl border border-sky-900 bg-zinc-950 p-4">
       <h2 className="font-semibold">최종 검수</h2>
@@ -474,14 +457,14 @@ function ReviewPanel({ review }) {
       <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
         {review.images.map((img) => (
           <figure key={img.role} className="overflow-hidden rounded-lg border border-zinc-800">
-            {img.src ? (
+            {(isKorea ? placementUrls.get(`img_${img.role}`) || img.src : img.src) ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={img.src} alt={img.alt || img.role} className="block w-full" />
+              <img src={isKorea ? placementUrls.get(`img_${img.role}`) || img.src : img.src} alt={img.alt || img.role} className="block w-full" />
             ) : (
               <div className="p-6 text-center text-xs text-amber-300">이미지 없음</div>
             )}
             <figcaption className="flex justify-between px-2 py-1 text-xs text-zinc-400">
-              <span>{img.role}</span>
+              <span>{img.role}{!img.ready ? " · 연결 필요" : ""}</span>
               <span className={img.faceMatch?.status === "pass" ? "text-emerald-400" : img.faceMatch ? "text-red-400" : "text-zinc-500"}>
                 얼굴 검수: {img.faceMatch?.status || "기록 없음"}
                 {typeof img.faceMatch?.similarity === "number" ? ` (${img.faceMatch.similarity.toFixed(2)})` : ""}

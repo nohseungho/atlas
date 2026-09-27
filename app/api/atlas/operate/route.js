@@ -8,6 +8,9 @@
 // 이 라우트는 그 앞 단계(주제·원고·이미지·미리보기)와 상태 조회만 담당한다.
 import { NextResponse } from "next/server";
 import fs from "fs";
+import path from "path";
+import { execFile } from "child_process";
+import { promisify } from "util";
 import { readJson, writeJson } from "@/lib/data-store";
 import { ATLAS_CHANNEL_ID } from "@/lib/atlas/character-channel-policy";
 import { normalizeKoreaDraft, validateKoreaDraft, naverEditorTarget } from "@/lib/atlas/korea-product-pipeline";
@@ -27,12 +30,30 @@ import {
 import { duplicateReason, publishedIndex } from "@/lib/atlas/operate/published-index";
 import { globalRecent, globalReviewPacket, koreaRecent, koreaReviewPacket, recordUserApproval } from "@/lib/atlas/operate/publish-approval-store";
 import { topicSimilarity } from "@/lib/atlas/publish-review";
+import { resolveSceneArt } from "@/lib/atlas/operate/scene-art";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const KOREA_FILE = "korea-drafts.json";
 const ARTICLES_FILE = "articles.json";
+const execFileAsync = promisify(execFile);
+
+async function generateMissingScenes(channel, topicId, roles) {
+  const slug = String(topicId || "").replace(/^(kr|gl)_info_/, "");
+  const missing = resolveSceneArt(channel, slug, roles).missing;
+  if (!missing.length) return "";
+  try {
+    const url = process.env.ATLAS_COMFY_URL || "http://127.0.0.1:8188";
+    const response = await fetch(new URL("/system_stats", url), { signal: AbortSignal.timeout(1500) });
+    if (!response.ok) throw new Error(`ComfyUI 응답 ${response.status}`);
+    await execFileAsync(process.execPath, [path.join(process.cwd(), "scripts", "atlas-scene-generate.mjs"), channel, slug,
+      "--roles", missing.join(","), "--comfy", url], { cwd: process.cwd(), timeout: 10 * 60 * 1000, maxBuffer: 4 * 1024 * 1024 });
+    return "";
+  } catch (error) {
+    return `로컬 장면 생성 대기: ${String(error?.message || error).slice(0, 240)}`;
+  }
+}
 
 function koreaItems() {
   return readJson(KOREA_FILE).items || [];
@@ -108,7 +129,7 @@ function koreaPreview(draft) {
     paragraphs,
     placements: placements.map((p) => ({
       ...p,
-      previewUrl: `/api/atlas/operate/asset?draft=${encodeURIComponent(draft.id)}&image=${encodeURIComponent(p.id)}`,
+      previewUrl: `/api/atlas/operate/asset?draft=${encodeURIComponent(draft.id)}&image=${encodeURIComponent(p.id)}&ext=${encodeURIComponent(p.src.split('.').pop().toLowerCase())}`,
     })),
   };
 }
@@ -323,7 +344,20 @@ export async function POST(request) {
 
   try {
     let result;
-    if (action === "write") {
+    if (action === "prepare") {
+      // 한 번의 제작 요청에서 기존 작성기와 장면 아트 연결기를 순서대로 사용한다.
+      // 이미지가 아직 없으면 요청서만 남고 발행 승인은 열리지 않는다.
+      const written = korea ? writeKorea(String(body.topicId || "")) : writeGlobal(String(body.topicId || ""));
+      if (written.status === "ok") {
+        const topicId = String(body.topicId || "");
+        const record = korea ? koreaItems().find((d) => d.id === written.id) : articleList().find((a) => a.id === written.id);
+        const roles = korea ? (record.images || []).filter((img) => img.role !== "product_photo").map((img) => img.role)
+          : (record.visualAssets || []).map((asset) => asset.role || asset.key);
+        const generatorError = await generateMissingScenes(korea ? "korea" : "global", topicId, roles);
+        result = { ...written, ...(korea ? await imagesKorea(false, written.id) : await imagesGlobal(false, written.id)),
+          id: written.id, generatorError };
+      } else result = written;
+    } else if (action === "write") {
       result = korea ? writeKorea(String(body.topicId || "")) : writeGlobal(String(body.topicId || ""));
     } else if (action === "images") {
       result = korea
