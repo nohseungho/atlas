@@ -10,6 +10,8 @@
 // 이 화면은 그 앞 단계와 게이트 표시를 담당한다.
 
 import { useCallback, useEffect, useState } from "react";
+import { KEYS, readList } from "@/app/atlas/lib/storage";
+import { listImages } from "@/app/atlas/lib/image-store";
 
 const KOREA = "korea_naver";
 const GLOBAL = "global_blogger";
@@ -129,6 +131,7 @@ export default function OperatePage() {
   const [result, setResult] = useState(null);
   const [choosingTopic, setChoosingTopic] = useState(false);
   const [productUrl, setProductUrl] = useState("");
+  const [savedProducts, setSavedProducts] = useState([]);
   // 준비된 원고가 여러 개일 때 화면이 보고 있는 항목. 비어 있으면 가장 최근 것.
   const [picked, setPicked] = useState({ [KOREA]: "", [GLOBAL]: "" });
 
@@ -147,6 +150,13 @@ export default function OperatePage() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load(picked);
   }, [load, picked]);
+
+  useEffect(() => {
+    let live = true;
+    Promise.all(readList(KEYS.products).map(async (product) => ({ ...product, localImages: await listImages(product.id).catch(() => []) })))
+      .then((products) => { if (live) setSavedProducts(products.filter((product) => product.productUrl)); });
+    return () => { live = false; };
+  }, []);
 
   async function run(label, fn) {
     setBusy(label);
@@ -273,6 +283,29 @@ ${review.title}
     });
   }
 
+  async function prepareSavedProduct(product) {
+    await run("prepareProduct", async () => {
+      const { ok, data } = await postJson("/api/atlas/operate", { action: "prepareProduct", channelId: KOREA, productUrl: product.productUrl });
+      if (!ok) throw new Error(data.error || "판매 정보 확인에 실패했습니다.");
+      const photo = product.imageRightsConfirmed && product.localImages?.[0];
+      let photoNote = "실제 제품 사진을 연결해야 게시할 수 있습니다.";
+      if (photo?.dataUrl) {
+        const blob = await (await fetch(photo.dataUrl)).blob();
+        const form = new FormData();
+        form.set("draftId", data.id);
+        form.set("imageId", "img_product_photo");
+        form.set("file", new File([blob], photo.name || "product-photo.png", { type: photo.type || blob.type }));
+        const uploaded = await fetch("/api/atlas/korea-assets", { method: "POST", body: form });
+        if (uploaded.ok) photoNote = "저장된 사용 승인 제품 사진까지 연결했습니다.";
+      }
+      setPicked((prev) => ({ ...prev, [KOREA]: data.id }));
+      setChoosingTopic(false);
+      await load({ ...picked, [KOREA]: data.id });
+      setMessage(["제품 글과 수호 장면을 준비했습니다.", photoNote, data.generatorError,
+        data.missing?.length ? `빠진 수호 장면: ${data.missing.join(", ")}` : ""].filter(Boolean).join(" "));
+    });
+  }
+
   if (!state) {
     return (
       <main className="p-8 text-zinc-300">
@@ -324,6 +357,26 @@ ${review.title}
             busy={Boolean(busy)}
             onPick={(topicId) => act({ action: "prepare", channelId: active, topicId }, "글과 사용 가능한 장면 이미지를 준비했습니다. 아래에서 빠진 이미지와 전체 내용을 확인하세요.")}
           />
+          {isKorea ? (
+            <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+              <h3 className="font-semibold">저장된 제품에서 선택</h3>
+              {savedProducts.length ? <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                {savedProducts.map((product) => (
+                  <div key={product.id} className="flex gap-3 rounded-lg border border-zinc-800 p-3">
+                    {product.localImages?.[0]?.dataUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={product.localImages[0].dataUrl} alt="" className="h-20 w-20 rounded object-cover" />
+                    ) : null}
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-semibold">{product.name}</div>
+                      <div className="mt-1 text-xs text-zinc-400">{product.currentPrice?.toLocaleString("ko-KR") || "가격 재확인"} {product.currency || "KRW"}</div>
+                      <button type="button" className={`${secondary} mt-2`} disabled={Boolean(busy)} onClick={() => prepareSavedProduct(product)}>이 제품으로 제작</button>
+                    </div>
+                  </div>
+                ))}
+              </div> : <p className="mt-2 text-xs text-zinc-400">저장된 제품이 없으면 아래에 판매 페이지 주소를 넣어 제작할 수 있습니다.</p>}
+            </section>
+          ) : null}
           {isKorea ? (
             <form className="rounded-xl border border-zinc-800 bg-zinc-950 p-4" onSubmit={(event) => {
               event.preventDefault();
