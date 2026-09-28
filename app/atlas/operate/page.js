@@ -303,10 +303,12 @@ ${review.title}
 
   async function prepareSavedProduct(product) {
     await run("prepareProduct", async () => {
-      const { ok, data } = await postJson("/api/atlas/operate", { action: "prepareProduct", channelId: KOREA, productUrl: product.productUrl });
+      const withProductPhoto = Boolean(product.imageRightsConfirmed && product.localImages?.[0]?.dataUrl);
+      const { ok, data } = await postJson("/api/atlas/operate", { action: "prepareProduct", channelId: KOREA,
+        productUrl: product.productUrl, withProductPhoto });
       if (!ok) throw new Error(data.error || "판매 정보 확인에 실패했습니다.");
-      const photo = product.imageRightsConfirmed && product.localImages?.[0];
-      let photoNote = "실제 제품 사진을 연결해야 게시할 수 있습니다.";
+      const photo = withProductPhoto && product.localImages[0];
+      let photoNote = "사진 사용 권한이 없어 제품 사진 없이 추천 정보글로 준비했습니다.";
       if (photo?.dataUrl) {
         const blob = await (await fetch(photo.dataUrl)).blob();
         const form = new FormData();
@@ -319,7 +321,7 @@ ${review.title}
       setPicked((prev) => ({ ...prev, [KOREA]: data.id }));
       setChoosingTopic(false);
       await load({ ...picked, [KOREA]: data.id });
-      setMessage(["제품 글과 수호 장면을 준비했습니다.", photoNote, data.generatorError,
+      setMessage(["확인된 제품 정보와 수호 장면을 준비했습니다.", photoNote, data.generatorError,
         data.missing?.length ? `빠진 수호 장면: ${data.missing.join(", ")}` : ""].filter(Boolean).join(" "));
     });
   }
@@ -402,7 +404,7 @@ ${review.title}
                   <div className="mt-2 flex flex-wrap items-center gap-3">
                     {item.sellerUrl ? <button type="button" className={secondary} disabled={Boolean(busy)}
                       onClick={() => act({ action: "prepareProduct", channelId: KOREA, productUrl: item.sellerUrl },
-                        "판매처에서 제품 정보를 다시 확인해 글을 준비했습니다. 실제 제품 사진과 수호 장면을 확인하세요.")}>
+                        "판매처 정보를 확인한 추천 글을 준비했습니다. 수호 장면과 전체 글을 검수하세요.")}>
                       판매 정보 확인하고 초안 만들기
                     </button> : <span className="text-xs text-amber-300">판매처 주소 미확인 · 제작 전 확인 필요</span>}
                     <a href={item.sourceUrl} target="_blank" rel="noreferrer" className="text-xs text-emerald-300 underline">후보 원문 보기</a>
@@ -439,9 +441,9 @@ ${review.title}
           {isKorea ? (
             <form className="rounded-xl border border-zinc-800 bg-zinc-950 p-4" onSubmit={(event) => {
               event.preventDefault();
-              act({ action: "prepareProduct", channelId: KOREA, productUrl }, "확인된 판매 정보로 제품 글과 수호 장면을 준비했습니다. 실제 제품 사진을 연결해야 게시할 수 있습니다.");
+              act({ action: "prepareProduct", channelId: KOREA, productUrl }, "확인된 판매 정보로 추천 글과 수호 장면을 준비했습니다. 전체 글과 이미지를 검수하세요.");
             }}>
-              <label className="block text-sm font-semibold" htmlFor="atlas-product-url">제품 글: 판매 페이지 주소</label>
+              <label className="block text-sm font-semibold" htmlFor="atlas-product-url">제품 추천 글: 판매 페이지 주소</label>
               <p className="mt-1 text-xs text-zinc-400">가격·특징이 확인되는 페이지를 사용합니다. 확인되지 않은 상품은 초안을 만들지 않습니다.</p>
               <div className="mt-3 flex gap-2">
                 <input id="atlas-product-url" type="url" required value={productUrl} onChange={(event) => setProductUrl(event.target.value)}

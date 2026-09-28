@@ -288,7 +288,7 @@ function writeKorea(topicId) {
   return { status: "ok", id: draft.id };
 }
 
-async function prepareKoreaProduct(url) {
+async function prepareKoreaProduct(url, { withProductPhoto = false } = {}) {
   const importedResponse = await importProductPage(new Request("http://localhost:3002/api/atlas/product-import", {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url }),
   }));
@@ -325,9 +325,12 @@ async function prepareKoreaProduct(url) {
     "마무리", `가격과 옵션은 바뀔 수 있습니다. ${name}의 현재 판매 정보는 원문 링크에서 다시 확인하세요.`,
   ].join("\n\n");
   const draft = normalizeKoreaDraft({
-    id: `kr_${topicId}`, topicId, contentType: "new_product_review", title: `${name}, 가격과 특징·구매 전 확인할 점`,
+    id: `kr_${topicId}`, topicId, contentType: withProductPhoto ? "new_product_review" : "info_guide", title: `${name}, 가격과 특징·구매 전 확인할 점`,
     productName: name, productUrl: imported.canonicalUrl, productInfo: { ...product, evidence: imported.evidence },
-    keyword: name, bodyText, images: [koreaProductPhotoSlot({ productName: name }), ...koreaInfoImages(topic)],
+    keyword: name, bodyText, images: [
+      ...(withProductPhoto ? [koreaProductPhotoSlot({ productName: name })] : []),
+      ...koreaInfoImages(topic),
+    ],
     productImageCandidates: imported.imageCandidates, state: "ready_for_review", generatedBy: "ATLAS_VERIFIED_PRODUCT_IMPORT",
   });
   const validation = validateKoreaDraft(draft);
@@ -481,7 +484,7 @@ export async function POST(request) {
           id: written.id, generatorError };
       } else result = written;
     } else if (action === "prepareProduct" && korea) {
-      const written = await prepareKoreaProduct(String(body.productUrl || ""));
+      const written = await prepareKoreaProduct(String(body.productUrl || ""), { withProductPhoto: body.withProductPhoto === true });
       if (written.status === "ok") {
         const draft = koreaItems().find((d) => d.id === written.id);
         const roles = draft.images.filter((img) => img.role !== "product_photo").map((img) => img.role);
