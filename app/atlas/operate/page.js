@@ -185,6 +185,7 @@ export default function OperatePage() {
         publicNote = uploaded.ok ? "공개 이미지 주소 연결 완료." : "공개 이미지 연결 대기: Cloudinary 설정을 확인하세요.";
         await load({ ...picked, [GLOBAL]: data.id });
       }
+      if (body.action === "images") await load({ ...picked, [body.channelId]: data.id });
       setMessage([note, data.generatorError, data.missing?.length ? `빠진 장면: ${data.missing.join(", ")}` : "", publicNote].filter(Boolean).join(" "));
     });
   }
