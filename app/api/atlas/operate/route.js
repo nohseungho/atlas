@@ -317,11 +317,14 @@ async function prepareKoreaProduct(url, { withProductPhoto = false } = {}) {
   };
   const bodyText = [
     `생활 속에서 ${name}을 살펴볼 때는 판매 페이지에 적힌 구성과 가격부터 확인하는 편이 정확합니다. 직접 사용한 후기가 아니라 판매처에서 확인한 정보로 정리했습니다.`,
+    "필요한 상황", `${name}이 필요한 생활 장면에서 설치 공간과 용도를 먼저 살펴보세요. 판매 페이지의 설명을 실제 사용 경험으로 오해하지 않도록 구분했습니다.`,
+    "제품 정보와 특징", `${name}의 판매 정보에서 확인한 내용을 정리했습니다. 옵션별 구성은 판매 페이지에서 다시 확인하세요.`,
     "제품 정보와 현재 가격", `${name}\n확인 가격: ${price}\n확인일: ${product.priceCheckedAt}\n판매처: ${imported.canonicalUrl}`,
     "선택할 만한 특징", ...features.map((feature) => `- ${feature}`),
     "구매 전에 아쉬운 점과 확인할 점",
     `판매 페이지 정보만으로는 실제 사용감과 내구성을 확인할 수 없습니다.${product.shippingFee === null ? " 배송비도 확인되지 않았으니 결제 화면에서 확인해야 합니다." : ` 확인된 배송비: ${product.shippingFee.toLocaleString("ko-KR")} ${product.currency}.`}`,
     "잘 맞는 사람", `위에 적힌 특징이 필요한 사람에게 비교 후보가 됩니다. 설치 공간과 옵션은 구매 전에 직접 확인하세요.`,
+    "오늘의 체크리스트", `- ${name}의 현재 가격과 옵션 다시 확인\n- 설치 공간과 크기 확인\n- 배송비와 반품 조건 확인`,
     "마무리", `가격과 옵션은 바뀔 수 있습니다. ${name}의 현재 판매 정보는 원문 링크에서 다시 확인하세요.`,
   ].join("\n\n");
   const draft = normalizeKoreaDraft({
