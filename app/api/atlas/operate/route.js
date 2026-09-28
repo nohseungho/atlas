@@ -34,6 +34,12 @@ import { duplicateReason, publishedIndex } from "@/lib/atlas/operate/published-i
 import { globalRecent, globalReviewPacket, koreaRecent, koreaReviewPacket, recordUserApproval } from "@/lib/atlas/operate/publish-approval-store";
 import { topicSimilarity } from "@/lib/atlas/publish-review";
 import { resolveSceneArt } from "@/lib/atlas/operate/scene-art";
+import { matchingPublicKoreaPosts } from "@/lib/atlas/operate/naver-public-sync";
+import { collectChannel } from "@/lib/atlas/unified-products";
+import { readPublicSource } from "@/lib/atlas/unified-evidence";
+import { readUnified, mutateUnified } from "@/lib/atlas/unified-store";
+import { applyCollected } from "@/lib/atlas/unified-workflow";
+import { coupangPartnersStatus } from "@/lib/atlas/coupang-partners-status";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -49,12 +55,12 @@ async function generateMissingScenes(channel, topicId, roles) {
   try {
     const url = process.env.ATLAS_COMFY_URL || "http://127.0.0.1:8188";
     const response = await fetch(new URL("/system_stats", url), { signal: AbortSignal.timeout(1500) });
-    if (!response.ok) throw new Error(`ComfyUI 응답 ${response.status}`);
+    if (!response.ok) throw new Error(`이미지 제작 엔진 응답 ${response.status}`);
     await execFileAsync(process.execPath, [path.join(process.cwd(), "scripts", "atlas-scene-generate.mjs"), channel, slug,
       "--roles", missing.join(","), "--comfy", url], { cwd: process.cwd(), timeout: 40 * 60 * 1000, maxBuffer: 4 * 1024 * 1024 });
     return "";
   } catch (error) {
-    return `로컬 장면 생성 대기: ${String(error?.message || error).slice(0, 240)}`;
+    return `이미지 제작 대기: ${String(error?.message || error).slice(0, 240)}`;
   }
 }
 
@@ -158,6 +164,9 @@ function buildState({ koreaId = "", globalId = "" } = {}) {
   const globalRecentPosts = globalRecent("");
   const koreaUsedTopics = new Set([...items.map((d) => d.topicId).filter(Boolean)]);
   const globalUsedTopics = new Set([...articles.map((a) => a.topicId).filter(Boolean)]);
+  const daily = readUnified().channels?.[ATLAS_CHANNEL_ID.KOREA_NAVER];
+  const dailyFresh = daily && Date.now() - Date.parse(daily.checkedAt) >= 0
+    && Date.now() - Date.parse(daily.checkedAt) < 24 * 60 * 60 * 1000;
 
   return {
     [ATLAS_CHANNEL_ID.KOREA_NAVER]: {
@@ -182,6 +191,11 @@ function buildState({ koreaId = "", globalId = "" } = {}) {
       review: koreaDraft ? koreaReviewPacket(koreaDraft) : null,
       editorTarget: koreaDraft ? naverEditorTarget(koreaDraft) : "",
       published: published[ATLAS_CHANNEL_ID.KOREA_NAVER],
+      today: daily ? { checkedAt: daily.checkedAt, source: daily.source?.name || "공개 할인 게시판",
+        candidates: (dailyFresh ? daily.slots || [] : []).filter(Boolean).map((item) => ({
+          id: item.id, name: item.name, priceText: item.priceText, sourceUrl: item.sourceUrl,
+          reason: item.reason, publishedAt: item.publishedAt,
+        })), error: daily.error || "" } : null,
     },
     [ATLAS_CHANNEL_ID.GLOBAL_BLOGGER]: {
       channelId: ATLAS_CHANNEL_ID.GLOBAL_BLOGGER,
@@ -215,7 +229,7 @@ async function generatorReadiness() {
     const response = await fetch(new URL("/system_stats", url), { signal: AbortSignal.timeout(1500), cache: "no-store" });
     return { ready: response.ok, message: response.ok ? "로컬 이미지 생성기 연결됨" : `로컬 이미지 생성기 응답 ${response.status}` };
   } catch {
-    return { ready: false, message: "로컬 이미지 생성기(ComfyUI)가 연결되지 않았습니다. 이 PC에서 ComfyUI를 실행한 뒤 이미지 제작을 다시 누르세요." };
+    return { ready: false, message: "이미지 제작 엔진이 이 PC에서 실행 중이지 않습니다. 연결 상태를 확인한 뒤 이미지 제작을 다시 누르세요." };
   }
 }
 
@@ -226,6 +240,7 @@ export async function GET(request) {
       status: "ok",
       state: buildState({ koreaId: params.get("koreaId") || "", globalId: params.get("globalId") || "" }),
       generator: await generatorReadiness(),
+      approvals: { coupang: coupangPartnersStatus().stage, adsense: "account_check_required" },
     });
   } catch (error) {
     return NextResponse.json({ status: "error", error: String(error?.message || error) }, { status: 500 });
@@ -408,7 +423,32 @@ export async function POST(request) {
 
   try {
     let result;
-    if (action === "prepare") {
+    if (action === "refreshToday") {
+      const [rss, offers] = await Promise.allSettled([
+        readPublicSource("https://rss.blog.naver.com/who-ami.xml", "rss.blog.naver.com"),
+        collectChannel(ATLAS_CHANNEL_ID.KOREA_NAVER),
+      ]);
+      let synchronized = 0;
+      if (rss.status === "fulfilled" && /<rss\b/i.test(rss.value)) {
+        const items = koreaItems();
+        const matches = matchingPublicKoreaPosts(rss.value, items);
+        for (const post of matches) {
+          const draft = items.find((item) => item.id === post.id);
+          draft.state = "published";
+          draft.publishedUrl = post.url;
+          draft.publishedAt = post.publishedAt;
+          synchronized += 1;
+        }
+        if (synchronized) writeKoreaItems(items);
+      }
+      if (offers.status === "fulfilled") {
+        const published = publishedIndex();
+        await mutateUnified((unified) => applyCollected(unified,
+          { [ATLAS_CHANNEL_ID.KOREA_NAVER]: offers.value }, published[ATLAS_CHANNEL_ID.KOREA_NAVER]));
+      }
+      result = { status: "ok", synchronized, feedAvailable: rss.status === "fulfilled",
+        offerAvailable: offers.status === "fulfilled" && !offers.value.error };
+    } else if (action === "prepare") {
       // 한 번의 제작 요청에서 기존 작성기와 장면 아트 연결기를 순서대로 사용한다.
       // 이미지가 아직 없으면 요청서만 남고 발행 승인은 열리지 않는다.
       const written = korea ? writeKorea(String(body.topicId || "")) : writeGlobal(String(body.topicId || ""));

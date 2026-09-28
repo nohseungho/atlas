@@ -133,6 +133,7 @@ export default function OperatePage() {
   const [productUrl, setProductUrl] = useState("");
   const [savedProducts, setSavedProducts] = useState([]);
   const [generator, setGenerator] = useState(null);
+  const [approvals, setApprovals] = useState(null);
   // 준비된 원고가 여러 개일 때 화면이 보고 있는 항목. 비어 있으면 가장 최근 것.
   const [picked, setPicked] = useState({ [KOREA]: "", [GLOBAL]: "" });
 
@@ -142,7 +143,7 @@ export default function OperatePage() {
     if (selection?.[GLOBAL]) query.set("globalId", selection[GLOBAL]);
     const res = await fetch(`/api/atlas/operate?${query}`, { cache: "no-store" });
     const data = await res.json().catch(() => ({}));
-    if (data.status === "ok") { setState(data.state); setGenerator(data.generator); }
+    if (data.status === "ok") { setState(data.state); setGenerator(data.generator); setApprovals(data.approvals); }
     else setMessage(data.error || "운영 상태를 읽지 못했습니다.");
   }, []);
 
@@ -187,6 +188,21 @@ export default function OperatePage() {
       }
       if (body.action === "images") await load({ ...picked, [body.channelId]: data.id });
       setMessage([note, data.generatorError, data.missing?.length ? `빠진 장면: ${data.missing.join(", ")}` : "", publicNote].filter(Boolean).join(" "));
+    });
+  }
+
+  async function refreshToday() {
+    await run("refreshToday", async () => {
+      const { ok, data } = await postJson("/api/atlas/operate", { action: "refreshToday", channelId: active });
+      if (!ok) throw new Error(data.error || "오늘 자료를 갱신하지 못했습니다.");
+      setPicked({ [KOREA]: "", [GLOBAL]: "" });
+      setChoosingTopic(true);
+      await load({ [KOREA]: "", [GLOBAL]: "" });
+      setMessage([
+        data.synchronized ? `네이버에서 확인된 기존 글 ${data.synchronized}개를 게시 기록에 반영했습니다.` : "",
+        data.feedAvailable ? "네이버 게시 기록 확인 완료." : "네이버 공개 글 확인에 실패했습니다. 기존 글의 재게시를 피하세요.",
+        data.offerAvailable ? "오늘의 국내 제품 후보를 갱신했습니다." : "국내 상품 출처에 연결하지 못해 오늘의 제품 후보를 확인할 수 없습니다.",
+      ].filter(Boolean).join(" "));
     });
   }
 
@@ -349,6 +365,21 @@ ${review.title}
 
       <StepRail current={steps.published ? 5 : progress} />
 
+      <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="font-semibold">오늘 작업 시작</h2>
+            <p className="mt-1 text-xs text-zinc-400">네이버 공개 글 중복 확인과 국내 공개 상품 후보를 갱신합니다. 해외는 검증된 새 주제를 보여줍니다.</p>
+          </div>
+          <button type="button" className={primary} disabled={Boolean(busy)} onClick={refreshToday}>
+            {busy === "refreshToday" ? "확인 중…" : "오늘 후보 업데이트"}
+          </button>
+        </div>
+        <p className="mt-2 text-xs text-zinc-400">
+          수익 연결: 쿠팡 파트너스 {approvals?.coupang === "approved" ? "설정상 승인 (실제 계정 재확인 필요)" : "승인 확인 전"} · AdSense 실제 계정 확인 필요
+        </p>
+      </section>
+
       {generator && !generator.ready ? (
         <p role="status" className="rounded-lg border border-amber-800 bg-amber-950/40 p-3 text-sm text-amber-200">
           {generator.message} 글 작성과 검수 화면은 열 수 있으며, 이미지 제작은 연결 후 다시 누르면 이어집니다.
@@ -360,6 +391,19 @@ ${review.title}
       {!record || choosingTopic ? (
         <section className="space-y-3">
           <h2 className="text-lg font-semibold">1. 주제 선택</h2>
+          {isKorea && channel.today ? (
+            <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+              <h3 className="font-semibold">오늘의 공개 상품 후보</h3>
+              <p className="mt-1 text-xs text-zinc-400">{channel.today.source} · {channel.today.checkedAt ? new Date(channel.today.checkedAt).toLocaleString("ko-KR") : "갱신 전"}. 인기 게시판 자료는 판매량 순위가 아닙니다. 가격·판매처·제품 사진 확인 후 글을 만듭니다.</p>
+              {channel.today.candidates.length ? <ul className="mt-3 space-y-2 text-sm">
+                {channel.today.candidates.map((item) => <li key={item.id} className="rounded-lg border border-zinc-800 p-3">
+                  <div className="font-medium">{item.name}</div>
+                  <div className="mt-1 text-xs text-zinc-400">게시 가격: {item.priceText}</div>
+                  <a href={item.sourceUrl} target="_blank" rel="noreferrer" className="mt-1 inline-block text-xs text-emerald-300 underline">원문에서 판매처 확인</a>
+                </li>)}
+              </ul> : <p className="mt-2 text-xs text-amber-300">확인된 상품 후보가 없습니다. 아래 정보글 주제를 선택할 수 있습니다.</p>}
+            </section>
+          ) : null}
           <TopicPicker
             topics={channel.topics}
             busy={Boolean(busy)}
