@@ -40,7 +40,8 @@ import { readPublicSource } from "@/lib/atlas/unified-evidence";
 import { readUnified, mutateUnified } from "@/lib/atlas/unified-store";
 import { applyCollected } from "@/lib/atlas/unified-workflow";
 import { coupangPartnersStatus } from "@/lib/atlas/coupang-partners-status";
-import { sellerUrlForCandidate } from "@/lib/atlas/operate/merchant-link";
+import { isHomeConvenienceProduct, sellerUrlForCandidate } from "@/lib/atlas/operate/merchant-link";
+import { exclusionKeys, selectTopFive } from "@/lib/atlas/unified-selection";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -230,7 +231,15 @@ async function generatorReadiness() {
     const response = await fetch(new URL("/system_stats", url), { signal: AbortSignal.timeout(1500), cache: "no-store" });
     return { ready: response.ok, message: response.ok ? "로컬 이미지 생성기 연결됨" : `로컬 이미지 생성기 응답 ${response.status}` };
   } catch {
-    return { ready: false, message: "이미지 제작 엔진이 이 PC에서 실행 중이지 않습니다. 연결 상태를 확인한 뒤 이미지 제작을 다시 누르세요." };
+    if (process.env.ATLAS_COMFY_URL && !/^https?:\/\/(?:127\.0\.0\.1|localhost)(?::|\/|$)/i.test(url)) {
+      return { ready: false, installed: false, message: "설정된 이미지 제작 PC에 연결할 수 없습니다. 연결이 복구되면 제작을 다시 누르세요." };
+    }
+    const locations = [process.env.ATLAS_COMFY_DIR, process.env.USERPROFILE && path.join(process.env.USERPROFILE, "ComfyUI"),
+      path.join(path.dirname(process.cwd()), "ComfyUI")].filter(Boolean);
+    const installed = locations.some((location) => fs.existsSync(path.join(location, "main.py")));
+    return { ready: false, installed, message: installed
+      ? "이 PC의 이미지 제작 엔진을 찾았지만 실행 연결에 실패했습니다. ATLAS 앱을 다시 열어 연결 상태를 확인하세요."
+      : "이 PC에서 이미지 제작 엔진 설치 위치를 찾지 못했습니다. 글은 준비할 수 있지만 새 수호·미지 이미지는 제작할 수 없습니다." };
   }
 }
 
@@ -443,13 +452,16 @@ export async function POST(request) {
         if (synchronized) writeKoreaItems(items);
       }
       if (offers.status === "fulfilled") {
+        const published = publishedIndex();
+        offers.value.candidates = offers.value.candidates.filter(isHomeConvenienceProduct);
+        offers.value.slots = selectTopFive(offers.value.candidates,
+          exclusionKeys(published[ATLAS_CHANNEL_ID.KOREA_NAVER]));
         const eligible = (offers.value.slots || []).filter(Boolean);
         const sellerUrls = await Promise.all(eligible.map(sellerUrlForCandidate));
         const sellerById = new Map(eligible.map((item, index) => [item.id, sellerUrls[index]]));
         offers.value.candidates = offers.value.candidates.map((item) => ({
           ...item, sellerUrl: sellerById.get(item.id) || "",
         }));
-        const published = publishedIndex();
         await mutateUnified((unified) => applyCollected(unified,
           { [ATLAS_CHANNEL_ID.KOREA_NAVER]: offers.value }, published[ATLAS_CHANNEL_ID.KOREA_NAVER]));
       }

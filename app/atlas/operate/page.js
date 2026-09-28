@@ -393,7 +393,7 @@ ${review.title}
           <h2 className="text-lg font-semibold">1. 주제 선택</h2>
           {isKorea && channel.today ? (
             <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
-              <h3 className="font-semibold">오늘의 공개 상품 후보</h3>
+              <h3 className="font-semibold">오늘의 생활 편의 제품 후보</h3>
               <p className="mt-1 text-xs text-zinc-400">{channel.today.source} · {channel.today.checkedAt ? new Date(channel.today.checkedAt).toLocaleString("ko-KR") : "갱신 전"}. 인기 게시판 자료는 판매량 순위가 아닙니다. 가격·판매처·제품 사진 확인 후 글을 만듭니다.</p>
               {channel.today.candidates.length ? <ul className="mt-3 space-y-2 text-sm">
                 {channel.today.candidates.map((item) => <li key={item.id} className="rounded-lg border border-zinc-800 p-3">
@@ -403,7 +403,7 @@ ${review.title}
                     {item.sellerUrl ? <button type="button" className={secondary} disabled={Boolean(busy)}
                       onClick={() => act({ action: "prepareProduct", channelId: KOREA, productUrl: item.sellerUrl },
                         "판매처에서 제품 정보를 다시 확인해 글을 준비했습니다. 실제 제품 사진과 수호 장면을 확인하세요.")}>
-                      이 제품으로 제작
+                      판매 정보 확인하고 초안 만들기
                     </button> : <span className="text-xs text-amber-300">판매처 주소 미확인 · 제작 전 확인 필요</span>}
                     <a href={item.sourceUrl} target="_blank" rel="noreferrer" className="text-xs text-emerald-300 underline">후보 원문 보기</a>
                   </div>
