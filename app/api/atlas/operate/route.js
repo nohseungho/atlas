@@ -197,6 +197,7 @@ function buildState({ koreaId = "", globalId = "" } = {}) {
         candidates: (dailyFresh ? daily.slots || [] : []).filter(Boolean).map((item) => ({
           id: item.id, name: item.name, priceText: item.priceText, sourceUrl: item.sourceUrl,
           reason: item.reason, publishedAt: item.publishedAt, sellerUrl: item.sellerUrl || "",
+          sellerVerified: Boolean(item.verifiedProduct),
         })), error: daily.error || "" } : null,
     },
     [ATLAS_CHANNEL_ID.GLOBAL_BLOGGER]: {
@@ -288,16 +289,30 @@ function writeKorea(topicId) {
   return { status: "ok", id: draft.id };
 }
 
-async function prepareKoreaProduct(url, { withProductPhoto = false } = {}) {
-  const importedResponse = await importProductPage(new Request("http://localhost:3002/api/atlas/product-import", {
+async function importSellerProduct(url) {
+  const response = await importProductPage(new Request("http://localhost:3002/api/atlas/product-import", {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url }),
   }));
-  const imported = await importedResponse.json();
-  if (!importedResponse.ok) return { status: "rejected", error: imported.message || "상품 정보를 확인하지 못했습니다.", code: 422 };
+  const imported = await response.json();
+  if (!response.ok) return { ok: false, error: imported.errorCode === "BLOCKED_BY_SITE"
+    ? "판매처가 자동 조회를 거부했습니다. 다른 후보를 선택하세요." : imported.message || "상품 정보를 확인하지 못했습니다." };
   const product = imported.draft;
   if (!product.name || product.currentPrice === null || !product.currency || !product.features?.length) {
-    return { status: "rejected", error: "상품명·현재가·통화·특징이 확인되는 판매 페이지가 필요합니다.", code: 422 };
+    return { ok: false, error: "상품명·현재가·통화·특징이 확인되지 않았습니다." };
   }
+  return { ok: true, imported };
+}
+
+async function prepareKoreaProduct(url, { withProductPhoto = false, verifiedOffer = null } = {}) {
+  const checkedAt = Date.parse(verifiedOffer?.verifiedAt || "");
+  const cached = verifiedOffer?.sellerUrl === url && verifiedOffer.imported?.draft?.name
+    && verifiedOffer.imported.draft.currentPrice !== null && verifiedOffer.imported.draft.features?.length
+    && Number.isFinite(checkedAt)
+    && Date.now() - checkedAt >= 0 && Date.now() - checkedAt < 24 * 60 * 60 * 1000;
+  const result = cached ? { ok: true, imported: verifiedOffer.imported } : await importSellerProduct(url);
+  if (!result.ok) return { status: "rejected", error: result.error, code: 422 };
+  const imported = result.imported;
+  const product = imported.draft;
   const topicId = `kr_info_product_${crypto.createHash("sha256").update(imported.canonicalUrl || url).digest("hex").slice(0, 12)}`;
   const items = koreaItems();
   if (items.some((d) => d.topicId === topicId || d.productUrl === imported.canonicalUrl)) {
@@ -464,9 +479,15 @@ export async function POST(request) {
           exclusionKeys(published[ATLAS_CHANNEL_ID.KOREA_NAVER]));
         const eligible = (offers.value.slots || []).filter(Boolean);
         const sellerUrls = await Promise.all(eligible.map(sellerUrlForCandidate));
-        const sellerById = new Map(eligible.map((item, index) => [item.id, sellerUrls[index]]));
+        const offersById = new Map(await Promise.all(eligible.map(async (item, index) => {
+          const sellerUrl = sellerUrls[index];
+          if (!sellerUrl) return [item.id, { sellerUrl: "", verifiedProduct: null }];
+          const result = await importSellerProduct(sellerUrl);
+          return [item.id, { sellerUrl, verifiedProduct: result.ok
+            ? { sellerUrl, verifiedAt: new Date().toISOString(), imported: result.imported } : null }];
+        })));
         offers.value.candidates = offers.value.candidates.map((item) => ({
-          ...item, sellerUrl: sellerById.get(item.id) || "",
+          ...item, ...offersById.get(item.id),
         }));
         await mutateUnified((unified) => applyCollected(unified,
           { [ATLAS_CHANNEL_ID.KOREA_NAVER]: offers.value }, published[ATLAS_CHANNEL_ID.KOREA_NAVER]));
@@ -487,7 +508,10 @@ export async function POST(request) {
           id: written.id, generatorError };
       } else result = written;
     } else if (action === "prepareProduct" && korea) {
-      const written = await prepareKoreaProduct(String(body.productUrl || ""), { withProductPhoto: body.withProductPhoto === true });
+      const url = String(body.productUrl || "");
+      const verifiedOffer = (readUnified().channels?.[ATLAS_CHANNEL_ID.KOREA_NAVER]?.slots || [])
+        .find((item) => item?.sellerUrl === url)?.verifiedProduct || null;
+      const written = await prepareKoreaProduct(url, { withProductPhoto: body.withProductPhoto === true, verifiedOffer });
       if (written.status === "ok") {
         const draft = koreaItems().find((d) => d.id === written.id);
         const roles = draft.images.filter((img) => img.role !== "product_photo").map((img) => img.role);

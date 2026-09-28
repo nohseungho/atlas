@@ -402,11 +402,11 @@ ${review.title}
                   <div className="font-medium">{item.name}</div>
                   <div className="mt-1 text-xs text-zinc-400">게시 가격: {item.priceText}</div>
                   <div className="mt-2 flex flex-wrap items-center gap-3">
-                    {item.sellerUrl ? <button type="button" className={secondary} disabled={Boolean(busy)}
+                    {item.sellerVerified ? <button type="button" className={secondary} disabled={Boolean(busy)}
                       onClick={() => act({ action: "prepareProduct", channelId: KOREA, productUrl: item.sellerUrl },
                         "판매처 정보를 확인한 추천 글을 준비했습니다. 수호 장면과 전체 글을 검수하세요.")}>
                       판매 정보 확인하고 초안 만들기
-                    </button> : <span className="text-xs text-amber-300">판매처 주소 미확인 · 제작 전 확인 필요</span>}
+                    </button> : <span className="text-xs text-amber-300">판매처 가격·특징 확인 불가 · 자동 제작 후보에서 제외</span>}
                     <a href={item.sourceUrl} target="_blank" rel="noreferrer" className="text-xs text-emerald-300 underline">후보 원문 보기</a>
                   </div>
                 </li>)}
