@@ -40,6 +40,7 @@ import { readPublicSource } from "@/lib/atlas/unified-evidence";
 import { readUnified, mutateUnified } from "@/lib/atlas/unified-store";
 import { applyCollected } from "@/lib/atlas/unified-workflow";
 import { coupangPartnersStatus } from "@/lib/atlas/coupang-partners-status";
+import { sellerUrlForCandidate } from "@/lib/atlas/operate/merchant-link";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -194,7 +195,7 @@ function buildState({ koreaId = "", globalId = "" } = {}) {
       today: daily ? { checkedAt: daily.checkedAt, source: daily.source?.name || "공개 할인 게시판",
         candidates: (dailyFresh ? daily.slots || [] : []).filter(Boolean).map((item) => ({
           id: item.id, name: item.name, priceText: item.priceText, sourceUrl: item.sourceUrl,
-          reason: item.reason, publishedAt: item.publishedAt,
+          reason: item.reason, publishedAt: item.publishedAt, sellerUrl: item.sellerUrl || "",
         })), error: daily.error || "" } : null,
     },
     [ATLAS_CHANNEL_ID.GLOBAL_BLOGGER]: {
@@ -442,6 +443,12 @@ export async function POST(request) {
         if (synchronized) writeKoreaItems(items);
       }
       if (offers.status === "fulfilled") {
+        const eligible = (offers.value.slots || []).filter(Boolean);
+        const sellerUrls = await Promise.all(eligible.map(sellerUrlForCandidate));
+        const sellerById = new Map(eligible.map((item, index) => [item.id, sellerUrls[index]]));
+        offers.value.candidates = offers.value.candidates.map((item) => ({
+          ...item, sellerUrl: sellerById.get(item.id) || "",
+        }));
         const published = publishedIndex();
         await mutateUnified((unified) => applyCollected(unified,
           { [ATLAS_CHANNEL_ID.KOREA_NAVER]: offers.value }, published[ATLAS_CHANNEL_ID.KOREA_NAVER]));

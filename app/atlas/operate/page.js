@@ -399,7 +399,14 @@ ${review.title}
                 {channel.today.candidates.map((item) => <li key={item.id} className="rounded-lg border border-zinc-800 p-3">
                   <div className="font-medium">{item.name}</div>
                   <div className="mt-1 text-xs text-zinc-400">게시 가격: {item.priceText}</div>
-                  <a href={item.sourceUrl} target="_blank" rel="noreferrer" className="mt-1 inline-block text-xs text-emerald-300 underline">원문에서 판매처 확인</a>
+                  <div className="mt-2 flex flex-wrap items-center gap-3">
+                    {item.sellerUrl ? <button type="button" className={secondary} disabled={Boolean(busy)}
+                      onClick={() => act({ action: "prepareProduct", channelId: KOREA, productUrl: item.sellerUrl },
+                        "판매처에서 제품 정보를 다시 확인해 글을 준비했습니다. 실제 제품 사진과 수호 장면을 확인하세요.")}>
+                      이 제품으로 제작
+                    </button> : <span className="text-xs text-amber-300">판매처 주소 미확인 · 제작 전 확인 필요</span>}
+                    <a href={item.sourceUrl} target="_blank" rel="noreferrer" className="text-xs text-emerald-300 underline">후보 원문 보기</a>
+                  </div>
                 </li>)}
               </ul> : <p className="mt-2 text-xs text-amber-300">확인된 상품 후보가 없습니다. 아래 정보글 주제를 선택할 수 있습니다.</p>}
             </section>
