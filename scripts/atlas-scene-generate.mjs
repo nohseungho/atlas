@@ -189,13 +189,14 @@ async function main() {
       generator: { tool: "ComfyUI (local)", ...GENERATOR },
       generatedAt: new Date().toISOString(),
     };
+    // 한 장면을 완성할 때마다 기록한다. 오래 걸리는 5장 생성이 중단돼도
+    // 다음 버튼 클릭은 통과한 장면을 재생성하지 않고 빠진 역할만 이어서 만든다.
+    manifest.character = profile.characterId;
+    manifest.dropDirectory = path.relative(process.cwd(), outDir).split(path.sep).join("/");
+    fs.mkdirSync(path.dirname(manifestPath), { recursive: true });
+    fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
     console.log(`${item.role}: ${manifest.items[item.role].file} (seed ${seed}, ${buffer.length} bytes)${faceMatch ? ` face ${faceMatch.status} ${faceMatch.similarity}` : ""}`);
   }
-
-  manifest.character = profile.characterId;
-  manifest.dropDirectory = path.relative(process.cwd(), outDir).split(path.sep).join("/");
-  fs.mkdirSync(path.dirname(manifestPath), { recursive: true });
-  fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
   console.log(`manifest: ${path.relative(process.cwd(), manifestPath)}`);
 }
 

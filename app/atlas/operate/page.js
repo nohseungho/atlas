@@ -116,7 +116,7 @@ function ImagePanel({ images, busy, onRender }) {
           {images.missing?.length ? <div className="mt-1 text-xs text-zinc-500">대기: {images.missing.join(", ")}</div> : null}
         </div>
         <div className="flex gap-2">
-          {!done ? <button type="button" className={secondary} disabled={busy} onClick={() => onRender(false)}>이미지 준비 다시 확인</button> : null}
+          {!done ? <button type="button" className={secondary} disabled={busy} onClick={() => onRender(false)}>{busy ? "이미지 제작 중…" : "빠진 이미지 자동 제작"}</button> : null}
         </div>
       </div>
     </section>
@@ -132,6 +132,7 @@ export default function OperatePage() {
   const [choosingTopic, setChoosingTopic] = useState(false);
   const [productUrl, setProductUrl] = useState("");
   const [savedProducts, setSavedProducts] = useState([]);
+  const [generator, setGenerator] = useState(null);
   // 준비된 원고가 여러 개일 때 화면이 보고 있는 항목. 비어 있으면 가장 최근 것.
   const [picked, setPicked] = useState({ [KOREA]: "", [GLOBAL]: "" });
 
@@ -141,7 +142,7 @@ export default function OperatePage() {
     if (selection?.[GLOBAL]) query.set("globalId", selection[GLOBAL]);
     const res = await fetch(`/api/atlas/operate?${query}`, { cache: "no-store" });
     const data = await res.json().catch(() => ({}));
-    if (data.status === "ok") setState(data.state);
+    if (data.status === "ok") { setState(data.state); setGenerator(data.generator); }
     else setMessage(data.error || "운영 상태를 읽지 못했습니다.");
   }, []);
 
@@ -179,7 +180,7 @@ export default function OperatePage() {
       if (!ok) throw new Error(data.error || "처리하지 못했습니다.");
       if (data.id) { setPicked((prev) => ({ ...prev, [body.channelId]: data.id })); setChoosingTopic(false); }
       let publicNote = "";
-      if (body.action === "prepare" && body.channelId === GLOBAL && data.state?.[GLOBAL]?.steps?.imagesDone) {
+      if (["prepare", "images"].includes(body.action) && body.channelId === GLOBAL && data.state?.[GLOBAL]?.steps?.imagesDone) {
         const uploaded = await postJson("/api/articles/upload-visuals", { articleId: data.id, mode: "prepare" });
         publicNote = uploaded.ok ? "공개 이미지 주소 연결 완료." : "공개 이미지 연결 대기: Cloudinary 설정을 확인하세요.";
         await load({ ...picked, [GLOBAL]: data.id });
@@ -347,6 +348,12 @@ ${review.title}
 
       <StepRail current={steps.published ? 5 : progress} />
 
+      {generator && !generator.ready ? (
+        <p role="status" className="rounded-lg border border-amber-800 bg-amber-950/40 p-3 text-sm text-amber-200">
+          {generator.message} 글 작성과 검수 화면은 열 수 있으며, 이미지 제작은 연결 후 다시 누르면 이어집니다.
+        </p>
+      ) : null}
+
       {message ? <p role="status" className="rounded-lg bg-zinc-900 p-3 text-sm text-zinc-200">{message}</p> : null}
 
       {!record || choosingTopic ? (
@@ -435,7 +442,7 @@ ${review.title}
           <ImagePanel
             images={steps.images}
             busy={Boolean(busy)}
-            onRender={(force) => act({ action: "images", channelId: active, force, id: record.id }, "사용 가능한 이미지를 다시 확인했습니다.")}
+            onRender={(force) => act({ action: "images", channelId: active, force, id: record.id }, "빠진 이미지 제작과 얼굴 검수를 다시 진행했습니다.")}
           />
           {isKorea && record.contentType === "new_product_review" ? (
             <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">

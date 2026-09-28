@@ -51,7 +51,7 @@ async function generateMissingScenes(channel, topicId, roles) {
     const response = await fetch(new URL("/system_stats", url), { signal: AbortSignal.timeout(1500) });
     if (!response.ok) throw new Error(`ComfyUI 응답 ${response.status}`);
     await execFileAsync(process.execPath, [path.join(process.cwd(), "scripts", "atlas-scene-generate.mjs"), channel, slug,
-      "--roles", missing.join(","), "--comfy", url], { cwd: process.cwd(), timeout: 10 * 60 * 1000, maxBuffer: 4 * 1024 * 1024 });
+      "--roles", missing.join(","), "--comfy", url], { cwd: process.cwd(), timeout: 40 * 60 * 1000, maxBuffer: 4 * 1024 * 1024 });
     return "";
   } catch (error) {
     return `로컬 장면 생성 대기: ${String(error?.message || error).slice(0, 240)}`;
@@ -209,12 +209,23 @@ function buildState({ koreaId = "", globalId = "" } = {}) {
   };
 }
 
+async function generatorReadiness() {
+  const url = process.env.ATLAS_COMFY_URL || "http://127.0.0.1:8188";
+  try {
+    const response = await fetch(new URL("/system_stats", url), { signal: AbortSignal.timeout(1500), cache: "no-store" });
+    return { ready: response.ok, message: response.ok ? "로컬 이미지 생성기 연결됨" : `로컬 이미지 생성기 응답 ${response.status}` };
+  } catch {
+    return { ready: false, message: "로컬 이미지 생성기(ComfyUI)가 연결되지 않았습니다. 이 PC에서 ComfyUI를 실행한 뒤 이미지 제작을 다시 누르세요." };
+  }
+}
+
 export async function GET(request) {
   const params = new URL(request.url).searchParams;
   try {
     return NextResponse.json({
       status: "ok",
       state: buildState({ koreaId: params.get("koreaId") || "", globalId: params.get("globalId") || "" }),
+      generator: await generatorReadiness(),
     });
   } catch (error) {
     return NextResponse.json({ status: "error", error: String(error?.message || error) }, { status: 500 });
@@ -421,9 +432,14 @@ export async function POST(request) {
     } else if (action === "write") {
       result = korea ? writeKorea(String(body.topicId || "")) : writeGlobal(String(body.topicId || ""));
     } else if (action === "images") {
-      result = korea
-        ? await imagesKorea(Boolean(body.force), String(body.id || ""))
-        : await imagesGlobal(Boolean(body.force), String(body.id || ""));
+      const id = String(body.id || "");
+      const record = korea ? koreaItems().find((d) => d.id === id && d.topicId && d.state !== "published" && !d.publishedUrl)
+        : articleList().find((a) => a.id === id && a.topicId && a.status !== "published" && !a.publishedUrl);
+      if (!record) return NextResponse.json({ status: "error", error: "이미지 제작 대상 초안을 찾지 못했습니다." }, { status: 404 });
+      const roles = korea ? (record.images || []).filter((img) => img.role !== "product_photo").map((img) => img.role)
+        : (record.visualAssets || []).map((asset) => asset.role || asset.key);
+      const generatorError = await generateMissingScenes(korea ? "korea" : "global", record.topicId, roles);
+      result = { ...(korea ? await imagesKorea(Boolean(body.force), id) : await imagesGlobal(Boolean(body.force), id)), id, generatorError };
     } else if (action === "approvePublish") {
       // 최종 검수 화면의 "발행" 버튼 전용. 화면이 본 contentHash와 확인 문구가 있어야 승인이 남는다.
       // 승인만 기록하고 발행은 하지 않는다. 발행 API가 이 승인을 다시 검사한다.
