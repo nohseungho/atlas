@@ -42,6 +42,7 @@ import { applyCollected } from "@/lib/atlas/unified-workflow";
 import { coupangPartnersStatus } from "@/lib/atlas/coupang-partners-status";
 import { isHomeConvenienceProduct, sellerUrlForCandidate } from "@/lib/atlas/operate/merchant-link";
 import { exclusionKeys, selectTopFive } from "@/lib/atlas/unified-selection";
+import { connectImageEngine, imageEngineStatus } from "@/lib/atlas/operate/local-image-engine";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -227,21 +228,7 @@ function buildState({ koreaId = "", globalId = "" } = {}) {
 }
 
 async function generatorReadiness() {
-  const url = process.env.ATLAS_COMFY_URL || "http://127.0.0.1:8188";
-  try {
-    const response = await fetch(new URL("/system_stats", url), { signal: AbortSignal.timeout(1500), cache: "no-store" });
-    return { ready: response.ok, message: response.ok ? "로컬 이미지 생성기 연결됨" : `로컬 이미지 생성기 응답 ${response.status}` };
-  } catch {
-    if (process.env.ATLAS_COMFY_URL && !/^https?:\/\/(?:127\.0\.0\.1|localhost)(?::|\/|$)/i.test(url)) {
-      return { ready: false, installed: false, message: "설정된 이미지 제작 PC에 연결할 수 없습니다. 연결이 복구되면 제작을 다시 누르세요." };
-    }
-    const locations = [process.env.ATLAS_COMFY_DIR, process.env.USERPROFILE && path.join(process.env.USERPROFILE, "ComfyUI"),
-      path.join(path.dirname(process.cwd()), "ComfyUI")].filter(Boolean);
-    const installed = locations.some((location) => fs.existsSync(path.join(location, "main.py")));
-    return { ready: false, installed, message: installed
-      ? "이 PC의 이미지 제작 엔진을 찾았지만 실행 연결에 실패했습니다. ATLAS 앱을 다시 열어 연결 상태를 확인하세요."
-      : "이 PC에서 이미지 제작 엔진 설치 위치를 찾지 못했습니다. 글은 준비할 수 있지만 새 수호·미지 이미지는 제작할 수 없습니다." };
-  }
+  return imageEngineStatus();
 }
 
 export async function GET(request) {
@@ -468,6 +455,10 @@ async function imagesGlobal(force, id) {
 export async function POST(request) {
   const body = await request.json().catch(() => ({}));
   const action = String(body.action || "");
+  if (action === "connectImageEngine") {
+    try { return NextResponse.json({ status: "ok", generator: await connectImageEngine() }); }
+    catch (error) { return NextResponse.json({ status: "error", error: String(error?.message || error) }, { status: 500 }); }
+  }
   const channelId = String(body.channelId || "");
   const korea = channelId === ATLAS_CHANNEL_ID.KOREA_NAVER;
   const global = channelId === ATLAS_CHANNEL_ID.GLOBAL_BLOGGER;

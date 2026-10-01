@@ -9,7 +9,7 @@
 //   해외: /api/atlas/publisher-approval → /api/publish
 // 이 화면은 그 앞 단계와 게이트 표시를 담당한다.
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { KEYS, readList } from "@/app/atlas/lib/storage";
 import { listImages } from "@/app/atlas/lib/image-store";
 
@@ -133,6 +133,8 @@ export default function OperatePage() {
   const [productUrl, setProductUrl] = useState("");
   const [savedProducts, setSavedProducts] = useState([]);
   const [generator, setGenerator] = useState(null);
+  const [connectingEngine, setConnectingEngine] = useState(false);
+  const autoConnectAttempted = useRef(false);
   const [approvals, setApprovals] = useState(null);
   // 준비된 원고가 여러 개일 때 화면이 보고 있는 항목. 비어 있으면 가장 최근 것.
   const [picked, setPicked] = useState({ [KOREA]: "", [GLOBAL]: "" });
@@ -152,6 +154,25 @@ export default function OperatePage() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load(picked);
   }, [load, picked]);
+
+  const connectGenerator = useCallback(async () => {
+    setConnectingEngine(true);
+    try {
+      const { ok, data } = await postJson("/api/atlas/operate", { action: "connectImageEngine" });
+      if (!ok) throw new Error(data.error || "이미지 엔진을 시작하지 못했습니다.");
+      setGenerator(data.generator);
+    } catch (error) {
+      setGenerator({ ready: false, installed: true, message: String(error?.message || error) });
+    } finally { setConnectingEngine(false); }
+  }, []);
+
+  useEffect(() => {
+    if (generator?.installed && !generator.ready && !autoConnectAttempted.current) {
+      autoConnectAttempted.current = true;
+      // 바탕화면 앱이 브라우저만 열어도 PC의 ComfyUI를 한 번 자동 시작한다.
+      void connectGenerator();
+    }
+  }, [generator, connectGenerator]);
 
   useEffect(() => {
     let live = true;
@@ -418,9 +439,12 @@ ${review.title}
       </section>
 
       {generator && !generator.ready ? (
-        <p role="status" className="rounded-lg border border-amber-800 bg-amber-950/40 p-3 text-sm text-amber-200">
-          {generator.message} 글 작성과 검수 화면은 열 수 있으며, 이미지 제작은 연결 후 다시 누르면 이어집니다.
-        </p>
+        <div role="status" className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-800 bg-amber-950/40 p-3 text-sm text-amber-200">
+          <span>{connectingEngine ? "이미지 제작 엔진을 자동 연결 중입니다. 처음 시작하면 1분 정도 걸릴 수 있습니다." : generator.message}</span>
+          {generator.installed ? <button type="button" className={secondary} disabled={connectingEngine} onClick={connectGenerator}>
+            {connectingEngine ? "연결 중…" : "이미지 엔진 다시 연결"}
+          </button> : null}
+        </div>
       ) : null}
 
       {message ? <p role="status" className="rounded-lg bg-zinc-900 p-3 text-sm text-zinc-200">{message}</p> : null}
