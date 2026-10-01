@@ -191,6 +191,41 @@ export default function OperatePage() {
     });
   }
 
+  async function downloadReview(record, channel) {
+    await run("downloadReview", async () => {
+      const doc = new DOMParser().parseFromString(channel.preview?.html || "", "text/html");
+      const images = [...doc.images];
+      if (!images.length) throw new Error("이미지가 준비된 뒤 검수 파일을 저장할 수 있습니다.");
+      for (const img of images) {
+        const src = new URL(img.getAttribute("src") || "", window.location.href);
+        if (src.protocol !== "https:" && src.origin !== window.location.origin) throw new Error("이미지 주소를 확인할 수 없습니다.");
+        const response = await fetch(src);
+        if (!response.ok) throw new Error(`검수 파일에 이미지 ${images.indexOf(img) + 1}장을 담지 못했습니다.`);
+        const blob = await response.blob();
+        img.src = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(new Error("이미지 파일을 읽지 못했습니다."));
+          reader.readAsDataURL(blob);
+        });
+      }
+      const heading = doc.createElement("h1");
+      heading.textContent = record.title;
+      doc.body.prepend(heading);
+      const style = doc.createElement("style");
+      style.textContent = "body{max-width:850px;margin:40px auto;padding:0 20px;font:16px/1.8 sans-serif;color:#171717}img{display:block;max-width:100%;height:auto;margin:24px auto}h1,h2,h3{line-height:1.35}table{border-collapse:collapse;max-width:100%}td,th{border:1px solid #bbb;padding:8px}";
+      doc.head.append(style);
+      doc.title = record.title;
+      const url = URL.createObjectURL(new Blob(["<!doctype html>\n", doc.documentElement.outerHTML], { type: "text/html;charset=utf-8" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `ATLAS-review-${record.id}.html`;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+      setMessage(`본문과 이미지 ${images.length}장을 한 파일로 저장했습니다. 이 파일 하나만 보내 검수를 요청할 수 있습니다.`);
+    });
+  }
+
   async function refreshToday() {
     await run("refreshToday", async () => {
       const { ok, data } = await postJson("/api/atlas/operate", { action: "refreshToday", channelId: active });
@@ -522,7 +557,13 @@ ${review.title}
           ) : null}
 
           <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
-            <h2 className="font-semibold">전체 글·이미지 미리보기</h2>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="font-semibold">전체 글·이미지 미리보기</h2>
+              <button type="button" className={secondary} disabled={Boolean(busy) || !steps.imagesDone}
+                onClick={() => downloadReview(record, channel)}>
+                {busy === "downloadReview" ? "검수 파일 준비 중…" : "글+이미지 검수 파일 저장"}
+              </button>
+            </div>
             <p className="mt-1 text-xs text-zinc-500">
               {isKorea
                 ? "본문 사이에 이미지를 배치한 최종 검수 화면입니다."
