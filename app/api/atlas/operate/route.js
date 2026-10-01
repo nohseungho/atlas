@@ -75,6 +75,33 @@ function writeKoreaItems(items) {
   writeJson(KOREA_FILE, { items });
 }
 
+// 승인 전 검수한 두 장면을 해당 미발행 글에 한 번만 연결한다. 기존 로컬 생성물은
+// 지우거나 덮어쓰지 않으며, 공개 글과 다른 국내/해외 원고는 건드리지 않는다.
+function applyReviewedBeddingScenes() {
+  const topicId = "kr_info_bedding_cleaner_2026";
+  const version = "bedding-scenes-reviewed-20261001";
+  const items = koreaItems();
+  const draft = items.find((item) => item.topicId === topicId);
+  if (!draft || draft.reviewedSceneVersion === version || draft.state === "published"
+    || draft.publishedUrl || draft.naverUrl || draft.logNo) return;
+
+  const roles = ["info_how", "info_checklist"];
+  const sourceDir = path.join(process.cwd(), "public", "atlas", "korea", "suho", "_reviewed", "bedding_cleaner_2026");
+  if (!roles.every((role) => fs.existsSync(path.join(sourceDir, `${role}.png`)))) return;
+  const targetDir = path.join(process.cwd(), ".atlas-data", "korea-assets", draft.id);
+  fs.mkdirSync(targetDir, { recursive: true });
+  const images = (draft.images || []).map((img) => {
+    if (!roles.includes(img.role)) return img;
+    const source = path.join(sourceDir, `${img.role}.png`);
+    const target = path.join(targetDir, `${img.id}.png`);
+    fs.copyFileSync(source, target);
+    return { ...img, src: target, sceneArtSource: path.relative(process.cwd(), source).split(path.sep).join("/"), generatedAt: new Date().toISOString() };
+  });
+  writeKoreaItems(items.map((item) => item.id === draft.id
+    ? { ...draft, images, reviewedSceneVersion: version, userPublishApproval: null, updatedAt: new Date().toISOString() }
+    : item));
+}
+
 function articleList() {
   return readJson(ARTICLES_FILE).articles || [];
 }
@@ -234,6 +261,7 @@ async function generatorReadiness() {
 export async function GET(request) {
   const params = new URL(request.url).searchParams;
   try {
+    applyReviewedBeddingScenes();
     return NextResponse.json({
       status: "ok",
       state: buildState({ koreaId: params.get("koreaId") || "", globalId: params.get("globalId") || "" }),
