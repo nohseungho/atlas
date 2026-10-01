@@ -498,6 +498,20 @@ ${review.title}
             busy={Boolean(busy)}
             onRender={(force) => act({ action: "images", channelId: active, force, id: record.id }, "빠진 이미지 제작과 얼굴 검수를 다시 진행했습니다.")}
           />
+          {isKorea && record.contentType === "info_guide" && steps.images?.ready ? (
+            <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+              <h2 className="font-semibold">장면 검수</h2>
+              <p className="mt-1 text-xs text-zinc-400">본문과 맞지 않는 수호 장면만 선택해 다시 만듭니다. 다른 이미지와 글은 보존됩니다.</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {(record.images || []).filter((img) => ["info_why", "info_how", "info_checklist"].includes(img.role) && img.src).map((img) => (
+                  <button key={img.role} type="button" className={secondary} disabled={Boolean(busy)}
+                    onClick={() => act({ action: "regenerateKoreaImage", channelId: KOREA, id: record.id, role: img.role }, `${img.placement} 수호 장면을 다시 만들었습니다. 미리보기에서 확인하세요.`)}>
+                    {busy === "regenerateKoreaImage" ? "장면 제작 중…" : `${img.placement} 장면 다시 만들기`}
+                  </button>
+                ))}
+              </div>
+            </section>
+          ) : null}
           {isKorea && record.contentType === "new_product_review" ? (
             <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
               <h2 className="font-semibold">실제 제품 사진</h2>
@@ -514,7 +528,7 @@ ${review.title}
                 ? "본문 사이에 이미지를 배치한 최종 검수 화면입니다."
                 : "Blogger에 발행될 글과 이미지의 배치를 확인하세요."}
             </p>
-            <div className="mt-3 rounded-lg bg-white p-4 text-zinc-900">
+            <div key={record.updatedAt} className="mt-3 rounded-lg bg-white p-4 text-zinc-900">
               <div dangerouslySetInnerHTML={{ __html: channel.preview?.html || "" }} />
             </div>
           </section>

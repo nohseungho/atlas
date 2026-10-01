@@ -421,6 +421,29 @@ async function imagesKorea(force, id) {
   return { status: "ok", rendered: rendered.length, missing, artRequest };
 }
 
+async function regenerateKoreaImage(id, role) {
+  const items = koreaItems();
+  const draft = items.find((item) => item.id === id && item.topicId && item.state !== "published" && !item.publishedUrl && !item.naverUrl && !item.logNo);
+  if (!draft || !["info_why", "info_how", "info_checklist"].includes(role) || !(draft.images || []).some((img) => img.role === role)) {
+    return { status: "error", error: "다시 만들 수 있는 국내 장면을 찾지 못했습니다.", code: 400 };
+  }
+  const topic = findTopic(draft.topicId);
+  const latestPrompt = topic?.sceneIntents ? koreaInfoImages(topic).find((img) => img.role === role)?.prompt : "";
+  const revised = { ...draft, images: draft.images.map((img) => img.role === role && latestPrompt ? { ...img, prompt: latestPrompt } : img) };
+  writeKoreaItems(items.map((item) => item.id === id ? revised : item));
+  try {
+    const slug = String(draft.topicId).replace(/^kr_info_/, "");
+    const url = process.env.ATLAS_COMFY_URL || "http://127.0.0.1:8188";
+    await execFileAsync(process.execPath, [path.join(process.cwd(), "scripts", "atlas-scene-generate.mjs"), "korea", slug,
+      "--roles", role, "--seed-base", String(Date.now() % 1_000_000_000), "--comfy", url],
+    { cwd: process.cwd(), timeout: 40 * 60 * 1000, maxBuffer: 4 * 1024 * 1024 });
+    return { ...(await imagesKorea(true, id)), id };
+  } catch (error) {
+    writeKoreaItems(koreaItems().map((item) => item.id === id ? draft : item));
+    return { status: "error", error: `장면 재제작 실패: ${String(error?.message || error).slice(0, 500)}`, code: 500 };
+  }
+}
+
 async function imagesGlobal(force, id) {
   const articles = articleList();
   const article = pick(globalPrepared(articles), id);
@@ -529,6 +552,8 @@ export async function POST(request) {
         : (record.visualAssets || []).map((asset) => asset.role || asset.key);
       const generatorError = await generateMissingScenes(korea ? "korea" : "global", record.topicId, roles);
       result = { ...(korea ? await imagesKorea(Boolean(body.force), id) : await imagesGlobal(Boolean(body.force), id)), id, generatorError };
+    } else if (action === "regenerateKoreaImage" && korea) {
+      result = await regenerateKoreaImage(String(body.id || ""), String(body.role || ""));
     } else if (action === "approvePublish") {
       // 최종 검수 화면의 "발행" 버튼 전용. 화면이 본 contentHash와 확인 문구가 있어야 승인이 남는다.
       // 승인만 기록하고 발행은 하지 않는다. 발행 API가 이 승인을 다시 검사한다.

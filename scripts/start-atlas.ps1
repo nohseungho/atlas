@@ -28,8 +28,14 @@ function Start-LocalComfyIfInstalled {
         $main = Join-Path $location 'main.py'
         $python = Join-Path $location 'venv\Scripts\python.exe'
         if ((Test-Path $main) -and (Test-Path $python)) {
-            $command = '"' + $python + '" "' + $main + '" --listen 127.0.0.1 --port 8188 --lowvram'
-            Start-Process -FilePath 'cmd.exe' -ArgumentList @('/k', $command) -WorkingDirectory $location -WindowStyle Minimized
+            $arguments = @('"' + $main + '"', '--listen', '127.0.0.1', '--port', '8188', '--lowvram')
+            $engine = Start-Process -FilePath $python -ArgumentList $arguments -WorkingDirectory $location -WindowStyle Minimized -PassThru
+            for ($attempt = 0; $attempt -lt 90; $attempt++) {
+                if (Test-Comfy) { Write-Host 'Local image engine is ready.'; return }
+                if ($engine.HasExited) { Write-Warning 'Local image engine stopped during startup. Check its window.'; return }
+                Start-Sleep -Seconds 1
+            }
+            Write-Warning 'Local image engine is still starting. Refresh ATLAS when it becomes ready.'
             return
         }
     }
