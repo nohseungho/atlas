@@ -2,7 +2,7 @@ import { checkUserApproval } from "../lib/atlas/operate/publish-approval-store.j
 import { readJson } from "../lib/data-store.js";
 import fs from "fs";
 import { createKoreaDocument } from "../lib/atlas/article-document.js";
-import { insertNaverDocument } from "../lib/atlas/naver-document-editor.js";
+import { insertNaverDocument, findNaverEditorScope } from "../lib/atlas/naver-document-editor.js";
 import { assertNewPost, createPublishTransactions } from "../lib/atlas/publish-transaction.js";
 import os from "os";
 import path from "path";
@@ -41,22 +41,6 @@ async function firstVisible(scope, selectors) {
     try { if (await locator.count() && await locator.isVisible({ timeout: 600 })) return locator; } catch {}
   }
   return null;
-}
-
-async function editorScope(page) {
-  // 에디터가 iframe(#mainFrame) 안에서 늦게 뜨는 경우가 있어 제목 영역 기준으로 먼저 기다린다.
-  const deadline = Date.now() + 20000;
-  const probes = [".se-documentTitle", ".se-title-text", ".se-component-content", "[contenteditable='true']", "textarea[name='title']"];
-  while (Date.now() < deadline) {
-    const scopes = [page, ...page.frames()];
-    for (const probe of probes) {
-      for (const scope of scopes) {
-        try { if (await scope.locator(probe).count()) return scope; } catch {}
-      }
-    }
-    await page.waitForTimeout(500);
-  }
-  return page;
 }
 
 async function dismissEditorPopups(page, scope) {
@@ -232,6 +216,7 @@ async function main() {
     throw Object.assign(lastError || new Error("편집기 이동 실패"), { code: "NAVER_EDITOR_NAVIGATION_FAILED" });
   };
   let result;
+  let publishAttempted = false;
   try {
     // Canonical document uses the reviewed files as-is; no card generation during publishing.
     const editorTarget = naverEditorTarget(draft);
@@ -244,7 +229,8 @@ async function main() {
       await page.waitForTimeout(1200);
       await ensureLoggedIn(page);
     }
-    const scope = await editorScope(page);
+    await dismissEditorPopups(page, page);
+    const scope = await findNaverEditorScope(page);
     await dismissEditorPopups(page, scope);
     await setTitle(scope, draft.title || "");
     const document = payload.document || createKoreaDocument(draft);
@@ -259,16 +245,18 @@ async function main() {
       const checked = current ? checkUserApproval("korea", current) : { issues: ["발행할 초안을 찾지 못했습니다."] };
       if (checked.issues.length) throw Object.assign(new Error(checked.issues[0]), { code: "APPROVAL_CHANGED" });
     }
-    if (!publish) result = { status: "staged", editorUrl: page.url(), imageUpload: images, message: "네이버 편집기에 자동 반영했습니다. 발행은 승인 전이라 실행하지 않았습니다." };
-    else { await clickPublish(page, scope); result = { status: "published", editorUrl: page.url(), publishedUrl: page.url(), imageUpload: images, message: "네이버 발행 동작을 완료했습니다." }; }
+    if (!publish) result = { status: "staged", keepOpen: true, editorUrl: page.url(), imageUpload: images, message: "네이버 편집기에 자동 반영했습니다. 발행은 승인 전이라 실행하지 않았습니다." };
+    else { publishAttempted = true; await clickPublish(page, scope); result = { status: "published", editorUrl: page.url(), publishedUrl: page.url(), imageUpload: images, message: "네이버 발행 동작을 완료했습니다." }; }
   } catch (error) {
-    const keepOpen = false;
+    // Leave the failed editor visible for diagnosis; never click Publish here.
+    const keepOpen = true;
     result = {
       status: error?.code === "NAVER_LOGIN_REQUIRED" ? "login_required" : "error",
       errorCode: error?.code || "NAVER_AUTOMATION_FAILED",
       message: error?.message || String(error),
       editorUrl: page.url(),
       keepOpen,
+      publishAttempted,
     };
     if (!keepOpen) await context.close().catch(() => {});
   }

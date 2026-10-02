@@ -1,5 +1,13 @@
 # ATLAS 플랫폼 보강 검증 — 2026-10-02
 
+## 네이버 본문 탐색 실패 보완 — 2026-10-03 (한국 시간)
+
+- 집 PC 제공 로그: 로그인 후 `NAVER_BODY_EDITOR_NOT_FOUND`, publishedUrl/logNo 없음. 기존 worker는 오류 시 Edge를 닫고, 본문 준비 여부 대신 제목만 보고 frame을 선택했다.
+- `.se-content`와 `.se-main-container`를 함께 지원하며, 보이고 실제 편집 가능한 본문이 준비된 iframe을 기다린다. 제목만 있는 frame, 숨겨진/읽기 전용 본문은 선택하지 않는다. 기존 본문 보호와 본문/이미지 순서 검증은 유지한다.
+- 실패 시 worker/browser를 유지한다. 발행 단계 진입 전 실패를 명시적으로 기록하고, 이 경우에만 새 사용자 승인으로 재시도할 수 있다. 과거 기록 중 한국 채널의 정확한 본문 탐색 오류만 발행 전 실패로 판별한다. 다른 결과 불명·공개 글은 계속 차단하며 이전 실패 token을 보존한다.
+- `npm test`: 526개 통과, 실패/skip 0. Chromium에서 iframe 지연 로딩, 편집용 container, 숨김/읽기 전용 거부, 복구 본문 보호, 이미지 3장 위치 검증. 중복/결과 불명/승인 소비 차단 테스트 통과.
+- lint 통과, build 성공. 기존 Turbopack tracing 경고 1개. 집 PC 실제 SmartEditor의 새 stage 및 실패 창 유지 동작은 아직 확인하지 못했다. 실제 발행은 실행하지 않았다.
+
 ## 끊긴 세션 이후 재개 검증 — 2026-10-03 (한국 시간)
 
 - 새 세션의 작업 폴더는 비어 있었지만 `/workspace/scratch/259d89efa34d/atlas`에서 이전 복제본을 찾았다. 최초 branch/status/diff 확인 결과 `fix/naver-rss-dedupe`, HEAD `d6731903f20d1e2dfd83ed158e6b65c9dfc4f5cb`, 미커밋 변경 없음이었다. 아래 기존 보강을 다시 구현하지 않았다. 집 PC의 미커밋 변경이나 중단된 채팅의 상태는 직접 확인할 수 없다.
