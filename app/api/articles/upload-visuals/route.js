@@ -1,27 +1,19 @@
-// Cloudinary Image Automation Sprint V1 — single responsibility route:
-// upload an article's visualAssets to Cloudinary, save the resulting public
-// HTTPS URLs, and patch the article's *existing* Blogger post's content.
-// Never creates a new Blogger post (posts.insert is never called here).
+// Prepare immutable hosted copies of reviewed draft images. Never update live posts.
 import { NextResponse } from "next/server";
 import { readJson, writeJson } from "@/lib/data-store";
-import { buildBloggerHtml } from "@/lib/html-exporter";
+import { assertNewPost, contentVersion } from "@/lib/atlas/publish-transaction";
+import { fileDigest, faceProofPassed } from "@/lib/atlas/face-proof";
+import { globalReviewPacket } from "@/lib/atlas/operate/publish-approval-store";
+import { requestOriginAllowed } from "@/lib/atlas/request-origin";
 import {
   isCloudinaryConfigured,
   resolveLocalAssetFile,
   uploadArticleImage,
 } from "@/lib/atlas/providers/cloudinary-provider";
-import { bloggerProvider } from "@/lib/atlas/providers/blogger-provider";
-import { getTokenByBlogId, decryptToken, upsertTokenForBlog } from "@/lib/atlas/repositories/token-repository";
-import { getJobsByArticleId, markJobImageSync } from "@/lib/atlas/repositories/publishing-repository";
 import { isPublicImageUrl } from "@/lib/atlas/revenue-layout-engine";
 import { faceMatchIssues } from "@/lib/atlas/face-match";
 
-// Two explicit request modes. "prepare" (written articles) uploads to Cloudinary
-// and saves publicUrl only — it must never reach the Blogger update path below.
-// "sync" (published articles) is the original flow: upload, save, then patch the
-// *existing* verified Blogger post. Absent mode defaults to "sync" so the
-// pre-existing Publisher call (which sends no mode) keeps working unchanged.
-const VALID_MODES = new Set(["prepare", "sync"]);
+// Only reviewed, unpublished drafts may prepare hosted images.
 
 export const runtime = "nodejs";
 
@@ -31,43 +23,11 @@ const ARTICLES_FILE = "articles.json";
 // trusted — mirrors the OFFICIAL_REDIRECT_URI convention already used for
 // Blogger OAuth in this codebase.
 function isLocalOrigin(request) {
-  return (request.headers.get("host") || "") === "localhost:3002";
+  return ["localhost:3002", "127.0.0.1:3002"].includes(request.headers.get("host")) && requestOriginAllowed(request);
 }
 
 function isRequired(asset) {
   return asset.required !== false;
-}
-
-function latestSucceededJob(articleId, blogId) {
-  const jobs = getJobsByArticleId(articleId).filter(
-    (j) => j.channelId === blogId && j.status === "succeeded" && j.externalId
-  );
-  jobs.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
-  return jobs[0] || null;
-}
-
-// Retries a Blogger API call once after refreshing the access token on
-// TOKEN_EXPIRED. Mutates tokenState.accessToken in place so subsequent calls
-// in the same request reuse the refreshed token.
-async function withTokenRefresh(blog, tokenState, fn) {
-  try {
-    return await fn(tokenState.accessToken);
-  } catch (err) {
-    if (err.code === "TOKEN_EXPIRED" && tokenState.refreshToken) {
-      const refreshed = await bloggerProvider.refreshAccessToken(tokenState.refreshToken);
-      tokenState.accessToken = refreshed.accessToken;
-      upsertTokenForBlog({
-        blogId: blog.id,
-        provider: "blogger",
-        accessToken: tokenState.accessToken,
-        refreshToken: tokenState.refreshToken,
-        scope: tokenState.scope,
-        expiresAt: new Date(Date.now() + refreshed.expiresIn * 1000).toISOString(),
-      });
-      return await fn(tokenState.accessToken);
-    }
-    throw err;
-  }
 }
 
 // GET: cheap readiness signal for the Publisher button (no Cloudinary/Google
@@ -88,7 +48,7 @@ export async function GET(request) {
   const requiredAssets = assets.filter(isRequired);
   const requiredLocalReady =
     requiredAssets.length > 0 && requiredAssets.every((a) => Boolean(resolveLocalAssetFile(a.localSrc)));
-  const publicReadyCount = requiredAssets.filter((a) => isPublicImageUrl(a.publicUrl)).length;
+  const publicReadyCount = requiredAssets.filter((a) => isPublicImageUrl(a.publicUrl) && a.publicImageHash === fileDigest(resolveLocalAssetFile(a.localSrc))).length;
 
   return NextResponse.json({
     articleId,
@@ -96,7 +56,7 @@ export async function GET(request) {
     requiredLocalReady,
     requiredCount: requiredAssets.length,
     publicReadyCount,
-    hasStoredPostReference: Boolean(latestSucceededJob(articleId, article.blogId)),
+    hasStoredPostReference: Boolean(article.bloggerPostId),
     articlePublished: article.status === "published",
     articleStatus: article.status,
   });
@@ -116,10 +76,9 @@ export async function POST(request) {
   // Absent mode == legacy "sync". Any other value is rejected outright so a
   // typo can never silently fall through to the Blogger update path.
   const mode = body.mode === undefined ? "sync" : body.mode;
-  if (!VALID_MODES.has(mode)) {
-    return NextResponse.json({ articleId, errorCode: "UNKNOWN_MODE" }, { status: 400 });
+  if (mode !== "prepare") {
+    return NextResponse.json({ articleId, errorCode: "EXISTING_POST_PROTECTED", error: "기존 공개 글의 이미지는 이 경로에서 수정하지 않습니다." }, { status: 409 });
   }
-
   if (!isCloudinaryConfigured()) {
     return NextResponse.json({ articleId, errorCode: "CLOUDINARY_CONFIG_MISSING" }, { status: 400 });
   }
@@ -130,6 +89,9 @@ export async function POST(request) {
     return NextResponse.json({ articleId, errorCode: "ARTICLE_NOT_FOUND" }, { status: 404 });
   }
 
+  try { assertNewPost(article); } catch (error) { return NextResponse.json({ errorCode: error.code, error: error.message }, { status: 409 }); }
+  const review = globalReviewPacket(article);
+  if (!review.finalReviewReady || review.blocking.length) return NextResponse.json({ errorCode: "FINAL_IMAGE_REVIEW_REQUIRED", error: "최종 글·이미지 검증 이후 공개 이미지를 연결하세요." }, { status: 409 });
   const assets = Array.isArray(article.visualAssets) ? article.visualAssets : [];
   if (assets.length === 0) {
     return NextResponse.json({ articleId, errorCode: "NO_VISUAL_ASSETS" }, { status: 400 });
@@ -137,28 +99,19 @@ export async function POST(request) {
 
   // 미지 얼굴 일치 검수를 통과하지 못한 이미지는 공개 업로드도, 공개 글 교체(sync)도 하지 않는다.
   // (art_024 얼굴 불일치 사고 이후 필수 게이트)
-  const faceIssues = faceMatchIssues(assets.filter(isRequired));
+  const faceIssues = [...faceMatchIssues(assets.filter(isRequired)), ...assets.filter(isRequired).filter((asset) => !faceProofPassed(asset.faceMatch, resolveLocalAssetFile(asset.localSrc))).map((asset) => `${asset.key}: 이미지 얼굴 검수 기록 불일치`)];
   if (faceIssues.length) {
     return NextResponse.json({ articleId, mode, errorCode: "GLOBAL_CHARACTER_FACE_MISMATCH", issues: faceIssues }, { status: 409 });
   }
-  // 교체 후보로 표시된 공개 글은 사용자 승인 전 자동으로 바꾸지 않는다.
-  if (mode === "sync" && article.imageReplacement?.liveUpdateRequiresUserApproval && !article.imageReplacement?.userApprovedAt) {
-    return NextResponse.json({ articleId, mode, errorCode: "LIVE_IMAGE_REPLACEMENT_NEEDS_USER_APPROVAL" }, { status: 409 });
-  }
-
-  // prepare only runs on drafts. Published articles use "sync" (which also
-  // patches Blogger); routing a published article through prepare — or a draft
-  // through sync — is rejected rather than guessed.
-  if (mode === "prepare" && article.status !== "written") {
-    return NextResponse.json({ articleId, mode, errorCode: "INVALID_STATUS_FOR_PREPARE" }, { status: 400 });
-  }
+  if (article.status !== "written") return NextResponse.json({ errorCode: "INVALID_STATUS_FOR_PREPARE" }, { status: 400 });
+  const initialVersion = contentVersion(article);
 
   // prepare + already fully prepared: every required asset already carries a
   // public https URL, so there is nothing to upload. Idempotent no-op, no
   // Cloudinary call, existing publicUrls untouched.
   if (mode === "prepare") {
     const requiredReady = assets.filter(isRequired);
-    const allReady = requiredReady.length > 0 && requiredReady.every((a) => isPublicImageUrl(a.publicUrl));
+    const allReady = requiredReady.length > 0 && requiredReady.every((a) => isPublicImageUrl(a.publicUrl) && a.publicImageHash === fileDigest(resolveLocalAssetFile(a.localSrc)));
     if (allReady) {
       const results = assets.map((a) => ({
         key: a.key,
@@ -194,8 +147,7 @@ export async function POST(request) {
     );
   }
 
-  // Upload pass — one Cloudinary call per asset, fixed public_id/folder so
-  // re-running this route always overwrites the same asset (idempotent).
+  // Content-addressed IDs preserve earlier hosted images, including live posts.
   const results = [];
   for (const asset of assets) {
     const filePath = resolveLocalAssetFile(asset.localSrc);
@@ -204,11 +156,13 @@ export async function POST(request) {
       continue;
     }
     try {
-      const uploaded = await uploadArticleImage({ slug, key: asset.key, filePath });
+      const imageHash = fileDigest(filePath);
+      const uploaded = await uploadArticleImage({ slug, key: `${asset.key}-${imageHash.slice(0, 16)}`, filePath });
       results.push({
         key: asset.key,
         status: "success",
         publicUrl: uploaded.secureUrl,
+        publicImageHash: imageHash,
         width: uploaded.width,
         height: uploaded.height,
       });
@@ -234,17 +188,19 @@ export async function POST(request) {
   // Save publicUrl — only now that every required upload succeeded.
   const nextVisualAssets = assets.map((a) => {
     const r = results.find((x) => x.key === a.key);
-    return r && r.status === "success" ? { ...a, publicUrl: r.publicUrl } : a;
+    return r && r.status === "success" ? { ...a, publicUrl: r.publicUrl, publicImageHash: r.publicImageHash } : a;
   });
-  const articleIndex = articlesData.articles.findIndex((a) => a.id === articleId);
-  articlesData.articles[articleIndex].visualAssets = nextVisualAssets;
-  articlesData.articles[articleIndex].updatedAt = new Date().toISOString();
-  writeJson(ARTICLES_FILE, articlesData);
-  const updatedArticle = articlesData.articles[articleIndex];
+  const latestData = readJson(ARTICLES_FILE);
+  const articleIndex = latestData.articles.findIndex((item) => item.id === articleId);
+  const current = latestData.articles[articleIndex];
+  if (!current || contentVersion(current) !== initialVersion || results.some((result) => result.status === "success" && result.publicImageHash !== fileDigest(resolveLocalAssetFile(assets.find((asset) => asset.key === result.key)?.localSrc)))) {
+    return NextResponse.json({ errorCode: "REVIEW_CHANGED_DURING_UPLOAD", error: "이미지 연결 중 글이나 파일이 바뀌었습니다. 다시 검수하세요." }, { status: 409 });
+  }
+  assertNewPost(current);
+  latestData.articles[articleIndex] = { ...current, visualAssets: nextVisualAssets, updatedAt: new Date().toISOString() };
+  writeJson(ARTICLES_FILE, latestData);
 
-  // prepare stops here: publicUrls are saved, status stays "written", and the
-  // Blogger update path below is never entered. No publishedUrl/postId is read
-  // or created, and no publishing job is touched.
+  // Save draft delivery metadata only; no Blogger update or publish job.
   if (mode === "prepare") {
     const requiredCount = assets.filter(isRequired).length;
     return NextResponse.json({
@@ -258,81 +214,4 @@ export async function POST(request) {
     });
   }
 
-  // Blogger update is best-effort and strictly opt-in on verified identity —
-  // failing to identify/patch the post never undoes the publicUrl save above.
-  const blogsData = readJson("blogs.json");
-  const blog = blogsData.items.find((b) => b.id === updatedArticle.blogId);
-  if (!blog || !blog.bloggerBlogId) {
-    return NextResponse.json({ articleId, results, bloggerUpdate: { status: "skipped", errorCode: "BLOGGER_BLOG_NOT_LINKED" } });
-  }
-  const tokenRecord = getTokenByBlogId(blog.id);
-  if (!tokenRecord) {
-    return NextResponse.json({ articleId, results, bloggerUpdate: { status: "skipped", errorCode: "BLOGGER_TOKEN_NOT_FOUND" } });
-  }
-
-  const decrypted = decryptToken(tokenRecord);
-  const tokenState = { accessToken: decrypted.accessToken, refreshToken: decrypted.refreshToken, scope: tokenRecord.scope };
-
-  let verifiedPost = null;
-  let verifiedJob = null;
-  const candidateJob = latestSucceededJob(articleId, blog.id);
-  if (candidateJob) {
-    try {
-      const post = await withTokenRefresh(blog, tokenState, (at) =>
-        bloggerProvider.getPost(blog.bloggerBlogId, candidateJob.externalId, at)
-      );
-      if (post && post.title === updatedArticle.title && post.url === updatedArticle.publishedUrl) {
-        verifiedPost = post;
-        verifiedJob = candidateJob;
-      }
-    } catch {
-      verifiedPost = null;
-    }
-  }
-
-  if (!verifiedPost && updatedArticle.publishedUrl) {
-    try {
-      const urlPath = new URL(updatedArticle.publishedUrl).pathname;
-      const post = await withTokenRefresh(blog, tokenState, (at) =>
-        bloggerProvider.getPostByPath(blog.bloggerBlogId, urlPath, at)
-      );
-      if (post && post.title === updatedArticle.title && post.url === updatedArticle.publishedUrl) {
-        verifiedPost = post;
-      }
-    } catch {
-      verifiedPost = null;
-    }
-  }
-
-  if (!verifiedPost) {
-    // Never guess. No posts.insert, no posts.patch against an unverified id.
-    return NextResponse.json({
-      articleId,
-      results,
-      bloggerUpdate: { status: "skipped", errorCode: "BLOGGER_POST_ID_NOT_VERIFIED" },
-    });
-  }
-
-  try {
-    const html = buildBloggerHtml(updatedArticle);
-    const patchResult = await withTokenRefresh(blog, tokenState, (at) =>
-      bloggerProvider.updatePost(blog.bloggerBlogId, verifiedPost.id, { html }, { accessToken: at })
-    );
-    if (verifiedJob) {
-      markJobImageSync(verifiedJob.id, { status: "success", message: "Cloudinary 이미지 반영 완료" });
-    }
-    return NextResponse.json({
-      articleId,
-      results,
-      bloggerUpdate: { status: "updated", postId: verifiedPost.id, publishedUrl: patchResult.publishedUrl || updatedArticle.publishedUrl },
-    });
-  } catch (err) {
-    if (verifiedJob) {
-      markJobImageSync(verifiedJob.id, { status: "failed", message: err.message || "Blogger 업데이트 실패" });
-    }
-    return NextResponse.json(
-      { articleId, results, bloggerUpdate: { status: "failed", errorCode: err.code || "BLOGGER_UPDATE_FAILED" } },
-      { status: 502 }
-    );
-  }
 }

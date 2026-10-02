@@ -1,3 +1,5 @@
+import { requestOriginAllowed } from "@/lib/atlas/request-origin";
+import { createPublishTransactions } from "@/lib/atlas/publish-transaction";
 // Auto-publish to Blogger, behind the Publisher approval gate.
 //
 // Safety contract:
@@ -51,6 +53,7 @@ function persist(articleId, patch) {
 }
 
 export async function POST(request) {
+  if (!requestOriginAllowed(request)) return NextResponse.json({ error: "Origin rejected" }, { status: 403 });
   const body = await request.json();
   const { articleId, blogId } = body;
 
@@ -88,8 +91,7 @@ export async function POST(request) {
   // (1) Duplicate guard — already published.
   if (state === PUBLISH_STATE.PUBLISHED) {
     return NextResponse.json(
-      { status: "duplicate", errorCode: "ALREADY_PUBLISHED", error: "이미 발행된 글입니다. 중복 발행이 차단되었습니다.", publishedUrl: article.publishedUrl || "" },
-      { status: 409 }
+      { status: "published", postId: article.bloggerPostId || "", publishedUrl: article.publishedUrl || "" }
     );
   }
 
@@ -185,13 +187,18 @@ export async function POST(request) {
   }
 
   let job = null;
+  const transactions = createPublishTransactions();
+  let transaction = null;
   try {
+    await session.run((accessToken) => bloggerProvider.assertPublishTarget(session.bloggerBlogId, accessToken));
+    transaction = transactions.claim("global", article, approval.packet);
     // (5) Pre-flight: does this article already exist as a public post? This runs
     // BEFORE any state write and before posts.insert.
     const livePosts = await session.run((at) => bloggerProvider.listLivePosts(session.bloggerBlogId, at));
     const preflight = matchLivePost(article, livePosts);
 
     if (preflight.status === "conflict") {
+      transactions.uncertain(transaction, new Error("같은 제목의 공개 게시물 여러 개: 결과 확인 필요"));
       inFlight.delete(lockKey);
       return NextResponse.json(
         {
@@ -206,6 +213,7 @@ export async function POST(request) {
 
     if (preflight.status === "matched") {
       const post = preflight.post;
+      transactions.finish(transaction, { platform: "blogger", postId: post.id, url: post.url });
       consumeUserApproval("global", articleId);
       persist(articleId, {
         publishState: PUBLISH_STATE.PUBLISHED,
@@ -234,6 +242,8 @@ export async function POST(request) {
 
     // (6) No existing post: mark publishing, then insert exactly once.
     // 승인은 insert 직전에 소비한다. 실패해도 같은 승인으로 다시 시도하지 않는다.
+    const latestApproval = checkUserApproval("global", loadArticle(articleId).article);
+    if (latestApproval.issues.length || latestApproval.packet.contentHash !== approval.packet.contentHash) throw Object.assign(new Error("발행 준비 중 내용이 바뀌었습니다. 다시 검수하세요."), { code: "APPROVAL_CHANGED" });
     consumeUserApproval("global", articleId);
     persist(articleId, {
       publishState: PUBLISH_STATE.PUBLISHING,
@@ -263,7 +273,7 @@ export async function POST(request) {
     };
 
     const result = await session.run((accessToken) =>
-      bloggerProvider.publish(job, content, { accessToken })
+      bloggerProvider.publish(job, content, { accessToken, transaction })
     );
 
     // (7) Verify the returned postId is really public before recording success.
@@ -274,6 +284,7 @@ export async function POST(request) {
       verified = null; // verification is best-effort; the insert itself succeeded
     }
 
+    transactions.finish(transaction, { platform: "blogger", postId: result.externalId, url: verified?.url || result.publishedUrl });
     const now = new Date().toISOString();
     updatePublishJobStatus(job.id, {
       status: "succeeded",
@@ -311,6 +322,7 @@ export async function POST(request) {
     inFlight.delete(lockKey);
     console.error("[publish route] 발행 실패:", err.message, err.code, err.httpStatus);
 
+    if (!transaction) return NextResponse.json({ status: "rejected", errorCode: err.code, error: err.message }, { status: 409 });
     const authError = isAuthError(err);
     if (job) {
       updatePublishJobStatus(job.id, {
@@ -320,6 +332,7 @@ export async function POST(request) {
       });
     }
 
+    if (transaction && transactions.read("global", articleId)?.state === "PUBLISHING") transactions.uncertain(transaction, err);
     // OAuth failure: leave the article exactly as it was (still approved), so the
     // user can reconnect and retry without re-approving.
     persist(articleId, {

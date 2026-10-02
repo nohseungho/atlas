@@ -63,7 +63,9 @@ export default function MoneyHunterPage() {
   const [week, setWeek] = useState(null);
 
   useEffect(() => {
-    setWeek(castForWeek(new Date()));
+    let cancelled = false;
+    Promise.resolve().then(() => { if (!cancelled) setWeek(castForWeek(new Date())); });
+    return () => { cancelled = true; };
   }, []);
 
   // ── 오늘의 글 준비 (Daily Content Pipeline) ──────────────────────────────

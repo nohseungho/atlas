@@ -178,10 +178,13 @@ function RevenueScreen() {
       (j) => (focusJobId && j.id === focusJobId) || (focusArticleId && j.articleId === focusArticleId),
     );
     focusApplied.current = key;
-    if (match) {
+    let cancelled = false;
+    Promise.resolve().then(() => {
+      if (cancelled || !match) return;
       setCurrentJobId(match.id);
       setOpenStep(null);
-    }
+    });
+    return () => { cancelled = true; };
   }, [flow, focusArticleId, focusJobId]);
 
   // "__new__" = 사용자가 새 글을 시작한 상태 (아직 작업 기록이 없다).
@@ -195,7 +198,9 @@ function RevenueScreen() {
   // 주제를 고른 순간 2번이 "진행 중"으로 표시만 되고 접힌 채 남아, 눌러야 할
   // "제작 요청 파일 받기" 버튼이 화면 어디에도 보이지 않는다.
   useEffect(() => {
-    setOpenStep(null);
+    let cancelled = false;
+    Promise.resolve().then(() => { if (!cancelled) setOpenStep(null); });
+    return () => { cancelled = true; };
   }, [cur]);
 
   const statusOf = (n) => (n < cur ? "done" : n === cur ? "active" : "wait");

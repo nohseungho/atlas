@@ -21,7 +21,9 @@ export default function VideoLibraryPage() {
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
-    setEntries(readList(KEYS.videoLibrary));
+    let cancelled = false;
+    Promise.resolve().then(() => { if (!cancelled) setEntries(readList(KEYS.videoLibrary)); });
+    return () => { cancelled = true; };
   }, []);
 
   function updateField(field, value) {

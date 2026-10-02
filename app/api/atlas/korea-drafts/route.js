@@ -1,3 +1,4 @@
+import { assertNewPost } from "@/lib/atlas/publish-transaction";
 import { NextResponse } from "next/server";
 import { readJson, writeJson } from "@/lib/data-store";
 import {
@@ -34,6 +35,9 @@ const PROTECTED_FIELDS = new Set([
   "contentType",
   "logNo",
   "userPublishApproval",
+  "finalReview",
+  "workflowState",
+  "articleDocument",
 ]);
 
 function readItems() {
@@ -111,8 +115,9 @@ export async function PATCH(request) {
   const index = items.findIndex((item) => item.id === id);
   if (index < 0) return NextResponse.json({ error: "draft not found" }, { status: 404 });
 
+  try { assertNewPost(items[index]); } catch (error) { return NextResponse.json({ error: error.message, errorCode: error.code }, { status: 409 }); }
   const safePatch = editablePatch(body.patch);
-  let next = normalizeKoreaDraft({ ...items[index], ...safePatch, id });
+  let next = Object.keys(safePatch).length ? normalizeKoreaDraft({ ...items[index], ...safePatch, id }) : structuredClone(items[index]);
   // operate 최종 검수에서 남긴 일회성 발행 승인 기록은 상태 전이 중 보존한다.
   // 입력 patch로는 덮어쓸 수 없고 실제 발행 API가 해시·만료·사용 여부를 다시 검사한다.
   if (items[index].userPublishApproval) next.userPublishApproval = items[index].userPublishApproval;

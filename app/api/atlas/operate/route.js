@@ -1,3 +1,7 @@
+import { requestOriginAllowed } from "@/lib/atlas/request-origin";
+import { readTopicResearch, refreshTopicResearch } from "@/lib/atlas/operate/topic-research";
+import { createKoreaDocument, renderArticleDocument } from "@/lib/atlas/article-document";
+import { assertNewPost } from "@/lib/atlas/publish-transaction";
 // ATLAS 단일 운영 API — 국내·해외 블로그를 한 화면에서
 // 주제 선택 → 자동 작성 → 이미지 생성 → 미리보기 → 발행 → 공개 URL 확인 순서로 진행한다.
 //
@@ -16,8 +20,7 @@ import { readJson, writeJson } from "@/lib/data-store";
 import { ATLAS_CHANNEL_ID } from "@/lib/atlas/character-channel-policy";
 import { normalizeKoreaDraft, validateKoreaDraft, naverEditorTarget } from "@/lib/atlas/korea-product-pipeline";
 import { buildArticleFromMaster, nextArticleId, validateMasterPackage } from "@/lib/atlas/article-factory";
-import { buildLocalPreviewHtml, markdownToHtml } from "@/lib/html-exporter";
-import { bodyHtmlFromDraft, bodyParagraphsFromDraft, planImagePlacements } from "@/lib/atlas/naver-image-placement";
+import { buildGlobalDocument, buildLocalPreviewHtml, markdownToHtml } from "@/lib/html-exporter";
 import { evaluateGlobalArticle, evaluateKoreaDraft } from "@/lib/atlas/policy-validator";
 import { globalTopics, koreaTopics, findTopic } from "@/lib/atlas/operate/topic-catalog";
 import { buildKoreaInfoDraft } from "@/lib/atlas/operate/korea-info-writer";
@@ -31,7 +34,7 @@ import {
   renderKoreaDraftImages,
 } from "@/lib/atlas/operate/image-render";
 import { duplicateReason, publishedIndex } from "@/lib/atlas/operate/published-index";
-import { globalRecent, globalReviewPacket, koreaRecent, koreaReviewPacket, recordUserApproval } from "@/lib/atlas/operate/publish-approval-store";
+import { globalRecent, globalReviewPacket, koreaRecent, koreaReviewPacket, recordUserApproval, recordFinalReview, deliveryIssues } from "@/lib/atlas/operate/publish-approval-store";
 import { topicSimilarity } from "@/lib/atlas/publish-review";
 import { resolveSceneArt } from "@/lib/atlas/operate/scene-art";
 import { matchingPublicKoreaPosts } from "@/lib/atlas/operate/naver-public-sync";
@@ -75,33 +78,6 @@ function writeKoreaItems(items) {
   writeJson(KOREA_FILE, { items });
 }
 
-// 승인 전 검수한 두 장면을 해당 미발행 글에 한 번만 연결한다. 기존 로컬 생성물은
-// 지우거나 덮어쓰지 않으며, 공개 글과 다른 국내/해외 원고는 건드리지 않는다.
-function applyReviewedBeddingScenes() {
-  const topicId = "kr_info_bedding_cleaner_2026";
-  const version = "bedding-scenes-reviewed-20261001";
-  const items = koreaItems();
-  const draft = items.find((item) => item.topicId === topicId);
-  if (!draft || draft.reviewedSceneVersion === version || draft.state === "published"
-    || draft.publishedUrl || draft.naverUrl || draft.logNo) return;
-
-  const roles = ["info_how", "info_checklist"];
-  const sourceDir = path.join(process.cwd(), "public", "atlas", "korea", "suho", "_reviewed", "bedding_cleaner_2026");
-  if (!roles.every((role) => fs.existsSync(path.join(sourceDir, `${role}.png`)))) return;
-  const targetDir = path.join(process.cwd(), ".atlas-data", "korea-assets", draft.id);
-  fs.mkdirSync(targetDir, { recursive: true });
-  const images = (draft.images || []).map((img) => {
-    if (!roles.includes(img.role)) return img;
-    const source = path.join(sourceDir, `${img.role}.png`);
-    const target = path.join(targetDir, `${img.id}.png`);
-    fs.copyFileSync(source, target);
-    return { ...img, src: target, sceneArtSource: path.relative(process.cwd(), source).split(path.sep).join("/"), generatedAt: new Date().toISOString() };
-  });
-  writeKoreaItems(items.map((item) => item.id === draft.id
-    ? { ...draft, images, reviewedSceneVersion: version, userPublishApproval: null, updatedAt: new Date().toISOString() }
-    : item));
-}
-
 function articleList() {
   return readJson(ARTICLES_FILE).articles || [];
 }
@@ -136,7 +112,7 @@ function globalSteps(article) {
     written,
     imagesDone,
     published,
-    publicImages: (article.visualAssets || []).filter((a) => /^https:\/\//.test(String(a.publicUrl || ""))).length,
+    publicImages: (article.visualAssets || []).length - deliveryIssues(article).length,
   };
 }
 
@@ -160,23 +136,15 @@ function pick(list, id) {
 }
 
 function koreaPreview(draft) {
-  const paragraphs = bodyParagraphsFromDraft(draft);
-  const placements = planImagePlacements(paragraphs, draft.images || [], (src) => fs.existsSync(src));
-  // 미리보기 이미지는 경로가 아니라 draft/image 식별자로 요청한다(asset 라우트 참고).
-  const previewPlacements = placements.map((p) => ({
-    ...p,
-    alt: draft.images.find((img) => img.id === p.id)?.alt || "",
-    previewUrl: `/api/atlas/operate/asset?draft=${encodeURIComponent(draft.id)}&image=${encodeURIComponent(p.id)}&ext=${encodeURIComponent(p.src.split('.').pop().toLowerCase())}`,
-  }));
-  return {
-    html: bodyHtmlFromDraft(draft, previewPlacements),
-    paragraphs,
-    placements: previewPlacements,
-  };
+  const document = createKoreaDocument(draft);
+  return { document, html: renderArticleDocument(document, { imageUrl: (block) =>
+    `/api/atlas/operate/asset?draft=${encodeURIComponent(draft.id)}&image=${encodeURIComponent(block.assetId)}&ext=${encodeURIComponent(path.extname(block.src).slice(1) || "png")}` }),
+    placements: document.blocks.filter((block) => block.type === "image") };
 }
 
 function globalPreview(article) {
-  return { html: buildLocalPreviewHtml(article) };
+  const document = buildGlobalDocument(article);
+  return { document, html: buildLocalPreviewHtml(article), placements: document.blocks.filter((block) => block.type === "image") };
 }
 
 function buildState({ koreaId = "", globalId = "" } = {}) {
@@ -200,6 +168,7 @@ function buildState({ koreaId = "", globalId = "" } = {}) {
 
   return {
     [ATLAS_CHANNEL_ID.KOREA_NAVER]: {
+      research: readTopicResearch(ATLAS_CHANNEL_ID.KOREA_NAVER),
       channelId: ATLAS_CHANNEL_ID.KOREA_NAVER,
       character: "suho",
       topics: koreaTopics().map((topic) => ({
@@ -229,6 +198,7 @@ function buildState({ koreaId = "", globalId = "" } = {}) {
         })), error: daily.error || "" } : null,
     },
     [ATLAS_CHANNEL_ID.GLOBAL_BLOGGER]: {
+      research: readTopicResearch(ATLAS_CHANNEL_ID.GLOBAL_BLOGGER),
       channelId: ATLAS_CHANNEL_ID.GLOBAL_BLOGGER,
       character: "miji",
       topics: globalTopics().map((topic) => ({
@@ -261,7 +231,6 @@ async function generatorReadiness() {
 export async function GET(request) {
   const params = new URL(request.url).searchParams;
   try {
-    applyReviewedBeddingScenes();
     return NextResponse.json({
       status: "ok",
       state: buildState({ koreaId: params.get("koreaId") || "", globalId: params.get("globalId") || "" }),
@@ -318,7 +287,7 @@ async function importSellerProduct(url) {
   return { ok: true, imported };
 }
 
-async function prepareKoreaProduct(url, { withProductPhoto = false, verifiedOffer = null } = {}) {
+async function prepareKoreaProduct(url, { verifiedOffer = null } = {}) {
   const checkedAt = Date.parse(verifiedOffer?.verifiedAt || "");
   const cached = verifiedOffer?.sellerUrl === url && verifiedOffer.imported?.draft?.name
     && verifiedOffer.imported.draft.currentPrice !== null && verifiedOffer.imported.draft.features?.length
@@ -347,21 +316,21 @@ async function prepareKoreaProduct(url, { withProductPhoto = false, verifiedOffe
   };
   const bodyText = [
     `생활 속에서 ${name}을 살펴볼 때는 판매 페이지에 적힌 구성과 가격부터 확인하는 편이 정확합니다. 직접 사용한 후기가 아니라 판매처에서 확인한 정보로 정리했습니다.`,
-    "필요한 상황", `${name}이 필요한 생활 장면에서 설치 공간과 용도를 먼저 살펴보세요. 판매 페이지의 설명을 실제 사용 경험으로 오해하지 않도록 구분했습니다.`,
+    "필요한 상황", `${name}을 둘 자리를 먼저 살펴보세요. 제품 크기가 맞는지, 평소 쓰려는 용도에 필요한 기능이 있는지부터 보면 선택이 편해집니다.`,
     "제품 정보와 특징", `${name}의 판매 정보에서 확인한 내용을 정리했습니다. 옵션별 구성은 판매 페이지에서 다시 확인하세요.`,
     "제품 정보와 현재 가격", `${name}\n확인 가격: ${price}\n확인일: ${product.priceCheckedAt}\n판매처: ${imported.canonicalUrl}`,
     "선택할 만한 특징", ...features.map((feature) => `- ${feature}`),
     "구매 전에 아쉬운 점과 확인할 점",
-    `판매 페이지 정보만으로는 실제 사용감과 내구성을 확인할 수 없습니다.${product.shippingFee === null ? " 배송비도 확인되지 않았으니 결제 화면에서 확인해야 합니다." : ` 확인된 배송비: ${product.shippingFee.toLocaleString("ko-KR")} ${product.currency}.`}`,
+    `사용감은 직접 써본 분들의 후기도 함께 살펴보면 좋습니다.${product.shippingFee === null ? " 배송비 안내는 결제 화면에서 한번 더 살펴보세요." : ` 확인된 배송비: ${product.shippingFee.toLocaleString("ko-KR")} ${product.currency}.`}`,
     "잘 맞는 사람", `위에 적힌 특징이 필요한 사람에게 비교 후보가 됩니다. 설치 공간과 옵션은 구매 전에 직접 확인하세요.`,
     "오늘의 체크리스트", `- ${name}의 현재 가격과 옵션 다시 확인\n- 설치 공간과 크기 확인\n- 배송비와 반품 조건 확인`,
     "마무리", `가격과 옵션은 바뀔 수 있습니다. ${name}의 현재 판매 정보는 원문 링크에서 다시 확인하세요.`,
   ].join("\n\n");
   const draft = normalizeKoreaDraft({
-    id: `kr_${topicId}`, topicId, contentType: withProductPhoto ? "new_product_review" : "info_guide", title: `${name}, 가격과 특징·구매 전 확인할 점`,
+    id: `kr_${topicId}`, topicId, contentType: "new_product_review", title: `${name}, 가격과 특징·구매 전 확인할 점`,
     productName: name, productUrl: imported.canonicalUrl, productInfo: { ...product, evidence: imported.evidence },
     keyword: name, bodyText, images: [
-      ...(withProductPhoto ? [koreaProductPhotoSlot({ productName: name })] : []),
+      koreaProductPhotoSlot({ productName: name }),
       ...koreaInfoImages(topic),
     ],
     productImageCandidates: imported.imageCandidates, state: "ready_for_review", generatedBy: "ATLAS_VERIFIED_PRODUCT_IMPORT",
@@ -481,6 +450,7 @@ async function imagesGlobal(force, id) {
 }
 
 export async function POST(request) {
+  if (!requestOriginAllowed(request)) return NextResponse.json({ error: "Origin rejected" }, { status: 403 });
   const body = await request.json().catch(() => ({}));
   const action = String(body.action || "");
   if (action === "connectImageEngine") {
@@ -499,10 +469,10 @@ export async function POST(request) {
     if (action === "refreshToday") {
       const [rss, offers] = await Promise.allSettled([
         readPublicSource("https://rss.blog.naver.com/who-ami.xml", "rss.blog.naver.com"),
-        collectChannel(ATLAS_CHANNEL_ID.KOREA_NAVER),
+        collectChannel(channelId),
       ]);
       let synchronized = 0;
-      if (rss.status === "fulfilled" && /<rss\b/i.test(rss.value)) {
+      if (korea && rss.status === "fulfilled" && /<rss\b/i.test(rss.value)) {
         const items = koreaItems();
         const matches = matchingPublicKoreaPosts(rss.value, items);
         for (const post of matches) {
@@ -514,7 +484,7 @@ export async function POST(request) {
         }
         if (synchronized) writeKoreaItems(items);
       }
-      if (offers.status === "fulfilled") {
+      if (korea && offers.status === "fulfilled") {
         const published = publishedIndex();
         offers.value.candidates = offers.value.candidates.filter(isHomeConvenienceProduct);
         offers.value.slots = selectTopFive(offers.value.candidates,
@@ -534,8 +504,36 @@ export async function POST(request) {
         await mutateUnified((unified) => applyCollected(unified,
           { [ATLAS_CHANNEL_ID.KOREA_NAVER]: offers.value }, published[ATLAS_CHANNEL_ID.KOREA_NAVER]));
       }
-      result = { status: "ok", synchronized, feedAvailable: rss.status === "fulfilled",
+      const researchProducts = korea
+        ? (readUnified().channels?.[ATLAS_CHANNEL_ID.KOREA_NAVER]?.slots || []).filter(Boolean)
+        : (offers.status === "fulfilled" ? offers.value.candidates : []) || [];
+      const research = await refreshTopicResearch(channelId, korea ? koreaTopics() : globalTopics(), researchProducts);
+      result = { status: "ok", research, synchronized, feedAvailable: rss.status === "fulfilled",
         offerAvailable: offers.status === "fulfilled" && !offers.value.error };
+    } else if (action === "saveReview") {
+      const data = readJson(korea ? KOREA_FILE : ARTICLES_FILE);
+      const record = (korea ? data.items : data.articles).find((item) => item.id === String(body.id || ""));
+      if (!record) return NextResponse.json({ error: "수정할 초안을 찾지 못했습니다." }, { status: 404 });
+      assertNewPost(record);
+      if (!String(body.title || "").trim() || !String(body.text || "").trim()) return NextResponse.json({ error: "제목과 본문을 입력하세요." }, { status: 400 });
+      record.title = String(body.title).trim();
+      if (korea) record.bodyText = String(body.text);
+      else {
+        record.masterMarkdown = String(body.text);
+        record.masterHtml = markdownToHtml(record.masterMarkdown);
+        record.masterApproved = true;
+      }
+      record.updatedAt = new Date().toISOString();
+      writeJson(korea ? KOREA_FILE : ARTICLES_FILE, data);
+      result = { status: "ok", id: record.id };
+    } else if (action === "dryRun") {
+      const record = (korea ? koreaItems() : articleList()).find((item) => item.id === String(body.id || ""));
+      if (!record) return NextResponse.json({ error: "검증할 초안을 찾지 못했습니다." }, { status: 404 });
+      const review = korea ? koreaReviewPacket(record) : globalReviewPacket(record);
+      if (global) review.blocking.push(...deliveryIssues(record));
+      // No approval writes, worker launch, uploads, or external post calls.
+      result = { status: "ok", id: record.id, dryRun: true, ready: review.blocking.length === 0,
+        review, document: review.document, imageAnchors: review.document.blocks.filter((block) => block.type === "image").map(({ assetId, anchorAfter }) => ({ assetId, anchorAfter })) };
     } else if (action === "prepare") {
       // 한 번의 제작 요청에서 기존 작성기와 장면 아트 연결기를 순서대로 사용한다.
       // 이미지가 아직 없으면 요청서만 남고 발행 승인은 열리지 않는다.
@@ -573,6 +571,9 @@ export async function POST(request) {
       result = { ...(korea ? await imagesKorea(Boolean(body.force), id) : await imagesGlobal(Boolean(body.force), id)), id, generatorError };
     } else if (action === "regenerateKoreaImage" && korea) {
       result = await regenerateKoreaImage(String(body.id || ""), String(body.role || ""));
+    } else if (action === "recordFinalReview") {
+      const reviewed = recordFinalReview({ channel: korea ? "korea" : "global", id: String(body.id || ""), code: body.reviewCode });
+      result = reviewed.ok ? { status: "ok", id: body.id } : { status: "rejected", error: reviewed.issues[0], code: 409 };
     } else if (action === "approvePublish") {
       // 최종 검수 화면의 "발행" 버튼 전용. 화면이 본 contentHash와 확인 문구가 있어야 승인이 남는다.
       // 승인만 기록하고 발행은 하지 않는다. 발행 API가 이 승인을 다시 검사한다.

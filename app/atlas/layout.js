@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AtlasNavigation from "./navigation-boundary";
 
 export const metadata = {
   title: "ATLAS Platform",
@@ -25,7 +26,7 @@ const NAV_ITEMS = [
 export default function AtlasLayout({ children }) {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
-      <nav className="border-b border-zinc-800 px-6 py-4 sm:px-10">
+      <AtlasNavigation><nav className="border-b border-zinc-800 px-6 py-4 sm:px-10">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-4">
           <span className="text-sm font-semibold text-emerald-400">
             ATLAS Platform
@@ -48,7 +49,7 @@ export default function AtlasLayout({ children }) {
             ← Ops Dashboard
           </Link>
         </div>
-      </nav>
+      </nav></AtlasNavigation>
       {children}
     </div>
   );

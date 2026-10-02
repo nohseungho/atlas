@@ -13,6 +13,7 @@
 // 떨어뜨린다. 초안 연결은 기존 운영 화면의 "이미지 생성" 단계(action=images)가 그대로 한다.
 // 공개된 글의 주제는 건드리지 않는다.
 import fs from "fs";
+import { fileDigest } from "../lib/atlas/face-proof.js";
 import path from "path";
 import os from "os";
 import { execFileSync } from "child_process";
@@ -166,6 +167,8 @@ async function main() {
         threshold: FACE_MATCH_THRESHOLD,
         method: "arcface_buffalo_l",
         reference: referenceAssets(channel)[0],
+        imageHash: fileDigest(chosen.file),
+        referenceHash: fileDigest(path.join(process.cwd(), referenceAssets(channel)[0])),
         checkedAt: new Date().toISOString(),
         candidates: candidates.map((c) => ({ seed: c.seed, similarity: c.score?.similarity ?? 0 })),
       };

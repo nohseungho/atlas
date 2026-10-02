@@ -53,8 +53,8 @@ export default function AffiliateDisclosurePage() {
         <p className="mt-2">
           Our recommendations are based on our own research and honest
           opinion. Whether or not an article contains affiliate links has no
-          bearing on how we evaluate a product or service. If we don't think
-          something is worth recommending, we won't recommend it.
+          bearing on how we evaluate a product or service. If we don&apos;t think
+          something is worth recommending, we won&apos;t recommend it.
         </p>
       </div>
 

@@ -7,6 +7,7 @@
 # 얼굴을 못 찾으면 fail(뒷모습 등 얼굴이 안 보이는 컷은 검수할 수 없으므로 통과가 아니다).
 # --write 는 data/atlas/scene-art/<channel>-<topic>.json 의 items[role].faceMatch 에 결과를 기록한다.
 # 운영자 fail 기록(method=operator_review)은 점수로 덮어쓰지 않는다.
+import hashlib
 import json
 import os
 import sys
@@ -57,7 +58,9 @@ def main(argv):
     now = datetime.now(timezone.utc).isoformat()
     for role, item in manifest["items"].items():
         result = score(master_emb, os.path.join(ROOT, item["file"]))
-        record = {**result, "threshold": THRESHOLD, "method": "arcface_buffalo_l", "reference": master, "checkedAt": now}
+        record = {**result, "threshold": THRESHOLD, "method": "arcface_buffalo_l", "reference": master, "checkedAt": now,
+                  "imageHash": hashlib.sha256(open(os.path.join(ROOT, item["file"]), "rb").read()).hexdigest(),
+                  "referenceHash": hashlib.sha256(open(os.path.join(ROOT, master), "rb").read()).hexdigest()}
         prior = item.get("faceMatch") or {}
         if prior.get("method") == "operator_review" and prior.get("status") == "fail":
             record = {**prior, "arcface": record}

@@ -21,7 +21,7 @@ const CHANNELS = [
   { id: GLOBAL, label: "해외", character: "미지", note: "Blogger atlas-money-2026 · 미지 이미지 5장 이상" },
 ];
 
-const STEPS = ["주제 선택", "글·이미지 제작", "전체 미리보기·검수", "승인 후 게시"];
+const STEPS = ["주제", "글", "이미지", "미리보기", "승인", "게시"];
 
 const primary = "rounded-lg bg-emerald-700 px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40";
 const secondary = "rounded-lg border border-zinc-600 px-3 py-2.5 text-sm font-medium text-zinc-200 disabled:opacity-40";
@@ -125,10 +125,12 @@ function ImagePanel({ images, busy, onRender }) {
 
 export default function OperatePage() {
   const [state, setState] = useState(null);
-  const [active, setActive] = useState(KOREA);
+  const [active, setActive] = useState(null);
   const [busy, setBusy] = useState("");
   const [message, setMessage] = useState("");
+  const [actionFailed, setActionFailed] = useState(false);
   const [result, setResult] = useState(null);
+  const [reviewCode, setReviewCode] = useState("");
   const [choosingTopic, setChoosingTopic] = useState(false);
   const [productUrl, setProductUrl] = useState("");
   const [savedProducts, setSavedProducts] = useState([]);
@@ -184,9 +186,11 @@ export default function OperatePage() {
   async function run(label, fn) {
     setBusy(label);
     setMessage("");
+    setActionFailed(false);
     try {
       await fn();
     } catch (error) {
+      setActionFailed(true);
       setMessage(String(error?.message || error));
       await load(picked).catch(() => {});
     } finally {
@@ -201,14 +205,8 @@ export default function OperatePage() {
       if (data.state) setState(data.state);
       if (!ok) throw new Error(data.error || "처리하지 못했습니다.");
       if (data.id) { setPicked((prev) => ({ ...prev, [body.channelId]: data.id })); setChoosingTopic(false); }
-      let publicNote = "";
-      if (["prepare", "images"].includes(body.action) && body.channelId === GLOBAL && data.state?.[GLOBAL]?.steps?.imagesDone) {
-        const uploaded = await postJson("/api/articles/upload-visuals", { articleId: data.id, mode: "prepare" });
-        publicNote = uploaded.ok ? "공개 이미지 주소 연결 완료." : "공개 이미지 연결 대기: Cloudinary 설정을 확인하세요.";
-        await load({ ...picked, [GLOBAL]: data.id });
-      }
       if (body.action === "images") await load({ ...picked, [body.channelId]: data.id });
-      setMessage([note, data.generatorError, data.missing?.length ? `빠진 장면: ${data.missing.join(", ")}` : "", publicNote].filter(Boolean).join(" "));
+      setMessage([note, data.generatorError, data.missing?.length ? `빠진 장면: ${data.missing.join(", ")}` : ""].filter(Boolean).join(" "));
     });
   }
 
@@ -236,6 +234,16 @@ export default function OperatePage() {
       const style = doc.createElement("style");
       style.textContent = "body{max-width:850px;margin:40px auto;padding:0 20px;font:16px/1.8 sans-serif;color:#171717}img{display:block;max-width:100%;height:auto;margin:24px auto}h1,h2,h3{line-height:1.35}table{border-collapse:collapse;max-width:100%}td,th{border:1px solid #bbb;padding:8px}";
       doc.head.append(style);
+      const review = channel.review;
+      const meta = doc.createElement("meta");
+      meta.name = "atlas-review";
+      meta.content = JSON.stringify({ id: record.id, channel: review.channel, contentHash: review.contentHash,
+        approvedVersion: review.approvedVersion, finalReviewHash: review.finalReviewHash, placements: channel.preview?.placements || [],
+        checks: review.blocking, imageCount: images.length, images: review.images,
+        character: isKorea ? "suho" : "miji", faceThreshold: isKorea ? null : 0.5,
+        receiptFormat: "ATLAS-REVIEW:<finalReviewHash>:PASS",
+        reviewerInstruction: "Inspect the entire article and every image: character identity, natural scenes, distinct composition, exact anchors, claims, sources, and reader prose. Return the receipt only if all checks pass. This receipt never authorizes publication." });
+      doc.head.append(meta);
       doc.title = record.title;
       const url = URL.createObjectURL(new Blob(["<!doctype html>\n", doc.documentElement.outerHTML], { type: "text/html;charset=utf-8" }));
       const link = document.createElement("a");
@@ -283,16 +291,6 @@ ${review.title}
       const draft = state?.[KOREA]?.draft;
       if (!draft) throw new Error("발행할 국내 초안이 없습니다.");
       await approvePublish(KOREA, draft.id);
-      // 검수 → 승인은 기존 국내 파이프라인의 상태 전이를 그대로 쓴다.
-      for (const action of ["review", "approve"]) {
-        const res = await fetch("/api/atlas/korea-drafts", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: draft.id, action, patch: {} }),
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok && data.status !== "ok") throw new Error(data.error || (data.issues || []).join(", ") || "승인 처리 실패");
-      }
       const { ok, data } = await postJson("/api/atlas/korea-publish", { id: draft.id, mode: "publish" });
       if (!ok) throw new Error(data.error || "네이버 발행 실패");
       if (data.status === "login_required") {
@@ -311,10 +309,8 @@ ${review.title}
       const article = state?.[GLOBAL]?.article;
       if (!article) throw new Error("발행할 해외 원고가 없습니다.");
       await approvePublish(GLOBAL, article.id);
-      const approved = await postJson("/api/atlas/publisher-approval", { articleId: article.id, action: "approve" });
-      if (approved.data.status !== "ok") throw new Error(`승인 실패: ${approved.data.errorCode || "오류"}`);
       const { data } = await postJson("/api/publish", { articleId: article.id, blogId: "blog_001" });
-      if (data.status === "succeeded" || data.status === "linked_existing") {
+      if (["succeeded", "linked_existing", "published"].includes(data.status)) {
         setResult({ channel: GLOBAL, url: data.publishedUrl || "" });
         setMessage(data.status === "succeeded"
           ? "Blogger 발행 완료."
@@ -390,17 +386,22 @@ ${review.title}
     );
   }
 
+  if (!active) return <main className="mx-auto max-w-3xl space-y-8 px-4 py-16 text-zinc-100">
+    <h1 className="text-4xl font-bold">ATLAS BLOG</h1>
+    <p className="text-zinc-400">국내 또는 해외를 선택해 블로그를 만드세요.</p>
+    <div className="grid gap-4 sm:grid-cols-2">{CHANNELS.map((choice) => <button key={choice.id} type="button" className={`${primary} py-8 text-lg`} onClick={() => setActive(choice.id)}>{choice.label} 블로그 만들기</button>)}</div>
+  </main>;
   const channel = state[active];
   const isKorea = active === KOREA;
   const steps = channel.steps;
   const record = isKorea ? channel.draft : channel.article;
-  const progress = !record ? 1 : !steps.imagesDone ? 2 : 3;
+  const progress = !record ? 1 : !steps.written ? 2 : !steps.imagesDone ? 3 : channel.review?.finalReviewReady ? 5 : 4;
 
   return (
     <main className="mx-auto max-w-5xl space-y-6 px-4 py-8 text-zinc-100">
       <header>
         <div className="text-sm text-amber-300">ATLAS · 단일 운영 화면</div>
-        <h1 className="mt-1 text-3xl font-bold">국내·해외 블로그 운영</h1>
+        <h1 className="mt-1 text-3xl font-bold">ATLAS BLOG</h1>
         <p className="mt-2 text-sm text-zinc-400">
           주제 선택 → 글·이미지 준비 → 전체 검수 → 직접 승인 후 게시. 이미지가 부족하면 이유를 보여주고 게시를 막습니다.
         </p>
@@ -421,7 +422,7 @@ ${review.title}
         ))}
       </div>
 
-      <StepRail current={steps.published ? 5 : progress} />
+      <StepRail current={steps.published ? 6 : progress} />
 
       <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -430,13 +431,15 @@ ${review.title}
             <p className="mt-1 text-xs text-zinc-400">네이버 공개 글 중복 확인과 국내 공개 상품 후보를 갱신합니다. 해외는 검증된 새 주제를 보여줍니다.</p>
           </div>
           <button type="button" className={primary} disabled={Boolean(busy)} onClick={refreshToday}>
-            {busy === "refreshToday" ? "확인 중…" : "오늘 후보 업데이트"}
+            {busy === "refreshToday" ? "확인 중…" : "최신 이슈·제품·참고 글 업데이트"}
           </button>
         </div>
         <p className="mt-2 text-xs text-zinc-400">
           수익 연결: 쿠팡 파트너스 {approvals?.coupang === "approved" ? "설정상 승인 (실제 계정 재확인 필요)" : "승인 확인 전"} · AdSense 실제 계정 확인 필요
         </p>
       </section>
+
+      <ResearchPanel research={channel.research} topics={channel.topics} busy={Boolean(busy)} onPick={(topicId) => act({ action: "prepare", channelId: active, topicId }, "관련 주제로 글과 장면을 준비했습니다. 최신 이슈의 원문도 함께 검수하세요.")} />
 
       {generator && !generator.ready ? (
         <div role="status" className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-800 bg-amber-950/40 p-3 text-sm text-amber-200">
@@ -447,7 +450,7 @@ ${review.title}
         </div>
       ) : null}
 
-      {message ? <p role="status" className="rounded-lg bg-zinc-900 p-3 text-sm text-zinc-200">{message}</p> : null}
+      {message ? <div role={actionFailed ? "alert" : "status"} className="rounded-lg bg-zinc-900 p-3 text-sm text-zinc-200"><p>{actionFailed ? `처리하지 못했습니다. 원인: ${message}` : message}</p>{actionFailed && record ? <a className="mt-2 inline-block text-emerald-300 underline" href="#article-preview">미리보기로 돌아가기</a> : null}</div> : null}
 
       {!record || choosingTopic ? (
         <section className="space-y-3">
@@ -549,7 +552,7 @@ ${review.title}
                 다른 주제 선택
               </button>
             </div>
-            <div className="mt-3"><PolicyBadges policy={channel.policy} /></div>
+            <details className="mt-3"><summary className="cursor-pointer text-sm">상세 보기</summary><PolicyBadges policy={channel.policy} /></details>
           </section>
 
           <ImagePanel
@@ -564,8 +567,8 @@ ${review.title}
               <div className="mt-3 flex flex-wrap gap-2">
                 {(record.images || []).filter((img) => ["info_why", "info_how", "info_checklist"].includes(img.role) && img.src).map((img) => (
                   <button key={img.role} type="button" className={secondary} disabled={Boolean(busy)}
-                    onClick={() => act({ action: "regenerateKoreaImage", channelId: KOREA, id: record.id, role: img.role }, `${img.placement} 수호 장면을 다시 만들었습니다. 미리보기에서 확인하세요.`)}>
-                    {busy === "regenerateKoreaImage" ? "장면 제작 중…" : `${img.placement} 장면 다시 만들기`}
+                    onClick={() => act({ action: "regenerateKoreaImage", channelId: KOREA, id: record.id, role: img.role }, `${img.placement || img.role} 수호 장면을 다시 만들었습니다. 미리보기에서 확인하세요.`)}>
+                    {busy === "regenerateKoreaImage" ? "장면 제작 중…" : `${img.placement || img.role} 장면 다시 만들기`}
                   </button>
                 ))}
               </div>
@@ -580,12 +583,26 @@ ${review.title}
             </section>
           ) : null}
 
-          <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+          {!steps.published ? <details className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+            <summary className="cursor-pointer font-semibold">제목·본문 수정</summary>
+            <form key={`${record.id}:${record.updatedAt}`} className="mt-3 space-y-3" onSubmit={(event) => {
+              event.preventDefault();
+              const fields = new FormData(event.currentTarget);
+              act({ action: "saveReview", channelId: active, id: record.id, title: fields.get("title"), text: fields.get("text") }, "수정 내용을 저장했습니다. 최신 글·이미지 묶음으로 다시 검증해주세요.");
+            }}>
+              <label className="block text-sm">제목<input name="title" required defaultValue={record.title} className="mt-1 block w-full rounded border border-zinc-700 bg-zinc-900 p-2" /></label>
+              <label className="block text-sm">본문<textarea name="text" required rows={16} defaultValue={isKorea ? record.bodyText : record.masterMarkdown || record.bodyMarkdown || ""} className="mt-1 block w-full rounded border border-zinc-700 bg-zinc-900 p-2" /></label>
+              <p className="text-xs text-zinc-400">저장하면 이전 최종 검수와 발행 승인은 해제됩니다.</p>
+              <button type="submit" className={secondary} disabled={Boolean(busy)}>수정 저장</button>
+            </form>
+          </details> : null}
+
+          <section id="article-preview" className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h2 className="font-semibold">전체 글·이미지 미리보기</h2>
               <button type="button" className={secondary} disabled={Boolean(busy) || !steps.imagesDone}
                 onClick={() => downloadReview(record, channel)}>
-                {busy === "downloadReview" ? "검수 파일 준비 중…" : "글+이미지 검수 파일 저장"}
+                {busy === "downloadReview" ? "검수 파일 준비 중…" : "최종 글·이미지 검수 묶음 저장"}
               </button>
             </div>
             <p className="mt-1 text-xs text-zinc-500">
@@ -599,6 +616,15 @@ ${review.title}
           </section>
 
           <ReviewPanel review={channel.review} />
+          <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+            <h2 className="font-semibold">최종 검증 결과 반영</h2>
+            <p className="mt-2 text-sm text-zinc-400">위 검수 묶음을 이 대화에 보내주세요. 글과 모든 이미지의 검증이 끝나면 받은 검수 완료 코드를 아래에 넣습니다. 이후 사용자 승인으로 발행할 수 있습니다.</p>
+            {channel.review?.finalReviewReady ? <p className="mt-2 text-emerald-300">현재 글·이미지 검증 완료</p> : <form className="mt-3 flex flex-wrap gap-2" onSubmit={(event) => { event.preventDefault(); act({ action: "recordFinalReview", channelId: active, id: record.id, reviewCode }, "최종 검수 결과를 반영했습니다. 발행은 직접 승인해야 실행됩니다."); }}>
+              <label htmlFor="review-code" className="sr-only">검수 완료 코드</label>
+              <input id="review-code" className="min-w-0 flex-1 rounded border border-zinc-700 bg-zinc-900 p-2" value={reviewCode} onChange={(event) => setReviewCode(event.target.value)} placeholder="검수 완료 코드" />
+              <button className={secondary} disabled={Boolean(busy) || !reviewCode.trim()}>검수 결과 반영</button>
+            </form>}
+          </section>
 
           <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
             <h2 className="font-semibold">발행</h2>
@@ -615,7 +641,7 @@ ${review.title}
             ) : null}
             <div className="mt-3 flex flex-wrap gap-2">
               {!isKorea ? (
-                <button type="button" className={secondary} disabled={Boolean(busy) || !steps.imagesDone} onClick={uploadPublicImages}>
+                <button type="button" className={secondary} disabled={Boolean(busy) || !steps.imagesDone || !channel.review?.finalReviewReady} onClick={uploadPublicImages}>
                   공개 이미지 연결
                 </button>
               ) : null}
@@ -625,11 +651,11 @@ ${review.title}
                 disabled={Boolean(busy) || !steps.imagesDone || steps.published || !channel.review || Boolean(channel.review.blocking?.length) || (!isKorea && steps.publicImages < steps.images.total)}
                 onClick={isKorea ? publishKorea : publishGlobal}
               >
-                {busy === "publish" ? "게시 중…" : "최종 승인하고 게시"}
+                {busy === "publish" ? "게시 중…" : "발행"}
               </button>
             </div>
             {isKorea ? (
-              <p className="mt-2 break-all text-xs text-zinc-500">대상: {channel.editorTarget}</p>
+              <details className="mt-2 text-xs text-zinc-500"><summary>상세 보기</summary><p className="break-all">{channel.editorTarget}</p></details>
             ) : null}
           </section>
         </>
@@ -717,4 +743,20 @@ function ReviewPanel({ review }) {
       ))}
     </section>
   );
+}
+
+function ResearchPanel({ research, topics, busy, onPick }) {
+  if (!research) return null;
+  return <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+    <h2 className="font-semibold">최신 이슈와 관련 자료</h2>
+    <p className="mt-1 text-xs text-zinc-400">{new Date(research.checkedAt).toLocaleString("ko-KR")} 확인 · {research.stale ? "업데이트가 필요합니다." : "뉴스는 최근 7일 자료만 표시합니다."}</p>
+    {!research.issues.length ? <p className="mt-2 text-sm text-amber-300">확인된 최신 이슈가 없습니다. 출처가 연결되면 다시 업데이트하세요.</p> : <ul className="mt-3 space-y-3">{research.issues.map((issue) => <li key={issue.url} className="rounded-lg border border-zinc-800 p-3">
+      <a href={issue.url} target="_blank" rel="noreferrer" className="text-emerald-300 underline">{issue.title}</a>
+      <p className="text-xs text-zinc-400">{issue.source} · {new Date(issue.publishedAt).toLocaleDateString("ko-KR")}</p>
+      {issue.products?.map((product) => <p key={product.id} className="mt-2 text-sm"><a href={product.url} target="_blank" rel="noreferrer">관련 제품: {product.name} · {product.priceText}</a></p>)}
+      {issue.relatedTopicIds.map((id) => topics.find((topic) => topic.id === id)).filter(Boolean).map((topic) => <button key={topic.id} className={`${secondary} mt-2`} disabled={busy || Boolean(topic.blockedReason)} onClick={() => onPick(topic.id)}>{topic.title} 제작</button>)}
+    </li>)}</ul>}
+    <details className="mt-3 text-sm"><summary className="cursor-pointer">관련 참고 블로그·글 보기</summary><p className="mt-2 text-xs text-zinc-500">참고 글은 발행일이 확인되지 않을 수 있습니다. 문장을 복사하지 않고 주제와 독자 질문을 참고합니다.</p><ul>{research.references.map((reference) => <li key={reference.url}><a href={reference.url} target="_blank" rel="noreferrer" className="text-emerald-300 underline">{reference.title}</a></li>)}</ul></details>
+    <details className="mt-3 text-xs text-zinc-500"><summary>상세 보기</summary>{research.providers.map((provider) => <p key={provider.source}>{provider.source}: {provider.status === "available" ? "연결됨" : "연결 실패"}</p>)}</details>
+  </section>;
 }

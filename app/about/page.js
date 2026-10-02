@@ -66,8 +66,8 @@ export default function AboutPage() {
         </h2>
         <p className="mt-2">
           ATLAS exists to save readers time and help them make better
-          decisions with their money. We don't publish content just to fill
-          space, and we don't recommend products or services we wouldn't
+          decisions with their money. We don&apos;t publish content just to fill
+          space, and we don&apos;t recommend products or services we wouldn&apos;t
           consider ourselves. If ATLAS ever stops being useful to you, we
           want to know why.
         </p>

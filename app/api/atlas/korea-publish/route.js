@@ -1,3 +1,5 @@
+import { requestOriginAllowed } from "@/lib/atlas/request-origin";
+import { assertNewPost } from "@/lib/atlas/publish-transaction";
 import { NextResponse } from "next/server";
 import { readJson, writeJson } from "@/lib/data-store";
 import { KOREA_DRAFT_STATE, canPublishKoreaDraft, canonicalNaverUrl, publishBlockers, validateKoreaDraft } from "@/lib/atlas/korea-product-pipeline";
@@ -29,6 +31,7 @@ function patch(items, id, values) {
 }
 
 export async function POST(request) {
+  if (!requestOriginAllowed(request)) return NextResponse.json({ error: "Origin rejected" }, { status: 403 });
   const body = await request.json().catch(() => ({}));
   const id = String(body.id || "");
   const mode = body.mode === "publish" ? "publish" : "stage";
@@ -38,6 +41,8 @@ export async function POST(request) {
   const draft = items.find((item) => item.id === id);
   if (!draft) return NextResponse.json({ status: "error", error: "draft not found" }, { status: 404 });
 
+  if (draft.publishedUrl) return NextResponse.json({ status: "published", publishedUrl: draft.publishedUrl, postId: draft.logNo || "" });
+  try { assertNewPost(draft); } catch (error) { return NextResponse.json({ error: error.message, errorCode: error.code }, { status: 409 }); }
   const validation = validateKoreaDraft(draft);
   if (!validation.ok) {
     return NextResponse.json({ status: "rejected", issues: validation.issues }, { status: 400 });
@@ -106,6 +111,8 @@ export async function POST(request) {
       patch(fresh, id, {
         state: KOREA_DRAFT_STATE.PUBLISHED,
         publishedAt: new Date().toISOString(),
+        logNo: result.postId,
+        platform: "naver",
         publishedUrl: canonicalNaverUrl(result.publishedUrl, draft.blogId) || "",
         lastError: "",
         automationStatus: "published",

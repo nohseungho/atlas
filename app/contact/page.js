@@ -34,7 +34,7 @@ export default function ContactPage() {
         </h2>
         <p className="mt-2">
           We typically reply within 2–3 business days. If your message is
-          time-sensitive, please mention that in your email and we'll do our
+          time-sensitive, please mention that in your email and we&apos;ll do our
           best to get back to you sooner.
         </p>
       </div>
@@ -46,7 +46,7 @@ export default function ContactPage() {
         <p className="mt-2">
           Interested in a partnership, sponsorship, or collaboration with
           ATLAS? Send a short summary of your idea, along with any relevant
-          links, to the email above and we'll follow up if it's a good fit.
+          links, to the email above and we&apos;ll follow up if it&apos;s a good fit.
         </p>
       </div>
     </StaticPageLayout>

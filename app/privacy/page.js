@@ -68,7 +68,7 @@ export default function PrivacyPage() {
             href="https://policies.google.com/privacy"
             className="text-emerald-400 hover:underline"
           >
-            Google's Privacy Policy
+            Google&apos;s Privacy Policy
           </a>
           .
         </p>

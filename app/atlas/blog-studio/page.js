@@ -215,8 +215,13 @@ export default function BlogStudioPage() {
   const [imagePromptInput, setImagePromptInput] = useState("");
 
   useEffect(() => {
-    setDrafts(readList(KEYS.blogDrafts));
-    setProducts(readList(KEYS.products));
+    let cancelled = false;
+    Promise.resolve().then(() => {
+      if (cancelled) return;
+      setDrafts(readList(KEYS.blogDrafts));
+      setProducts(readList(KEYS.products));
+    });
+    return () => { cancelled = true; };
   }, []);
 
   function updateField(field, value) {
@@ -463,7 +468,7 @@ export default function BlogStudioPage() {
             <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
               <h2 className="text-lg font-semibold">Recommended Gear 연결 상품</h2>
               <p className="mt-1 text-xs text-zinc-500">
-                Product Center에 등록된 상품 중 이 글의 "Recommended Gear"
+                Product Center에 등록된 상품 중 이 글의 &quot;Recommended Gear&quot;
                 섹션에 연결할 상품을 선택합니다. (Product Center 자체는
                 수정하지 않습니다)
               </p>
