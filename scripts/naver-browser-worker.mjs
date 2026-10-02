@@ -2,12 +2,12 @@ import { checkUserApproval } from "../lib/atlas/operate/publish-approval-store.j
 import { readJson } from "../lib/data-store.js";
 import fs from "fs";
 import { createKoreaDocument } from "../lib/atlas/article-document.js";
-import { insertNaverDocument, findNaverEditorScope } from "../lib/atlas/naver-document-editor.js";
+import { insertNaverDocument } from "../lib/atlas/naver-document-editor.js";
+import { openNaverNewEditor, naverEditorDiagnostics } from "../lib/atlas/naver-editor-navigation.js";
 import { assertNewPost, createPublishTransactions } from "../lib/atlas/publish-transaction.js";
 import os from "os";
 import path from "path";
 import { createRequire } from "module";
-import { naverEditorTarget } from "../lib/atlas/korea-product-pipeline.js";
 import { assertNaverWriteTarget } from "../lib/atlas/character-channel-policy.js";
 
 const require = createRequire(import.meta.url);
@@ -219,18 +219,12 @@ async function main() {
   let publishAttempted = false;
   try {
     // Canonical document uses the reviewed files as-is; no card generation during publishing.
-    const editorTarget = naverEditorTarget(draft);
-    await gotoEditor(editorTarget);
-    await page.waitForTimeout(1200);
-    await ensureLoggedIn(page);
-    // 네이버 로그인은 블로그 홈으로 돌려보낼 수 있으므로 로그인 완료 후 신규 글쓰기 주소를 다시 연다.
-    if (!/PostWriteForm\.naver/i.test(page.url())) {
-      await gotoEditor(editorTarget);
-      await page.waitForTimeout(1200);
-      await ensureLoggedIn(page);
-    }
-    await dismissEditorPopups(page, page);
-    const scope = await findNaverEditorScope(page);
+    const scope = await openNaverNewEditor(page, draft, {
+      navigate: gotoEditor,
+      waitForLogin: async () => { await page.waitForTimeout(1200); await ensureLoggedIn(page); },
+      dismissPopups: () => dismissEditorPopups(page, page),
+      progress: (message) => console.log(message),
+    });
     await dismissEditorPopups(page, scope);
     await setTitle(scope, draft.title || "");
     const document = payload.document || createKoreaDocument(draft);
@@ -255,6 +249,7 @@ async function main() {
       errorCode: error?.code || "NAVER_AUTOMATION_FAILED",
       message: error?.message || String(error),
       editorUrl: page.url(),
+      editorDiagnostics: await naverEditorDiagnostics(page),
       keepOpen,
       publishAttempted,
     };

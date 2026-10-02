@@ -184,6 +184,8 @@ try {
         status: "failed",
         errorCode: error?.code || "NAVER_AUTOMATION_FAILED",
         error: String(error?.message || error),
+        editorUrl: error?.editorUrl,
+        editorDiagnostics: error?.editorDiagnostics,
       },
       null,
       2
