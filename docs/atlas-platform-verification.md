@@ -1,5 +1,15 @@
 # ATLAS 플랫폼 보강 검증 — 2026-10-02
 
+## 끊긴 세션 이후 재개 검증 — 2026-10-03 (한국 시간)
+
+- 새 세션의 작업 폴더는 비어 있었지만 `/workspace/scratch/259d89efa34d/atlas`에서 이전 복제본을 찾았다. 최초 branch/status/diff 확인 결과 `fix/naver-rss-dedupe`, HEAD `d6731903f20d1e2dfd83ed158e6b65c9dfc4f5cb`, 미커밋 변경 없음이었다. 아래 기존 보강을 다시 구현하지 않았다. 집 PC의 미커밋 변경이나 중단된 채팅의 상태는 직접 확인할 수 없다.
+- 추가 수정: 조회 시각이 누락·오류·미래이거나 24시간 이상 지난 캐시는 이슈/제품/참고 글을 최신 후보로 반환하지 않는다. HTTP 성공이어도 RSS 대신 HTML 오류 페이지를 받으면 공급자 연결 실패로 기록한다. 정상 빈 RSS는 연결 성공/후보 없음으로 구분한다.
+- `ATLAS_NAVER_BROWSER_PATH=/tmp/chromium npm test`: 524개 통과, 실패/skip 0. 새 테스트는 임시 폴더와 mock HTTP 응답으로 시각 오류, 이전 성공 후 조회 실패, 잘못된 RSS, 정상 빈 RSS를 확인한다.
+- `npm run lint`: 오류/경고 0. `npm run build`: 성공, 기존 Turbopack 파일 tracing 경고 1개. 실행 도구의 npm http-proxy 설정 경고와 Node module-type 경고는 별도로 남는다.
+- `ATLAS_NAVER_BROWSER_PATH=/tmp/chromium npm run workflow:verify`: 국내/해외 dry-run, 검수/승인 gate, 수정 시 승인 해제, localhost:3002 양 채널 UI, 이미지 anchor, 검수 HTML 다운로드 통과. 브라우저 예외 0, 실제 publisher 호출 0. agent-browser CLI가 없어 기존 Playwright Chromium 검사로 확인했다.
+- 화면 캡처는 테스트용 작은 PNG를 사용하며 이 Linux 환경에는 한글 글꼴이 없어 한글이 네모로 표시된다. 실제 장면 이미지의 시각 품질이나 집 PC의 글꼴·로그인·네이버 실제 에디터를 검증한 결과는 아니다.
+- 이번 추가 변경 파일: `lib/atlas/operate/topic-research.js`, `lib/atlas/operate/topic-research.test.mjs`, 이 문서. 실제 발행·공개 글 변경·push 없음. 아래 실제 환경 검증과 기존 주제/제품 목록 연결 범위의 제약은 그대로 남는다.
+
 ## 작업 범위
 
 - 저장소: nohseungho/atlas, 브랜치 `fix/naver-rss-dedupe`, 시작 HEAD `190f8e1`.
