@@ -170,3 +170,9 @@ The launcher stamps its starting Git revision and tracked-change flag into the p
 Validation: five real disposable Git repository tests pass for dirty drafts/images, diverged home commits, committed conflicts, overlapping untracked assets, foreign remotes, wrong branches and unfinished merges. Full suite: 538 passed, zero failed/skipped. Lint passed. Browser workflow on localhost:3002 passed including revision display, dirty flag, and updater refusal while the server runs. Both channels, approval gates, preview anchors and retry behavior also pass; publisher calls remain zero.
 
 Windows CMD/PowerShell execution and real home Edge staging remain unverified because the home PC is not connected to this execution environment. This change is available on the operating branch; the first home application still requires pulling that branch, after which double-clicking `ATLAS-UPDATE.cmd` replaces repeated pull/start commands. Public content was not changed.
+
+### Home merge retry correction (2026-10-04 Korea)
+
+A home report exposed a false overlap: after merging the upstream branch, its saved home draft differed from the upstream snapshot, and a later draft edit caused the updater to block even though the remote was already included. The updater now detects an incoming ancestor as already applied. For genuinely new commits, it compares home HEAD with the preflight merge-result tree, so home-only saved data is not mistaken for incoming changes. Real pending conflicts remain blocked.
+
+Two regression tests reproduce both cases with committed home drafts followed by uncommitted edits. Full suite: 540 passed, no failures/skips; lint and build passed (existing Turbopack warning remains). No UI or browser publisher changed; the prior localhost browser verification still applies to those unchanged flows. Home Windows execution/publication remains unverified, and no public post was altered.
