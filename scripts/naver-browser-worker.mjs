@@ -4,6 +4,7 @@ import fs from "fs";
 import { createKoreaDocument } from "../lib/atlas/article-document.js";
 import { insertNaverDocument } from "../lib/atlas/naver-document-editor.js";
 import { openNaverNewEditor, naverEditorDiagnostics, assertLiveNaverNewEditor } from "../lib/atlas/naver-editor-navigation.js";
+import { openNaverBrowserSession } from "../lib/atlas/naver-browser-session.js";
 import { assertNewPost, createPublishTransactions } from "../lib/atlas/publish-transaction.js";
 import os from "os";
 import path from "path";
@@ -194,7 +195,9 @@ async function main() {
     if (payload.transaction.channel !== "korea" || payload.transaction.articleId !== draft.id) throw Object.assign(new Error("승인된 글과 네이버 발행 대상이 다릅니다."), { code: "PUBLISH_TRANSACTION_MISMATCH" });
   }
   fs.mkdirSync(profileDir(), { recursive: true });
-  const context = await chromium.launchPersistentContext(profileDir(), { executablePath: findBrowserExecutable(), headless: false, viewport: null, args: ["--start-maximized"], permissions: ["clipboard-read", "clipboard-write"] });
+  const session = await openNaverBrowserSession(chromium, profileDir(), { executablePath: findBrowserExecutable(), headless: false, viewport: null, args: ["--start-maximized"], permissions: ["clipboard-read", "clipboard-write"] });
+  const { context } = session;
+  console.log(session.reused ? "열려 있는 ATLAS Edge와 기존 로그인에 다시 연결했습니다." : "저장된 ATLAS 브라우저 프로필을 열었습니다.");
   // Edge의 첫 탭은 새 탭 페이지(ntp.msn.com)로 자동 이동하며 그 사이에 goto가 "interrupted by another
   // navigation"으로 끊긴다. 첫 탭은 그대로 두고 항상 새 탭에서 작업하며, 이동 후 실제 주소를 확인해 재시도한다.
   await context.waitForEvent("page", { timeout: 1500 }).catch(() => {});
@@ -255,14 +258,16 @@ async function main() {
       keepOpen,
       publishAttempted,
     };
-    if (!keepOpen) await context.close().catch(() => {});
   }
+  // A CDP client disconnect must not close the retained browser or its review tabs.
+  // The original owning worker stays alive; reattached workers can exit normally.
+  if (session.reused || !result.keepOpen) await session.release().catch(() => {});
+  result.workerKeepAlive = !session.reused && Boolean(result.keepOpen);
   fs.writeFileSync(outputPath, JSON.stringify(result), "utf8");
-  if (!result.keepOpen) await context.close().catch(() => {});
 }
 
 main().catch((error) => {
   const outputPath = process.argv[3];
-  if (outputPath) fs.writeFileSync(outputPath, JSON.stringify({ status: "error", errorCode: error?.code || "NAVER_WORKER_FAILED", message: error?.message || String(error) }), "utf8");
+  if (outputPath) fs.writeFileSync(outputPath, JSON.stringify({ status: "error", errorCode: error?.code || "NAVER_WORKER_FAILED", message: error?.message || String(error), publishAttempted: error?.publishAttempted }), "utf8");
   process.exitCode = 1;
 });
