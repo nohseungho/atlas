@@ -100,6 +100,9 @@ try {
   await page.getByRole('button', { name: '국내 블로그 만들기' }).click();
   await page.getByRole('heading', { name: '전체 글·이미지 미리보기' }).waitFor();
   assert.equal(await page.locator('#article-preview img').count(), 3);
+  assert.equal(await page.getByRole('button', { name: '제작 완료', exact: true }).isDisabled(), true);
+  assert.equal(await page.locator('ol > li').count(), 4);
+  assert.equal(await page.getByText('장면 수정이 필요할 때', { exact: true }).evaluate((node) => node.parentElement.open), false);
   assert.equal(await page.getByRole('button', { name: '발행', exact: true }).isDisabled(), true);
   await page.getByRole('button', { name: '네이버 편집기 검증 (발행 안 함)', exact: true }).click();
   await page.getByText('네이버 편집기에 글과 이미지를 배치하고 순서를 검증했습니다.', { exact: false }).waitFor();
@@ -116,6 +119,32 @@ try {
   assert.equal((bundle.match(/src="data:image\/png;base64,/g) || []).length, 3);
   assert.ok(bundle.includes('atlas-review') && bundle.includes('finalReviewHash'));
   await page.screenshot({ path: '/tmp/atlas-korea-verified.png', fullPage: true });
+  // A failed missing-image retry must preserve completed writing and never approve/publish.
+  const retryState = await fetch(`${base}/api/atlas/operate`).then((response) => response.json());
+  retryState.state.korea_naver.steps.imagesDone = false;
+  retryState.state.korea_naver.steps.images.ready = 2;
+  const productionRequests = [];
+  const retryRoute = async (route) => {
+    const request = route.request();
+    if (request.method() === 'GET') return route.fulfill({ json: retryState });
+    const body = request.postDataJSON();
+    productionRequests.push(body);
+    return route.fulfill({ status: 503, json: { error: '이미지 엔진 연결 실패' } });
+  };
+  await page.route('**/api/atlas/operate?*', retryRoute);
+  await page.route('**/api/atlas/operate', retryRoute);
+  await page.reload();
+  await page.getByRole('button', { name: '국내 블로그 만들기' }).click();
+  await page.getByRole('button', { name: '글·이미지 준비', exact: true }).click();
+  await page.getByRole('alert').filter({ hasText: '이미지 엔진 연결 실패' }).waitFor();
+  assert.equal(productionRequests.length, 1);
+  assert.equal(productionRequests[0].action, 'images');
+  assert.equal(productionRequests[0].force, false);
+  assert.equal(productionRequests[0].id, fixture.id);
+  assert.equal(await page.getByRole('button', { name: '글·이미지 준비', exact: true }).isEnabled(), true);
+  assert.equal(await page.getByRole('button', { name: '발행', exact: true }).isDisabled(), true);
+  await page.unroute('**/api/atlas/operate?*', retryRoute);
+  await page.unroute('**/api/atlas/operate', retryRoute);
   await page.getByRole('button', { name: /해외 · 미지/ }).click();
   await page.getByRole('heading', { name: '전체 글·이미지 미리보기' }).waitFor();
   assert.equal(await page.getByRole('button', { name: '발행', exact: true }).isDisabled(), true);

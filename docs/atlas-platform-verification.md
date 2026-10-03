@@ -150,3 +150,11 @@
 - `scripts/atlas-workflow-verify.mjs`
 - `scripts/naver-browser-worker.mjs`
 - `scripts/start-atlas.ps1`
+
+## Simple operating flow (2026-10-03)
+
+- Reduced the visible rail to topic → production → review → publish. Production has one button; completed writing and images are preserved. Missing-image requests explicitly use `force: false` and the selected record ID. Failure remains visible and retryable.
+- Scene regeneration and existing-publication lists are collapsed initially. Full article/image preview, review receipt, editor staging, and explicit publish approval remain accessible with the original blocking rules.
+- `npm test`: 533 passed, zero failures/skips with a configured local Chromium executable. `npm run lint`: passed.
+- `npm run workflow:verify`: localhost:3002 passed for both channels, three separate preview anchors, embedded review download, staging-only request, disabled publication, and failed missing-image retry without rewriting or approval. All publisher calls were zero. Test images are synthetic; this is functional browser verification, not face or real-artwork review. The cloud test browser lacks Korean fonts, so screenshot typography is not verified.
+- Home Windows/Edge is unavailable from this session. Applying the branch to the home checkout and real logged-in Naver staging/publication remain unverified. No existing public post was modified.

@@ -21,7 +21,7 @@ const CHANNELS = [
   { id: GLOBAL, label: "해외", character: "미지", note: "Blogger atlas-money-2026 · 미지 이미지 5장 이상" },
 ];
 
-const STEPS = ["주제", "글", "이미지", "미리보기", "승인", "게시"];
+const STEPS = ["주제 선택", "제작", "검수", "발행"];
 
 const primary = "rounded-lg bg-emerald-700 px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40";
 const secondary = "rounded-lg border border-zinc-600 px-3 py-2.5 text-sm font-medium text-zinc-200 disabled:opacity-40";
@@ -99,7 +99,7 @@ function TopicPicker({ topics, busy, onPick }) {
   );
 }
 
-function ImagePanel({ images, busy, onRender }) {
+function ImagePanel({ images }) {
   if (!images) return null;
   const done = images.total > 0 && images.ready === images.total;
   return (
@@ -115,9 +115,7 @@ function ImagePanel({ images, busy, onRender }) {
           </div>
           {images.missing?.length ? <div className="mt-1 text-xs text-zinc-500">대기: {images.missing.join(", ")}</div> : null}
         </div>
-        <div className="flex gap-2">
-          {!done ? <button type="button" className={secondary} disabled={busy} onClick={() => onRender(false)}>{busy ? "이미지 제작 중…" : "빠진 이미지 자동 제작"}</button> : null}
-        </div>
+
       </div>
     </section>
   );
@@ -207,6 +205,26 @@ export default function OperatePage() {
       if (data.id) { setPicked((prev) => ({ ...prev, [body.channelId]: data.id })); setChoosingTopic(false); }
       if (body.action === "images") await load({ ...picked, [body.channelId]: data.id });
       setMessage([note, data.generatorError, data.missing?.length ? `빠진 장면: ${data.missing.join(", ")}` : ""].filter(Boolean).join(" "));
+    });
+  }
+
+  async function prepareContent() {
+    await run("prepareContent", async () => {
+      const selection = { koreaId: picked[KOREA], globalId: picked[GLOBAL] };
+      // Preserve finished writing and images; retry only the missing production step.
+      const actions = [!steps.written && "write", !steps.imagesDone && "images"].filter(Boolean);
+      for (const action of actions) {
+        const { ok, data } = await postJson("/api/atlas/operate", {
+          ...selection, action, channelId: active, id: record.id, force: false,
+        });
+        if (data.state) setState(data.state);
+        if (!ok) throw new Error(data.error || "제작을 완료하지 못했습니다.");
+        if (data.generatorError || data.missing?.length) {
+          throw new Error([data.generatorError, data.missing?.length ? `빠진 장면: ${data.missing.join(", ")}` : ""].filter(Boolean).join(" "));
+        }
+      }
+      await load(picked);
+      setMessage("제작 상태를 확인했습니다. 아래 미리보기에서 글과 모든 이미지를 검수하세요.");
     });
   }
 
@@ -406,7 +424,7 @@ ${review.title}
   const isKorea = active === KOREA;
   const steps = channel.steps;
   const record = isKorea ? channel.draft : channel.article;
-  const progress = !record ? 1 : !steps.written ? 2 : !steps.imagesDone ? 3 : channel.review?.finalReviewReady ? 5 : 4;
+  const progress = !record ? 1 : !steps.written || !steps.imagesDone ? 2 : channel.review?.finalReviewReady ? 4 : 3;
 
   return (
     <main className="mx-auto max-w-5xl space-y-6 px-4 py-8 text-zinc-100">
@@ -433,7 +451,7 @@ ${review.title}
         ))}
       </div>
 
-      <StepRail current={steps.published ? 6 : progress} />
+      <StepRail current={steps.published ? 5 : progress} />
 
       <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -566,14 +584,21 @@ ${review.title}
             <details className="mt-3"><summary className="cursor-pointer text-sm">상세 보기</summary><PolicyBadges policy={channel.policy} /></details>
           </section>
 
-          <ImagePanel
-            images={steps.images}
-            busy={Boolean(busy)}
-            onRender={(force) => act({ action: "images", channelId: active, force, id: record.id }, "빠진 이미지 제작과 얼굴 검수를 다시 진행했습니다.")}
-          />
+          {!steps.published ? <section className="rounded-xl border border-emerald-800 bg-zinc-950 p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 className="font-semibold">글·이미지 제작</h2>
+                <p className="mt-1 text-sm text-zinc-400">{steps.written && steps.imagesDone ? "제작 완료. 아래에서 글과 이미지를 확인하세요." : "완료된 글과 이미지는 보존하고, 부족한 부분을 이어서 준비합니다."}</p>
+              </div>
+              <button type="button" className={primary} disabled={Boolean(busy) || (steps.written && steps.imagesDone)} onClick={prepareContent}>
+                {busy === "prepareContent" ? "제작 중…" : steps.written && steps.imagesDone ? "제작 완료" : "글·이미지 준비"}
+              </button>
+            </div>
+          </section> : null}
+          <ImagePanel images={steps.images} />
           {isKorea && record.contentType === "info_guide" && steps.images?.ready ? (
-            <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
-              <h2 className="font-semibold">장면 검수</h2>
+            <details className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+              <summary className="cursor-pointer font-semibold">장면 수정이 필요할 때</summary>
               <p className="mt-1 text-xs text-zinc-400">본문과 맞지 않는 수호 장면만 선택해 다시 만듭니다. 다른 이미지와 글은 보존됩니다.</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {(record.images || []).filter((img) => ["info_why", "info_how", "info_checklist"].includes(img.role) && img.src).map((img) => (
@@ -583,7 +608,7 @@ ${review.title}
                   </button>
                 ))}
               </div>
-            </section>
+            </details>
           ) : null}
           {isKorea && record.contentType === "new_product_review" ? (
             <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
@@ -695,8 +720,8 @@ ${review.title}
         </section>
       )}
 
-      <section className="rounded-xl border border-zinc-800 p-4 text-sm">
-        <h2 className="font-semibold">이미 공개된 글 {channel.published.length}개</h2>
+      <details className="rounded-xl border border-zinc-800 p-4 text-sm">
+        <summary className="cursor-pointer font-semibold">이미 공개된 글 {channel.published.length}개</summary>
         <ul className="mt-2 space-y-1 text-xs text-zinc-400">
           {channel.published.slice(0, 12).map((p) => (
             <li key={p.id} className="truncate">
@@ -709,7 +734,7 @@ ${review.title}
           ))}
         </ul>
         <p className="mt-2 text-xs text-zinc-500">이 목록과 겹치는 주제는 주제 선택 단계에서 자동으로 막힙니다.</p>
-      </section>
+      </details>
     </main>
   );
 }
