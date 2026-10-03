@@ -81,10 +81,17 @@ try {
   browser = await chromium.launch({ executablePath: findBrowserExecutable(), headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
   const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
   const errors = [];
+  const stageRequests = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.route('**/*', (route) => {
     const request = route.request();
     const url = new URL(request.url());
+    if (url.hostname === '127.0.0.1' && url.pathname === '/api/atlas/korea-publish') {
+      const body = request.postDataJSON();
+      assert.equal(body.mode, 'stage');
+      stageRequests.push(body);
+      return route.fulfill({ contentType: 'application/json', body: JSON.stringify({ status: 'staged' }) });
+    }
     if (url.hostname !== '127.0.0.1' || /\/api\/(?:publish|atlas\/korea-publish)$/.test(url.pathname)) return route.abort();
     return route.continue();
   });
@@ -94,6 +101,10 @@ try {
   await page.getByRole('heading', { name: '전체 글·이미지 미리보기' }).waitFor();
   assert.equal(await page.locator('#article-preview img').count(), 3);
   assert.equal(await page.getByRole('button', { name: '발행', exact: true }).isDisabled(), true);
+  await page.getByRole('button', { name: '네이버 편집기 검증 (발행 안 함)', exact: true }).click();
+  await page.getByText('네이버 편집기에 글과 이미지를 배치하고 순서를 검증했습니다.', { exact: false }).waitFor();
+  assert.deepEqual(stageRequests, [{ id: fixture.id, mode: 'stage' }]);
+  assert.equal((await fetch(`${base}/api/atlas/operate`).then((response) => response.json())).state.korea_naver.draft.userPublishApproval, null);
   const imageAnchors = await page.locator('#article-preview figure').evaluateAll((figures) => figures.map((figure) => ({ anchor: figure.dataset.anchorAfter, previous: figure.previousElementSibling?.id })));
   assert.ok(imageAnchors.every((image) => image.anchor === image.previous));
   const downloaded = page.waitForEvent('download');

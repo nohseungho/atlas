@@ -3,7 +3,7 @@ import { readJson } from "../lib/data-store.js";
 import fs from "fs";
 import { createKoreaDocument } from "../lib/atlas/article-document.js";
 import { insertNaverDocument } from "../lib/atlas/naver-document-editor.js";
-import { openNaverNewEditor, naverEditorDiagnostics } from "../lib/atlas/naver-editor-navigation.js";
+import { openNaverNewEditor, naverEditorDiagnostics, assertLiveNaverNewEditor } from "../lib/atlas/naver-editor-navigation.js";
 import { assertNewPost, createPublishTransactions } from "../lib/atlas/publish-transaction.js";
 import os from "os";
 import path from "path";
@@ -226,14 +226,16 @@ async function main() {
       progress: (message) => console.log(message),
     });
     await dismissEditorPopups(page, scope);
+    assertLiveNaverNewEditor(page, scope, draft);
     await setTitle(scope, draft.title || "");
     const document = payload.document || createKoreaDocument(draft);
     const images = await insertNaverDocument(page, scope, document, {
-      uploadImage: (file) => uploadOne(page, scope, file), exists: fs.existsSync,
+      uploadImage: (file) => { assertLiveNaverNewEditor(page, scope, draft); return uploadOne(page, scope, file); }, exists: fs.existsSync,
     });
     const titleText = await scope.locator(".se-documentTitle, .se-title-text, textarea[name='title'], input[name='title']").first().evaluate((element) => element.value ?? element.innerText ?? element.textContent);
     if (String(titleText || "").trim() !== draft.title.trim()) throw Object.assign(new Error("네이버 편집기의 제목이 미리보기와 다릅니다."), { code: "NAVER_TITLE_MISMATCH" });
     if (publish) {
+      assertLiveNaverNewEditor(page, scope, draft);
       createPublishTransactions().verify(payload.transaction);
       const current = (readJson("korea-drafts.json").items || []).find((item) => item.id === draft.id);
       const checked = current ? checkUserApproval("korea", current) : { issues: ["발행할 초안을 찾지 못했습니다."] };

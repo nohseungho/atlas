@@ -115,6 +115,7 @@ export async function POST(request) {
         platform: "naver",
         publishedUrl: canonicalNaverUrl(result.publishedUrl, draft.blogId) || "",
         lastError: "",
+        lastAutomation: { mode, status: "published", checkedAt: new Date().toISOString() },
         automationStatus: "published",
         userPublishApproval: { ...(draft.userPublishApproval || {}), usedAt: new Date().toISOString() },
       });
@@ -124,6 +125,7 @@ export async function POST(request) {
         stagedAt: new Date().toISOString(),
         stagedEditorUrl: result.editorUrl || "",
         lastError: "",
+        lastAutomation: { mode, status: "staged", checkedAt: new Date().toISOString() },
       });
     }
 
@@ -134,6 +136,7 @@ export async function POST(request) {
       state: mode === "publish" ? KOREA_DRAFT_STATE.APPROVED : draft.state,
       lastError: String(error?.message || error),
       automationStatus: "failed",
+      lastAutomation: { mode, status: "failed", errorCode: error?.code || "NAVER_AUTOMATION_FAILED", checkedAt: new Date().toISOString(), editorDiagnostics: error?.editorDiagnostics || null },
       // 실패해도 공개가 일부 진행됐을 수 있으므로 같은 승인으로 다시 발행하지 않는다.
       ...(mode === "publish" ? { userPublishApproval: { ...(draft.userPublishApproval || {}), usedAt: new Date().toISOString() } } : {}),
     });
@@ -141,6 +144,7 @@ export async function POST(request) {
       status: "failed",
       errorCode: error?.code || "NAVER_AUTOMATION_FAILED",
       error: String(error?.message || error),
+      editorDiagnostics: error?.editorDiagnostics || null,
     }, { status: 500 });
   } finally {
     inFlight.delete(id);

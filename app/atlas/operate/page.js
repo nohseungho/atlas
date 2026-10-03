@@ -286,6 +286,17 @@ ${review.title}
     if (data.status !== "ok") throw new Error(data.error || "발행 승인이 거절되었습니다.");
   }
 
+  async function stageKorea() {
+    await run("stage", async () => {
+      const draft = state?.[KOREA]?.draft;
+      if (!draft) throw new Error("검증할 국내 초안이 없습니다.");
+      const { ok, data } = await postJson("/api/atlas/korea-publish", { id: draft.id, mode: "stage" });
+      if (!ok || data.status !== "staged") throw new Error(data.error || data.message || "네이버 편집기 검증에 실패했습니다.");
+      await load(picked);
+      setMessage("네이버 편집기에 글과 이미지를 배치하고 순서를 검증했습니다. 실제 발행은 하지 않았습니다. Edge에서 본문을 확인할 수 있습니다.");
+    });
+  }
+
   async function publishKorea() {
     await run("publish", async () => {
       const draft = state?.[KOREA]?.draft;
@@ -616,6 +627,15 @@ ${review.title}
           </section>
 
           <ReviewPanel review={channel.review} />
+          {isKorea && !steps.published ? <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+            <h2 className="font-semibold">네이버 편집기 확인</h2>
+            <p className="mt-2 text-sm text-zinc-400">글과 이미지를 편집기에 배치하고 순서를 확인합니다. 공개하지 않으며 발행 승인도 남기지 않습니다.</p>
+            <button type="button" className={`${secondary} mt-3`} disabled={Boolean(busy) || !steps.imagesDone} onClick={stageKorea}>
+              {busy === "stage" ? "편집기 검증 중…" : "네이버 편집기 검증 (발행 안 함)"}
+            </button>
+            {record.lastError ? <p role="alert" className="mt-3 text-sm text-amber-300">최근 오류: {record.lastError}</p> : null}
+            {record.lastAutomation ? <details className="mt-3 text-sm"><summary className="cursor-pointer">최근 편집기 진단 기록</summary><pre className="mt-2 overflow-auto whitespace-pre-wrap">{JSON.stringify(record.lastAutomation, null, 2)}</pre></details> : null}
+          </section> : null}
           <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
             <h2 className="font-semibold">최종 검증 결과 반영</h2>
             <p className="mt-2 text-sm text-zinc-400">위 검수 묶음을 이 대화에 보내주세요. 글과 모든 이미지의 검증이 끝나면 받은 검수 완료 코드를 아래에 넣습니다. 이후 사용자 승인으로 발행할 수 있습니다.</p>
