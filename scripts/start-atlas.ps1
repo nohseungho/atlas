@@ -67,6 +67,17 @@ function Repair-ExistingAtlasShortcut {
 try {
     # Reuse a healthy existing instance without claiming or killing its processes.
     if (Test-Atlas) { Start-Process $operateUrl; exit 0 }
+    # Stamp the process at startup; changing Git later must not change the displayed running version.
+    $env:ATLAS_RUNNING_REVISION = ''
+    $env:ATLAS_RUNNING_DIRTY = '0'
+    if (Get-Command 'git.exe' -ErrorAction SilentlyContinue) {
+        $revision = & git.exe -C $atlasRoot rev-parse HEAD 2>$null
+        if ($LASTEXITCODE -eq 0 -and $revision -match '^[0-9a-f]{40}$') {
+            $env:ATLAS_RUNNING_REVISION = $revision
+            $trackedChanges = & git.exe -C $atlasRoot status --porcelain --untracked-files=no 2>$null
+            if ($trackedChanges) { $env:ATLAS_RUNNING_DIRTY = '1' }
+        }
+    }
     $hash = [System.BitConverter]::ToString([System.Security.Cryptography.SHA256]::Create().ComputeHash([System.Text.Encoding]::UTF8.GetBytes($atlasRoot))).Replace('-', '')
     $mutex = New-Object System.Threading.Mutex($false, "Local\ATLAS-$hash")
     try { $mutexHeld = $mutex.WaitOne(0) } catch [System.Threading.AbandonedMutexException] { $mutexHeld = $true }

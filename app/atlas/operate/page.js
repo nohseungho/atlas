@@ -123,6 +123,7 @@ function ImagePanel({ images }) {
 
 export default function OperatePage() {
   const [state, setState] = useState(null);
+  const [runtime, setRuntime] = useState(null);
   const [active, setActive] = useState(null);
   const [busy, setBusy] = useState("");
   const [message, setMessage] = useState("");
@@ -145,7 +146,7 @@ export default function OperatePage() {
     if (selection?.[GLOBAL]) query.set("globalId", selection[GLOBAL]);
     const res = await fetch(`/api/atlas/operate?${query}`, { cache: "no-store" });
     const data = await res.json().catch(() => ({}));
-    if (data.status === "ok") { setState(data.state); setGenerator(data.generator); setApprovals(data.approvals); }
+    if (data.status === "ok") { setState(data.state); setGenerator(data.generator); setApprovals(data.approvals); setRuntime(data.runtime || null); }
     else setMessage(data.error || "운영 상태를 읽지 못했습니다.");
   }, []);
 
@@ -430,6 +431,7 @@ ${review.title}
     <main className="mx-auto max-w-5xl space-y-6 px-4 py-8 text-zinc-100">
       <header>
         <div className="text-sm text-amber-300">ATLAS · 단일 운영 화면</div>
+        <p className="mt-1 text-xs text-zinc-500">{runtime?.revision ? `실행 기준 코드: ${runtime.revision.slice(0, 12)}${runtime.modified ? " · 로컬 수정 포함" : ""}` : "실행 버전 미확인 · ATLAS.cmd로 실행하면 코드 버전을 확인할 수 있습니다."}</p>
         <h1 className="mt-1 text-3xl font-bold">ATLAS BLOG</h1>
         <p className="mt-2 text-sm text-zinc-400">
           주제 선택 → 글·이미지 준비 → 전체 검수 → 직접 승인 후 게시. 이미지가 부족하면 이유를 보여주고 게시를 막습니다.

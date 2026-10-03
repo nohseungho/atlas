@@ -158,3 +158,15 @@
 - `npm test`: 533 passed, zero failures/skips with a configured local Chromium executable. `npm run lint`: passed.
 - `npm run workflow:verify`: localhost:3002 passed for both channels, three separate preview anchors, embedded review download, staging-only request, disabled publication, and failed missing-image retry without rewriting or approval. All publisher calls were zero. Test images are synthetic; this is functional browser verification, not face or real-artwork review. The cloud test browser lacks Korean fonts, so screenshot typography is not verified.
 - Home Windows/Edge is unavailable from this session. Applying the branch to the home checkout and real logged-in Naver staging/publication remain unverified. No existing public post was modified.
+
+## Local update and launch (2026-10-04 Korea)
+
+`ATLAS-UPDATE.cmd` checks port 3002, updates only `nohseungho/atlas` on `fix/naver-rss-dedupe`, then calls the existing `ATLAS.cmd`. A running server is left untouched; close its launcher before updating. Edge login profiles are not stopped or altered. Publication is never invoked.
+
+The updater preserves home-only commits by a regular merge, rejects unfinished Git operations, checks overlapping uncommitted/untracked paths (including Korean names), and preflights committed conflicts with `git merge-tree --write-tree` before altering working files. Conflicts stop the update without reset, stash, auto-commit, or conflict resolution. Git supporting `merge-tree --write-tree` is required. Dependencies are installed only after a changed manifest, missing Next, or a previously interrupted installation; pending installation is recorded locally for retry.
+
+The launcher stamps its starting Git revision and tracked-change flag into the process. The operating screen displays that basis; it does not claim the Git revision proves uncommitted files or hot reload are identical. Older/manual launches without metadata explicitly show an unknown version.
+
+Validation: five real disposable Git repository tests pass for dirty drafts/images, diverged home commits, committed conflicts, overlapping untracked assets, foreign remotes, wrong branches and unfinished merges. Full suite: 538 passed, zero failed/skipped. Lint passed. Browser workflow on localhost:3002 passed including revision display, dirty flag, and updater refusal while the server runs. Both channels, approval gates, preview anchors and retry behavior also pass; publisher calls remain zero.
+
+Windows CMD/PowerShell execution and real home Edge staging remain unverified because the home PC is not connected to this execution environment. This change is available on the operating branch; the first home application still requires pulling that branch, after which double-clicking `ATLAS-UPDATE.cmd` replaces repeated pull/start commands. Public content was not changed.

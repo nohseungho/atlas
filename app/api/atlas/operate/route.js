@@ -233,6 +233,8 @@ export async function GET(request) {
   try {
     return NextResponse.json({
       status: "ok",
+      runtime: { revision: /^[0-9a-f]{40}$/.test(process.env.ATLAS_RUNNING_REVISION || "") ? process.env.ATLAS_RUNNING_REVISION : null,
+        modified: process.env.ATLAS_RUNNING_DIRTY === "1" },
       state: buildState({ koreaId: params.get("koreaId") || "", globalId: params.get("globalId") || "" }),
       generator: await generatorReadiness(),
       approvals: { coupang: coupangPartnersStatus().stage, adsense: "account_check_required" },

@@ -58,3 +58,6 @@ next-env.d.ts
 
 # 장면 아트 생성 요청서(운영자 외부 생성용, 재생성 가능)
 .atlas-data/art-requests/
+
+# Retry dependency installation after an interrupted local update
+/.atlas/update-dependencies-pending

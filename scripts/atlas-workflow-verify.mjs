@@ -4,7 +4,7 @@ import os from 'os';
 import path from 'path';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'crypto';
-import { spawn } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
 import { chromium } from 'playwright-core';
 import { findBrowserExecutable } from '../lib/atlas/naver-browser-publisher.js';
 import { directionFor } from '../lib/atlas/operate/scene-direction.js';
@@ -43,7 +43,7 @@ async function post(body) {
   return { status: response.status, data: await response.json() };
 }
 try {
-  server = spawn(process.execPath, [path.join(root, 'node_modules/next/dist/bin/next'), 'dev', '-p', '3002', '--hostname', '127.0.0.1'], { env: { ...process.env, ATLAS_DATA_DIR: dataDir }, stdio: ['ignore', 'pipe', 'pipe'] });
+  server = spawn(process.execPath, [path.join(root, 'node_modules/next/dist/bin/next'), 'dev', '-p', '3002', '--hostname', '127.0.0.1'], { env: { ...process.env, ATLAS_DATA_DIR: dataDir, ATLAS_RUNNING_REVISION: 'a'.repeat(40), ATLAS_RUNNING_DIRTY: '1' }, stdio: ['ignore', 'pipe', 'pipe'] });
   for (const stream of [server.stdout, server.stderr]) stream.on('data', (chunk) => { output = (output + chunk).slice(-12000); });
   let state;
   for (let i = 0; i < 120; i++) {
@@ -52,6 +52,11 @@ try {
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
   assert.equal(state?.status, 'ok', output);
+  assert.deepEqual(state.runtime, { revision: 'a'.repeat(40), modified: true });
+  const updateWhileRunning = spawnSync(process.execPath, ['scripts/update-atlas.mjs'], { cwd: root, encoding: 'utf8' });
+  assert.equal(updateWhileRunning.status, 1);
+  assert.ok(updateWhileRunning.stderr.includes('3002 서버가 실행 중입니다.'));
+
   const original = state.state.korea_naver.review;
   assert.ok(original.blocking.some((issue) => issue.startsWith('최종 글·이미지')));
   const dry = await post({ action: 'dryRun', channelId: 'korea_naver', id: fixture.id });
@@ -99,6 +104,7 @@ try {
   await page.getByRole('button', { name: '국내 블로그 만들기' }).waitFor();
   await page.getByRole('button', { name: '국내 블로그 만들기' }).click();
   await page.getByRole('heading', { name: '전체 글·이미지 미리보기' }).waitFor();
+  await page.getByText('실행 기준 코드: aaaaaaaaaaaa · 로컬 수정 포함', { exact: true }).waitFor();
   assert.equal(await page.locator('#article-preview img').count(), 3);
   assert.equal(await page.getByRole('button', { name: '제작 완료', exact: true }).isDisabled(), true);
   assert.equal(await page.locator('ol > li').count(), 4);
