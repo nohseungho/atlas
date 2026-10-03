@@ -1,5 +1,14 @@
 # ATLAS 플랫폼 보강 검증 — 2026-10-02
 
+## PNG 손상 차단 및 로컬 복구 — 2026-10-03 (한국 시간)
+
+- 미커밋 checklist.png는 IDAT 중간이 잘렸지만 HEAD의 2061268바이트 원본은 PNG chunk/CRC/IEND 검사 정상이다. 손상본을 `.atlas-data/recovery/checklist-truncated-70c0658c0be2cb8a.png`에 보관하고 digest/복구 원본 커밋을 JSON으로 기록한 뒤 로컬 파일을 HEAD 원본과 같은 바이트로 복구했다. Git의 원본 이미지는 변경하지 않았으며 공개 블로그도 변경하지 않았다.
+- 기존 검수는 파일 존재 여부만으로 ready를 판단했다. PNG signature가 있는 파일은 chunk 길이·CRC·IHDR/IEND·IDAT 압축 데이터 검사를 거쳐 손상 시 ready=false 및 구체적인 검수 차단 이유를 반환한다. 빈 파일도 준비된 이미지로 보지 않는다. 다른 이미지 형식과 얼굴·장면 검수는 기존 경로를 유지한다.
+- 손상 이미지의 실제 bytes hash는 계속 검수 해시에 반영되어 기존 승인을 재사용할 수 없다. 복구가 최종 검수/얼굴 합격/발행 승인을 생성하지 않는다.
+- 해당 art_021의 5장 파일은 읽을 수 있지만 얼굴 검수 fail, 장면 지시 누락, 최근 여권 글과 주제 중복으로 계속 차단된다.
+- 테스트 533개 통과, 실패/skip 0. 잘린 chunk, IEND 누락, CRC 오류, 정상 CRC지만 잘못된 압축 데이터, 실제 검수 packet ready/hash 변화 회귀 검증 통과. 검사 fixture의 잘못된 1px PNG도 정상 PNG로 교정했다.
+- lint 통과, build 성공(기존 tracing 경고 1개), workflow:verify 국내/해외·image anchor·stage·승인 게이트 통과, 실제 publisher 호출 0회. 실제 집 PC 적용/네이버 로그인 검증은 미완료.
+
 ## 유지된 브라우저 재연결 보완 — 2026-10-03 (한국 시간)
 
 - 기존 stage는 Edge와 worker를 유지했다. 다음 작업은 같은 프로필을 새로 실행하려 해 프로필 점유 때문에 막힐 수 있었다. ATLAS 전용 프로필의 DevToolsActivePort에 기록된 임의 browser 경로/loopback 포트로 기존 브라우저에 재연결한다. 다른 프로필은 찾거나 연결하지 않는다.

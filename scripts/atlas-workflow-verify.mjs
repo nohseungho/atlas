@@ -24,7 +24,7 @@ fixture.updatedAt = new Date().toISOString();
 const assetDir = path.join(root, '.atlas-data/korea-assets', fixture.id);
 assert.ok(!fs.existsSync(assetDir), 'fixture asset directory must be new');
 fs.mkdirSync(assetDir, { recursive: true });
-const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a7QAAAABJRU5ErkJggg==', 'base64');
+const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgYGD4DwABBAEAX+XDSwAAAABJRU5ErkJggg==', 'base64');
 fixture.images.forEach((image, index) => {
   image.src = path.join(assetDir, `${image.id}.png`);
   fs.writeFileSync(image.src, Buffer.concat([png, Buffer.from([index])]));
