@@ -470,7 +470,7 @@ ${review.title}
         </p>
       </section>
 
-      <ResearchPanel research={channel.research} topics={channel.topics} busy={Boolean(busy)} onPick={(topicId) => act({ action: "prepare", channelId: active, topicId }, "관련 주제로 글과 장면을 준비했습니다. 최신 이슈의 원문도 함께 검수하세요.")} />
+      <ResearchPanel research={channel.research} busy={Boolean(busy)} onPick={(selection) => act({ action: "prepareResearch", channelId: active, selection }, "선택한 자료로 원고를 준비했습니다. 아래 선택 자료·본문·이미지를 함께 검수하세요.")} />
 
       {generator && !generator.ready ? (
         <div role="status" className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-800 bg-amber-950/40 p-3 text-sm text-amber-200">
@@ -573,6 +573,7 @@ ${review.title}
                   {isKorea ? `${record.blogId} · 수호 · 정보글` : `${record.id} · 미지 · ${record.category}`}
                 </div>
                 <h2 className="mt-1 text-xl font-bold">{record.title}</h2>
+                {record.researchSelection ? <div className="mt-2 text-sm text-emerald-300">선택한 자료: <a href={record.researchSelection.url} target="_blank" rel="noreferrer" className="underline">{record.researchSelection.title}</a><p className="text-xs text-zinc-400">{new Date(record.researchSelection.checkedAt).toLocaleString("ko-KR")} 조회 · 원문 확인 후 최종 검수</p></div> : null}
               </div>
               <button
                 type="button"
@@ -792,7 +793,7 @@ function ReviewPanel({ review }) {
   );
 }
 
-function ResearchPanel({ research, topics, busy, onPick }) {
+function ResearchPanel({ research, busy, onPick }) {
   if (!research) return null;
   return <section className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
     <h2 className="font-semibold">최신 이슈와 관련 자료</h2>
@@ -800,10 +801,11 @@ function ResearchPanel({ research, topics, busy, onPick }) {
     {!research.issues.length ? <p className="mt-2 text-sm text-amber-300">확인된 최신 이슈가 없습니다. 출처가 연결되면 다시 업데이트하세요.</p> : <ul className="mt-3 space-y-3">{research.issues.map((issue) => <li key={issue.url} className="rounded-lg border border-zinc-800 p-3">
       <a href={issue.url} target="_blank" rel="noreferrer" className="text-emerald-300 underline">{issue.title}</a>
       <p className="text-xs text-zinc-400">{issue.source} · {new Date(issue.publishedAt).toLocaleDateString("ko-KR")}</p>
-      {issue.products?.map((product) => <p key={product.id} className="mt-2 text-sm"><a href={product.url} target="_blank" rel="noreferrer">관련 제품: {product.name} · {product.priceText}</a></p>)}
-      {issue.relatedTopicIds.map((id) => topics.find((topic) => topic.id === id)).filter(Boolean).map((topic) => <button key={topic.id} className={`${secondary} mt-2`} disabled={busy || Boolean(topic.blockedReason)} onClick={() => onPick(topic.id)}>{topic.title} 제작</button>)}
+      <button type="button" className={`${primary} mt-2`} disabled={busy || research.stale} onClick={() => onPick({ kind: "issue", url: issue.url, checkedAt: research.checkedAt })}>이 이슈로 글 만들기</button>
+      {issue.products?.map((product) => <div key={product.id} className="mt-2 text-sm"><a href={product.url} target="_blank" rel="noreferrer">관련 제품: {product.name} · {product.priceText}</a><button type="button" className={`${secondary} ml-2`} disabled={busy || research.stale} onClick={() => onPick({ kind: "product", url: product.url, checkedAt: research.checkedAt })}>이 제품으로 글 만들기</button></div>)}
+
     </li>)}</ul>}
-    <details className="mt-3 text-sm"><summary className="cursor-pointer">관련 참고 블로그·글 보기</summary><p className="mt-2 text-xs text-zinc-500">참고 글은 발행일이 확인되지 않을 수 있습니다. 문장을 복사하지 않고 주제와 독자 질문을 참고합니다.</p><ul>{research.references.map((reference) => <li key={reference.url}><a href={reference.url} target="_blank" rel="noreferrer" className="text-emerald-300 underline">{reference.title}</a></li>)}</ul></details>
+    <details className="mt-3 text-sm"><summary className="cursor-pointer">관련 참고 블로그·글 보기</summary><p className="mt-2 text-xs text-zinc-500">참고 글은 발행일이 확인되지 않을 수 있습니다. 문장을 복사하지 않고 주제와 독자 질문을 참고합니다.</p><ul>{research.references.map((reference) => <li key={reference.url}><a href={reference.url} target="_blank" rel="noreferrer" className="text-emerald-300 underline">{reference.title}</a><button type="button" className={`${secondary} ml-2 mt-2`} disabled={busy || research.stale} onClick={() => onPick({ kind: "reference", url: reference.url, checkedAt: research.checkedAt })}>이 자료로 글 만들기</button></li>)}</ul></details>
     <details className="mt-3 text-xs text-zinc-500"><summary>상세 보기</summary>{research.providers.map((provider) => <p key={provider.source}>{provider.source}: {provider.status === "available" ? "연결됨" : "연결 실패"}</p>)}</details>
   </section>;
 }

@@ -1,3 +1,4 @@
+import { resolveResearchSelection, researchTopic } from "@/lib/atlas/operate/research-selection";
 import { requestOriginAllowed } from "@/lib/atlas/request-origin";
 import { readTopicResearch, refreshTopicResearch } from "@/lib/atlas/operate/topic-research";
 import { createKoreaDocument, renderArticleDocument } from "@/lib/atlas/article-document";
@@ -245,8 +246,8 @@ export async function GET(request) {
 }
 
 // ── 자동 작성 ────────────────────────────────────────────────────────────────
-function writeKorea(topicId) {
-  const topic = findTopic(topicId);
+function writeKorea(topicId, selectedTopic = null) {
+  const topic = selectedTopic || findTopic(topicId);
   if (!topic) return { status: "error", error: "주제를 찾지 못했습니다.", code: 404 };
 
   const items = koreaItems();
@@ -256,6 +257,7 @@ function writeKorea(topicId) {
 
   const seed = buildKoreaInfoDraft(topic);
   const existing = items.find((d) => d.id === seed.id);
+  if (selectedTopic && existing) { assertNewPost(existing); return { status: "ok", id: existing.id }; }
   // 기존 미발행 초안과 이미 연결된 이미지를 보존한다: 본문만 갱신하고 이미지 src는 유지한다.
   const draft = normalizeKoreaDraft({
     ...(existing || {}),
@@ -264,6 +266,7 @@ function writeKorea(topicId) {
       const previous = (existing?.images || []).find((img) => img.id === slot.id);
       return previous?.src ? { ...slot, src: previous.src } : slot;
     }),
+    ...(topic.researchSelection ? { researchSelection: topic.researchSelection } : {}),
     state: existing?.state && existing.state !== "published" ? existing.state : "ready_for_review",
   });
 
@@ -343,8 +346,8 @@ async function prepareKoreaProduct(url, { verifiedOffer = null } = {}) {
   return { status: "ok", id: draft.id, topicId };
 }
 
-function writeGlobal(topicId) {
-  const topic = findTopic(topicId);
+function writeGlobal(topicId, selectedTopic = null) {
+  const topic = selectedTopic || findTopic(topicId);
   if (!topic) return { status: "error", error: "주제를 찾지 못했습니다.", code: 404 };
 
   const articles = articleList();
@@ -357,6 +360,7 @@ function writeGlobal(topicId) {
     return { status: "duplicate", error: "이 주제는 이미 발행되었습니다.", code: 409 };
   }
 
+  if (selectedTopic && existing) { assertNewPost(existing); return { status: "ok", id: existing.id }; }
   const master = buildGlobalMasterPackage(topic);
   // 이미 저장된 원고를 다시 쓰는 경우에는 자기 자신을 중복 검사 대상에서 뺀다.
   const others = articles.filter((a) => a.id !== existing?.id);
@@ -368,6 +372,7 @@ function writeGlobal(topicId) {
   const article = {
     ...buildArticleFromMaster(master, { id, status: "written" }),
     topicId: topic.id,
+    ...(topic.researchSelection ? { researchSelection: topic.researchSelection } : {}),
     // 이미 생성된 공개 이미지 URL은 보존한다.
     visualAssets: buildArticleFromMaster(master, { id }).visualAssets.map((asset) => {
       const previous = (existing?.visualAssets || []).find((a) => a.key === asset.key);
@@ -536,6 +541,31 @@ export async function POST(request) {
       // No approval writes, worker launch, uploads, or external post calls.
       result = { status: "ok", id: record.id, dryRun: true, ready: review.blocking.length === 0,
         review, document: review.document, imageAnchors: review.document.blocks.filter((block) => block.type === "image").map(({ assetId, anchorAfter }) => ({ assetId, anchorAfter })) };
+    } else if (action === "prepareResearch") {
+      const source = resolveResearchSelection(readTopicResearch(channelId), body.selection || {});
+      let written;
+      let topicId;
+      if (source.kind === "product") {
+        if (!korea) return NextResponse.json({ error: "해외 제품 작성기는 아직 준비되지 않았습니다." }, { status: 422 });
+        written = await prepareKoreaProduct(source.url);
+        topicId = written.topicId;
+        if (written.status === "ok") {
+          const items = koreaItems();
+          const record = items.find((item) => item.id === written.id);
+          record.researchSelection = { ...source, title: source.name, url: source.url };
+          writeKoreaItems(items);
+        }
+      } else {
+        const topic = researchTopic(source, korea ? koreaTopics() : globalTopics(), channelId);
+        topicId = topic.id;
+        written = korea ? writeKorea(topic.id, topic) : writeGlobal(topic.id, topic);
+      }
+      if (written.status === "ok") {
+        const record = (korea ? koreaItems() : articleList()).find((item) => item.id === written.id);
+        const roles = korea ? record.images.filter((img) => img.role !== "product_photo").map((img) => img.role) : record.visualAssets.map((asset) => asset.role || asset.key);
+        const generatorError = await generateMissingScenes(korea ? "korea" : "global", topicId, roles);
+        result = { ...written, ...(korea ? await imagesKorea(false, written.id) : await imagesGlobal(false, written.id)), id: written.id, generatorError };
+      } else result = written;
     } else if (action === "prepare") {
       // 한 번의 제작 요청에서 기존 작성기와 장면 아트 연결기를 순서대로 사용한다.
       // 이미지가 아직 없으면 요청서만 남고 발행 승인은 열리지 않는다.
@@ -603,7 +633,7 @@ export async function POST(request) {
   } catch (error) {
     return NextResponse.json(
       { status: "failed", errorCode: error?.code || "ATLAS_OPERATE_FAILED", error: String(error?.message || error) },
-      { status: 500 },
+      { status: error?.httpStatus || 500 },
     );
   }
 }

@@ -3,7 +3,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import assert from 'node:assert/strict';
-import { randomUUID } from 'crypto';
+import { randomUUID, createHash } from 'crypto';
 import { spawn, spawnSync } from 'child_process';
 import { chromium } from 'playwright-core';
 import { findBrowserExecutable } from '../lib/atlas/naver-browser-publisher.js';
@@ -34,6 +34,12 @@ const globalArticle = { ...buildArticleFromMaster(buildGlobalMasterPackage(globa
 for (const name of fs.readdirSync(path.join(root, 'data/atlas')).filter((name) => name.endsWith('.json'))) fs.copyFileSync(path.join(root, 'data/atlas', name), path.join(dataDir, name));
 fs.writeFileSync(path.join(dataDir, 'korea-drafts.json'), JSON.stringify({ items: [fixture] }));
 fs.writeFileSync(path.join(dataDir, 'articles.json'), JSON.stringify({ articles: [globalArticle] }));
+const researchFile = path.join(root, '.atlas-data/research/korea_naver.json');
+const previousResearch = fs.existsSync(researchFile) ? fs.readFileSync(researchFile) : null;
+const checkedAt = new Date().toISOString();
+const source = { title: '가을 침구 관리와 침구청소기 비교', url: 'https://example.org/verified-bedding', source: 'Fixture', publishedAt: checkedAt, relatedTopicIds: [], products: [] };
+const researchSuffix = createHash('sha256').update(`issue:${source.url}`).digest('hex').slice(0, 16);
+const researchDraftId = `kr_kr_info_research_${researchSuffix}`;
 let browser;
 let server;
 let output = '';
@@ -43,6 +49,8 @@ async function post(body) {
   return { status: response.status, data: await response.json() };
 }
 try {
+  fs.mkdirSync(path.dirname(researchFile), { recursive: true });
+  fs.writeFileSync(researchFile, JSON.stringify({ channelId: 'korea_naver', checkedAt, stale: false, providers: [], issues: [source], references: [], products: [] }));
   server = spawn(process.execPath, [path.join(root, 'node_modules/next/dist/bin/next'), 'dev', '-p', '3002', '--hostname', '127.0.0.1'], { env: { ...process.env, ATLAS_DATA_DIR: dataDir, ATLAS_RUNNING_REVISION: 'a'.repeat(40), ATLAS_RUNNING_DIRTY: '1' }, stdio: ['ignore', 'pipe', 'pipe'] });
   for (const stream of [server.stdout, server.stderr]) stream.on('data', (chunk) => { output = (output + chunk).slice(-12000); });
   let state;
@@ -155,6 +163,30 @@ try {
   await page.getByRole('heading', { name: '전체 글·이미지 미리보기' }).waitFor();
   assert.equal(await page.getByRole('button', { name: '발행', exact: true }).isDisabled(), true);
   await page.screenshot({ path: '/tmp/atlas-global-verified.png', fullPage: true });
+  await page.getByRole('button', { name: /국내 · 수호/ }).click();
+  const selectedTitle = `${source.title} — 생활에서 확인할 점`;
+  await page.getByRole('button', { name: '이 이슈로 글 만들기', exact: true }).click();
+  await page.getByRole('heading', { name: selectedTitle, exact: true }).waitFor();
+  await page.getByText('선택한 자료:', { exact: false }).waitFor();
+  const selectedState = await fetch(`${base}/api/atlas/operate?koreaId=${researchDraftId}`).then((response) => response.json());
+  const selectedDraft = selectedState.state.korea_naver.draft;
+  assert.equal(selectedDraft.id, researchDraftId);
+  assert.equal(selectedDraft.researchSelection.url, source.url);
+  assert.ok(selectedDraft.bodyText.includes(source.title));
+  assert.ok(selectedDraft.sources.some((item) => item.url === source.url));
+  assert.equal(selectedDraft.userPublishApproval || null, null);
+  assert.equal(await page.getByRole('button', { name: '발행', exact: true }).isDisabled(), true);
+  const stored = JSON.parse(fs.readFileSync(path.join(dataDir, 'korea-drafts.json')));
+  assert.equal(stored.items.find((item) => item.id === fixture.id).title, `${fixture.title} (검증)`);
+  const repeated = await post({ action: 'prepareResearch', channelId: 'korea_naver', selection: { kind: 'issue', url: source.url, checkedAt } });
+  assert.equal(repeated.status, 200);
+  assert.equal(repeated.data.id, selectedDraft.id);
+  const beforeInvalid = fs.readFileSync(path.join(dataDir, 'korea-drafts.json'));
+  const invalid = await post({ action: 'prepareResearch', channelId: 'korea_naver', selection: { kind: 'issue', url: 'https://example.org/unlisted', checkedAt } });
+  assert.equal(invalid.status, 422);
+  assert.deepEqual(fs.readFileSync(path.join(dataDir, 'korea-drafts.json')), beforeInvalid);
+  await page.screenshot({ path: '/tmp/atlas-selected-research-verified.png', fullPage: true });
+  console.log('PASS: real research button → API → distinct source-bound draft → same draft in UI; old writing preserved; stale/unlisted selections refused; publisher calls: 0');
   assert.deepEqual(errors, []);
   console.log('PASS: localhost:3002 landing, both channels, preview anchors, disabled publishing, no browser exceptions');
 } finally {
@@ -166,4 +198,8 @@ try {
   }
   fs.rmSync(dataDir, { recursive: true, force: true });
   fs.rmSync(assetDir, { recursive: true, force: true });
+  if (previousResearch) fs.writeFileSync(researchFile, previousResearch);
+  else fs.rmSync(researchFile, { force: true });
+  fs.rmSync(path.join(root, '.atlas-data/korea-assets', researchDraftId), { recursive: true, force: true });
+  fs.rmSync(path.join(root, '.atlas-data/art-requests', `korea-research_${researchSuffix}.json`), { force: true });
 }

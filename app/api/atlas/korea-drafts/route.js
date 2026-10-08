@@ -36,6 +36,7 @@ const PROTECTED_FIELDS = new Set([
   "logNo",
   "userPublishApproval",
   "finalReview",
+  "researchSelection",
   "workflowState",
   "articleDocument",
 ]);
