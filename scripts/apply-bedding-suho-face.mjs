@@ -3,7 +3,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
-import { assertNewPost } from '../lib/atlas/publish-transaction.js';
+import { assertNewPost, failedBeforePublishConfirmed } from '../lib/atlas/publish-transaction.js';
 import { pngIntegrityIssue } from '../lib/atlas/png-integrity.js';
 
 const ID = 'kr_kr_info_bedding_cleaner_2026';
@@ -24,7 +24,7 @@ export function applyBeddingSuhoFace(root) {
   const transactionFile = path.join(root, '.atlas-data/publish-transactions', `${hash(`korea:${ID}`)}.json`);
   if (fs.existsSync(transactionFile)) {
     const transaction = JSON.parse(fs.readFileSync(transactionFile, 'utf8'));
-    if (['PUBLISHING', 'RESULT_UNKNOWN', 'PUBLISHED'].includes(transaction.state)) throw new Error('발행 결과 확인이 필요한 원고입니다. 교체를 중단했습니다.');
+    if (['PUBLISHING', 'RESULT_UNKNOWN', 'PUBLISHED'].includes(transaction.state) && !failedBeforePublishConfirmed(transaction, 'korea')) throw new Error(`발행 결과 확인이 필요한 원고입니다 (${transaction.state}). 교체를 중단했습니다. 기존 발행 기록은 보존했습니다.`);
   }
   const first = draft.images?.[0];
   if (!first?.id || draft.images.length < 3) throw new Error('기존 이미지 세트를 확인하지 못했습니다.');

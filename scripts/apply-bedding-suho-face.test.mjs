@@ -55,3 +55,33 @@ test('refuses damaged replacement bytes without changing the draft', (t) => {
   assert.throws(() => applyBeddingSuhoFace(f.root), /이미지 파일 검증/);
   assert.deepEqual(fs.readFileSync(f.file), f.original);
 });
+test('confirmed pre-publish editor failure allows image replacement and preserves the transaction', (t) => {
+  const f = fixture(t);
+  const folder = path.join(f.root, '.atlas-data/publish-transactions');
+  fs.mkdirSync(folder, { recursive: true });
+  const name = crypto.createHash('sha256').update('korea:kr_kr_info_bedding_cleaner_2026').digest('hex');
+  const transactionFile = path.join(folder, `${name}.json`);
+  const transaction = JSON.stringify({ state: 'RESULT_UNKNOWN', error: '네이버 본문 입력 영역을 찾지 못했습니다.', token: 'preserved' });
+  fs.writeFileSync(transactionFile, transaction);
+  assert.equal(applyBeddingSuhoFace(f.root).status, 'applied');
+  assert.equal(fs.readFileSync(transactionFile, 'utf8'), transaction);
+  assert.equal(JSON.parse(fs.readFileSync(f.file)).items[0].userPublishApproval, null);
+});
+test('similar failure text, successful receipts and in-progress transactions remain protected', (t) => {
+  const f = fixture(t);
+  const folder = path.join(f.root, '.atlas-data/publish-transactions');
+  fs.mkdirSync(folder, { recursive: true });
+  const name = crypto.createHash('sha256').update('korea:kr_kr_info_bedding_cleaner_2026').digest('hex');
+  const confirmedError = '네이버 본문 입력 영역을 찾지 못했습니다.';
+  for (const transaction of [
+    { state: 'RESULT_UNKNOWN', error: `${confirmedError} timeout` },
+    { state: 'RESULT_UNKNOWN', error: confirmedError, postId: '123' },
+    { state: 'RESULT_UNKNOWN', error: confirmedError, url: 'https://blog.naver.com/who-ami/123' },
+    { state: 'PUBLISHING', error: confirmedError, publishAttempted: false },
+    { state: 'PUBLISHED', error: confirmedError },
+  ]) {
+    fs.writeFileSync(path.join(folder, `${name}.json`), JSON.stringify(transaction));
+    assert.throws(() => applyBeddingSuhoFace(f.root), /발행 결과/);
+    assert.deepEqual(fs.readFileSync(f.file), f.original);
+  }
+});
