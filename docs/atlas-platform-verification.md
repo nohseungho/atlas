@@ -230,3 +230,25 @@ Comparison with 9dc1ca7/ecfd569 shows the earlier worker selected a visible .se-
 The new adapter permits discovery of an already focused genuine native child input only after validating the new-post target and empty rendered body. It accepts zero-size native input boxes whose computed style is visible (not display:none/visibility:hidden); rectangle presence and exact frame ownership/focus remain required. Insertion still clicks the rendered body paragraph and verifies each output block and inline image sequence. It does not restore Select All, synthetic paste probes or unapproved publication from the old implementation.
 
 A Chromium regression verifies a focused zero-height body and zero-size iframe can be discovered without another activation click, then receives the full document and three inline images. Full suite: 550 passed, zero failures/skips. Diagnostics v3 include box dimensions and the last search/check/click failure stage, so future failures will not conceal a swallowed activation exception. Real home success remains unverified, including whether this particular failure involved zero dimensions or activation interception.
+
+## 본문 중간 소제목 삽입 회귀 및 운영 인계 — 2026-10-09 (한국 시간)
+
+- 집 PC의 native-input-frame-v3 로그는 본문 영역 탐색 성공 후 NAVER_DOCUMENT_MISMATCH를 보고했다. 제공된 화면에는 첫 문단 중간에 다음 소제목이 삽입됐다. 네이티브 입력 iframe에서 End 키는 현재 줄 끝으로 이동하므로 전체 입력 버퍼 끝으로 이동하는 Control+End(macOS Meta+ArrowDown)로 교체했다. 본문 내용 불일치와 이미지 anchor 불일치 오류를 구분한다.
+- 여러 줄 입력 버퍼가 첫 위치에서 다시 활성화되는 브라우저 회귀 fixture를 추가했다. 기존 End 입력에서 실패하고 교체 후 통과하는 것을 확인했다. 실제 네이버/Windows Edge 재검증은 별도이며 fixture 통과로 발행 성공을 주장하지 않는다.
+- 사용자 승인: 글과 이미지가 요청한 기준과 일치하면 실제 발행 가능. 검수 실패, 중복, 얼굴 불일치, 출처 누락, 발행 결과 불명 상태에서는 계속 차단한다. 기존 공개 글 임의 수정/삭제, main merge, force push, hard reset, 유료 API 추가는 승인 범위에 포함하지 않는다.
+
+### 다음 Work 실행 순서
+
+1. 집 PC의 fix/naver-rss-dedupe 브랜치, status/diff/stat와 최근 커밋을 먼저 확인한다. data/atlas/korea-drafts.json, 이미지, 로그인 프로필의 기존 로컬 변경을 보존한다. 처음부터 재구현하지 않는다.
+2. 네이버 stage를 기존 로그인 세션에 연결한다. 제목/전체 본문/3장 이미지의 문맥별 배치가 실제 편집기에서 모두 일치하는지 검증한다. 반복 로그인·반복 stage 대신 새 실패 지점의 증거를 확인한다. stage 성공은 발행 성공이 아니다.
+3. 최신 이슈·제품·참고 글 업데이트 → 사용자 선택 → 선택 자료를 출처로 연결한 원고 생성의 전체 흐름을 확인한다. 조회 시각과 출처, 조회 실패 표시, 관련 없는 기본 원고로 대체하지 않는 동작을 확인한다.
+4. 국내 수호 첫 얼굴이 나머지와 일치하는지 실제 최종 이미지 파일과 원고를 검수한다. 실제 제품/생활 장면과 본문 위치를 확인하고 이미지 변경 뒤 기존 검수·승인을 재사용하지 않는다.
+5. 해외 Blogger atlas-money-2026 원고를 검수한다. ATLAS-MIJI-MASTER 얼굴 고정, 최소 5장, 장면/구도 다양화, 실제 이미지 파일 hash에 연결한 얼굴 검수, 다른 파일의 점수 재사용 차단, 본문 배치를 모두 확인한다.
+6. 실제 AdSense 계정에서 사이트별 심사·승인 상태를 읽기 전용으로 확인한다. 화면/공식 계정 증거 없이 승인으로 표시하지 않는다. 네이버에는 Blogger용 AdSense 상태를 잘못 적용하지 않는다.
+7. 실제 쿠팡 파트너스 계정에서 가입/심사/최종 승인 상태를 읽기 전용으로 확인한다. 공개 상품 검색 성공을 제휴 승인으로 간주하지 않는다. 미승인 상태의 수익 연결을 승인된 것으로 표시하지 않는다.
+8. 국내/해외 각각 글·이미지·얼굴·중복·출처와 발행 대상 계정을 최종 검수한다. 사용자 조건부 승인에 부합한 최종 버전에만 기존 승인 절차를 적용한다. 검증 코드나 얼굴 점수를 임의 생성하지 않는다. 게시 결과가 불명확하면 재발행 전 공개 결과부터 확인한다.
+9. 변경 파일, test/build, 실제/fixture 브라우저 검증, 남은 문제, commit SHA와 실제 발행 URL(성공 확인 시에만)을 한 번에 보고한다.
+
+- 이 cloud 세션은 집 Windows PC 및 그 Edge 세션에 직접 접근할 수 없다. 실제 최종 이미지·편집 결과, Blogger 계정, AdSense/쿠팡 계정 상태와 실제 발행은 아직 확인되지 않았다. 이 인계 문서 작성과 아침 결과 정리 예약이 위 계정 작업을 완료한 것을 뜻하지 않는다.
+
+- 이번 수정 검증: 전체 테스트 551개 통과(실패/skip 0), 브라우저 fixture 11개 포함, lint 통과, build 성공(기존 Turbopack 경고 1개). 실제 네이버 발행 및 공개 글 변경은 수행하지 않았다.
