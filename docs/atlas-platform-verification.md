@@ -206,3 +206,11 @@ Routed Chromium reproduces that frame structure and verifies the complete docume
 A fresh home failure at 2026-10-08T19:05:51.149Z still shows an editable focused BODY in the blank input frame. The previous adapter required body[contenteditable="true"], which incorrectly rejects native designMode and an empty contenteditable attribute despite isContentEditable being true. A Chromium designMode fixture reproduces the same BODY_EDITOR_NOT_FOUND before this correction.
 
 The adapter now selects the body and requires computed native editability, visibility and focus; the verified-new-post activation, exact focused child-frame check and rendered-output verification remain intact. Browser regressions cover explicit true, empty attribute and designMode input, three inline images, unchanged title, unsynchronized-input refusal and protected targets. Full suite: 548 passed, zero failed/skipped. Diagnostics now include adapterVersion=native-input-frame-v2 and body editability/attribute/designMode/rectangle count without credentials or prose. The actual home DOM's editability mode remains unknown until the enhanced diagnostic or successful staging is received. Public posts were not changed.
+
+### Read-only inspection of the retained editor (2026-10-09 Korea)
+
+The home v2 diagnostic at 2026-10-08T19:12:27.550Z confirms explicit contenteditable=true, ruling out the previously hypothesized missing-attribute cause for that attempt. It still does not reveal whether native activation was blocked by the target guard, nonempty/placeholder text, visibility or focus ownership.
+
+`node --no-warnings scripts/naver-editor-diagnose.mjs` attaches only to the existing ATLAS profile endpoint. It reads already-open who-ami new-post tabs; it never launches/navigates, clicks, focuses, types, uploads or publishes. Diagnostics add the exact new-target predicate, paragraph text lengths/classes/placeholder counts and child-frame owner focus/visibility. Prose, cookies and credentials are not emitted. Missing endpoint/editor stops without prompting login.
+
+The retained Chromium session regression verifies diagnostics return metadata without prose and leave DOM, tab count and existing browser intact after disconnect. Targeted session/editor browser tests: 11 passed. The live failure is unresolved pending these observations; no speculative activation bypass was added.
