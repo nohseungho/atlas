@@ -192,3 +192,11 @@ A routed Chromium regression starts with two noneditable paragraphs, activates t
 - Product selection uses the existing seller-page verification writer. The chosen source and collection time are shown with the resulting draft and included in approval version binding.
 - `node scripts/apply-bedding-suho-face.mjs` backs up the home draft and affected image files, replaces only the first bedroom image, preserves writing and placements, and clears old review/approval/staging records. Public/uncertain/in-progress publications are protected.
 - Offline browser verification covers the real research button → API → storage → selected draft in UI, duplicate-selection reuse, unlisted-source refusal, preview anchors and disabled publishing. No external publisher is called.
+
+### Focused blank input frame (2026-10-09 Korea)
+
+The new home diagnostic has noneditable rendered body components in PostWriteForm, a focused IFRAME, and a native contenteditable BODY in an about:blank child. This suggests a separate native input transport; the adapter previously only accepted editable component paragraphs.
+
+After native activation of a verified empty who-ami new-post body, the adapter can now accept the exact focused direct blank child with a genuinely editable, focused, visible body. Document reads and image-order checks remain in the rendered parent frame. Before every input it clicks the final body paragraph using the editor's own handler. Every text insertion must appear in the editor-owned components before proceeding, otherwise the operation stops. No synthetic editability, blind iframe writes or publication-control clicks are used.
+
+Routed Chromium reproduces that frame structure and verifies the complete document with three inline images, unchanged title, immediate refusal when iframe input does not reach the rendered document, and protection of home/other-blog/existing-post pages. Full suite: 546 passed, zero failed/skipped. Real home Edge/Naver behavior remains unverified; this fixture tests the proposed recovery, not the live service. No public post was changed.
