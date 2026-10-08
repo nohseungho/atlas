@@ -214,3 +214,11 @@ The home v2 diagnostic at 2026-10-08T19:12:27.550Z confirms explicit contentedit
 `node --no-warnings scripts/naver-editor-diagnose.mjs` attaches only to the existing ATLAS profile endpoint. It reads already-open who-ami new-post tabs; it never launches/navigates, clicks, focuses, types, uploads or publishes. Diagnostics add the exact new-target predicate, paragraph text lengths/classes/placeholder counts and child-frame owner focus/visibility. Prose, cookies and credentials are not emitted. Missing endpoint/editor stops without prompting login.
 
 The retained Chromium session regression verifies diagnostics return metadata without prose and leave DOM, tab count and existing browser intact after disconnect. Targeted session/editor browser tests: 11 passed. The live failure is unresolved pending these observations; no speculative activation bypass was added.
+
+### Confirmed placeholder and inherited input-frame URL (2026-10-09 Korea)
+
+The read-only home result at 2026-10-08T19:26:20.557Z shows a valid who-ami new-post target, a body paragraph containing 17 characters and one se-placeholder, and an editable focused child frame inheriting the complete PostWriteForm URL. Together with the empty-editor screenshot, this identifies two rejected conditions: hint text counted as existing writing and transport URL restricted to about:blank.
+
+Document reading now excludes only se-placeholder descendants in a detached clone, without altering live DOM. Unmarked text, including the identical hint sentence, and real text alongside marked hints remain protected. The native transport permits the exact parent URL as well as blank URLs, still requiring direct-child focus, visible native editable body and no rendered editor components in that child. It does not accept another origin/path or loosen write-target/publication guards.
+
+Chromium reproduces the observed 17-character hint and inherited URL, then verifies the complete document with three images. It also verifies actual and unmarked restored writing cannot be overwritten. Targeted editor regressions: 9 passed. Live Naver success remains pending home staging; no publication was performed.
